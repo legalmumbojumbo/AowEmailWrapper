@@ -35,6 +35,7 @@
             this.colAge = new System.Windows.Forms.ColumnHeader();
             this.colStatus = new System.Windows.Forms.ColumnHeader();
             this.colTicks = new System.Windows.Forms.ColumnHeader();
+            this.colInstall = new System.Windows.Forms.ColumnHeader();
             this.SuspendLayout();
             // 
             // listView
@@ -45,6 +46,7 @@
             this.colTurn,
             this.colAge,
             this.colStatus,
+            this.colInstall,
             this.colTicks});
             this.listView.Dock = System.Windows.Forms.DockStyle.Fill;
             this.listView.FullRowSelect = true;
@@ -85,6 +87,11 @@
             this.colStatus.Tag = "ContentHeaderMax";
             this.colStatus.Text = "Status";
             // 
+            // colInstall
+            // 
+            this.colInstall.Tag = "ContentHeaderMax";
+            this.colInstall.Text = "Copy";
+            // 
             // colTicks
             // 
             this.colTicks.Tag = "Fixed;0";
@@ -111,5 +118,6 @@
         private System.Windows.Forms.ColumnHeader colAge;
         private System.Windows.Forms.ColumnHeader colStatus;
         private System.Windows.Forms.ColumnHeader colTicks;
+        private System.Windows.Forms.ColumnHeader colInstall;
     }
 }

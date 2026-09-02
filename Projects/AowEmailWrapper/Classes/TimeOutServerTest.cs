@@ -1,18 +1,24 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using System;
 using System.Threading;
-using System.Net;
+using MailKit;
+using MailKit.Net.Imap;
+using MailKit.Net.Pop3;
+using MailKit.Net.Smtp;
+using MailKit.Security;
 using Mozilla.Autoconfig;
 
 namespace AowEmailWrapper.Classes
 {
+    /// <summary>
+    /// Checks that a mail server candidate from autoconfiguration accepts a connection
+    /// (and works out whether it wants plain or STARTTLS) within a time limit.
+    /// </summary>
     public class TimeOutServerTest : IDisposable
     {
         #region Private Members
 
-        private ManualResetEvent _timeoutObject;
+        private ManualResetEvent _finished;
+        private CancellationTokenSource _cancellation;
 
         private bool _isSuccess = false;
         private bool _isDisposed = false;
@@ -48,14 +54,14 @@ namespace AowEmailWrapper.Classes
         public TimeOutServerTest(IncomingServer incomingServer)
         {
             _incomingServer = incomingServer;
-            _timeoutObject = new ManualResetEvent(false);
+            _finished = new ManualResetEvent(false);
             _incoming = true;
         }
 
         public TimeOutServerTest(OutgoingServer outgoingServer)
         {
             _outgoingServer = outgoingServer;
-            _timeoutObject = new ManualResetEvent(false);
+            _finished = new ManualResetEvent(false);
             _incoming = false;
         }
 
@@ -66,157 +72,107 @@ namespace AowEmailWrapper.Classes
         public void Test(int timeoutMs)
         {
             _timeoutMs = timeoutMs;
+            _cancellation = new CancellationTokenSource(timeoutMs);
+            _finished.Reset();
 
-            Thread beginThread = new Thread(new ThreadStart(this.BeginTest));
-            beginThread.Start();
+            Thread testThread = new Thread(new ThreadStart(this.RunTest));
+            testThread.IsBackground = true;
+            testThread.Start();
+        }
+
+        /// <summary>
+        /// Blocks until the test has finished or the given time has passed.
+        /// </summary>
+        public bool Wait(int timeoutMs)
+        {
+            return _finished.WaitOne(timeoutMs);
         }
 
         #endregion
 
         #region Private Methods
 
-        private void BeginTest()
+        private void RunTest()
         {
-            Thread testThread = null;
-
-            _timeoutObject.Reset();
-
-            if (_incoming)
+            try
             {
-                switch (_incomingServer.Type)
+                if (_incoming)
                 {
-                    case ServerType.IMAP:
-                        testThread = new Thread(new ThreadStart(this.TestIMAP));
-                        break;
-                    case ServerType.POP3:
-                        testThread = new Thread(new ThreadStart(this.TestPOP));                        
-                        break;
+                    switch (_incomingServer.Type)
+                    {
+                        case ServerType.IMAP:
+                            _isSuccess = TryConnect(() => new ImapClient(), _incomingServer.Hostname, _incomingServer.Port, _incomingServer.SocketType, type => _incomingServer.SocketType = type);
+                            break;
+                        case ServerType.POP3:
+                            _isSuccess = TryConnect(() => new Pop3Client(), _incomingServer.Hostname, _incomingServer.Port, _incomingServer.SocketType, type => _incomingServer.SocketType = type);
+                            break;
+                    }
+                }
+                else
+                {
+                    _isSuccess = TryConnect(() => new SmtpClient(), _outgoingServer.Hostname, _outgoingServer.Port, _outgoingServer.SocketType, type => _outgoingServer.SocketType = type);
                 }
             }
-            else
+            catch
             {
-                testThread = new Thread(new ThreadStart(this.TestSMTP));
+                _isSuccess = false;
             }
-
-            if (testThread != null)
+            finally
             {
-                testThread.Start();
-
-                if (!_timeoutObject.WaitOne(_timeoutMs, false))
+                if (!_isDisposed)
                 {
-                    if (testThread != null) testThread.Abort();
+                    _finished.Set();
                 }
             }
         }
 
-        #endregion
-
-        #region Testing Functions
-
-        private void TestIMAP()
+        private bool TryConnect(Func<IMailService> createClient, string host, int port, SocketType socketType, Action<SocketType> setSocketType)
         {
-            try
+            if (socketType == SocketType.SSL)
             {
-                using (Lesnikowski.Client.IMAP.Imap imap = new Lesnikowski.Client.IMAP.Imap())
-                {
-                    switch (_incomingServer.SocketType)
-                    {
-                        case SocketType.SSL:
-                            imap.ConnectSSL(_incomingServer.Hostname, _incomingServer.Port);
-                            break;
-                        case SocketType.Unknown:
-                        case SocketType.Plain:
-                        case SocketType.STARTTLS:
-                            imap.Connect(_incomingServer.Hostname, _incomingServer.Port);
-                            _incomingServer.SocketType = SocketType.Plain;
-                            imap.StartTLS();
-                            _incomingServer.SocketType = SocketType.STARTTLS;
-                            break;
-                    }
+                return Connect(createClient, host, port, SecureSocketOptions.SslOnConnect);
+            }
 
-                    _isSuccess = true;
-                }
-            }
-            catch (Lesnikowski.Client.ServerException ex)
+            //Unknown, plain or STARTTLS: prefer STARTTLS and fall back to plain if the server cannot upgrade
+            if (Connect(createClient, host, port, SecureSocketOptions.StartTls))
             {
-                _isSuccess = ex.InnerException == null;
+                setSocketType(SocketType.STARTTLS);
+                return true;
             }
-            catch { }
-            finally
+
+            if (Connect(createClient, host, port, SecureSocketOptions.None))
             {
-                if (!_isDisposed) _timeoutObject.Set();
+                setSocketType(SocketType.Plain);
+                return true;
             }
+
+            return false;
         }
 
-        private void TestPOP()
+        private bool Connect(Func<IMailService> createClient, string host, int port, SecureSocketOptions options)
         {
             try
             {
-                using (Lesnikowski.Client.Pop3 pop3 = new Lesnikowski.Client.Pop3())
+                using (IMailService client = createClient())
                 {
-                    switch (_incomingServer.SocketType)
+                    client.Timeout = _timeoutMs;
+                    client.Connect(host, port, options, _cancellation.Token);
+
+                    try
                     {
-                        case SocketType.SSL:
-                            pop3.ConnectSSL(_incomingServer.Hostname, _incomingServer.Port);
-                            break;
-                        case SocketType.Unknown:
-                        case SocketType.Plain:
-                        case SocketType.STARTTLS:
-                            pop3.Connect(_incomingServer.Hostname, _incomingServer.Port);
-                            _incomingServer.SocketType = SocketType.Plain;
-                            pop3.STLS();
-                            _incomingServer.SocketType = SocketType.STARTTLS;
-                            break;
+                        client.Disconnect(true, _cancellation.Token);
                     }
-
-                    _isSuccess = true;
-                }
-            }
-            catch (Lesnikowski.Client.ServerException ex)
-            {
-                _isSuccess = ex.InnerException == null;
-            }
-            catch { }
-            finally
-            {
-                if (!_isDisposed) _timeoutObject.Set();
-            }
-        }
-
-        private void TestSMTP()
-        {
-            try
-            {
-                using (Lesnikowski.Client.Smtp smtp = new Lesnikowski.Client.Smtp())
-                {
-                    switch (_outgoingServer.SocketType)
+                    catch
                     {
-                        case SocketType.SSL:
-                            smtp.ConnectSSL(_outgoingServer.Hostname, _outgoingServer.Port);
-                            smtp.Ehlo();
-                            break;
-                        case SocketType.Unknown:
-                        case SocketType.Plain:
-                        case SocketType.STARTTLS:
-                            smtp.Connect(_outgoingServer.Hostname, _outgoingServer.Port);
-                            smtp.Ehlo();
-                            _outgoingServer.SocketType = SocketType.Plain;
-                            smtp.StartTLS();
-                            _outgoingServer.SocketType = SocketType.STARTTLS;
-                            break;
+                        //The connection itself succeeded, a rough disconnect does not matter
                     }
-
-                    _isSuccess = true;
                 }
+
+                return true;
             }
-            catch (Lesnikowski.Client.ServerException ex)
+            catch
             {
-                _isSuccess = ex.InnerException == null;
-            }
-            catch { }
-            finally
-            {
-                if (!_isDisposed) _timeoutObject.Set();
+                return false;
             }
         }
 
@@ -226,8 +182,16 @@ namespace AowEmailWrapper.Classes
 
         public void Dispose()
         {
-            _timeoutObject.Close();
             _isDisposed = true;
+
+            if (_cancellation != null)
+            {
+                _cancellation.Cancel();
+                _cancellation.Dispose();
+                _cancellation = null;
+            }
+
+            _finished.Close();
         }
 
         #endregion

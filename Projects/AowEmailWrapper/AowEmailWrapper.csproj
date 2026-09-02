@@ -1,411 +1,80 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="3.5" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.30729</ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{1EE06EC1-97C0-4CFA-8F23-A9151214C13F}</ProjectGuid>
     <OutputType>WinExe</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <UseWindowsForms>true</UseWindowsForms>
     <RootNamespace>AowEmailWrapper</RootNamespace>
     <AssemblyName>AowEmailWrapper</AssemblyName>
-    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
     <ApplicationIcon>online48.ico</ApplicationIcon>
+    <Version>2.0.0</Version>
+    <Product>Age of Wonders Email Wrapper</Product>
+    <Copyright>Copyright © 2010-2026 David Honess and contributors</Copyright>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <Nullable>disable</Nullable>
+    <SatelliteResourceLanguages>en</SatelliteResourceLanguages>
+    <!-- ImageList streams in the designer .resx files still go through BinaryFormatter on .NET 8 -->
+    <GenerateResourceWarnOnBinaryFormatterUse>false</GenerateResourceWarnOnBinaryFormatterUse>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
+
   <ItemGroup>
-    <Reference Include="Mail, Version=3.0.11123.1722, Culture=neutral, PublicKeyToken=6dc438ab78a525b3, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>.\Mail.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.ExceptionMessageBox, Version=9.0.242.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>.\Microsoft.ExceptionMessageBox.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.configuration" />
-    <Reference Include="System.Core">
-      <RequiredTargetFramework>3.5</RequiredTargetFramework>
-    </Reference>
-    <Reference Include="System.Management" />
-    <Reference Include="System.Web.Extensions">
-      <RequiredTargetFramework>3.5</RequiredTargetFramework>
-    </Reference>
-    <Reference Include="System.Xml.Linq">
-      <RequiredTargetFramework>3.5</RequiredTargetFramework>
-    </Reference>
-    <Reference Include="System.Data.DataSetExtensions">
-      <RequiredTargetFramework>3.5</RequiredTargetFramework>
-    </Reference>
-    <Reference Include="System.Data" />
-    <Reference Include="System.Deployment" />
-    <Reference Include="System.Drawing" />
-    <Reference Include="System.Windows.Forms" />
-    <Reference Include="System.Xml" />
+    <PackageReference Include="MailKit" Version="4.17.0" />
+    <PackageReference Include="Microsoft.Identity.Client" Version="4.88.0" />
+    <PackageReference Include="System.Configuration.ConfigurationManager" Version="8.0.0" />
+    <PackageReference Include="System.Management" Version="8.0.0" />
+    <PackageReference Include="System.Security.Cryptography.ProtectedData" Version="8.0.0" />
   </ItemGroup>
+
   <ItemGroup>
-    <Compile Include="ASG\ASGFileInfo.cs" />
-    <Compile Include="ASG\DataCompressor.cs" />
-    <Compile Include="ASG\OffsetMap.cs" />
-    <Compile Include="ASG\OffsetMapField.cs" />
-    <Compile Include="Classes\ComboBoxItem.cs" />
-    <Compile Include="Classes\ExtendedWindowStyles.cs" />
-    <Compile Include="Classes\InputBox.cs" />
-    <Compile Include="Classes\ListViewColumnResizer.cs" />
-    <Compile Include="Classes\ListViewColumnSorter.cs" />
-    <Compile Include="Classes\TimeOutServerTest.cs" />
-    <Compile Include="ConfigFramework\AccountConfigValues.cs" />
-    <Compile Include="ConfigFramework\AccountConfigValuesList.cs" />
-    <Compile Include="ConfigFramework\Activity.cs" />
-    <Compile Include="ConfigFramework\ActivityList.cs" />
-    <Compile Include="ConfigFramework\Config.cs" />
-    <Compile Include="ConfigFramework\PollingConfigValues.cs" />
-    <Compile Include="ConfigFramework\PreferencesConfigValues.cs" />
-    <Compile Include="Classes\ProcessInfo.cs" />
-    <Compile Include="ConfigFramework\SmtpConfigValues.cs" />
-    <Compile Include="Classes\StartedTaskWatcher.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Classes\Turn.cs" />
-    <Compile Include="Classes\TurnLogger.cs" />
-    <Compile Include="Controls\AccountsConfig.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Controls\AccountsConfig.Designer.cs">
-      <DependentUpon>AccountsConfig.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\AccountsCreationForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Controls\AccountsCreationForm.Designer.cs">
-      <DependentUpon>AccountsCreationForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\AccountsCreationWizzard.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Controls\AccountsCreationWizzard.Designer.cs">
-      <DependentUpon>AccountsCreationWizzard.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\ActivityListView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Controls\ActivityListView.Designer.cs">
-      <DependentUpon>ActivityListView.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\AutoconfigPage1Welcome.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Controls\AutoconfigPage1Welcome.Designer.cs">
-      <DependentUpon>AutoconfigPage1Welcome.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\AutoconfigPage2Search.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Controls\AutoconfigPage2Search.Designer.cs">
-      <DependentUpon>AutoconfigPage2Search.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\AutoconfigPage3Select.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Controls\AutoconfigPage3Select.Designer.cs">
-      <DependentUpon>AutoconfigPage3Select.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\AutoconfigWizardControl.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Controls\AutoconfigWizardControl.Designer.cs">
-      <DependentUpon>AutoconfigWizardControl.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\BaseFormBlock.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Controls\LinkButton.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Controls\FormBlockCheckBox.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Controls\FormBlockCheckBox.Designer.cs">
-      <DependentUpon>FormBlockCheckBox.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\FormBlockPollingSetup.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Controls\FormBlockPollingSetup.Designer.cs">
-      <DependentUpon>FormBlockPollingSetup.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\IconMenuItem.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Controls\MessageStoreList.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Controls\MessageStoreList.Designer.cs">
-      <DependentUpon>MessageStoreList.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\ServerChoiceCheckBox.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Controls\ServerChoiceCheckBox.Designer.cs">
-      <DependentUpon>ServerChoiceCheckBox.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\ServerChoiceControl.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Controls\ServerChoiceControl.Designer.cs">
-      <DependentUpon>ServerChoiceControl.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\ServerChoiceForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Controls\ServerChoiceForm.Designer.cs">
-      <DependentUpon>ServerChoiceForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="CSES\SmtpSender.cs" />
-    <Compile Include="CSES\SmtpSendResponse.cs" />
-    <Compile Include="Games\AowGameSavedEventArgs.cs" />
-    <Compile Include="Helpers\AppDataHelper.cs" />
-    <Compile Include="Helpers\AutoconfigurationHelper.cs" />
-    <Compile Include="Helpers\ConfigHelper.cs" />
-    <Compile Include="Controls\FormBlockText.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Controls\FormBlockText.Designer.cs">
-      <DependentUpon>FormBlockText.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\FormBlockCombo.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Controls\FormBlockCombo.Designer.cs">
-      <DependentUpon>FormBlockCombo.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\PollingConfig.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Controls\PollingConfig.Designer.cs">
-      <DependentUpon>PollingConfig.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\PreferencesConfig.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Controls\PreferencesConfig.Designer.cs">
-      <DependentUpon>PreferencesConfig.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\SmtpConfig.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Controls\SmtpConfig.Designer.cs">
-      <DependentUpon>SmtpConfig.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Helpers\CryptographyHelper.cs" />
-    <Compile Include="CSES\AnyRecipientFilter.cs" />
-    <Compile Include="CSES\SmtpSpool.cs" />
-    <Compile Include="Games\AowGame.cs" />
-    <Compile Include="Games\AowGameManager.cs" />
-    <Compile Include="Helpers\DataManagerHelper.cs" />
-    <Compile Include="Helpers\FileHelper.cs" />
-    <Compile Include="Helpers\FileVirtualizationHelper.cs" />
-    <Compile Include="Helpers\ResendHelper.cs" />
-    <Compile Include="Helpers\XmlHelper.cs" />
-    <Compile Include="Localization\Framework\Language.cs" />
-    <Compile Include="Localization\Framework\Languages.cs" />
-    <Compile Include="Localization\Framework\Lookup.cs" />
-    <Compile Include="Localization\Translator.cs" />
-    <Compile Include="Main.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Main.Designer.cs">
-      <DependentUpon>Main.cs</DependentUpon>
-    </Compile>
-    <Compile Include="MessageStore.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="MessageStore.Designer.cs">
-      <DependentUpon>MessageStore.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Pollers\BasePoller.cs" />
-    <Compile Include="Pollers\ImapPoller.cs" />
-    <Compile Include="Pollers\MessageStore\MessageStoreManager.cs" />
-    <Compile Include="Pollers\MessageStore\MessageStoreMessage.cs" />
-    <Compile Include="Pollers\MessageStore\MessageStoreCollection.cs" />
-    <Compile Include="Pollers\PollerEventArgs.cs" />
-    <Compile Include="Pollers\Pop3Poller.cs" />
-    <Compile Include="Program.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <EmbeddedResource Include="Controls\AccountsConfig.resx">
-      <DependentUpon>AccountsConfig.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Controls\AccountsCreationForm.resx">
-      <DependentUpon>AccountsCreationForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Controls\AccountsCreationWizzard.resx">
-      <DependentUpon>AccountsCreationWizzard.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Controls\ActivityListView.resx">
-      <DependentUpon>ActivityListView.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Controls\AutoconfigPage1Welcome.resx">
-      <DependentUpon>AutoconfigPage1Welcome.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Controls\AutoconfigPage2Search.resx">
-      <DependentUpon>AutoconfigPage2Search.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Controls\AutoconfigPage3Select.resx">
-      <DependentUpon>AutoconfigPage3Select.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Controls\AutoconfigWizardControl.resx">
-      <DependentUpon>AutoconfigWizardControl.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Controls\BaseFormBlock.resx">
-      <DependentUpon>BaseFormBlock.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Controls\FormBlockCheckBox.resx">
-      <DependentUpon>FormBlockCheckBox.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Controls\FormBlockPollingSetup.resx">
-      <DependentUpon>FormBlockPollingSetup.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Controls\FormBlockText.resx">
-      <DependentUpon>FormBlockText.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Controls\FormBlockCombo.resx">
-      <DependentUpon>FormBlockCombo.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Controls\MessageStoreList.resx">
-      <DependentUpon>MessageStoreList.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Controls\PollingConfig.resx">
-      <DependentUpon>PollingConfig.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Controls\PreferencesConfig.resx">
-      <DependentUpon>PreferencesConfig.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Controls\ServerChoiceCheckBox.resx">
-      <DependentUpon>ServerChoiceCheckBox.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Controls\ServerChoiceControl.resx">
-      <DependentUpon>ServerChoiceControl.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Controls\ServerChoiceForm.resx">
-      <DependentUpon>ServerChoiceForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Controls\SmtpConfig.resx">
-      <DependentUpon>SmtpConfig.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Main.resx">
-      <DependentUpon>Main.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="MessageStore.resx">
-      <DependentUpon>MessageStore.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Properties\Resources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Splash.resx">
-      <DependentUpon>Splash.cs</DependentUpon>
-    </EmbeddedResource>
-    <Compile Include="Properties\Resources.Designer.cs">
+    <ProjectReference Include="..\EricDaugherty.CSES\EricDaugherty.CSES.csproj" />
+    <ProjectReference Include="..\FlimFlan.IconEncoder\FlimFlan.IconEncoder.csproj" />
+    <ProjectReference Include="..\Mozilla.Autoconfig\Mozilla.Autoconfig.csproj" />
+    <ProjectReference Include="..\Zlib\zlib.net.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- Designer image lists as plain PNGs, loaded by ImageListLoader instead of BinaryFormatter streams -->
+    <None Remove="Resources\ImageLists\**\*.png" />
+    <EmbeddedResource Include="Resources\ImageLists\**\*.png" WithCulture="false" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- Runtime data files shipped next to the executable -->
+    <None Update="Localization.xml" CopyToOutputDirectory="PreserveNewest" />
+    <None Update="notify.wav" CopyToOutputDirectory="PreserveNewest" />
+    <None Update="sent.wav" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
+  <!-- Stamp the executable with the git commit it was built from (InformationalVersion becomes "2.0.0+sha"
+       and the commit date goes into an AssemblyMetadata attribute). The update check compares this with the
+       latest build published on GitHub. Builds made outside a git checkout simply carry no commit. -->
+  <Target Name="AowStampCommit" BeforeTargets="GetAssemblyVersion;GetAssemblyAttributes;GenerateAssemblyInfo" Condition="'$(SourceRevisionId)' == ''">
+    <Exec Command="git rev-parse HEAD" WorkingDirectory="$(MSBuildProjectDirectory)" ConsoleToMSBuild="true" IgnoreExitCode="true" ContinueOnError="true" StandardOutputImportance="low" StandardErrorImportance="low">
+      <Output TaskParameter="ConsoleOutput" PropertyName="AowGitCommit" />
+      <Output TaskParameter="ExitCode" PropertyName="AowGitExitCode" />
+    </Exec>
+    <!-- %25%25 reaches the generated batch file as %%, which cmd.exe turns into the single % git needs -->
+    <Exec Command="git log -1 --format=%25%25cI" WorkingDirectory="$(MSBuildProjectDirectory)" ConsoleToMSBuild="true" IgnoreExitCode="true" ContinueOnError="true" StandardOutputImportance="low" StandardErrorImportance="low" Condition="'$(AowGitExitCode)' == '0'">
+      <Output TaskParameter="ConsoleOutput" PropertyName="AowGitCommitDate" />
+    </Exec>
+    <PropertyGroup Condition="'$(AowGitExitCode)' == '0' And '$(AowGitCommit)' != ''">
+      <SourceRevisionId>$(AowGitCommit)</SourceRevisionId>
+    </PropertyGroup>
+    <ItemGroup Condition="'$(AowGitExitCode)' == '0' And '$(AowGitCommitDate)' != ''">
+      <AssemblyMetadata Include="CommitDate" Value="$(AowGitCommitDate)" />
+    </ItemGroup>
+  </Target>
+
+  <ItemGroup>
+    <Compile Update="Properties\Resources.Designer.cs">
+      <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
-      <DesignTime>True</DesignTime>
     </Compile>
-    <None Include="App.config" />
-    <None Include="Properties\Settings.settings">
-      <Generator>SettingsSingleFileGenerator</Generator>
-      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
-    </None>
-    <Compile Include="Properties\Settings.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Settings.settings</DependentUpon>
-      <DesignTimeSharedInput>True</DesignTimeSharedInput>
-    </Compile>
-    <Compile Include="Helpers\RegistryHelper.cs" />
-    <Compile Include="Helpers\StringHelper.cs" />
-    <Compile Include="Splash.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Splash.Designer.cs">
-      <DependentUpon>Splash.cs</DependentUpon>
-    </Compile>
+    <EmbeddedResource Update="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
   </ItemGroup>
-  <ItemGroup>
-    <Content Include="config.xml">
-    </Content>
-    <Content Include="Localization.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="MailLicense.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="notify.wav">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="online48.ico" />
-    <None Include="Resources\splash.jpg" />
-    <None Include="Resources\thunder logo.png" />
-    <None Include="Resources\cross.png" />
-    <None Include="Resources\tick.png" />
-    <None Include="Resources\imap-server.png" />
-    <None Include="Resources\pop3-server.png" />
-    <None Include="Resources\smtp_server.png" />
-    <None Include="uninstall.bat">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <Content Include="sent.wav">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\EricDaugherty.CSES\EricDaugherty.CSES.csproj">
-      <Project>{A5194231-69A6-4578-9A69-B482F8C346A1}</Project>
-      <Name>EricDaugherty.CSES</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\FlimFlan.IconEncoder\FlimFlan.IconEncoder.csproj">
-      <Project>{D8DC3A53-7A97-4A94-ABC0-44BCDE32657F}</Project>
-      <Name>FlimFlan.IconEncoder</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Mozilla.Autoconfig\Mozilla.Autoconfig.csproj">
-      <Project>{5236BB1E-1C86-4F2A-AE0F-540651445B9B}</Project>
-      <Name>Mozilla.Autoconfig</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Zlib\zlib.net.csproj">
-      <Project>{0C89B7A2-A218-49E4-B545-5B044A45F977}</Project>
-      <Name>zlib.net</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
+
 </Project>

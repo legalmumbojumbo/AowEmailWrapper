@@ -95,9 +95,9 @@ namespace AowEmailWrapper.Properties {
             }
         }
         
-        internal static System.Drawing.Bitmap thunderbird {
+        internal static System.Drawing.Bitmap chiefLibrarian {
             get {
-                object obj = ResourceManager.GetObject("thunderbird", resourceCulture);
+                object obj = ResourceManager.GetObject("chiefLibrarian", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

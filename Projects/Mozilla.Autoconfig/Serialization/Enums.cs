@@ -43,7 +43,9 @@ namespace Mozilla.Autoconfig
         [XmlEnum(Name = "password-encrypted")]
         PasswordEncrypted,
         [XmlEnum(Name = "client-IP-address")]
-        ClientIpAddress
+        ClientIpAddress,
+        [XmlEnum(Name = "OAuth2")]
+        OAuth2
     }
 
     public enum MechanismResponseType

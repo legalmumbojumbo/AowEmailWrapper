@@ -54,7 +54,7 @@
             this.Name = "ServerChoiceForm";
             this.Padding = new System.Windows.Forms.Padding(3, 3, 3, 0);
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-            this.Text = "Manual override";
+            this.Text = "Choose your servers";
             this.TopMost = true;
             this.ResumeLayout(false);
 

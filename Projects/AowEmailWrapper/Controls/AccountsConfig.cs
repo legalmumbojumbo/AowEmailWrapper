@@ -10,6 +10,7 @@ using System.Xml.Serialization;
 using AowEmailWrapper.ConfigFramework;
 using AowEmailWrapper.Localization;
 using AowEmailWrapper.Classes;
+using AowEmailWrapper.Helpers;
 
 namespace AowEmailWrapper.Controls
 {
@@ -28,21 +29,35 @@ namespace AowEmailWrapper.Controls
         private const string AccountDeletePromptTextKey = "msgAccountDeletePrompt";
         private const string AccountDuplicateTextKey = "msgAccountDuplicate";
         private const string AccountActiveTextKey = "activeAccount";
-        private const string AccountStartUpTextKey = "startUpAccount";
+        private const string PrimaryAccountTextKey = "primaryAccount";
+        private const string InactiveAccountTextKey = "inactiveAccount";
+        private const string ButtonActivateKey = "buttonActivate";
+        private const string ButtonDeactivateKey = "buttonDeactivate";
+        private const string Menu_Activate_Tag = "menuItemActivate";
+        private const string Menu_Deactivate_Key = "menuItemDeactivate";
         private const string AccountStatusTemplate = "{0} ({1})";
         private const string AccountTwinStatusTemplate = "{0} ({1} {2})";
         private const string Menu_Add_Tag = "menuItemAdd";
         private const string Menu_Remove_Tag = "menuItemRemove";
         private const string Menu_Rename_Tag = "menuItemRename";
-        private const string Menu_Activate_Tag = "menuItemActivate";
-        private const string Menu_SetStartUp_Tag = "menuItemSetStartUp";
+        private const string Menu_MoveUp_Tag = "menuItemMoveUp";
+        private const string Menu_MoveDown_Tag = "menuItemMoveDown";
+        private const string TestTitleKey = "msgTestTitle";
+        private const string TestIncomingSuccessKey = "msgTestIncomingSuccess";
+        private const string TestOutgoingSuccessKey = "msgTestOutgoingSuccess";
+        private const string TestOutgoingSuccessNoAuthKey = "msgTestOutgoingSuccessNoAuth";
+        private const string TestFailedKey = "msgTestFailed";
+        private const string TestAuthFailedKey = "msgTestAuthFailed";
+        private const string ButtonOKKey = "buttonOK";
 
         private Font ActiveFont = null;
         private Font NormalFont = null;
         
         private bool _configChanged = false;
+        private bool _binding = false;
+        private AccountConfigValues _editing;
 
-        ContextMenu _contextMenu;
+        ContextMenuStrip _contextMenu;
 
         #endregion
 
@@ -80,23 +95,24 @@ namespace AowEmailWrapper.Controls
         public AccountsConfig()
         {
             InitializeComponent();
+            ImageListLoader.Load(imageListIcons, "AccountsConfig");
 
             ActiveFont = new Font(this.Font, FontStyle.Bold);
             NormalFont = new Font(this.Font, FontStyle.Regular);
 
+            panelSetStartUp.Visible = false;
+
             CreateContextMenu();
-            listViewAccounts.DoubleClick += new EventHandler(listViewAccounts_DoubleClick);
             listViewAccounts.SelectedIndexChanged += new EventHandler(listViewAccounts_SelectedIndexChanged);
             listViewAccounts.ClientSizeChanged += new EventHandler(listViewAccounts_Resize);
             listViewAccounts.ColumnWidthChanging += new ColumnWidthChangingEventHandler(listViewAccounts_ColumnWidthChanging);
 
-            EventHandler clearSelected = new EventHandler(listViewAccounts_SelectedItems_Clear);
-            tabControlAccountEditor.Enter += clearSelected;
-            this.Leave += clearSelected;
-
             EventHandler raiseConfigChange = new EventHandler(Raise_Config_Changed);
             pollingConfig.Config_Changed += raiseConfigChange;
             smtpConfig.Config_Changed += raiseConfigChange;
+
+            pollingConfig.TestRequested += new EventHandler(pollingConfig_TestRequested);
+            smtpConfig.TestRequested += new EventHandler(smtpConfig_TestRequested);
 
             listViewAccounts.KeyDown += new KeyEventHandler(listViewAccounts_KeyDown);
         }
@@ -132,27 +148,153 @@ namespace AowEmailWrapper.Controls
 
         private void buttonActivate_Click(object sender, EventArgs e)
         {
-            Activate();
+            ToggleActive();
         }
 
-        private void listViewAccounts_DoubleClick(object sender, EventArgs e)
+        /// <summary>Switches the selected account between active (watched, replies through it) and inactive.</summary>
+        private void ToggleActive()
         {
-            Activate();
+            AccountConfigValues account = _accountsList == null ? null : _accountsList.GetAccountByName(GetSelectedItem());
+            if (account == null)
+            {
+                return;
+            }
+
+            if (account.PollingConfig == null)
+            {
+                account.PollingConfig = new PollingConfigValues();
+            }
+
+            bool nowActive = !account.IsActive;
+            account.PollingConfig.UsePolling = nowActive;
+
+            if (account == _editing)
+            {
+                _binding = true;
+                try { pollingConfig.ChecksForEmail = nowActive; }
+                finally { _binding = false; }
+            }
+
+            Populate();
+            Raise_Config_Changed();
+            Raise_Account_Activated(account, true);
+        }
+
+        /// <summary>Keeps the list statuses, the Activate button and the menu in step with the accounts.</summary>
+        private void RefreshStatuses()
+        {
+            if (_accountsList == null || _accountsList.Accounts == null)
+            {
+                return;
+            }
+
+            AccountConfigValues primary = _accountsList.PrimaryAccount;
+            foreach (ListViewItem item in listViewAccounts.Items)
+            {
+                AccountConfigValues account = _accountsList.GetAccountByName(item.Tag as string);
+                if (account != null)
+                {
+                    ApplyStatus(item, account, primary);
+                }
+            }
+
+            AccountConfigValues selected = _accountsList.GetAccountByName(GetSelectedItem());
+            bool selectedActive = selected != null && selected.IsActive;
+            buttonActivate.Text = Translator.Translate(selectedActive ? ButtonDeactivateKey : ButtonActivateKey);
+
+            foreach (ToolStripItem menu in _contextMenu.Items)
+            {
+                if (Menu_Activate_Tag.Equals(menu.Tag))
+                {
+                    menu.Text = Translator.Translate(selectedActive ? Menu_Deactivate_Key : Menu_Activate_Tag);
+                }
+            }
+        }
+
+        private void ApplyStatus(ListViewItem item, AccountConfigValues account, AccountConfigValues primary)
+        {
+            string status = Translator.Translate(InactiveAccountTextKey);
+            if (account.IsActive)
+            {
+                status = account == primary ? Translator.Translate(PrimaryAccountTextKey) : Translator.Translate(AccountActiveTextKey);
+            }
+
+            item.SubItems[2].Text = status;
+            item.Font = account.IsActive ? ActiveFont : NormalFont;
+            item.ForeColor = account.IsActive ? SystemColors.WindowText : Color.Gray;
         }
 
         private void buttonSetStartUp_Click(object sender, EventArgs e)
         {
-            SetAsStartUp();
+            //Kept for the designer; the first active account is the primary one
         }
 
         private void listViewAccounts_SelectedIndexChanged(object sender, EventArgs e)
         {
             CheckEnabled();
+            EditSelectedAccount();
         }
 
-        private void listViewAccounts_SelectedItems_Clear(object sender, EventArgs e)
+        /// <summary>The lower tabs edit whichever account is selected in the list.</summary>
+        private void EditSelectedAccount()
         {
-            listViewAccounts.SelectedItems.Clear();
+            string name = GetSelectedItem();
+            if (string.IsNullOrEmpty(name) || _accountsList == null)
+            {
+                return;
+            }
+
+            AccountConfigValues account = _accountsList.GetAccountByName(name);
+            if (account == null || account == _editing)
+            {
+                return;
+            }
+
+            Scrape();
+            BindEditor(account);
+        }
+
+        private void BindEditor(AccountConfigValues account)
+        {
+            _editing = account;
+            _binding = true;
+            try
+            {
+                if (account != null)
+                {
+                    pollingConfig.OAuthProvider = account.OAuthProvider;
+                    smtpConfig.OAuthProvider = account.OAuthProvider;
+                    pollingConfig.Config = account.PollingConfig ?? new PollingConfigValues();
+                    smtpConfig.Config = account.SmtpConfig ?? new SmtpConfigValues();
+                }
+            }
+            finally
+            {
+                _binding = false;
+                _configChanged = false;
+            }
+        }
+
+        private void Move(int delta)
+        {
+            AccountConfigValues account = _accountsList == null ? null : _accountsList.GetAccountByName(GetSelectedItem());
+            if (account == null)
+            {
+                return;
+            }
+
+            int index = _accountsList.Accounts.IndexOf(account);
+            int target = index + delta;
+            if (target < 0 || target >= _accountsList.Accounts.Count)
+            {
+                return;
+            }
+
+            _accountsList.Accounts.RemoveAt(index);
+            _accountsList.Accounts.Insert(target, account);
+            _editing = account;
+            Populate();
+            Raise_Config_Changed();
         }
 
         private void listViewAccounts_KeyDown(object sender, KeyEventArgs e)
@@ -166,6 +308,80 @@ namespace AowEmailWrapper.Controls
                     Remove();
                     break;
             }
+        }
+
+        private void pollingConfig_TestRequested(object sender, EventArgs e)
+        {
+            PollingConfigValues polling = pollingConfig.Config;
+            string oauthProvider = ActiveOAuthProvider;
+            RunConnectionTest(
+                () => ConnectionTester.TestIncoming(polling, oauthProvider),
+                result => Translator.Translate(TestIncomingSuccessKey, result.Host, result.Username));
+        }
+
+        private void smtpConfig_TestRequested(object sender, EventArgs e)
+        {
+            SmtpConfigValues smtp = smtpConfig.Config;
+            PollingConfigValues polling = pollingConfig.Config;
+            string oauthProvider = ActiveOAuthProvider;
+            RunConnectionTest(
+                () => ConnectionTester.TestOutgoing(smtp, polling, oauthProvider),
+                result => string.IsNullOrEmpty(result.Username)
+                    ? Translator.Translate(TestOutgoingSuccessNoAuthKey, result.Host)
+                    : Translator.Translate(TestOutgoingSuccessKey, result.Host, result.Username));
+        }
+
+        private string ActiveOAuthProvider
+        {
+            get { return (_accountsList != null && _accountsList.ActiveAccount != null) ? _accountsList.ActiveAccount.OAuthProvider : null; }
+        }
+
+        /// <summary>
+        /// Runs a connection test off the UI thread and reports the outcome, with provider specific
+        /// advice (app passwords and so on) when the sign-in itself was refused.
+        /// </summary>
+        private void RunConnectionTest(Func<ConnectionTestResult> test, Func<ConnectionTestResult, string> successMessage)
+        {
+            this.UseWaitCursor = true;
+            this.Enabled = false;
+
+            System.Threading.Tasks.Task.Run(test).ContinueWith(task =>
+            {
+                this.Enabled = true;
+                this.UseWaitCursor = false;
+
+                ConnectionTestResult result = task.IsFaulted
+                    ? new ConnectionTestResult() { Error = task.Exception.GetBaseException() }
+                    : task.Result;
+
+                ShowConnectionTestResult(result, successMessage);
+            }, System.Threading.Tasks.TaskScheduler.FromCurrentSynchronizationContext());
+        }
+
+        private void ShowConnectionTestResult(ConnectionTestResult result, Func<ConnectionTestResult, string> successMessage)
+        {
+            string title = Translator.Translate(TestTitleKey);
+
+            if (result.Success)
+            {
+                MessageBox.Show(this, successMessage(result), title, MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
+            StringBuilder text = new StringBuilder(Translator.Translate(TestFailedKey));
+
+            if (result.AuthenticationFailed)
+            {
+                text.Append(Environment.NewLine).Append(Translator.Translate(TestAuthFailedKey));
+
+                ProviderHint hint = ProviderHints.ForHost(result.Host);
+                if (hint != null)
+                {
+                    text.Append(Environment.NewLine).Append(Environment.NewLine).Append(Translator.Translate(hint.MessageKey));
+                }
+            }
+
+            ExceptionDialog.Show(this, title, new ApplicationException(text.ToString(), result.Error), MessageBoxIcon.Error, Translator.Translate(ButtonOKKey));
         }
 
         private void listViewAccounts_Resize(object sender, EventArgs e)
@@ -189,9 +405,9 @@ namespace AowEmailWrapper.Controls
         {
             bool enabled = listViewAccounts.SelectedItems.Count > 0;
 
-            foreach (MenuItem menu in _contextMenu.MenuItems)
+            foreach (ToolStripItem menu in _contextMenu.Items)
             {
-                if (!menu.Tag.ToString().Equals(Menu_Add_Tag))
+                if (!Menu_Add_Tag.Equals(menu.Tag))
                 {
                     menu.Enabled = enabled;
                 }
@@ -200,7 +416,7 @@ namespace AowEmailWrapper.Controls
             buttonRemove.Enabled = enabled;
             buttonRename.Enabled = enabled;
             buttonActivate.Enabled = enabled;
-            buttonSetStartUp.Enabled = enabled;
+            RefreshStatuses();
         }
 
         private void Raise_Config_Changed()
@@ -210,7 +426,19 @@ namespace AowEmailWrapper.Controls
 
         private void Raise_Config_Changed(object sender, EventArgs e)
         {
+            if (_binding)
+            {
+                //Filling the editor is not the user changing anything
+                return;
+            }
             _configChanged = true;
+
+            //Ticking Check for email is what makes an account active; show it in the list at once
+            if (_editing != null && _editing.PollingConfig != null && _editing.PollingConfig.UsePolling != pollingConfig.ChecksForEmail)
+            {
+                _editing.PollingConfig.UsePolling = pollingConfig.ChecksForEmail;
+                RefreshStatuses();
+            }
             if (Config_Changed != null)
             {
                 Config_Changed(this, e);
@@ -273,6 +501,7 @@ namespace AowEmailWrapper.Controls
                 }
 
                 _accountsList.Accounts.Add(theNewAccount);
+                _editing = theNewAccount;
                 Raise_Account_Activated(theNewAccount, true);
             }
         }
@@ -280,36 +509,23 @@ namespace AowEmailWrapper.Controls
         private void Remove()
         {
             if (_accountsList != null &&
-                _accountsList.Accounts != null)
+                _accountsList.Accounts != null &&
+                _accountsList.Accounts.Count > 1)
             {
-                if (!_accountsList.Accounts.Count.Equals(1))
+                AccountConfigValues theAccount = _accountsList.GetAccountByName(GetSelectedItem());
+
+                if (theAccount != null &&
+                    MessageBox.Show(Translator.Translate(AccountDeletePromptTextKey, theAccount.Name), Translator.Translate(AccountsTextKey), MessageBoxButtons.YesNo, MessageBoxIcon.Question).Equals(DialogResult.Yes))
                 {
-                    string theName = GetSelectedItem();
-
-                    AccountConfigValues theAccount = _accountsList.GetAccountByName(theName);
-
-                    if (theAccount != null)
+                    _accountsList.Accounts.Remove(theAccount);
+                    if (_editing == theAccount)
                     {
-                        if (MessageBox.Show(Translator.Translate(AccountDeletePromptTextKey, theAccount.Name), Translator.Translate(AccountsTextKey), MessageBoxButtons.YesNo, MessageBoxIcon.Question).Equals(DialogResult.Yes))
-                        {
-                            if (theAccount.Equals(_accountsList.StartUpAccount))
-                            {
-                                _accountsList.StartUpAccountName = !theAccount.Equals(_accountsList.ActiveAccount) ? _accountsList.ActiveAccount.Name : _accountsList.Accounts[0].Name;
-                            }
-                            if (theAccount.Equals(_accountsList.ActiveAccount))
-                            {
-                                _accountsList.Accounts.Remove(theAccount);
-                                Raise_Account_Activated(_accountsList.StartUpAccount);
-                            }
-                            else
-                            {
-                                _accountsList.Accounts.Remove(theAccount);
-                            }
-
-                            Populate();
-                            Raise_Config_Changed();
-                        }
+                        _editing = null;
                     }
+
+                    Populate();
+                    Raise_Config_Changed();
+                    Raise_Account_Activated(_accountsList.PrimaryAccount, true);
                 }
             }
         }
@@ -346,10 +562,6 @@ namespace AowEmailWrapper.Controls
                             {
                                 _accountsList.ActiveAccountName = theName;
                             }
-                            if (theAccount.Equals(_accountsList.StartUpAccount))
-                            {
-                                _accountsList.StartUpAccountName = theName;
-                            }
                             theAccount.Name = theName;
 
                             Populate();
@@ -364,32 +576,7 @@ namespace AowEmailWrapper.Controls
             }
         }
 
-        private void Activate()
-        {
-            string theName = GetSelectedItem();
-            if (!string.IsNullOrEmpty(theName))
-            {
-                Raise_Account_Activated(_accountsList.GetAccountByName(theName));
-            }
-        }
 
-        private void SetAsStartUp()
-        {
-            if (_accountsList != null &&
-                _accountsList.Accounts != null)
-            {
-                string theName = GetSelectedItem();
-
-                AccountConfigValues theAccount = _accountsList.GetAccountByName(theName);
-                if (theAccount != null)
-                {
-                    _accountsList.StartUpAccountName = theAccount.Name;
-
-                    Populate();
-                    Raise_Config_Changed();
-                }
-            }
-        }
 
         private string GetSelectedItem()
         {
@@ -420,54 +607,43 @@ namespace AowEmailWrapper.Controls
             if (_accountsList != null &&
                 _accountsList.Accounts != null)
             {
+                AccountConfigValues primary = _accountsList.PrimaryAccount;
+                AccountConfigValues toEdit = (_editing != null && _accountsList.Accounts.Contains(_editing)) ? _editing : primary;
+                _editing = toEdit;
+
+                listViewAccounts.BeginUpdate();
                 listViewAccounts.SelectedItems.Clear();
                 listViewAccounts.Items.Clear();
-                listViewAccounts.BeginUpdate();
 
-                if (_accountsList.Accounts.Count > 0)
+                foreach (AccountConfigValues account in _accountsList.Accounts)
                 {
-                    foreach (AccountConfigValues account in _accountsList.Accounts)
+                    ListViewItem item = CreateListItem(account, primary);
+                    listViewAccounts.Items.Add(item);
+
+                    if (account == toEdit)
                     {
-                        ListViewItem item = CreateListItem(account);
-
-                        listViewAccounts.Items.Add(item);
-
-                        if (account.Equals(_accountsList.ActiveAccount))
-                        {
-                            pollingConfig.Config = account.PollingConfig;
-                            smtpConfig.Config = account.SmtpConfig;
-                            item.EnsureVisible();
-                        }
+                        item.Selected = true;
+                        item.EnsureVisible();
                     }
                 }
 
                 ListViewColumnResizer.ResizeColumns(listViewAccounts);
-
                 listViewAccounts.EndUpdate();
+
+                BindEditor(toEdit);
             }
         }
 
-        private ListViewItem CreateListItem(AccountConfigValues account)
+        private ListViewItem CreateListItem(AccountConfigValues account, AccountConfigValues primary)
         {
             ListViewItem item = new ListViewItem();
-            ListViewItem.ListViewSubItem startUpItem = new ListViewItem.ListViewSubItem();
 
             item.Text = account.Name;
-            item.SubItems.Add(new ListViewItem.ListViewSubItem(item, account.SmtpConfig.EmailAddress));
-            item.SubItems.Add(startUpItem);
-            startUpItem.Text = account.Equals(_accountsList.StartUpAccount) ? Translator.Translate(AccountStartUpTextKey) : string.Empty;
-
-            if (account.Equals(_accountsList.ActiveAccount))
-            {
-                item.Font = ActiveFont;
-            }
-            else
-            {
-                item.ForeColor = Color.Gray;
-                item.Font = NormalFont;
-            }
-
+            item.SubItems.Add(new ListViewItem.ListViewSubItem(item, account.SmtpConfig != null ? account.SmtpConfig.EmailAddress : string.Empty));
+            item.SubItems.Add(new ListViewItem.ListViewSubItem(item, string.Empty));
             item.Tag = account.Name;
+
+            ApplyStatus(item, account, primary);
 
             int imageIndex = 0;
 
@@ -488,10 +664,10 @@ namespace AowEmailWrapper.Controls
 
         private void Scrape()
         {
-            if (_accountsList != null && _accountsList.ActiveAccount != null)
+            if (_editing != null && _configChanged)
             {
-                _accountsList.ActiveAccount.PollingConfig = pollingConfig.Config;
-                _accountsList.ActiveAccount.SmtpConfig = smtpConfig.Config;
+                _editing.PollingConfig = pollingConfig.Config;
+                _editing.SmtpConfig = smtpConfig.Config;
             }
         }
 
@@ -520,58 +696,26 @@ namespace AowEmailWrapper.Controls
 
         private void CreateContextMenu()
         {
-            _contextMenu = new ContextMenu();
-
-            int indexCount = 0;
-
             EventHandler menuItemClickEvent = new EventHandler(ContextMenu_Click);
-            _contextMenu = new ContextMenu();
+            _contextMenu = new ContextMenuStrip();
 
-            MenuItem add = new MenuItem();
-            MenuItem remove = new MenuItem();
-            MenuItem rename = new MenuItem();
-            MenuItem activate = new MenuItem();
-            MenuItem setStartUp = new MenuItem();
+            foreach (string tag in new[] { Menu_Add_Tag, Menu_Activate_Tag, Menu_Remove_Tag, Menu_Rename_Tag, Menu_MoveUp_Tag, Menu_MoveDown_Tag })
+            {
+                ToolStripMenuItem item = new ToolStripMenuItem();
+                item.Text = Translator.Translate(tag);
+                item.Tag = tag;
+                item.Click += menuItemClickEvent;
+                _contextMenu.Items.Add(item);
+            }
 
-            _contextMenu.MenuItems.AddRange(new MenuItem[] { add, remove, rename, activate, setStartUp });
-
-            add.Index = indexCount;
-            add.Text = Translator.Translate(Menu_Add_Tag);
-            add.Tag = Menu_Add_Tag;
-            add.Click += menuItemClickEvent;
-
-            indexCount++;
-            remove.Index = indexCount;
-            remove.Text = Translator.Translate(Menu_Remove_Tag);
-            remove.Tag = Menu_Remove_Tag;
-            remove.Click += menuItemClickEvent;
-
-            indexCount++;
-            rename.Index = indexCount;
-            rename.Text = Translator.Translate(Menu_Rename_Tag);
-            rename.Tag = Menu_Rename_Tag;
-            rename.Click += menuItemClickEvent;
-
-            indexCount++;
-            activate.Index = indexCount;
-            activate.Text = Translator.Translate(Menu_Activate_Tag);
-            activate.Tag = Menu_Activate_Tag;
-            activate.Click += menuItemClickEvent;
-
-            indexCount++;
-            setStartUp.Index = indexCount;
-            setStartUp.Text = Translator.Translate(Menu_SetStartUp_Tag);
-            setStartUp.Tag = Menu_SetStartUp_Tag;
-            setStartUp.Click += menuItemClickEvent;
-
-            listViewAccounts.ContextMenu = _contextMenu;
+            listViewAccounts.ContextMenuStrip = _contextMenu;
         }
 
         /*
-        private void ContextMenu_Popup(object sender, EventArgs e)
+        private void ContextMenu_Popup(object sender, System.ComponentModel.CancelEventArgs e)
         {
             bool enabled = listViewAccounts.SelectedItems.Count > 0;
-            foreach (MenuItem menu in _contextMenu.MenuItems)
+            foreach (ToolStripMenuItem menu in _contextMenu.Items)
             {
                 if (!menu.Tag.ToString().Equals(Menu_Add_Tag))
                 {
@@ -583,10 +727,13 @@ namespace AowEmailWrapper.Controls
 
         private void ContextMenu_Click(object sender, EventArgs e)
         {
-            switch (((MenuItem)sender).Tag.ToString())
+            switch (((ToolStripItem)sender).Tag.ToString())
             {
                 case Menu_Add_Tag:
                     Add();
+                    break;
+                case Menu_Activate_Tag:
+                    ToggleActive();
                     break;
                 case Menu_Remove_Tag:
                     Remove();
@@ -594,11 +741,11 @@ namespace AowEmailWrapper.Controls
                 case Menu_Rename_Tag:
                     Rename();
                     break;
-                case Menu_Activate_Tag:
-                    Activate();
+                case Menu_MoveUp_Tag:
+                    Move(-1);
                     break;
-                case Menu_SetStartUp_Tag:
-                    SetAsStartUp();
+                case Menu_MoveDown_Tag:
+                    Move(1);
                     break;
             }
         }

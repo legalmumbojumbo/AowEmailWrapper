@@ -1,17 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections;
-using System.Linq;
-using System.Text;
-using System.IO;
 using System.Diagnostics;
-using AowEmailWrapper.Games;
-using AowEmailWrapper.ASG;
-using AowEmailWrapper.Helpers;
+using System.Linq;
 using AowEmailWrapper.ConfigFramework;
-using Lesnikowski.Client;
-using Lesnikowski.Mail;
-using Lesnikowski.Mail.Headers;
+using AowEmailWrapper.Helpers;
+using MailKit.Net.Smtp;
+using MimeKit;
+using MimeKit.Utils;
 
 namespace AowEmailWrapper.CSES
 {
@@ -21,7 +16,10 @@ namespace AowEmailWrapper.CSES
     {
         #region Private Members
 
-        private Queue<IMail> _messageQueue;
+        private const int NETWORK_TIMEOUT_MS = 120000;
+        private const int MAX_SEND_ATTEMPTS = 3;
+
+        private Queue<MimeMessage> _messageQueue;
         private List<string> _messageIDsBeingSent;
         private Dictionary<string, int> _messageSendAttemptCount;
         private string _host;
@@ -42,6 +40,12 @@ namespace AowEmailWrapper.CSES
             get { return !_messageQueue.Count.Equals(0); }
         }
 
+        /// <summary>Empty for password sign-in, otherwise the OAuth provider name.</summary>
+        public string OAuthProvider { get; set; }
+
+        /// <summary>The account this sender delivers through.</summary>
+        public string AccountName { get; set; }
+
         #endregion
 
         #region Constructors
@@ -59,7 +63,7 @@ namespace AowEmailWrapper.CSES
             _sslType = sslType;
             _bccMyself = bccMyself;
 
-            _messageQueue = new Queue<IMail>();
+            _messageQueue = new Queue<MimeMessage>();
             _messageIDsBeingSent = new List<string>();
             _messageSendAttemptCount = new Dictionary<string, int>();
         }
@@ -68,13 +72,18 @@ namespace AowEmailWrapper.CSES
 
         #region Public Methods
 
-        public void SendMessage(IMail theGameEmail)
+        public void SendMessage(MimeMessage theGameEmail)
         {
+            if (string.IsNullOrEmpty(theGameEmail.MessageId))
+            {
+                theGameEmail.MessageId = MimeUtils.GenerateMessageId();
+            }
+
             _messageQueue.Enqueue(theGameEmail);
-            //new System.Threading.Thread(new System.Threading.ThreadStart(this.ProcessMessageQueue)).Start();
 
             System.Threading.Thread newThread = new System.Threading.Thread(new System.Threading.ThreadStart(this.ProcessMessageQueue));
             newThread.SetApartmentState(System.Threading.ApartmentState.STA);
+            newThread.IsBackground = true;
             newThread.Start();
         }
 
@@ -84,7 +93,7 @@ namespace AowEmailWrapper.CSES
 
         private void ProcessMessageQueue()
         {
-            IMail theGameEmail = null;
+            MimeMessage theGameEmail = null;
 
             try
             {
@@ -93,7 +102,7 @@ namespace AowEmailWrapper.CSES
                     if (_messageQueue.Count > 0)
                     {
                         theGameEmail = _messageQueue.Peek();
-                        _messageIDsBeingSent.Add(theGameEmail.MessageID);
+                        _messageIDsBeingSent.Add(theGameEmail.MessageId);
                         SendAowEmail(theGameEmail);
                     }
                 }
@@ -108,56 +117,53 @@ namespace AowEmailWrapper.CSES
             }
         }
 
-        private void SendAowEmail(IMail theGameEmail)
+        private void SendAowEmail(MimeMessage theGameEmail)
         {
+            string toAddress = MailHelper.GetFirstToAddress(theGameEmail);
+
             try
             {
-                using (Smtp smtp = new Smtp())
+                if (_bccMyself)
                 {
-                    switch (_sslType)
+                    MailboxAddress from = theGameEmail.From.Mailboxes.FirstOrDefault();
+                    if (from != null &&
+                        !theGameEmail.Bcc.Mailboxes.Any(bcc => bcc.Address.Equals(from.Address, StringComparison.OrdinalIgnoreCase)))
                     {
-                        case SSLType.None:
-                            smtp.Connect(_host, _port);
-                            smtp.Ehlo();
-                            break;
-                        case SSLType.SSL:
-                            smtp.ConnectSSL(_host, _port);
-                            smtp.Ehlo();
-                            break;
-                        case SSLType.TLS:
-                            smtp.Connect(_host, _port);
-                            smtp.Ehlo();
-                            smtp.StartTLS();
-                            break;
+                        theGameEmail.Bcc.Add(from);
                     }
-
-                    if (!string.IsNullOrEmpty(_username) && 
-                        !string.IsNullOrEmpty(_password))
-                    {
-                        smtp.UseBestLogin(_username, _password);
-                    }
-
-                    if (_bccMyself)
-                    {
-                        theGameEmail.Bcc.Add(theGameEmail.From[0]);
-                    }
-
-                    smtp.SendMessage(theGameEmail, true);
-
-                    smtp.Close();
                 }
-                Trace.WriteLine(string.Format("EMAIL: [{0}] Message sent successfully.", theGameEmail.To[0].Address));
+
+                //Make sure the save game attachment is safely encoded for any server
+                theGameEmail.Prepare(EncodingConstraint.SevenBit);
+
+                using (SmtpClient smtp = new SmtpClient())
+                {
+                    smtp.Timeout = NETWORK_TIMEOUT_MS;
+                    smtp.Connect(_host, _port, MailHelper.ToSecureSocketOptions(_sslType));
+
+                    if (!string.IsNullOrEmpty(_username) &&
+                        (!string.IsNullOrEmpty(_password) || MicrosoftOAuth.IsProvider(OAuthProvider)))
+                    {
+                        MailHelper.Authenticate(smtp, _username, _password, OAuthProvider);
+                    }
+
+                    smtp.Send(theGameEmail);
+
+                    smtp.Disconnect(true);
+                }
+
+                Trace.WriteLine(string.Format("EMAIL: [{0}] Message sent successfully.", toAddress));
                 RaiseOnEmailSentEvent(new SmtpSendResponse(theGameEmail, true));
             }
             catch (Exception ex)
             {
-                Trace.WriteLine(string.Format("EMAIL: [{0}] {1}", theGameEmail.To, ex.ToString()));
+                Trace.WriteLine(string.Format("EMAIL: [{0}] {1}", toAddress, ex.ToString()));
 
-                if (IsRetrySend(theGameEmail.MessageID))
+                if (IsRetrySend(theGameEmail.MessageId))
                 {
                     //Try again
-                    _messageIDsBeingSent.Remove(theGameEmail.MessageID);
-                    Trace.WriteLine(string.Format("EMAIL: [{0}] Retry: {1}", theGameEmail.To, _messageSendAttemptCount[theGameEmail.MessageID]));
+                    _messageIDsBeingSent.Remove(theGameEmail.MessageId);
+                    Trace.WriteLine(string.Format("EMAIL: [{0}] Retry: {1}", toAddress, _messageSendAttemptCount[theGameEmail.MessageId]));
                 }
                 else
                 {
@@ -170,7 +176,7 @@ namespace AowEmailWrapper.CSES
 
         private bool IsRetrySend(string theID)
         {
-            if (!_messageSendAttemptCount.Keys.Contains<string>(theID))
+            if (!_messageSendAttemptCount.ContainsKey(theID))
             {
                 _messageSendAttemptCount.Add(theID, 1);
             }
@@ -179,12 +185,12 @@ namespace AowEmailWrapper.CSES
                 _messageSendAttemptCount[theID]++;
             }
 
-            return (_messageSendAttemptCount[theID] <= 3);
+            return (_messageSendAttemptCount[theID] < MAX_SEND_ATTEMPTS);
         }
 
         private void RetryClear(string theID)
         {
-            if (_messageSendAttemptCount.Keys.Contains<string>(theID))
+            if (_messageSendAttemptCount.ContainsKey(theID))
             {
                 _messageSendAttemptCount.Remove(theID);
             }
@@ -192,16 +198,16 @@ namespace AowEmailWrapper.CSES
 
         private void RaiseOnEmailSentEvent(SmtpSendResponse theResponse)
         {
-            if (_messageIDsBeingSent.Contains(theResponse.GameEmail.MessageID))
+            if (_messageIDsBeingSent.Contains(theResponse.GameEmail.MessageId))
             {
-                _messageIDsBeingSent.Remove(theResponse.GameEmail.MessageID);
+                _messageIDsBeingSent.Remove(theResponse.GameEmail.MessageId);
             }
             if (_messageQueue.Count > 0 && _messageQueue.Peek().Equals(theResponse.GameEmail))
             {
                 _messageQueue.Dequeue();
             }
 
-            RetryClear(theResponse.GameEmail.MessageID);
+            RetryClear(theResponse.GameEmail.MessageId);
 
             if (OnEmailSent != null)
             {

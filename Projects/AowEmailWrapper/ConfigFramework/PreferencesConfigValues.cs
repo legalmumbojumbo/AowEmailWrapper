@@ -28,6 +28,7 @@ namespace AowEmailWrapper.ConfigFramework
         private string _languageCode = CultureInfo.CurrentCulture.TwoLetterISOLanguageName;
         private bool _copyToEmailOut = false;
         private int _gameWrapperDataPort = GameWrapperDataPortDefault;
+        private bool _autoInstallUpdates = true;
 
         [XmlAttribute("playsoundonemail")]
         public bool PlaySoundOnEmail
@@ -78,6 +79,14 @@ namespace AowEmailWrapper.ConfigFramework
             set { _gameWrapperDataPort = value; }
         }
 
+        /// <summary>Install a newer build found at start-up without asking. Off means the player is told once and installs from the About tab.</summary>
+        [XmlAttribute("autoInstallUpdates")]
+        public bool AutoInstallUpdates
+        {
+            get { return _autoInstallUpdates; }
+            set { _autoInstallUpdates = value; }
+        }
+
         public PreferencesConfigValues()
             : this(false)
         { }
@@ -93,6 +102,7 @@ namespace AowEmailWrapper.ConfigFramework
                 _copyToEmailOut = true;
                 _languageCode = CultureInfo.CurrentCulture.TwoLetterISOLanguageName;
                 _gameWrapperDataPort = GameWrapperDataPortDefault;
+                _autoInstallUpdates = true;
             }
         }
     }

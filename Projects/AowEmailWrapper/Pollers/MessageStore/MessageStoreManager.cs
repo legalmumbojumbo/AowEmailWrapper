@@ -32,22 +32,39 @@ namespace AowEmailWrapper.Pollers.MessageStore
 
         public static void RemoveMessagesNoLongerOnServer(ref MessageStoreCollection localMessageStore, List<string> remoteMessageStore)
         {
-            localMessageStore.Messages.RemoveAll(msg => remoteMessageStore.Find(uid => uid.Equals(msg.UID)) == null);
+            HashSet<string> remote = new HashSet<string>(remoteMessageStore);
+            localMessageStore.Messages.RemoveAll(msg => !remote.Contains(msg.UID));
         }
 
         public static List<long> GetMessagesToCheck(MessageStoreCollection localMessageStore, List<long> remoteMessageStore)
         {
-            return remoteMessageStore.FindAll(uid => localMessageStore.Messages.Find(msg => msg.UID.Equals(uid.ToString())) == null);
+            HashSet<string> known = KnownUids(localMessageStore);
+            return remoteMessageStore.FindAll(uid => !known.Contains(uid.ToString()));
         }
 
         public static List<string> GetMessagesToCheck(MessageStoreCollection localMessageStore, List<string> remoteMessageStore)
         {
-            return remoteMessageStore.FindAll(uid => localMessageStore.Messages.Find(msg => msg.UID.Equals(uid)) == null);
+            HashSet<string> known = KnownUids(localMessageStore);
+            return remoteMessageStore.FindAll(uid => !known.Contains(uid));
         }
 
         #endregion
 
         #region Private Methods
+
+        //Mailboxes with tens of thousands of unread messages need set lookups, not nested List.Find scans
+        private static HashSet<string> KnownUids(MessageStoreCollection localMessageStore)
+        {
+            HashSet<string> known = new HashSet<string>();
+            foreach (MessageStoreMessage msg in localMessageStore.Messages)
+            {
+                if (msg.UID != null)
+                {
+                    known.Add(msg.UID);
+                }
+            }
+            return known;
+        }
 
         public static List<string> LongToStringList(List<long> input)
         {

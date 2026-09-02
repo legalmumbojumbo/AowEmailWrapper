@@ -39,6 +39,7 @@ namespace AowEmailWrapper.Controls
             fbEmailSound.InnerCheckBox.CheckedChanged += raiseConfigChange;
             fbSentSound.InnerCheckBox.CheckedChanged += raiseConfigChange;
             fbAutostart.InnerCheckBox.CheckedChanged += raiseConfigChange;
+            fbAutoInstallUpdates.InnerCheckBox.CheckedChanged += raiseConfigChange;
             fbSaveFolder.InnerComboBox.SelectedIndexChanged += raiseConfigChange;
             fbSaveFolder.InnerComboBox.SelectedIndexChanged += new EventHandler(SaveFolder_SelectedIndexChanged);
             fbCopyToEmailOut.InnerCheckBox.CheckedChanged += raiseConfigChange;
@@ -72,6 +73,7 @@ namespace AowEmailWrapper.Controls
             _config.PlaySoundOnEmail = fbEmailSound.Checked;
             _config.PlaySoundOnSend = fbSentSound.Checked;
             _config.Autostart = fbAutostart.Checked;
+            _config.AutoInstallUpdates = fbAutoInstallUpdates.Checked;
             _config.SaveFolder = ConfigHelper.ParseEnumString<EmailSaveFolder>(fbSaveFolder.SelectedValue);
             _config.CopyToEmailOut = fbCopyToEmailOut.Checked;
             _config.LanguageCode = !string.IsNullOrEmpty(fbLocalization.SelectedValue) ? fbLocalization.SelectedValue : Translator.CurrentLanguageCode;
@@ -93,6 +95,7 @@ namespace AowEmailWrapper.Controls
             fbEmailSound.Checked = _config.PlaySoundOnEmail;
             fbSentSound.Checked = _config.PlaySoundOnSend;
             fbAutostart.Checked = _config.Autostart;
+            fbAutoInstallUpdates.Checked = _config.AutoInstallUpdates;
             fbSaveFolder.SelectedValue = _config.SaveFolder.ToString();
             fbCopyToEmailOut.Checked = _config.CopyToEmailOut;
             fbLocalization.SelectedValue = _config.LanguageCode;

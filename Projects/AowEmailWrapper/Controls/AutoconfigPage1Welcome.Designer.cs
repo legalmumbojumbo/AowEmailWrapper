@@ -31,10 +31,12 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(AutoconfigPage1Welcome));
             this.lblAutoconfigPage1WrapperMessage = new System.Windows.Forms.Label();
             this.lblAutoconfigPage1AuthMessage = new System.Windows.Forms.Label();
-            this.groupBoxAuth = new System.Windows.Forms.GroupBox();
+            this.groupBoxAccount = new System.Windows.Forms.GroupBox();
             this.fbPassword = new AowEmailWrapper.Controls.FormBlockText();
             this.fbEmailAddress = new AowEmailWrapper.Controls.FormBlockText();
-            this.groupBoxAuth.SuspendLayout();
+            this.linkPasswordHint = new System.Windows.Forms.LinkLabel();
+            this.buttonSignInMicrosoft = new System.Windows.Forms.Button();
+            this.groupBoxAccount.SuspendLayout();
             this.SuspendLayout();
             // 
             // lblAutoconfigPage1WrapperMessage
@@ -42,7 +44,7 @@
             this.lblAutoconfigPage1WrapperMessage.Dock = System.Windows.Forms.DockStyle.Top;
             this.lblAutoconfigPage1WrapperMessage.Location = new System.Drawing.Point(0, 0);
             this.lblAutoconfigPage1WrapperMessage.Name = "lblAutoconfigPage1WrapperMessage";
-            this.lblAutoconfigPage1WrapperMessage.Size = new System.Drawing.Size(431, 100);
+            this.lblAutoconfigPage1WrapperMessage.Size = new System.Drawing.Size(431, 40);
             this.lblAutoconfigPage1WrapperMessage.TabIndex = 0;
             this.lblAutoconfigPage1WrapperMessage.Text = resources.GetString("lblAutoconfigPage1WrapperMessage.Text");
             // 
@@ -55,18 +57,19 @@
             this.lblAutoconfigPage1AuthMessage.TabIndex = 1;
             this.lblAutoconfigPage1AuthMessage.Text = "Please provide the authentication details for your email account.";
             // 
-            // groupBoxAuth
+            // groupBoxAccount
             // 
-            this.groupBoxAuth.Controls.Add(this.fbPassword);
-            this.groupBoxAuth.Controls.Add(this.fbEmailAddress);
-            this.groupBoxAuth.Dock = System.Windows.Forms.DockStyle.Top;
-            this.groupBoxAuth.Location = new System.Drawing.Point(0, 120);
-            this.groupBoxAuth.Name = "groupBoxAuth";
-            this.groupBoxAuth.Padding = new System.Windows.Forms.Padding(3, 0, 3, 3);
-            this.groupBoxAuth.Size = new System.Drawing.Size(431, 74);
-            this.groupBoxAuth.TabIndex = 13;
-            this.groupBoxAuth.TabStop = false;
-            this.groupBoxAuth.Text = "Authentication Details";
+            this.groupBoxAccount.Controls.Add(this.buttonSignInMicrosoft);
+            this.groupBoxAccount.Controls.Add(this.fbPassword);
+            this.groupBoxAccount.Controls.Add(this.fbEmailAddress);
+            this.groupBoxAccount.Dock = System.Windows.Forms.DockStyle.Top;
+            this.groupBoxAccount.Location = new System.Drawing.Point(0, 120);
+            this.groupBoxAccount.Name = "groupBoxAccount";
+            this.groupBoxAccount.Padding = new System.Windows.Forms.Padding(3, 0, 3, 3);
+            this.groupBoxAccount.Size = new System.Drawing.Size(431, 74);
+            this.groupBoxAccount.TabIndex = 13;
+            this.groupBoxAccount.TabStop = false;
+            this.groupBoxAccount.Text = "Your account";
             // 
             // fbPassword
             // 
@@ -98,15 +101,38 @@
             // 
             // AutoconfigPage1Welcome
             // 
+            // 
+            // buttonSignInMicrosoft
+            // 
+            this.buttonSignInMicrosoft.Dock = System.Windows.Forms.DockStyle.Top;
+            this.buttonSignInMicrosoft.Name = "buttonSignInMicrosoft";
+            this.buttonSignInMicrosoft.Size = new System.Drawing.Size(425, 26);
+            this.buttonSignInMicrosoft.TabIndex = 2;
+            this.buttonSignInMicrosoft.Text = "Sign in with Microsoft";
+            this.buttonSignInMicrosoft.UseVisualStyleBackColor = true;
+            this.buttonSignInMicrosoft.Visible = false;
+            // 
+            // linkPasswordHint
+            // 
+            this.linkPasswordHint.Dock = System.Windows.Forms.DockStyle.Top;
+            this.linkPasswordHint.LinkArea = new System.Windows.Forms.LinkArea(0, 0);
+            this.linkPasswordHint.Name = "linkPasswordHint";
+            this.linkPasswordHint.Padding = new System.Windows.Forms.Padding(0, 6, 0, 0);
+            this.linkPasswordHint.Size = new System.Drawing.Size(431, 84);
+            this.linkPasswordHint.TabIndex = 14;
+            this.linkPasswordHint.TabStop = false;
+            this.linkPasswordHint.Text = "";
+            this.linkPasswordHint.Visible = false;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.Transparent;
-            this.Controls.Add(this.groupBoxAuth);
+            this.Controls.Add(this.linkPasswordHint);
+            this.Controls.Add(this.groupBoxAccount);
             this.Controls.Add(this.lblAutoconfigPage1AuthMessage);
             this.Controls.Add(this.lblAutoconfigPage1WrapperMessage);
             this.Name = "AutoconfigPage1Welcome";
             this.Size = new System.Drawing.Size(431, 253);
-            this.groupBoxAuth.ResumeLayout(false);
+            this.groupBoxAccount.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -115,7 +141,7 @@
 
         private System.Windows.Forms.Label lblAutoconfigPage1WrapperMessage;
         private System.Windows.Forms.Label lblAutoconfigPage1AuthMessage;
-        private System.Windows.Forms.GroupBox groupBoxAuth;
+        private System.Windows.Forms.GroupBox groupBoxAccount;
         private FormBlockText fbPassword;
         private FormBlockText fbEmailAddress;
     }

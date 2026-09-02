@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using AowEmailWrapper.Classes;
+using AowEmailWrapper.Helpers;
 using AowEmailWrapper.Pollers.MessageStore;
 using AowEmailWrapper.Localization;
 
@@ -43,6 +44,7 @@ namespace AowEmailWrapper.Controls
         public MessageStoreList()
         {
             InitializeComponent();
+            ImageListLoader.Load(imageListIcons, "MessageStoreList");
             _lvwColumnSorter = new ListViewColumnSorter();
             listView.ListViewItemSorter = _lvwColumnSorter;
             listView.ColumnClick += new ColumnClickEventHandler(listView_ColumnClick);

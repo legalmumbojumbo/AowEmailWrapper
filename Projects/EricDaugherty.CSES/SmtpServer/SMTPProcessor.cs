@@ -1,4 +1,4 @@
-namespace EricDaugherty.CSES.SmtpServer
+﻿namespace EricDaugherty.CSES.SmtpServer
 {
 	using System;
 	using System.Net;
@@ -7,15 +7,15 @@ namespace EricDaugherty.CSES.SmtpServer
 	using System.Text.RegularExpressions;
     using System.Diagnostics;
 	using EricDaugherty.CSES.Common;
-    using Lesnikowski.Mail;
-    using Lesnikowski.Mail.Headers;
+    using System.IO;
+    using MimeKit;
 	
 	/// <summary>
 	/// SMTPProcessor handles a single SMTP client connection.  This
 	/// class provides an implementation of the RFC821 specification.
 	/// </summary>
 	/// <remarks>
-    /// 	Created by: Eric Daugherty, modified by David Honess (to use Lesnikowski mime parsing)
+    /// 	Created by: Eric Daugherty, modified by David Honess (to use MimeKit mime parsing)
 	/// </remarks>
     public class SMTPProcessor : IDisposable
     {
@@ -414,7 +414,7 @@ namespace EricDaugherty.CSES.SmtpServer
                 {
                     try
                     {                        
-                        context.Message.From.Add(new MailBox(address));
+                        context.Message.From.Add(new MailboxAddress(string.Empty, address));
                         context.LastCommand = COMMAND_MAIL;
                         addressValid = true;
                         context.WriteLine(MESSAGE_OK);
@@ -456,7 +456,7 @@ namespace EricDaugherty.CSES.SmtpServer
                         // Check to make sure we want to accept this message.
                         if (recipientFilter.AcceptRecipient(context, emailAddress))
                         {
-                            context.Message.To.Add(new MailBox(address));
+                            context.Message.To.Add(new MailboxAddress(string.Empty, address));
                             context.LastCommand = COMMAND_RCPT;
                             context.WriteLine(MESSAGE_OK);
                             Trace.WriteLine(string.Format("Connection {0}: RcptTo address: {1} accepted.", context.ConnectionId, address));
@@ -499,14 +499,18 @@ namespace EricDaugherty.CSES.SmtpServer
             data.Append("\r\n");
 
             String line = context.ReadLine();
-            while (!line.Equals("."))
+            while (line != null && !line.Equals("."))
             {
-                data.Append(line);
+                //Undo SMTP dot stuffing (RFC 5321 section 4.5.2)
+                data.Append(line.StartsWith(".") ? line.Substring(1) : line);
                 data.Append("\r\n");
                 line = context.ReadLine();
             }
 
-            context.Message = new MailBuilder().CreateFromEml(data.ToString());
+            using (MemoryStream emlStream = new MemoryStream(Encoding.Latin1.GetBytes(data.ToString())))
+            {
+                context.Message = MimeMessage.Load(emlStream);
+            }
 
             // Spool the message
             if (messageSpool == null)

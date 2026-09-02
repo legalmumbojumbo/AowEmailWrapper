@@ -20,6 +20,7 @@ namespace AowEmailWrapper.Classes
     public static class ListViewColumnResizer
     {
         private const char SplitChar = ';';
+        private const int MinimumFillWidth = 60;
 
         public static void ResizeColumns(ListView theListView)
         {
@@ -84,7 +85,8 @@ namespace AowEmailWrapper.Classes
 
                 if (fillColumn != null)
                 {
-                    fillColumn.Width = theListView.ClientSize.Width - totalColumnWidth;
+                    //Never below a readable minimum: a negative width means "auto size" to the ListView and starts a resize loop
+                    fillColumn.Width = Math.Max(MinimumFillWidth, theListView.ClientSize.Width - totalColumnWidth);
                 }
             }
         }

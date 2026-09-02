@@ -1,0 +1,100 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Quick Start Guide - Age of Wonders Email Wrapper</title>
+<style>
+  body { font-family: Segoe UI, Arial, sans-serif; font-size: 15px; line-height: 1.5; color: #222; background: #f6f6f4; margin: 0; }
+  main { max-width: 860px; margin: 0 auto; padding: 24px 28px 60px; background: #fff; }
+  h1 { font-size: 26px; margin: 0 0 4px; }
+  h2 { font-size: 20px; margin: 36px 0 10px; border-bottom: 1px solid #ddd; padding-bottom: 4px; }
+  .sub { color: #666; margin-bottom: 20px; }
+  figure { margin: 14px 0 22px; }
+  figure img { max-width: 100%; border: 1px solid #bbb; box-shadow: 0 2px 6px rgba(0,0,0,.15); }
+  figcaption { font-size: 13px; color: #555; margin-top: 6px; }
+  .note { background: #fff8dc; border-left: 4px solid #e0b400; padding: 10px 14px; margin: 14px 0; }
+  .icon { vertical-align: middle; margin-right: 6px; }
+  ol li, ul li { margin: 6px 0; }
+  code { background: #eee; padding: 1px 5px; border-radius: 3px; font-size: 14px; }
+  nav a { margin-right: 16px; }
+</style>
+</head>
+<body>
+<main>
+<h1>Quick Start Guide</h1>
+<div class="sub">Age of Wonders Email Wrapper 2.0 &middot; <a href="Manual.html">Full manual</a></div>
+
+<p>The Wrapper sits in your system tray, sends your Age of Wonders play-by-email turns through your own
+email account and downloads the turns your opponents send back. This guide gets you from installation
+to your first turn in about ten minutes.</p>
+
+<h2>1. Install</h2>
+<ol>
+  <li>Run <code>AowEmailWrapper-2.0.0-setup.exe</code>. No administrator password is needed.</li>
+  <li>If your PC does not have the .NET 8 Desktop Runtime, the setup downloads it from Microsoft (about 55 MB) and installs it first.</li>
+  <li>Finish the setup with <em>Launch</em> ticked. The Wrapper starts and puts its icon
+      <img class="icon" src="images/state-Normal.png" width="20" height="20" alt=""> in the notification area by the clock.
+      If you do not see it, click the small arrow there to show hidden icons.</li>
+</ol>
+
+<h2>2. Add your email account</h2>
+<p>On first start the main window opens on the <strong>Accounts</strong> tab. Click <strong>Add New</strong>.</p>
+<figure>
+  <img src="images/wizard-page1.png" alt="The account wizard asking for an email address and password">
+  <figcaption>The account wizard. Type your address and password, then click Next.</figcaption>
+</figure>
+
+<div class="note"><strong>Gmail:</strong> Google does not accept your normal password from mail programs. As soon as you type a Gmail address the wizard shows the note below with a link to Google's App Password page. Turn on 2-Step Verification for your Google account, create an App Password, and paste that 16 letter code into the Password box.</div>
+<figure>
+  <img src="images/wizard-page1-gmail.png" alt="The wizard showing the Gmail App Password advice">
+</figure>
+
+<div class="note"><strong>Outlook.com, Hotmail, Live:</strong> Microsoft accounts have no password box at all. Click <strong>Sign in with Microsoft</strong>, sign in on the Microsoft page that opens in your browser, click Accept, and come back to the wizard. Yahoo and AOL accounts need an app password too; the wizard says so and links to the page.</div>
+<figure>
+  <img src="images/wizard-page1-microsoft.png" alt="The wizard showing the Sign in with Microsoft button">
+</figure>
+
+<p>The Chief Librarian then looks up the mail server settings for your address by communing with the Thunderbird, which is to say the settings database Mozilla maintains for its own email program.</p>
+<figure>
+  <img src="images/wizard-page2.png" alt="The wizard reporting that settings were found">
+  <figcaption>Settings found. Click Next. If nothing is found you get three fall-backs: an MX lookup, a guess, or typing the settings yourself.</figcaption>
+</figure>
+<figure>
+  <img src="images/wizard-page3.png" alt="The wizard asking which servers to use">
+  <figcaption>Leave <em>Recommended settings</em> selected and click Next. The account is created and starts checking for email straight away.</figcaption>
+</figure>
+
+<h2>3. Check that it works</h2>
+<p>Back on the Accounts tab, click <strong>Test connection</strong> at the bottom of the <em>Incoming Email</em> tab, then do the same on the <em>Outgoing Email</em> tab. Each test signs in to the server with the settings shown and tells you the result.</p>
+<figure>
+  <img src="images/main-accounts-incoming.png" alt="The Accounts tab with the Incoming Email settings and the Test connection button">
+</figure>
+<figure>
+  <img src="images/dialog-test-failed.png" alt="A failed connection test explaining that Gmail needs an App Password">
+  <figcaption>A failed test says why, in the server's own words plus advice for your provider. A successful test simply reports that it signed in.</figcaption>
+</figure>
+<p>Click <strong>Save Settings</strong> if it lights up.</p>
+
+<h2>4. Play</h2>
+<ol>
+  <li>Start the game, go to <em>Scenario &gt; Email</em> (or <em>Play by email</em>) and create or load a play-by-email game as usual. The Wrapper has already configured the game to hand its turns to the Wrapper.</li>
+  <li>End your turn and let the game send the email. The progress bar jumps straight to 100%: the game has handed the turn to the Wrapper, which sends it through your email account in the background. You hear a chime and see a balloon when it has gone.</li>
+  <li>When an opponent's turn arrives the tray icon becomes an envelope
+      <img class="icon" src="images/state-EmailWaiting.png" width="16" height="16" alt=""> and you hear a sound. With IMAP the mail server announces new mail at once, so this usually happens within seconds. To force a check, right-click the tray icon and choose <strong>Poll now</strong>.</li>
+  <li>Double-click the tray icon, or the game's line on the <strong>Activity Log</strong> tab, to start the game. Load the turn with <em>Scenario &gt; Email &gt; Load Game</em>.</li>
+</ol>
+<figure>
+  <img src="images/main-activity-log.png" alt="The Activity Log listing games with their status">
+  <figcaption>The Activity Log tracks every game: yellow means your turn is waiting, pink means you sent it and the reply is overdue.</figcaption>
+</figure>
+
+<h2>If nothing arrives</h2>
+<ul>
+  <li>The Wrapper only looks at <strong>unread</strong> mail in the <strong>Inbox</strong>, and only mail from the last year. Mark a turn as unread and choose <em>Poll now</em> to fetch it again.</li>
+  <li>A balloon saying the sign-in was rejected means the password (or App Password) is wrong. Fix it on the Accounts tab and use <em>Test connection</em>; checking resumes when you save.</li>
+  <li>Play a test game against yourself first: a two player game where both players have your own address. See the <a href="Manual.html#test-game">manual</a>.</li>
+</ul>
+</main>
+</body>
+</html>

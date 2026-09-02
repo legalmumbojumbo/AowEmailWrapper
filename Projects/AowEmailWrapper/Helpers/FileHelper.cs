@@ -55,7 +55,7 @@ namespace AowEmailWrapper.Helpers
         {
             try
             {
-                string toSave = (encrypt) ? CryptographyHelper.Encrypt(theText) : theText;
+                string toSave = (encrypt) ? CryptographyHelper.Obfuscate(theText) : theText;
                 File.WriteAllText(theFilePath, toSave);
             }
             catch (Exception ex)
@@ -72,7 +72,7 @@ namespace AowEmailWrapper.Helpers
                 if (File.Exists(theFilePath))
                 {
                     string theText = File.ReadAllText(theFilePath);
-                    return (decrypt) ? CryptographyHelper.Decrypt(theText) : theText;
+                    return (decrypt) ? CryptographyHelper.Deobfuscate(theText) : theText;
                 }
                 else
                 {

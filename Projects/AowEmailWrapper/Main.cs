@@ -10,23 +10,23 @@ using System.Windows.Forms;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Diagnostics;
 using System.IO;
-using System.Net.Mail;
-using Microsoft.SqlServer.MessageBox;
 using EricDaugherty.CSES.Net;
 using EricDaugherty.CSES.SmtpServer;
 using AowEmailWrapper.ASG;
 using AowEmailWrapper.CSES;
 using AowEmailWrapper.Classes;
 using AowEmailWrapper.ConfigFramework;
+using Activity = AowEmailWrapper.ConfigFramework.Activity;
 using AowEmailWrapper.Controls;
 using AowEmailWrapper.Pollers;
 using AowEmailWrapper.Games;
 using AowEmailWrapper.Helpers;
 using AowEmailWrapper.Localization;
 
-using Lesnikowski.Mail;
+using MimeKit;
 
 using Microsoft.Win32;
 
@@ -48,21 +48,36 @@ namespace AowEmailWrapper
 
         private const string WINDOWS_REG_STARTUP_LOCATION = "Software\\Microsoft\\Windows\\CurrentVersion\\Run";
         private const string WrapperWriteAccessMessageBoxKey = "msgWrapperWriteAccess";
+        private const string WrapperFixPermissionsKey = "msgWrapperFixPermissions";
+        private const string WrapperFixPermissionsDoneKey = "msgWrapperFixPermissionsDone";
+        private const string WrapperFixPermissionsFailedKey = "msgWrapperFixPermissionsFailed";
         private const string WrapperArchiveGameMessageBoxKey = "msgWrapperArchiveGame";
         private const string WrapperCannotActivateAccountMessageBoxKey = "msgWrapperCannotActivateAccount";
         private const string WrapperEmailSentSuccessKey = "msgWrapperEmailSentSuccess";
         private const string WrapperEmailSentFailedKey = "msgWrapperEmailSentFailed";
         private const string WrapperRestartRequiredKey = "msgWrapperRestartRequired";
+        private const string WrapperPollAuthFailedKey = "msgWrapperPollAuthFailed";
         private const string WrapperPollFailedKey = "msgWrapperPollFailed";
         private const string WrapperGamesWaitingKey = "msgWrapperGamesWaiting";
         private const string WrapperResendToKey = "msgWrapperResendTo";
+        private const string WrapperUpdateAvailableKey = "msgWrapperUpdateAvailable";
+        private const string WrapperUpdateBalloonKey = "msgWrapperUpdateBalloon";
+        private const string WrapperUpdateOfferKey = "msgWrapperUpdateOffer";
+        private const string WrapperUpdateNoneKey = "msgWrapperUpdateNone";
+        private const string WrapperUpdateFailedKey = "msgWrapperUpdateFailed";
+        private const string WrapperUpdateInstallingKey = "msgWrapperUpdateInstalling";
+        private const string LinkUpdateCheckingKey = "linkUpdateChecking";
+        private const string LinkUpdateAvailableKey = "linkUpdateAvailable";
 
         private const string MainFormTitleTemplate = "{0} - {1}";
+        private const string MainFormTitleMoreTemplate = "{0} - {1} (+{2})";
+        private const string WrapperNoSendAccountKey = "msgWrapperNoSendAccount";
 
         private const string Menu_Show_Tag = "menuItemShow";
         private const string Menu_Accounts_Tag = "menuItemAccounts";
         private const string Menu_Poll_Tag = "menuItemPollNow";
         private const string Menu_Exit_Tag = "menuItemExit";
+        private const string GameMenuTagPrefix = "game:";
 
         private const string GameSmtpServerTemplate = "127.0.0.1:{0}";
         private const string WrapperAutostartTemplate = "\"{0}\" {1}";
@@ -78,9 +93,11 @@ namespace AowEmailWrapper
 
         private Icon _baseIcon = null;
         private SimpleServer _theServer;
-        private BasePoller _poller;
+        private readonly Dictionary<string, BasePoller> _pollers = new Dictionary<string, BasePoller>();
         private static AowGameManager _gameManager;
-        private static SmtpSender _smtpSender;
+        private readonly Dictionary<string, SmtpSender> _senders = new Dictionary<string, SmtpSender>();
+        //Message id of a turn being sent -> folder of the copy of the game it came from
+        private readonly Dictionary<string, string> _outgoingInstalls = new Dictionary<string, string>();
 
         private Config _wrapperConfig;
         private ActivityList _activityLog;
@@ -93,17 +110,27 @@ namespace AowEmailWrapper
         private EventHandler _maximizeEvent;
         private EventHandler _activityLogRefresh;
         private bool _closeCancel = true;
+
+        //Automatic installs happen right after start-up, before anything is in flight; a check that
+        //only announces waits until the pollers and the games have settled
+        private const int UpdateInstallDelayMilliseconds = 3000;
+        private const int UpdateCheckDelayMilliseconds = 20000;
+        private const int UpdateNotesMaxLength = 600;
+        private System.Windows.Forms.Timer _updateTimer;
+        private UpdateInfo _availableUpdate;
+        private bool _updateCheckRunning;
+        private bool _updateBalloonShown;
         private bool _isNewConfig = false;
         private bool _configNeedsSave = false;
         private bool _configChangeTracking = false;
         private int _showingExceptionCount = 0;
 
-        private ContextMenu _contextMenu;
+        private ContextMenuStrip _contextMenu;
 
-        private MenuItem _menuAccounts;
-        private MenuItem _menuShow;
-        private MenuItem _menuPoll;
-        private MenuItem _menuExit;
+        private ToolStripMenuItem _menuAccounts;
+        private ToolStripMenuItem _menuShow;
+        private ToolStripMenuItem _menuPoll;
+        private ToolStripMenuItem _menuExit;
 
         #endregion
 
@@ -149,16 +176,18 @@ namespace AowEmailWrapper
                 {
                     accountsConfig.Config_Changed += configNeedsSave;
                     preferencesConfig.Config_Changed += configNeedsSave;
+                    gamesConfig.Config_Changed += configNeedsSave;
                 }
                 else
                 {
                     accountsConfig.Config_Changed -= configNeedsSave;
                     preferencesConfig.Config_Changed -= configNeedsSave;
+                    gamesConfig.Config_Changed -= configNeedsSave;
                 }
             }
         }
 
-        //The Wrapper Exe is left in memory if we shut down while an ExceptionMessageBox is up
+        //The Wrapper Exe is left in memory if we shut down while an exception dialog is up
         protected bool OkayToShutDown
         {
             get { return _showingExceptionCount.Equals(0); }
@@ -173,17 +202,33 @@ namespace AowEmailWrapper
             LoadTranslations();
 
             InitializeComponent();
+            ImageListLoader.Load(imageListIcons, "Main");
 
             Translator.TranslateForm(this);
 
-            _gameManager = new AowGameManager();
+            //The wrapped text in these boxes is only as tall as the tab is wide, so size the boxes from it
+            tableDedication.SizeChanged += (sender, e) => FitGroupToContents(groupDedication);
+            tableDiscordIntro.SizeChanged += (sender, e) => FitGroupToContents(groupDiscord);
+            tableDiscord.SizeChanged += (sender, e) => FitGroupToContents(groupDiscord);
+            Shown += (sender, e) => { FitGroupToContents(groupDedication); FitGroupToContents(groupDiscord); };
+            FitGroupToContents(groupDedication);
+            FitGroupToContents(groupDiscord);
+
+            _gameManager = new AowGameManager(AppDataHelper.CheckEmail.FullName, _wrapperConfig.GamesConfig);
+            _gameManager.InstallHint = ActivityInstallHint;
+            gamesConfig.GameManager = _gameManager;
+            activityListView.GameManager = _gameManager;
+            if (_gameManager.NeedsDeepScan)
+            {
+                DeepScanGames();
+            }
 
             if (!_gameManager.CheckWriteAccess())
             {
-                MessageBox.Show(Translator.Translate(WrapperWriteAccessMessageBoxKey, _gameManager.GetEmailInFolderList()), Translator.Translate(this.Name), MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                OfferPermissionFix();
             }
 
-            lblVersion.Text = string.Format(lblVersion.Text, ConfigHelper.BuildVersion);
+            lblVersion.Text = string.Format(lblVersion.Text, UpdateHelper.CurrentBuild.DisplayVersion);
 
             _baseIcon = notifyIcon.Icon;
 
@@ -193,6 +238,16 @@ namespace AowEmailWrapper
 
             LoadConfig();
 
+            cmdLogFolder.Click += new EventHandler(cmdLogFolder_Click);
+            cmdCheckUpdates.Click += new EventHandler(cmdCheckUpdates_Click);
+            cmdReportBug.Click += new EventHandler(cmdReportBug_Click);
+            linkDiscordZig.LinkClicked += new LinkLabelLinkClickedEventHandler(linkDiscord_LinkClicked);
+            linkDiscordAow1.LinkClicked += new LinkLabelLinkClickedEventHandler(linkDiscord_LinkClicked);
+            linkDiscordAowx.LinkClicked += new LinkLabelLinkClickedEventHandler(linkDiscord_LinkClicked);
+            linkDiscordAow2.LinkClicked += new LinkLabelLinkClickedEventHandler(linkDiscord_LinkClicked);
+            notifyIcon.BalloonTipClicked += new EventHandler(notifyIcon_BalloonTipClicked);
+            notifyIcon.BalloonTipClosed += new EventHandler(notifyIcon_BalloonTipClosed);
+
             CreateContextMenu();
 
             BindCustomEvents();
@@ -201,8 +256,211 @@ namespace AowEmailWrapper
 
             this.FormClosing += new FormClosingEventHandler(Main_FormClosing);
 
+            ScheduleUpdateCheck();
+
             Splash.CloseForm();
         }
+
+        #region Updates
+
+        private bool AutoInstallUpdates
+        {
+            get { return _wrapperConfig != null && _wrapperConfig.PreferencesConfig != null && _wrapperConfig.PreferencesConfig.AutoInstallUpdates; }
+        }
+
+        /// <summary>
+        /// Every start looks for a newer build on GitHub. With automatic installs on it happens
+        /// almost at once, so the update goes in before any turn is in flight.
+        /// </summary>
+        private void ScheduleUpdateCheck()
+        {
+            if (!UpdateHelper.IsConfigured)
+            {
+                cmdCheckUpdates.Visible = false;
+                return;
+            }
+
+            _updateTimer = new System.Windows.Forms.Timer();
+            _updateTimer.Interval = AutoInstallUpdates ? UpdateInstallDelayMilliseconds : UpdateCheckDelayMilliseconds;
+            _updateTimer.Tick += new EventHandler(updateTimer_Tick);
+            _updateTimer.Start();
+        }
+
+        private void updateTimer_Tick(object sender, EventArgs e)
+        {
+            _updateTimer.Stop();
+            _updateTimer.Dispose();
+            _updateTimer = null;
+            CheckForUpdates(false);
+        }
+
+        private void cmdCheckUpdates_Click(object sender, EventArgs e)
+        {
+            if (_availableUpdate != null)
+            {
+                OfferUpdate();
+            }
+            else
+            {
+                CheckForUpdates(true);
+            }
+        }
+
+        /// <summary>
+        /// Asks GitHub for the newest build. Interactive checks (the About tab link) report every
+        /// outcome in a message box. The start-up check installs a newer build straight away when
+        /// the preference allows it; otherwise it shows a balloon once per build and leaves the
+        /// About tab link saying that an update is available.
+        /// </summary>
+        private async void CheckForUpdates(bool interactive)
+        {
+            if (_updateCheckRunning)
+            {
+                return;
+            }
+            _updateCheckRunning = true;
+            cmdCheckUpdates.Enabled = false;
+            cmdCheckUpdates.Text = Translator.Translate(LinkUpdateCheckingKey);
+
+            try
+            {
+                UpdateInfo update = await UpdateHelper.CheckAsync(CancellationToken.None);
+                _availableUpdate = update;
+
+                if (update != null)
+                {
+                    cmdCheckUpdates.Text = Translator.Translate(LinkUpdateAvailableKey, update.Describe());
+
+                    if (interactive)
+                    {
+                        OfferUpdate();
+                    }
+                    else if (AutoInstallUpdates && OkayToShutDown && await InstallSilently(update))
+                    {
+                        return;
+                    }
+                    else if (!string.Equals(UpdateHelper.LastNotifiedTag, update.Tag, StringComparison.Ordinal))
+                    {
+                        UpdateHelper.LastNotifiedTag = update.Tag;
+                        _updateBalloonShown = true;
+                        notifyIcon.ShowBalloonTip(20000, Translator.Translate(WrapperUpdateAvailableKey), Translator.Translate(WrapperUpdateBalloonKey, update.Describe()), ToolTipIcon.Info);
+                    }
+                }
+                else
+                {
+                    cmdCheckUpdates.Text = Translator.Translate(cmdCheckUpdates.Name);
+
+                    if (interactive)
+                    {
+                        MessageBox.Show(this, Translator.Translate(WrapperUpdateNoneKey, UpdateHelper.CurrentBuild.DisplayVersion), Translator.Translate(this.Name), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Trace.TraceWarning("Update check failed: {0}", ex);
+                cmdCheckUpdates.Text = Translator.Translate(cmdCheckUpdates.Name);
+
+                if (interactive)
+                {
+                    MessageBox.Show(this, Translator.Translate(WrapperUpdateFailedKey, ex.Message), Translator.Translate(this.Name), MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                }
+            }
+            finally
+            {
+                cmdCheckUpdates.Enabled = true;
+                _updateCheckRunning = false;
+            }
+        }
+
+        /// <summary>
+        /// Downloads the build without any dialog, tells the player with a balloon and closes the
+        /// Wrapper so Program.Main can run the installer, which starts the Wrapper again.
+        /// Returns false when the download failed, in which case the caller falls back to
+        /// announcing the build.
+        /// </summary>
+        private async Task<bool> InstallSilently(UpdateInfo update)
+        {
+            string installer;
+            try
+            {
+                installer = await UpdateHelper.DownloadAsync(update, null, CancellationToken.None);
+            }
+            catch (Exception ex)
+            {
+                Trace.TraceWarning("Automatic update download failed, leaving it to the player: {0}", ex);
+                return false;
+            }
+
+            Trace.TraceInformation("Installing {0} automatically", update.Describe());
+            notifyIcon.ShowBalloonTip(10000, Translator.Translate(WrapperUpdateAvailableKey), Translator.Translate(WrapperUpdateInstallingKey, update.Describe()), ToolTipIcon.Info);
+
+            UpdateHelper.PendingInstaller = installer;
+            _closeCancel = false;
+            this.Close();
+            return true;
+        }
+
+        /// <summary>
+        /// Describes the available build and, if the player agrees, downloads its installer, closes
+        /// the Wrapper and leaves the installer for Program.Main to start.
+        /// </summary>
+        private void OfferUpdate()
+        {
+            UpdateInfo update = _availableUpdate;
+            if (update == null)
+            {
+                return;
+            }
+
+            Maximize();
+
+            string message = Translator.Translate(WrapperUpdateOfferKey,
+                update.Describe(),
+                update.PublishedAt.ToLocalTime().ToString("g"),
+                UpdateHelper.CurrentBuild.DisplayVersion);
+
+            if (!string.IsNullOrWhiteSpace(update.Notes))
+            {
+                string notes = update.Notes.Trim();
+                if (notes.Length > UpdateNotesMaxLength)
+                {
+                    notes = notes.Substring(0, UpdateNotesMaxLength) + "...";
+                }
+                message = string.Concat(message, Environment.NewLine, Environment.NewLine, notes);
+            }
+
+            if (MessageBox.Show(this, message, Translator.Translate(WrapperUpdateAvailableKey), MessageBoxButtons.YesNo, MessageBoxIcon.Information) != DialogResult.Yes)
+            {
+                return;
+            }
+
+            string installer = UpdateForm.Download(this, update);
+            if (string.IsNullOrEmpty(installer))
+            {
+                return;
+            }
+
+            UpdateHelper.PendingInstaller = installer;
+            _closeCancel = false;
+            this.Close();
+        }
+
+        private void notifyIcon_BalloonTipClicked(object sender, EventArgs e)
+        {
+            if (_updateBalloonShown)
+            {
+                _updateBalloonShown = false;
+                OfferUpdate();
+            }
+        }
+
+        private void notifyIcon_BalloonTipClosed(object sender, EventArgs e)
+        {
+            _updateBalloonShown = false;
+        }
+
+        #endregion
 
         #region Form Events
 
@@ -222,10 +480,7 @@ namespace AowEmailWrapper
                     StopServer();
                 }
 
-                if (_poller != null)
-                {
-                    _poller.Stop();
-                }
+                StopAllPolling();
 
                 if (_aow1GameWatcher != null)
                 {
@@ -292,10 +547,12 @@ namespace AowEmailWrapper
                         preferencesConfig.Config = _wrapperConfig.PreferencesConfig;
                     }
 
+                    gamesConfig.Config = _wrapperConfig.GamesConfig;
+
                     if (_wrapperConfig.AccountsList != null)
                     {
                         accountsConfig.Config = _wrapperConfig.AccountsList;
-                        ActivateAccount(_wrapperConfig.AccountsList.StartUpAccount); //This will turn on Config Change Tracking
+                        ApplyAccounts(); //This will turn on Config Change Tracking
                     }
                 }
             }
@@ -333,10 +590,10 @@ namespace AowEmailWrapper
                     _wrapperConfig.AccountsList = accountConfigValuesList;
                     CreateAccountMenu(_menuAccounts, _wrapperConfig.AccountsList);
 
-                    if (accountConfigValuesList.ActiveAccount != null)
+                    AccountConfigValues primary = accountConfigValuesList.PrimaryAccount;
+                    if (primary != null && primary.PollingConfig != null)
                     {
-                        AccountConfigValues theAccount = accountConfigValuesList.ActiveAccount;
-                        panelLocalMessageStore.Visible = theAccount.PollingConfig.EmailType.Equals(EmailType.POP3);
+                        panelLocalMessageStore.Visible = primary.PollingConfig.EmailType.Equals(EmailType.POP3);
                     }
                 }
 
@@ -356,6 +613,16 @@ namespace AowEmailWrapper
                     }
                 }
 
+                //Games: labels, defaults and folders added by hand
+                GamesConfigValues gamesConfigValues = gamesConfig.Config;
+                if (gamesConfigValues != null)
+                {
+                    _gameManager.Reload(gamesConfigValues);
+                    _wrapperConfig.GamesConfig = _gameManager.ToConfig();
+                    gamesConfig.Config = _wrapperConfig.GamesConfig;
+                    CreateContextMenu();
+                }
+
                 _wrapperConfig.PreferencesConfig = preferencesConfigValues;
 
                 DataManagerHelper.SaveConfig(_wrapperConfig);
@@ -365,7 +632,7 @@ namespace AowEmailWrapper
 
                 if (reActivate)
                 {
-                    activateSuccess = ActivateAccount(_wrapperConfig.AccountsList.ActiveAccount);
+                    activateSuccess = ApplyAccounts();
                 }
 
                 if (preferencesConfigValues != null &&
@@ -413,6 +680,7 @@ namespace AowEmailWrapper
             activityListView.OnDeleteClick += new ActivityListViewEventHandler(ActivityListViewGamesDeleted);
             activityListView.OnMarkAsEnded += new ActivityListViewEventHandler(ActivityListViewGamesMarkedAsEnded);
             activityListView.OnResendClick += new ActivityListViewEventHandler(ActivityListViewResend);
+            activityListView.OnMoveTo += new ActivityMoveEventHandler(ActivityListViewMoveTo);
         }
 
         private void ShutDown(object sender, EventArgs e)
@@ -475,11 +743,11 @@ namespace AowEmailWrapper
         {
             IconState theState = IconState.Normal;
 
-            if (_smtpSender != null && _smtpSender.IsSending)
+            if (IsAnySending)
             {
                 SetIcon(IconState.Sending);
             }
-            else if (_poller != null && _poller.IsPolling)
+            else if (IsAnyPolling)
             {
                 SetIcon(IconState.Checking);
             }
@@ -513,6 +781,22 @@ namespace AowEmailWrapper
                 {
                     theDelegate(sender, e);
                 }
+            }
+        }
+
+        /// <summary>Runs window code from any thread; the local mail server calls this from its own thread.</summary>
+        private void RunOnUiThread(Action action)
+        {
+            if (this.InvokeRequired)
+            {
+                if (this.IsHandleCreated && !this.IsDisposed)
+                {
+                    this.BeginInvoke(action);
+                }
+            }
+            else
+            {
+                action();
             }
         }
 
@@ -604,27 +888,74 @@ namespace AowEmailWrapper
             this.ResumeLayout();
         }
 
+        private void cmdLogFolder_Click(object sender, EventArgs e)
+        {
+            LogHelper.OpenLogFolder();
+        }
+
+        /// <summary>
+        /// Makes a group box exactly tall enough for its top-docked contents. AutoSize cannot do this
+        /// for wrapped text, because it measures the contents before they are narrowed to the box.
+        /// </summary>
+        private static void FitGroupToContents(GroupBox group)
+        {
+            //Not filtered on Visible: that is false for everything until the form is shown
+            int contents = group.Controls.Cast<Control>().Sum(control => control.Height);
+            int frame = group.Height - group.DisplayRectangle.Height;
+            group.Height = contents + frame;
+        }
+
+        /// <summary>The Discord invites on the About tab keep their address in the link's Tag.</summary>
+        private void linkDiscord_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            LinkLabel link = sender as LinkLabel;
+            string url = link != null ? link.Tag as string : null;
+            if (string.IsNullOrEmpty(url))
+            {
+                return;
+            }
+
+            try
+            {
+                link.LinkVisited = true;
+                Process.Start(new ProcessStartInfo(url) { UseShellExecute = true });
+            }
+            catch (Exception ex)
+            {
+                Trace.TraceError("Could not open {0}: {1}", url, ex);
+            }
+        }
+
+        private void cmdReportBug_Click(object sender, EventArgs e)
+        {
+            BugReportForm.Show(this, BugReportHelper.FindSender(_wrapperConfig));
+        }
+
         private void ShowException(Exception ex)
         {
             this.Invoke(new EventHandler(this.Maximize));
 
-            ExceptionMessageBox box = new ExceptionMessageBox(ex);
-
-            box.Caption = Translator.Translate(this.Name);
-            box.SetButtonText(Translator.Translate(ButtonKeyOK));
-            box.DefaultButton = ExceptionMessageBoxDefaultButton.Button1;
-            box.Symbol = ExceptionMessageBoxSymbol.Error;
-            box.Buttons = ExceptionMessageBoxButtons.Custom;
-
-            ShowExceptionMessageBox(ref box);
-            box = null;
+            ShowExceptionDialog(ex, Translator.Translate(this.Name), MessageBoxIcon.Error, Translator.Translate(ButtonKeyOK));
         }
 
-        private void ShowExceptionMessageBox(ref ExceptionMessageBox box)
+        /// <summary>
+        /// Shows the exception on the UI thread and returns the index of the button clicked.
+        /// </summary>
+        private int ShowExceptionDialog(Exception ex, string caption, MessageBoxIcon icon, params string[] buttons)
         {
             _showingExceptionCount++;
-            box.Show(this);
-            _showingExceptionCount--;
+            try
+            {
+                if (this.InvokeRequired)
+                {
+                    return (int)this.Invoke(new Func<int>(() => ExceptionDialog.Show(this, caption, ex, icon, buttons)));
+                }
+                return ExceptionDialog.Show(this, caption, ex, icon, buttons);
+            }
+            finally
+            {
+                _showingExceptionCount--;
+            }
         }
 
         private void StartGame(AowGame theGame)
@@ -660,54 +991,220 @@ namespace AowEmailWrapper
 
         #region Incoming Email
 
-        private void StartPolling(PollingConfigValues pollingConfigValues, PreferencesConfigValues preferencesConfigValues)
-        {
-            switch (pollingConfigValues.EmailType)
-            {
-                case EmailType.IMAP:
-                    _poller = new ImapPoller(
-                        pollingConfigValues.Server,
-                        pollingConfigValues.Port,
-                        pollingConfigValues.SSLType,
-                        pollingConfigValues.Username,
-                        pollingConfigValues.PasswordTrue,
-                        pollingConfigValues.PollInterval,
-                        preferencesConfigValues.SaveFolder,
-                        _gameManager);
-                    break;
-                case EmailType.POP3:
-                    _poller = new Pop3Poller(
-                        pollingConfigValues.Server,
-                        pollingConfigValues.Port,
-                        pollingConfigValues.SSLType,
-                        pollingConfigValues.Username,
-                        pollingConfigValues.PasswordTrue,
-                        pollingConfigValues.PollInterval,
-                        preferencesConfigValues.SaveFolder,
-                        _gameManager);
-                    break;
-            }
+        #region Pollers and senders, one per account
 
-            _poller.OnEmailEvent += new PollerEmailEventHandler(PollerEmailEvent);
-            _poller.Start();
+        private bool IsAnyPolling
+        {
+            get { return _pollers.Values.Any(poller => poller.IsPolling); }
         }
 
-        private void StopPolling()
+        private bool IsAnySending
         {
-            if (_poller != null)
+            get { return _senders.Values.Any(sender => sender.IsSending); }
+        }
+
+        /// <summary>Starts a watcher for every account that checks for email and has sign-in details.</summary>
+        private void StartAllPolling()
+        {
+            StopAllPolling();
+
+            if (_wrapperConfig == null || _wrapperConfig.AccountsList == null || _wrapperConfig.AccountsList.Accounts == null)
             {
-                _poller.Stop();
+                return;
+            }
+
+            HashSet<string> mailboxes = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+
+            foreach (AccountConfigValues account in _wrapperConfig.AccountsList.ActiveAccounts)
+            {
+                PollingConfigValues polling = account.PollingConfig;
+                bool hasCredentials = !string.IsNullOrEmpty(polling.Username) && !string.IsNullOrEmpty(polling.Server) &&
+                    (!string.IsNullOrEmpty(polling.Password) || MicrosoftOAuth.IsProvider(account.OAuthProvider));
+
+                //Two accounts on the same mailbox would download every turn twice
+                if (!hasCredentials || !mailboxes.Add(polling.Username + "@" + polling.Server))
+                {
+                    continue;
+                }
+
+                BasePoller poller = CreatePoller(account, _wrapperConfig.PreferencesConfig);
+                _pollers[account.Name] = poller;
+                poller.Start();
             }
         }
+
+        private BasePoller CreatePoller(AccountConfigValues account, PreferencesConfigValues preferences)
+        {
+            PollingConfigValues polling = account.PollingConfig;
+            EmailSaveFolder saveFolder = preferences != null ? preferences.SaveFolder : EmailSaveFolder.EmailIn;
+            BasePoller poller;
+
+            if (polling.EmailType == EmailType.POP3)
+            {
+                poller = new Pop3Poller(polling.Server, polling.Port, polling.SSLType, polling.Username, polling.PasswordTrue, polling.PollInterval, saveFolder, _gameManager);
+            }
+            else
+            {
+                poller = new ImapPoller(polling.Server, polling.Port, polling.SSLType, polling.Username, polling.PasswordTrue, polling.PollInterval, saveFolder, _gameManager);
+            }
+
+            poller.AccountName = account.Name;
+            poller.OAuthProvider = account.OAuthProvider;
+            poller.OnEmailEvent += new PollerEmailEventHandler(PollerEmailEvent);
+            return poller;
+        }
+
+        private void StopAllPolling()
+        {
+            foreach (BasePoller poller in _pollers.Values)
+            {
+                poller.Stop();
+            }
+            _pollers.Clear();
+        }
+
+        private void PollAll()
+        {
+            foreach (BasePoller poller in _pollers.Values)
+            {
+                poller.PollNow();
+            }
+        }
+
+        /// <summary>Builds a sender for every account; games received on an account reply through that account.</summary>
+        private void CreateAllSenders()
+        {
+            if (IsAnySending)
+            {
+                return;
+            }
+
+            foreach (SmtpSender sender in _senders.Values)
+            {
+                sender.Dispose();
+            }
+            _senders.Clear();
+
+            if (_wrapperConfig == null || _wrapperConfig.AccountsList == null || _wrapperConfig.AccountsList.Accounts == null)
+            {
+                return;
+            }
+
+            foreach (AccountConfigValues account in _wrapperConfig.AccountsList.Accounts)
+            {
+                if (account.SmtpConfig != null && !string.IsNullOrEmpty(account.SmtpConfig.SmtpServer) && !string.IsNullOrEmpty(account.Name))
+                {
+                    _senders[account.Name] = CreateSender(account);
+                }
+            }
+        }
+
+        private SmtpSender CreateSender(AccountConfigValues account)
+        {
+            SmtpConfigValues smtp = account.SmtpConfig;
+            PollingConfigValues polling = account.PollingConfig ?? new PollingConfigValues();
+            SmtpSender sender;
+
+            if (smtp.Authentication)
+            {
+                sender = new SmtpSender(
+                    smtp.SmtpServer,
+                    smtp.Port,
+                    smtp.UsePollingCredentials ? polling.Username : smtp.Username,
+                    smtp.UsePollingCredentials ? polling.PasswordTrue : smtp.PasswordTrue,
+                    smtp.SmtpSSLType,
+                    smtp.BCCMyself);
+            }
+            else
+            {
+                sender = new SmtpSender(smtp.SmtpServer, smtp.Port, smtp.SmtpSSLType, smtp.BCCMyself);
+            }
+
+            sender.AccountName = account.Name;
+            sender.OAuthProvider = account.OAuthProvider;
+            sender.OnEmailSent += new SmtpSenderSentEventHandler(SmtpSenderSent);
+            return sender;
+        }
+
+        /// <summary>The sender for an account, falling back to the primary account and then to any account.</summary>
+        private SmtpSender GetSender(string accountName)
+        {
+            SmtpSender sender;
+            if (!string.IsNullOrEmpty(accountName) && _senders.TryGetValue(accountName, out sender))
+            {
+                return sender;
+            }
+
+            AccountConfigValues primary = (_wrapperConfig != null && _wrapperConfig.AccountsList != null) ? _wrapperConfig.AccountsList.PrimaryAccount : null;
+            if (primary != null && !string.IsNullOrEmpty(primary.Name) && _senders.TryGetValue(primary.Name, out sender))
+            {
+                return sender;
+            }
+
+            return _senders.Values.FirstOrDefault();
+        }
+
+        private AccountConfigValues AccountOf(SmtpSender sender)
+        {
+            return (sender != null && _wrapperConfig != null && _wrapperConfig.AccountsList != null)
+                ? _wrapperConfig.AccountsList.GetAccountByName(sender.AccountName)
+                : null;
+        }
+
+        /// <summary>
+        /// Picks the account a turn goes out through (the one the game arrived on, otherwise the primary
+        /// account) and stamps that account's address on the message so the reply comes from the right place.
+        /// </summary>
+        private SmtpSender RouteOutgoing(MimeMessage theEmail)
+        {
+            string accountName = null;
+
+            MimePart attachment = MailHelper.GetFirstAttachment(theEmail);
+            if (attachment != null)
+            {
+                Activity activity = _activityLog.GetLastActivityByFileName(attachment.FileName);
+                if (activity != null)
+                {
+                    accountName = activity.AccountName;
+                }
+            }
+
+            SmtpSender sender = GetSender(accountName);
+            AccountConfigValues account = AccountOf(sender);
+
+            if (account != null && account.SmtpConfig != null && !string.IsNullOrEmpty(account.SmtpConfig.EmailAddress))
+            {
+                theEmail.From.Clear();
+                theEmail.From.Add(new MailboxAddress(string.Empty, account.SmtpConfig.EmailAddress));
+                theEmail.Sender = null;
+            }
+
+            return sender;
+        }
+
+        #endregion
 
         private void PollerEmailEvent(object sender, PollerEventArgs e)
         {
+            if (this.InvokeRequired)
+            {
+                //Raised on the poller thread; everything below touches the window
+                if (this.IsHandleCreated && !this.IsDisposed)
+                {
+                    this.BeginInvoke(new PollerEmailEventHandler(PollerEmailEvent), sender, e);
+                }
+                return;
+            }
+
             if (_closeCancel)
             {
                 switch (e.PollState)
                 {
                     case PollState.Begin:
                         SetIcon(IconState.Checking);
+                        break;
+                    case PollState.Aborted:
+                        CheckNotifyIconState();
                         break;
                     case PollState.End:
                         if (e.EmailRecieved)
@@ -716,11 +1213,21 @@ namespace AowEmailWrapper
                             {
                                 PlaySound(ConfigHelper.NotifySound);
                             }
-                            Thread.Sleep(50);
                             RaiseEvent(_activityLogRefresh, this, new EventArgs());
-                            GC.Collect();
                         }
-                        if (e.Exception != null)
+                        if (e.Exception is MailKit.Security.AuthenticationException)
+                        {
+                            //Retrying a rejected password every few minutes only annoys the user (and the provider).
+                            //Activating or saving the account starts polling again.
+                            BasePoller failed = sender as BasePoller;
+                            if (failed != null)
+                            {
+                                failed.Stop();
+                                _pollers.Remove(failed.AccountName ?? string.Empty);
+                            }
+                            notifyIcon.ShowBalloonTip(20000, Translator.Translate(WrapperPollFailedKey), BuildPollAuthFailedMessage(failed), ToolTipIcon.Warning);
+                        }
+                        else if (e.Exception != null)
                         {
                             notifyIcon.ShowBalloonTip(15000, Translator.Translate(WrapperPollFailedKey), e.Exception.Message, ToolTipIcon.Error);
                         }
@@ -735,11 +1242,27 @@ namespace AowEmailWrapper
             }
         }
 
+        private string BuildPollAuthFailedMessage(BasePoller poller)
+        {
+            string server = poller != null ? (poller.Host ?? string.Empty) : string.Empty;
+            string user = poller != null ? (poller.Username ?? string.Empty) : string.Empty;
+
+            string message = Translator.Translate(WrapperPollAuthFailedKey, server, user);
+
+            ProviderHint hint = ProviderHints.ForHost(server);
+            if (hint != null)
+            {
+                message = Translator.Translate(hint.ShortMessageKey) + " " + message;
+            }
+
+            return message;
+        }
+
         private void cmdMessageStore_Click(object sender, EventArgs e)
         {
             if (_wrapperConfig != null)
             {
-                AccountConfigValues theAccount = _wrapperConfig.AccountsList.ActiveAccount;
+                AccountConfigValues theAccount = _wrapperConfig.AccountsList.PrimaryAccount;
 
                 if (theAccount != null &&
                     !string.IsNullOrEmpty(theAccount.PollingConfig.Username) &&
@@ -749,13 +1272,13 @@ namespace AowEmailWrapper
 
                     if (form.ShowDialog(this).Equals(DialogResult.OK))
                     {
-                        if (_poller != null)
+                        if (_pollers.Count > 0)
                         {
-                            _poller.PollNow();
+                            PollAll();
                         }
-                        else if (theAccount.PollingConfig != null)
+                        else
                         {
-                            StartPolling(theAccount.PollingConfig, _wrapperConfig.PreferencesConfig);
+                            StartAllPolling();
                         }
                     }
                 }
@@ -800,22 +1323,29 @@ namespace AowEmailWrapper
 
                 theSmtpProcessor = new SMTPProcessor(string.Concat(Environment.MachineName, ".com"), new AnyRecipientFilter(), smtpSpooler);
 
-                SetIcon(IconState.Sending);
+                RunOnUiThread(() => SetIcon(IconState.Sending));
 
                 theSmtpProcessor.ProcessConnection(socket);
 
-                IMail theEmail = smtpSpooler.SpooledEmail;
+                MimeMessage theEmail = smtpSpooler.SpooledEmail;
 
                 if (theEmail != null)
                 {
+                    TagOutgoingInstall(theEmail);
+
+                    SmtpSender sender = RouteOutgoing(theEmail);
+                    if (sender == null)
+                    {
+                        throw new InvalidOperationException(Translator.Translate(WrapperNoSendAccountKey));
+                    }
                     ResendHelper.Save(theEmail);
-                    _smtpSender.SendMessage(theEmail);
+                    sender.SendMessage(theEmail);
                 }
 
                 theSmtpProcessor.Dispose();
                 theSmtpProcessor = null;
 
-                CheckNotifyIconState();
+                RunOnUiThread(() => CheckNotifyIconState());
             }
             catch (Exception ex)
             {
@@ -829,97 +1359,64 @@ namespace AowEmailWrapper
             }
         }
 
-        private void CreateSmtpSender(SmtpConfigValues smtpConfig, PollingConfigValues pollingConfig)
-        {
-            if (smtpConfig != null && pollingConfig != null)
-            {
-                bool create = true;
-
-                if (_smtpSender != null && _smtpSender.IsSending)
-                {
-                    create = false;
-                }
-                else if (_smtpSender != null)
-                {
-                    _smtpSender.Dispose();
-                    _smtpSender = null;
-                }
-
-                if (create)
-                {
-                    if (smtpConfig.Authentication)
-                    {
-                        _smtpSender = new SmtpSender(
-                            smtpConfig.SmtpServer,
-                            smtpConfig.Port,
-                            (smtpConfig.UsePollingCredentials) ? pollingConfig.Username : smtpConfig.Username,
-                            (smtpConfig.UsePollingCredentials) ? pollingConfig.PasswordTrue : smtpConfig.PasswordTrue,
-                            smtpConfig.SmtpSSLType,
-                            smtpConfig.BCCMyself);
-                    }
-                    else
-                    {
-                        _smtpSender = new SmtpSender(
-                            smtpConfig.SmtpServer,
-                            smtpConfig.Port,
-                            smtpConfig.SmtpSSLType,
-                            smtpConfig.BCCMyself);
-                    }
-
-                    _smtpSender.OnEmailSent += new SmtpSenderSentEventHandler(SmtpSenderSent);
-                }
-            }
-        }
-
         private void SmtpSenderSent(object sender, SmtpSendResponse theResponse)
         {
+            if (this.InvokeRequired)
+            {
+                //Raised on the sender thread; everything below touches the window
+                if (this.IsHandleCreated && !this.IsDisposed)
+                {
+                    this.BeginInvoke(new SmtpSenderSentEventHandler(SmtpSenderSent), sender, theResponse);
+                }
+                return;
+            }
+
             if (_closeCancel)
             {
                 this.Activate();
 
+                SmtpSender smtpSender = sender as SmtpSender;
                 if (theResponse.IsSuccess)
                 {
-                    SmtpSendSuccess(theResponse);
+                    SmtpSendSuccess(smtpSender, theResponse);
                 }
                 else
                 {
-                    SmtpSendFailure(theResponse);
+                    SmtpSendFailure(smtpSender, theResponse);
                 }
-
-                GC.Collect();
 
                 CheckNotifyIconState();
             }
         }
 
-        private void SmtpSendSuccess(SmtpSendResponse theResponse)
+        private void SmtpSendSuccess(SmtpSender smtpSender, SmtpSendResponse theResponse)
         {
             if (theResponse.IsSuccess)
             {
-                if (_wrapperConfig.AccountsList.ActiveAccount != null &&
-                    _wrapperConfig.AccountsList.ActiveAccount.SmtpConfig != null &&
-                    !_wrapperConfig.AccountsList.ActiveAccount.SmtpConfig.Verified)
+                AccountConfigValues account = AccountOf(smtpSender);
+                if (account != null && account.SmtpConfig != null && !account.SmtpConfig.Verified)
                 {
-                    _wrapperConfig.AccountsList.ActiveAccount.SmtpConfig.Verified = true;
+                    account.SmtpConfig.Verified = true;
                     DataManagerHelper.SaveConfig(_wrapperConfig);
                 }
 
-                notifyIcon.ShowBalloonTip(15000, theResponse.GameEmail.Subject, Translator.Translate(WrapperEmailSentSuccessKey, theResponse.GameEmail.To[0].Address), ToolTipIcon.Info);
+                notifyIcon.ShowBalloonTip(15000, theResponse.GameEmail.Subject, Translator.Translate(WrapperEmailSentSuccessKey, MailHelper.GetFirstToAddress(theResponse.GameEmail)), ToolTipIcon.Info);
                 if (_wrapperConfig.PreferencesConfig != null && _wrapperConfig.PreferencesConfig.PlaySoundOnSend)
                 {
                     PlaySound(ConfigHelper.SentSound);
                 }
 
-                if (theResponse.GameEmail.Attachments.Count > 0)
+                MimePart theAttachment = MailHelper.GetFirstAttachment(theResponse.GameEmail);
+                if (theAttachment != null)
                 {
-                    MimeData theAttachment = theResponse.GameEmail.Attachments[0];
-                    Activity theActivity = UpdateActivitySent(theAttachment);
+                    Activity theActivity = UpdateActivitySent(theAttachment, smtpSender != null ? smtpSender.AccountName : null);
+                    RecordOutgoingInstall(theResponse.GameEmail, theActivity);
 
                     if (_wrapperConfig.PreferencesConfig != null && _wrapperConfig.PreferencesConfig.CopyToEmailOut)
                     {
                         try
                         {
-                            _gameManager.CopyToEmailOut(theAttachment, _gameManager.GetGameByType(theActivity.GameType));
+                            _gameManager.CopyToEmailOut(theAttachment, _gameManager.GetGameForActivity(theActivity));
                         }
                         catch (Exception ex)
                         {
@@ -934,16 +1431,18 @@ namespace AowEmailWrapper
             }
         }
 
-        private void SmtpSendFailure(SmtpSendResponse theResponse)
+        private void SmtpSendFailure(SmtpSender smtpSender, SmtpSendResponse theResponse)
         {
             if (!theResponse.IsSuccess)
             {
-                MimeData theAttachment = theResponse.GameEmail.Attachments[0];
-                UpdateActivitySendError(theAttachment);
+                MimePart theAttachment = MailHelper.GetFirstAttachment(theResponse.GameEmail);
+                if (theAttachment != null)
+                {
+                    UpdateActivitySendError(theAttachment);
+                }
 
-                if (_wrapperConfig.AccountsList.ActiveAccount != null &&
-                    _wrapperConfig.AccountsList.ActiveAccount.SmtpConfig != null &&
-                    _wrapperConfig.AccountsList.ActiveAccount.SmtpConfig.Verified)
+                AccountConfigValues account = AccountOf(smtpSender);
+                if (account != null && account.SmtpConfig != null && account.SmtpConfig.Verified)
                 {
                     //Just show Baloon error
                     notifyIcon.ShowBalloonTip(15000, theResponse.GameEmail.Subject, theResponse.Exception.Message, ToolTipIcon.Error);
@@ -952,51 +1451,52 @@ namespace AowEmailWrapper
                 else
                 {
                     //Show full Message Box error
-                    ShowSmtpExceptionMessageBox(theResponse);
+                    ShowSmtpExceptionMessageBox(smtpSender, theResponse);
                 }
             }
         }
 
-        private void ShowSmtpExceptionMessageBox(SmtpSendResponse theResponse)
+        private void ShowSmtpExceptionMessageBox(SmtpSender smtpSender, SmtpSendResponse theResponse)
         {
             RaiseEvent(_maximizeEvent, this, new EventArgs());
 
-            string errorMessage = Translator.Translate(WrapperEmailSentFailedKey, theResponse.GameEmail.Subject, theResponse.GameEmail.To[0].Address);
+            string errorMessage = Translator.Translate(WrapperEmailSentFailedKey, theResponse.GameEmail.Subject, MailHelper.GetFirstToAddress(theResponse.GameEmail));
+
+            AccountConfigValues account = AccountOf(smtpSender);
+            if (theResponse.Exception is MailKit.Security.AuthenticationException &&
+                account != null && account.SmtpConfig != null)
+            {
+                ProviderHint hint = ProviderHints.ForHost(account.SmtpConfig.SmtpServer);
+                if (hint != null)
+                {
+                    errorMessage += Environment.NewLine + Environment.NewLine + Translator.Translate(hint.MessageKey);
+                }
+            }
             ApplicationException showException = new ApplicationException(errorMessage, theResponse.Exception);
 
-            ExceptionMessageBox box = new ExceptionMessageBox(showException);
-            box.Caption = Translator.Translate(this.Name);
+            int clicked = ShowExceptionDialog(showException, Translator.Translate(this.Name), MessageBoxIcon.Question, Translator.Translate(ButtonKeyResend), Translator.Translate(ButtonKeyCancel));
 
-            box.SetButtonText(Translator.Translate(ButtonKeyResend), Translator.Translate(ButtonKeyCancel));
-            box.DefaultButton = ExceptionMessageBoxDefaultButton.Button1;
-
-            box.Symbol = ExceptionMessageBoxSymbol.Question;
-            box.Buttons = ExceptionMessageBoxButtons.Custom;
-
-            ShowExceptionMessageBox(ref box);
-
-            if (box.CustomDialogResult.Equals(ExceptionMessageBoxDialogResult.Button1) && _smtpSender != null)
+            if (clicked == 0 && smtpSender != null)
             {
-                _smtpSender.SendMessage(theResponse.GameEmail);
+                smtpSender.SendMessage(theResponse.GameEmail);
             }
             else
             {
                 theResponse.Dispose();
             }
-
-            box = null;
         }
 
         private void RetrySendFailures()
         {
-            List<Activity> toRetry = _activityLog.GetRetryActivities();
-            if (toRetry.Count > 0 && _smtpSender != null)
+            foreach (Activity activity in _activityLog.GetRetryActivities())
             {
-                foreach (Activity activity in toRetry)
+                SmtpSender sender = GetSender(activity.AccountName);
+                if (sender != null && ResendHelper.CanResend(activity.FileName))
                 {
-                    if (ResendHelper.CanResend(activity.FileName))
+                    MimeMessage email = ResendHelper.Load(activity.FileName);
+                    if (email != null)
                     {
-                        _smtpSender.SendMessage(ResendHelper.Load(activity.FileName));
+                        sender.SendMessage(email);
                     }
                 }
             }
@@ -1008,7 +1508,7 @@ namespace AowEmailWrapper
 
         private void Account_Activated(object sender, AccountConfigValues theAccount, bool dirty)
         {
-            ActivateAccount(theAccount);
+            ApplyAccounts();
 
             if (dirty)
             {
@@ -1017,27 +1517,32 @@ namespace AowEmailWrapper
             }
         }
 
-        private bool ActivateAccount(AccountConfigValues account)
+        /// <summary>
+        /// Wires everything to the current account list: a watcher per active account, a sender per account,
+        /// and the games pointed at the primary account's address.
+        /// </summary>
+        private bool ApplyAccounts()
         {
             bool success = false;
 
-            //Don't switch accounts if a send is in progress
-            if ((_smtpSender != null && _smtpSender.IsSending))
+            AccountConfigValues primary = (_wrapperConfig != null && _wrapperConfig.AccountsList != null) ? _wrapperConfig.AccountsList.PrimaryAccount : null;
+
+            //Don't rewire while a send is in progress
+            if (IsAnySending)
             {
-                success = false;
-                MessageBox.Show(Translator.Translate(WrapperCannotActivateAccountMessageBoxKey, account.Name), Translator.Translate(this.Name), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(Translator.Translate(WrapperCannotActivateAccountMessageBoxKey, primary != null ? primary.Name : string.Empty), Translator.Translate(this.Name), MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
-            else if (account != null &&
-                !string.IsNullOrEmpty(account.Name))
+            else
             {
                 ConfigChangeTracking = false;
 
-                _wrapperConfig.AccountsList.ActiveAccountName = account.Name;
-
-                if (account.PollingConfig != null)
+                if (primary != null)
                 {
-                    panelLocalMessageStore.Visible = account.PollingConfig.EmailType.Equals(EmailType.POP3);
+                    _wrapperConfig.AccountsList.ActiveAccountName = primary.Name;
+                    _wrapperConfig.AccountsList.StartUpAccountName = primary.Name;
                 }
+
+                panelLocalMessageStore.Visible = primary != null && primary.PollingConfig != null && primary.PollingConfig.EmailType.Equals(EmailType.POP3);
 
                 //Belt and braces for Game to Wrapper communication
                 int listenPort = PreferencesConfigValues.GameWrapperDataPortDefault;
@@ -1050,7 +1555,7 @@ namespace AowEmailWrapper
 
                 if (_theServer == null)
                 {
-                    //Start Wrapper SMTP Server 
+                    //Start Wrapper SMTP Server
                     StartServer(listenPort);
                 }
                 else if (_theServer != null &&
@@ -1062,29 +1567,22 @@ namespace AowEmailWrapper
                     StartServer(listenPort);
                 }
 
-                if (account.SmtpConfig != null)
+                if (primary != null && primary.SmtpConfig != null)
                 {
-                    _gameManager.SetEmailConfigAll(AppDataHelper.CheckEmail.FullName, account.SmtpConfig.EmailAddress, string.Format(GameSmtpServerTemplate, _theServer.Port));
+                    _gameManager.SetEmailConfigAll(AppDataHelper.CheckEmail.FullName, primary.SmtpConfig.EmailAddress, string.Format(GameSmtpServerTemplate, _theServer.Port));
                 }
 
-                StopPolling();
-
-                CreateSmtpSender(account.SmtpConfig, account.PollingConfig);
-
-                if (account.PollingConfig.UsePolling &&
-                    !string.IsNullOrEmpty(account.PollingConfig.Username) &&
-                    !string.IsNullOrEmpty(account.PollingConfig.Password) &&
-                    !string.IsNullOrEmpty(account.PollingConfig.Server))
-                {
-                    StartPolling(account.PollingConfig, _wrapperConfig.PreferencesConfig);
-                }
+                CreateAllSenders();
+                StartAllPolling();
 
                 success = true;
 
-                if (account.SmtpConfig != null &&
-                    !string.IsNullOrEmpty(account.SmtpConfig.EmailAddress))
+                int activeCount = _wrapperConfig.AccountsList != null ? _wrapperConfig.AccountsList.ActiveAccounts.Count : 0;
+                if (primary != null && primary.SmtpConfig != null && !string.IsNullOrEmpty(primary.SmtpConfig.EmailAddress))
                 {
-                    this.Text = string.Format(MainFormTitleTemplate, Translator.Translate(this.Name), account.SmtpConfig.EmailAddress);
+                    this.Text = activeCount > 1
+                        ? string.Format(MainFormTitleMoreTemplate, Translator.Translate(this.Name), primary.SmtpConfig.EmailAddress, activeCount - 1)
+                        : string.Format(MainFormTitleTemplate, Translator.Translate(this.Name), primary.SmtpConfig.EmailAddress);
                 }
                 else
                 {
@@ -1119,6 +1617,179 @@ namespace AowEmailWrapper
             _activityLog.Activities.Add(newActivity);
         }
 
+        /// <summary>
+        /// First start (or nothing remembered yet): walks the drives for copies of the games in the
+        /// background, then applies the result, saves it so later starts skip the walk, and refreshes
+        /// the Games tab and the tray menu. A tab with unsaved edits is left alone.
+        /// </summary>
+        private async void DeepScanGames()
+        {
+            GamesConfigValues known = _gameManager.ToConfig();
+            List<AowGame> detected;
+            try
+            {
+                detected = await Task.Run(() => GameDetector.Detect(known.Installs, true));
+            }
+            catch (Exception ex)
+            {
+                Trace.TraceWarning("Background game scan failed: {0}", ex);
+                return;
+            }
+
+            if (IsDisposed)
+            {
+                return;
+            }
+
+            _gameManager.Apply(detected, known);
+            _wrapperConfig.GamesConfig = _gameManager.ToConfig();
+            DataManagerHelper.SaveConfig(_wrapperConfig);
+
+            if (!ConfigNeedsSave)
+            {
+                gamesConfig.Config = _wrapperConfig.GamesConfig;
+            }
+            CreateContextMenu();
+            CheckNotifyIconState();
+        }
+
+        /// <summary>
+        /// Some game folders (typically under a Program Files folder) are read-only for ordinary
+        /// accounts. Offers to grant the account write access through an elevated icacls run.
+        /// </summary>
+        private void OfferPermissionFix()
+        {
+            string title = Translator.Translate(this.Name);
+            string message = string.Concat(
+                Translator.Translate(WrapperWriteAccessMessageBoxKey, _gameManager.GetEmailInFolderList()),
+                Environment.NewLine, Environment.NewLine,
+                Translator.Translate(WrapperFixPermissionsKey));
+
+            if (MessageBox.Show(message, title, MessageBoxButtons.YesNo, MessageBoxIcon.Warning) != DialogResult.Yes)
+            {
+                return;
+            }
+
+            try
+            {
+                PermissionHelper.GrantWriteAccess(_gameManager.RootsWithoutWriteAccess);
+            }
+            catch (Exception ex)
+            {
+                Trace.TraceError("Permission fix failed: {0}", ex);
+            }
+
+            _gameManager.ResetWriteAccess();
+            if (_gameManager.CheckWriteAccess())
+            {
+                MessageBox.Show(Translator.Translate(WrapperFixPermissionsDoneKey), title, MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            else
+            {
+                MessageBox.Show(Translator.Translate(WrapperFixPermissionsFailedKey, _gameManager.GetEmailInFolderList()), title, MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+        }
+
+        /// <summary>Folder the game was last seen in, from the activity log, for the game manager's routing.</summary>
+        private string ActivityInstallHint(AowGameType gameType, string fileName)
+        {
+            Activity last = _activityLog != null ? _activityLog.GetLastActivityByFileName(fileName) : null;
+            return last != null && last.GameType.Equals(gameType) ? last.InstallFolder : null;
+        }
+
+        /// <summary>
+        /// Works out which copy of the game produced the turn and stamps that copy's label on the
+        /// email, so the receiving Wrapper can put the turn in its matching copy.
+        /// </summary>
+        private void TagOutgoingInstall(MimeMessage theEmail)
+        {
+            try
+            {
+                MimePart theAttachment = MailHelper.GetFirstAttachment(theEmail);
+                if (theAttachment == null)
+                {
+                    return;
+                }
+
+                using (ASGFileInfo theASG = new ASGFileInfo(theAttachment))
+                {
+                    AowGame install = _gameManager.ResolveOutgoing(theASG.GameType, theASG.FileNameTrue);
+                    if (install == null)
+                    {
+                        return;
+                    }
+
+                    MailHelper.SetModLabel(theEmail, install.Label);
+                    lock (_outgoingInstalls)
+                    {
+                        _outgoingInstalls[theEmail.MessageId ?? string.Empty] = install.Folder;
+                    }
+                    Trace.TraceInformation("Turn {0} sent from {1}", theASG.FileNameTrue, install);
+                }
+            }
+            catch (Exception ex)
+            {
+                Trace.TraceWarning("Could not work out which copy of the game sent the turn: {0}", ex);
+            }
+        }
+
+        /// <summary>Remembers in the activity log which copy a sent turn came from and the label it went out under.</summary>
+        private void RecordOutgoingInstall(MimeMessage theEmail, Activity theActivity)
+        {
+            if (theEmail == null || theActivity == null)
+            {
+                return;
+            }
+
+            string folder = null;
+            string messageId = theEmail.MessageId ?? string.Empty;
+            lock (_outgoingInstalls)
+            {
+                if (_outgoingInstalls.TryGetValue(messageId, out folder))
+                {
+                    _outgoingInstalls.Remove(messageId);
+                }
+            }
+
+            if (!string.IsNullOrEmpty(folder))
+            {
+                theActivity.InstallFolder = folder;
+            }
+
+            string label = MailHelper.GetModLabel(theEmail);
+            if (!string.IsNullOrEmpty(label))
+            {
+                theActivity.ModLabel = label;
+            }
+        }
+
+        /// <summary>Turns waiting in one copy of a game; turns with no recorded copy count for the default copy.</summary>
+        private int UnsentActivitiesFor(AowGame game)
+        {
+            return _activityLog.Activities.Count(activity =>
+                activity.Status.Equals(ActivityState.Received) &&
+                activity.GameType.Equals(game.GameType) &&
+                (game.IsFolder(activity.InstallFolder) || (string.IsNullOrEmpty(activity.InstallFolder) && game.IsDefault)));
+        }
+
+        private void ActivityListViewMoveTo(object sender, Activity activity, AowGame target)
+        {
+            try
+            {
+                _gameManager.MoveGame(activity.GameType, activity.FileName, target);
+                activity.InstallFolder = target.Folder;
+                DataManagerHelper.SaveActivityLog(_activityLog);
+                activityListView.Refresh();
+                CheckNotifyIconState();
+            }
+            catch (Exception ex)
+            {
+                Trace.TraceError(ex.ToString());
+                Trace.Flush();
+                ShowException(ex);
+            }
+        }
+
         private void LoadActivityLog()
         {
             try
@@ -1139,7 +1810,7 @@ namespace AowEmailWrapper
         {
             if (list != null && list.Count > 0)
             {
-                AowGame theGame = _gameManager.GetGameByType(list[0].GameType);
+                AowGame theGame = _gameManager.GetGameForActivity(list[0]);
                 if (theGame != null)
                 {
                     StartGame(theGame);
@@ -1197,16 +1868,17 @@ namespace AowEmailWrapper
 
         private void ActivityListViewResend(object sender, List<Activity> list)
         {
-            if (list != null && list.Count > 0 && _smtpSender!=null)
+            if (list != null && list.Count > 0)
             {
                 try
                 {
                     foreach (Activity activity in list)
                     {
-                        IMail theEmail = ResendHelper.Load(activity.FileName);
-                        if (theEmail != null && theEmail.To.Count > 0)
+                        MimeMessage theEmail = ResendHelper.Load(activity.FileName);
+                        SmtpSender resendSender = GetSender(activity.AccountName);
+                        if (theEmail != null && resendSender != null && theEmail.To.Mailboxes.Any())
                         {
-                            string newToAddress = theEmail.To[0].Address;
+                            string newToAddress = MailHelper.GetFirstToAddress(theEmail);
 
                             Image gameTypeImage = null;
                             string gameType = activity.GameType.ToString();
@@ -1217,16 +1889,16 @@ namespace AowEmailWrapper
 
                             if (InputBox.Show(activity.FileName, Translator.Translate(WrapperResendToKey), ref newToAddress, gameTypeImage).Equals(DialogResult.OK))
                             {
-                                if (!newToAddress.Equals(theEmail.To[0].Address, StringComparison.InvariantCultureIgnoreCase))
+                                if (!newToAddress.Equals(MailHelper.GetFirstToAddress(theEmail), StringComparison.InvariantCultureIgnoreCase))
                                 {
                                     theEmail.To.Clear();
-                                    theEmail.To.Add(new Lesnikowski.Mail.Headers.MailBox(newToAddress));
+                                    theEmail.To.Add(MailboxAddress.Parse(newToAddress));
                                 }
 
-                                _smtpSender.SendMessage(theEmail);
+                                ResendHelper.Save(theEmail);
+                                resendSender.SendMessage(theEmail);
 
                                 CheckNotifyIconState();
-                                ResendHelper.Save(theEmail);
                             }
                         }
                     }
@@ -1240,7 +1912,7 @@ namespace AowEmailWrapper
             }
         }
 
-        private Activity UpdateActivitySent(MimeData theAttachment)
+        private Activity UpdateActivitySent(MimePart theAttachment, string accountName)
         {
             Activity theActivity = null;
             theActivity = _activityLog.GetLastActivityByFileName(theAttachment.FileName);
@@ -1248,6 +1920,10 @@ namespace AowEmailWrapper
             if (theActivity != null)
             {
                 theActivity.Status = ActivityState.Sent;
+                if (!string.IsNullOrEmpty(accountName))
+                {
+                    theActivity.AccountName = accountName;
+                }
                 if (theActivity.GameType.Equals(AowGameType.Unknown))
                 {
                     using (ASGFileInfo theASG = new ASGFileInfo(theAttachment))
@@ -1266,6 +1942,7 @@ namespace AowEmailWrapper
                         theASG.FileNameTrue,
                         theASG.MapTitle,
                         theASG.TurnNumber.ToString());
+                    theActivity.AccountName = accountName;
                 }
 
                 _activityLog.Activities.Add(theActivity);
@@ -1276,7 +1953,7 @@ namespace AowEmailWrapper
             return theActivity;
         }
 
-        private void UpdateActivitySendError(MimeData theAttachment)
+        private void UpdateActivitySendError(MimePart theAttachment)
         {
             Activity theActivity = null;
             theActivity = _activityLog.GetLastActivityByFileName(theAttachment.FileName);
@@ -1322,16 +1999,23 @@ namespace AowEmailWrapper
         private void CreateContextMenu()
         {
             EventHandler menuItemClickEvent = new EventHandler(menuItem_Click);
-            _contextMenu = new ContextMenu();
-            _contextMenu.Popup += new EventHandler(ContextMenu_Popup);
+            if (_contextMenu != null)
+            {
+                //Settings were saved: rebuild the menu for the current copies of the games
+                notifyIcon.ContextMenuStrip = null;
+                _contextMenu.Dispose();
+            }
 
-            _menuShow = new MenuItem(Translator.Translate(Menu_Show_Tag), menuItemClickEvent);
+            _contextMenu = new ContextMenuStrip();
+            _contextMenu.Opening += new CancelEventHandler(ContextMenu_Popup);
+
+            _menuShow = new ToolStripMenuItem(Translator.Translate(Menu_Show_Tag), null, menuItemClickEvent);
             _menuShow.Tag = Menu_Show_Tag;
             AddMenuItemToContextMenu(_menuShow);
 
-            AddMenuItemToContextMenu(new MenuItem("-"));
+            AddMenuItemToContextMenu(new ToolStripSeparator());
 
-            _menuAccounts = new MenuItem();            
+            _menuAccounts = new ToolStripMenuItem();            
             Image emailImage = imageListIcons.Images[IconState.EmailWaiting.ToString()];
 
             foreach (AowGame game in _gameManager.Games)
@@ -1342,57 +2026,58 @@ namespace AowEmailWrapper
 
                     IconMenuItem menuItem = new IconMenuItem(game.DisplayName, imageListIcons.Images[gameType], emailImage);
                     
-                    menuItem.Name = gameType;
-                    menuItem.Tag = menuItem.Name;
+                    menuItem.Name = game.Id;
+                    menuItem.Tag = GameMenuTagPrefix + game.Id;
                     menuItem.Click += menuItemClickEvent;
 
                     AddMenuItemToContextMenu(menuItem);
                 }
             }
 
-            AddMenuItemToContextMenu(new MenuItem("-"));
+            AddMenuItemToContextMenu(new ToolStripSeparator());
 
-            _menuAccounts = new MenuItem(Translator.Translate(Menu_Accounts_Tag));
+            _menuAccounts = new ToolStripMenuItem(Translator.Translate(Menu_Accounts_Tag));
             CreateAccountMenu(_menuAccounts, _wrapperConfig.AccountsList);
             AddMenuItemToContextMenu(_menuAccounts);
 
-            _menuPoll = new MenuItem(Translator.Translate(Menu_Poll_Tag), menuItemClickEvent);
+            _menuPoll = new ToolStripMenuItem(Translator.Translate(Menu_Poll_Tag), null, menuItemClickEvent);
             _menuPoll.Tag = Menu_Poll_Tag;
             _menuPoll.Enabled = false;
             AddMenuItemToContextMenu(_menuPoll);
 
-            _menuExit = new MenuItem(Translator.Translate(Menu_Exit_Tag), menuItemClickEvent);
+            _menuExit = new ToolStripMenuItem(Translator.Translate(Menu_Exit_Tag), null, menuItemClickEvent);
             _menuExit.Tag = Menu_Exit_Tag;
             AddMenuItemToContextMenu(_menuExit);
           
-            notifyIcon.ContextMenu = _contextMenu;
+            notifyIcon.ContextMenuStrip = _contextMenu;
         }
 
-        private void AddMenuItemToContextMenu(MenuItem theItem)
+        private void AddMenuItemToContextMenu(ToolStripItem theItem)
         {
-            _contextMenu.MenuItems.Add(theItem);
-            theItem.Index = _contextMenu.MenuItems.Count - 1;
+            _contextMenu.Items.Add(theItem);
         }
 
         private void menuItem_Click(object sender, EventArgs e)
         {
-            switch (((MenuItem)sender).Tag.ToString())
+            string tag = ((ToolStripItem)sender).Tag.ToString();
+
+            if (tag.StartsWith(GameMenuTagPrefix, StringComparison.Ordinal))
             {
-                case "Aow1":
-                case "Aow2":
-                case "AowSm":
-                case "AowMpe":
-                    AowGame theGame = _gameManager.Games.Find(game => game.GameType.ToString().Equals(((MenuItem)sender).Tag.ToString()));
+                AowGame theGame = _gameManager.GetGameById(tag.Substring(GameMenuTagPrefix.Length));
+                if (theGame != null)
+                {
                     StartGame(theGame);
-                    break;
+                }
+                return;
+            }
+
+            switch (tag)
+            {
                 case Menu_Show_Tag:
                     Maximize();
                     break;
                 case Menu_Poll_Tag:
-                    if (_poller != null)
-                    {
-                        _poller.PollNow();
-                    }
+                    PollAll();
                     break;
                 case Menu_Exit_Tag:
                     RaiseEvent(_shutDownEvent, sender, new EventArgs());
@@ -1400,30 +2085,24 @@ namespace AowEmailWrapper
             }
         }
 
-        private void CreateAccountMenu(MenuItem parent, AccountConfigValuesList accountsList)
+        private void CreateAccountMenu(ToolStripMenuItem parent, AccountConfigValuesList accountsList)
         {
             if (parent != null)
             {
-                foreach (MenuItem sub in parent.MenuItems)
+                foreach (ToolStripItem sub in parent.DropDownItems.Cast<ToolStripItem>().ToList())
                 {
-                    if (sub != null)
-                    {
-                        sub.Dispose();
-                    }
+                    sub.Dispose();
                 }
 
-                parent.MenuItems.Clear();
+                parent.DropDownItems.Clear();
 
                 foreach (AccountConfigValues account in accountsList.Accounts)
                 {
-                    MenuItem sub = new MenuItem();
+                    ToolStripMenuItem sub = new ToolStripMenuItem();
                     sub.Text = account.Name;
-                    if (account.Equals(accountsList.ActiveAccount))
-                    {
-                        sub.Checked = true;
-                    }
+                    sub.Checked = account.IsActive;
                     sub.Click += new EventHandler(AccountMenu_Click);
-                    parent.MenuItems.Add(sub);
+                    parent.DropDownItems.Add(sub);
                 }
             }
         }
@@ -1435,34 +2114,31 @@ namespace AowEmailWrapper
 
         private void AccountMenu_Click(object sender, EventArgs e)
         {
-            MenuItem theMenu = (MenuItem)sender;
+            ToolStripMenuItem theMenu = (ToolStripMenuItem)sender;
             AccountConfigValues theAccount = _wrapperConfig.AccountsList.GetAccountByName(theMenu.Text);
-            if (theAccount != null)
+            if (theAccount != null && theAccount.PollingConfig != null && !IsAnySending)
             {
-                ActivateAccount(theAccount);
+                //The tray menu toggles whether an account is active (checks for email and replies through it)
+                theAccount.PollingConfig.UsePolling = !theAccount.PollingConfig.UsePolling;
+                accountsConfig.Config = _wrapperConfig.AccountsList;
+                SaveConfig(true);
             }
         }
 
-        private void ContextMenu_Popup(object sender, EventArgs e)
+        private void ContextMenu_Popup(object sender, CancelEventArgs e)
         {
-            _menuPoll.Enabled = (_poller != null &&
-                _wrapperConfig != null &&
-                _wrapperConfig.AccountsList != null &&
-                _wrapperConfig.AccountsList.ActiveAccount != null &&
-                _wrapperConfig.AccountsList.ActiveAccount.PollingConfig != null &&
-                _wrapperConfig.AccountsList.ActiveAccount.PollingConfig.UsePolling);
+            _menuPoll.Enabled = _pollers.Count > 0;
 
             foreach (AowGame game in _gameManager.Games)
             {
                 if (game.IsInstalled)
                 {
-                    string gameType = game.GameType.ToString();
-                    if (_contextMenu.MenuItems.ContainsKey(gameType))
+                    if (_contextMenu.Items.ContainsKey(game.Id))
                     {
-                        IconMenuItem menuItem = (IconMenuItem)_contextMenu.MenuItems[gameType];
+                        IconMenuItem menuItem = (IconMenuItem)_contextMenu.Items[game.Id];
 
                         int unknownGameTypeActivities = _activityLog.GetUnknownGameTypeActivitiesCount();
-                        int unSentActivities = _activityLog.GetUnSentActivitiesCountByGameType(game.GameType);
+                        int unSentActivities = UnsentActivitiesFor(game);
 
                         if (unknownGameTypeActivities > 0 &&
                             (game.GameType.Equals(AowGameType.Aow2) || game.GameType.Equals(AowGameType.AowSm)))
@@ -1483,9 +2159,10 @@ namespace AowEmailWrapper
                 }
             }
 
-            foreach (MenuItem sub in _menuAccounts.MenuItems)
+            foreach (ToolStripMenuItem sub in _menuAccounts.DropDownItems)
             {
-                sub.Checked = sub.Text.Equals(_wrapperConfig.AccountsList.ActiveAccountName, StringComparison.InvariantCultureIgnoreCase);
+                AccountConfigValues account = _wrapperConfig.AccountsList.GetAccountByName(sub.Text);
+                sub.Checked = account != null && account.IsActive;
             }
         }
 

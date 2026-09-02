@@ -54,7 +54,7 @@
             this.groupBoxOptions.Size = new System.Drawing.Size(455, 223);
             this.groupBoxOptions.TabIndex = 0;
             this.groupBoxOptions.TabStop = false;
-            this.groupBoxOptions.Text = "Options";
+            this.groupBoxOptions.Text = "";
             // 
             // panelOptionsInner
             // 
@@ -84,8 +84,7 @@
             this.lblAutoconfigPage3UserDecidesMessage.Padding = new System.Windows.Forms.Padding(0, 3, 0, 0);
             this.lblAutoconfigPage3UserDecidesMessage.Size = new System.Drawing.Size(200, 131);
             this.lblAutoconfigPage3UserDecidesMessage.TabIndex = 2;
-            this.lblAutoconfigPage3UserDecidesMessage.Text = "Use this option if you want to have precise control over which auto detected sett" +
-                "ings the Wrapper should use.";
+            this.lblAutoconfigPage3UserDecidesMessage.Text = "Shows every server that was found so you can choose.";
             // 
             // radioAutoconfigPage3Select2
             // 
@@ -95,7 +94,7 @@
             this.radioAutoconfigPage3Select2.Size = new System.Drawing.Size(200, 38);
             this.radioAutoconfigPage3Select2.TabIndex = 6;
             this.radioAutoconfigPage3Select2.TabStop = true;
-            this.radioAutoconfigPage3Select2.Text = "Manual override, show the settings so that I can choose";
+            this.radioAutoconfigPage3Select2.Text = "Let me pick from the servers found";
             this.radioAutoconfigPage3Select2.UseVisualStyleBackColor = true;
             // 
             // panelLeft
@@ -122,7 +121,7 @@
             // fbServerPreference
             // 
             this.fbServerPreference.Dock = System.Windows.Forms.DockStyle.Top;
-            this.fbServerPreference.LabelName = "Preference:";
+            this.fbServerPreference.LabelName = "Prefer:";
             this.fbServerPreference.Location = new System.Drawing.Point(0, 38);
             this.fbServerPreference.Margin = new System.Windows.Forms.Padding(2);
             this.fbServerPreference.MinimumSize = new System.Drawing.Size(0, 24);
@@ -140,7 +139,7 @@
             this.radioAutoconfigPage3Select1.Name = "radioAutoconfigPage3Select1";
             this.radioAutoconfigPage3Select1.Size = new System.Drawing.Size(200, 38);
             this.radioAutoconfigPage3Select1.TabIndex = 5;
-            this.radioAutoconfigPage3Select1.Text = "Let the Wrapper decide (default)";
+            this.radioAutoconfigPage3Select1.Text = "Recommended settings";
             this.radioAutoconfigPage3Select1.UseVisualStyleBackColor = true;
             // 
             // lblAutoconfigPage3ServerMessage
@@ -150,7 +149,7 @@
             this.lblAutoconfigPage3ServerMessage.Name = "lblAutoconfigPage3ServerMessage";
             this.lblAutoconfigPage3ServerMessage.Size = new System.Drawing.Size(455, 20);
             this.lblAutoconfigPage3ServerMessage.TabIndex = 2;
-            this.lblAutoconfigPage3ServerMessage.Text = "Please specify which server settings should be used.";
+            this.lblAutoconfigPage3ServerMessage.Text = "Which settings should the Wrapper use?";
             // 
             // AutoconfigPage3Select
             // 

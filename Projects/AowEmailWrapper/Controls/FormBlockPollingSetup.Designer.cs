@@ -39,7 +39,7 @@
             // 
             // comboBox
             // 
-            this.comboBox.Dock = System.Windows.Forms.DockStyle.Right;
+            this.comboBox.Dock = System.Windows.Forms.DockStyle.None;
             this.comboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBox.FormattingEnabled = true;
             this.comboBox.Location = new System.Drawing.Point(191, 0);
@@ -49,10 +49,10 @@
             // 
             // panelLabel
             // 
-            this.panelLabel.AutoSize = true;
+            this.panelLabel.AutoSize = false;
             this.panelLabel.Controls.Add(this.checkBox);
             this.panelLabel.Controls.Add(this.panelEvery);
-            this.panelLabel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panelLabel.Dock = System.Windows.Forms.DockStyle.None;
             this.panelLabel.Location = new System.Drawing.Point(0, 0);
             this.panelLabel.Margin = new System.Windows.Forms.Padding(2);
             this.panelLabel.Name = "panelLabel";
@@ -61,7 +61,7 @@
             // 
             // checkBox
             // 
-            this.checkBox.Dock = System.Windows.Forms.DockStyle.Top;
+            this.checkBox.Dock = System.Windows.Forms.DockStyle.None;
             this.checkBox.Location = new System.Drawing.Point(0, 0);
             this.checkBox.MinimumSize = new System.Drawing.Size(0, 23);
             this.checkBox.Name = "checkBox";
@@ -73,7 +73,7 @@
             // panelEvery
             // 
             this.panelEvery.Controls.Add(this.labelEvery);
-            this.panelEvery.Dock = System.Windows.Forms.DockStyle.Right;
+            this.panelEvery.Dock = System.Windows.Forms.DockStyle.None;
             this.panelEvery.Location = new System.Drawing.Point(131, 0);
             this.panelEvery.Name = "panelEvery";
             this.panelEvery.Size = new System.Drawing.Size(60, 24);
@@ -81,7 +81,7 @@
             // 
             // labelEvery
             // 
-            this.labelEvery.Dock = System.Windows.Forms.DockStyle.Top;
+            this.labelEvery.Dock = System.Windows.Forms.DockStyle.None;
             this.labelEvery.Location = new System.Drawing.Point(0, 0);
             this.labelEvery.MinimumSize = new System.Drawing.Size(0, 20);
             this.labelEvery.Name = "labelEvery";

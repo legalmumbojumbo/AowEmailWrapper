@@ -54,6 +54,30 @@ namespace AowEmailWrapper.ConfigFramework
             }
         }
 
+        /// <summary>Accounts that check for email; each also sends the replies for the games it received.</summary>
+        [XmlIgnore]
+        public List<AccountConfigValues> ActiveAccounts
+        {
+            get { return _accounts == null ? new List<AccountConfigValues>() : _accounts.FindAll(account => account.IsActive); }
+        }
+
+        /// <summary>
+        /// The account games you start yourself send from and the one the games are pointed at:
+        /// the first active account in the list, or the first account when none is active.
+        /// </summary>
+        [XmlIgnore]
+        public AccountConfigValues PrimaryAccount
+        {
+            get
+            {
+                if (_accounts == null || _accounts.Count == 0)
+                {
+                    return null;
+                }
+                return _accounts.Find(account => account.IsActive) ?? _accounts[0];
+            }
+        }
+
         public AccountConfigValues GetAccountByName(string name)
         {
             return _accounts.Find(item => !string.IsNullOrEmpty(item.Name) && item.Name.Equals(name, StringComparison.InvariantCulture));

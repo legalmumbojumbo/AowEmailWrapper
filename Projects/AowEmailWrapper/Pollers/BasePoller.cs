@@ -1,17 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Timers;
 using System.Diagnostics;
-using System.IO;
-using AowEmailWrapper.Games;
-using AowEmailWrapper.Helpers;
+using System.Timers;
+using AowEmailWrapper.ASG;
 using AowEmailWrapper.Classes;
 using AowEmailWrapper.ConfigFramework;
-using AowEmailWrapper.ASG;
-using Lesnikowski.Mail;
-using Lesnikowski.Mail.Headers;
+using AowEmailWrapper.Games;
+using AowEmailWrapper.Helpers;
+using MimeKit;
 
 namespace AowEmailWrapper.Pollers
 {
@@ -20,7 +16,7 @@ namespace AowEmailWrapper.Pollers
     public abstract class BasePoller
     {
         private const int ONE_MIN_MILLISECONDS = 60000;
-        protected const string FileSpoolTemplate = "{0}.eml";
+        protected const int NETWORK_TIMEOUT_MS = 60000;
 
         protected AowGameManager _gameManager;
         protected Timer _timer;
@@ -40,13 +36,23 @@ namespace AowEmailWrapper.Pollers
             get { return !_pollQueue.Count.Equals(0); }
         }
 
+        /// <summary>Empty for password sign-in, otherwise the OAuth provider name.</summary>
+        public string OAuthProvider { get; set; }
+
+        /// <summary>The account this poller watches; turns it downloads are replied to through it.</summary>
+        public string AccountName { get; set; }
+
+        public string Host { get { return _host; } }
+
+        public string Username { get { return _username; } }
+
         protected BasePoller(
-            string host, 
+            string host,
             int port,
-            SSLType sslType, 
-            string username, 
-            string password, 
-            int pollInterval,            
+            SSLType sslType,
+            string username,
+            string password,
+            int pollInterval,
             EmailSaveFolder saveFolder,
             AowGameManager gameManager)
         {
@@ -58,28 +64,36 @@ namespace AowEmailWrapper.Pollers
             _pollInterval = pollInterval;
             _saveFolder = saveFolder;
             _gameManager = gameManager;
-            _pollQueue = new Queue<string>();            
+            _pollQueue = new Queue<string>();
         }
 
-        public void Start()
+        public virtual void Start()
+        {
+            if (_timer == null)
+            {
+                StartTimer();
+                PollNow();
+            }
+        }
+
+        public virtual void Stop()
+        {
+            StopTimer();
+        }
+
+        protected void StartTimer()
         {
             if (_timer == null)
             {
                 _timer = new Timer();
                 _timer.Elapsed += new ElapsedEventHandler(OnTimedEvent);
-                _timer.Interval = _pollInterval * ONE_MIN_MILLISECONDS;
+                _timer.Interval = Math.Max(1, _pollInterval) * ONE_MIN_MILLISECONDS;
                 _timer.Enabled = true;
                 _timer.Start();
-                PollNow();
             }
         }
 
-        private void OnTimedEvent(object source, ElapsedEventArgs e)
-        {
-            Poll();
-        }
-
-        public void Stop()
+        protected void StopTimer()
         {
             if (_timer != null)
             {
@@ -89,12 +103,24 @@ namespace AowEmailWrapper.Pollers
             }
         }
 
+        private void OnTimedEvent(object source, ElapsedEventArgs e)
+        {
+            OnTimerElapsed();
+        }
+
+        protected virtual void OnTimerElapsed()
+        {
+            Poll();
+        }
+
         protected virtual void Poll()
         { }
 
-        public void PollNow()
+        public virtual void PollNow()
         {
-            new System.Threading.Thread(new System.Threading.ThreadStart(this.Poll)).Start();
+            System.Threading.Thread pollThread = new System.Threading.Thread(new System.Threading.ThreadStart(this.Poll));
+            pollThread.IsBackground = true;
+            pollThread.Start();
         }
 
         protected void PollBegin()
@@ -115,17 +141,30 @@ namespace AowEmailWrapper.Pollers
             }
         }
 
-        protected int ProcessEmailAttachments(IMail email)
+        /// <summary>Ends a check that failed without telling the user; the caller decides if it matters.</summary>
+        protected void PollAbort()
+        {
+            _pollQueue.Dequeue();
+            if (OnEmailEvent != null)
+            {
+                OnEmailEvent(this, new PollerEventArgs(PollState.Aborted, false));
+            }
+        }
+
+        /// <summary>
+        /// Saves every Age of Wonders save game attached to the email and returns how many were found.
+        /// </summary>
+        protected int ProcessEmailAttachments(MimeMessage email)
         {
             int count = 0;
 
             try
             {
-                if (email != null &&
-                    email.Attachments != null &&
-                    email.Attachments.Count > 0)
+                if (email != null)
                 {
-                    foreach (MimeData attachment in email.Attachments)
+                    string bodyText = MailHelper.GetPlainText(email);
+
+                    foreach (MimePart attachment in MailHelper.GetAttachments(email))
                     {
                         if (!string.IsNullOrEmpty(attachment.FileName) &&
                             ASGFileInfo.IsAsg(attachment.FileName))
@@ -136,9 +175,9 @@ namespace AowEmailWrapper.Pollers
                             {
                                 if (theASG.Length > 0)
                                 {
-                                    _gameManager.StoreDownloadFile(theASG, _saveFolder);
+                                    _gameManager.StoreDownloadFile(theASG, _saveFolder, AccountName, MailHelper.GetModLabel(email));
 
-                                    TurnLogger.SaveLog(theASG.FileNameTrue, email.TextData.Text);
+                                    TurnLogger.SaveLog(theASG.FileNameTrue, bodyText);
                                 }
                             }
                         }
@@ -152,20 +191,6 @@ namespace AowEmailWrapper.Pollers
             }
 
             return count;
-        }
-
-        /*
-        protected IMail SpoolEmlViaDisk(string eml, out string fileName)
-        {
-            fileName = Path.Combine(AppDataHelper.Root.FullName, string.Format(FileSpoolTemplate, Guid.NewGuid().ToString()));
-            File.WriteAllText(fileName, eml);
-            return new MailBuilder().CreateFromEmlFile(fileName);
-        }
-        */
-
-        protected void ClearSpooledEml(string fileName)
-        {
-            File.Delete(fileName);
         }
     }
 }

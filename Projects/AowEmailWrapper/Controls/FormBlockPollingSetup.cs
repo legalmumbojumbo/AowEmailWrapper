@@ -38,20 +38,70 @@ namespace AowEmailWrapper.Controls
 
         protected override void OnResize(EventArgs e)
         {
-            base.OnResize(e);
+            //The base block sizes itself from its label text, which this row does not have, so it lays itself out
+            if (resizing)
+            {
+                return;
+            }
 
-            //This must always be on one line
-            Size szEvery = new Size(int.MaxValue, int.MaxValue);
-            szEvery = TextRenderer.MeasureText(labelEvery.Text, labelEvery.Font, szEvery, TextFormatFlags.SingleLine);
-            panelEvery.Size = szEvery;
+            try
+            {
+                resizing = true;
+                SuspendLayout();
 
-            int spareWidth = panelLabel.Width - labelEvery.Width;
+                int third = (int)Math.Ceiling(Width / 3.0);
+                comboBox.Width = Math.Max(60, third * 2 - 20);
 
-            Size szCheckBoxText = new Size(spareWidth - CheckBoxTickWidth, int.MaxValue);
-            szCheckBoxText = TextRenderer.MeasureText(checkBox.Text, checkBox.Font, szCheckBoxText, TextFormatFlags.WordBreak);
+                LayoutRow();
+                ResumeLayout(true);
+            }
+            finally
+            {
+                resizing = false;
+            }
+        }
 
-            checkBox.Width = szCheckBoxText.Width + CheckBoxTickWidth;
-            this.Height = szCheckBoxText.Height + 4;
+        /// <summary>
+        /// One line: the check box, the "every:" label and the interval box share the combo's height and centre line.
+        /// </summary>
+        private void LayoutRow()
+        {
+            if (comboBox == null || panelLabel == null || panelEvery == null)
+            {
+                return;
+            }
+
+            int rowHeight = comboBox.Height + Padding.Vertical;
+            if (Height != rowHeight)
+            {
+                MinimumSize = new Size(0, rowHeight);
+                Height = rowHeight;
+            }
+
+            int top = Padding.Top;
+            int lineHeight = comboBox.Height;
+
+            //Interval box on the right, everything else on the same line to its left
+            comboBox.Location = new Point(Math.Max(Padding.Left, Width - Padding.Right - comboBox.Width), top);
+
+            panelLabel.AutoSize = false;
+            panelLabel.Bounds = new Rectangle(Padding.Left, top, Math.Max(0, comboBox.Left - Padding.Left), lineHeight);
+
+            Size everySize = TextRenderer.MeasureText(labelEvery.Text, labelEvery.Font, new Size(int.MaxValue, int.MaxValue), TextFormatFlags.SingleLine);
+            int everyWidth = everySize.Width + 6;
+            panelEvery.Bounds = new Rectangle(Math.Max(0, panelLabel.Width - everyWidth), 0, everyWidth, lineHeight);
+            //Designer minimum sizes get scaled with the font and would otherwise force these taller than the line
+            labelEvery.AutoSize = false;
+            labelEvery.MinimumSize = Size.Empty;
+            labelEvery.MaximumSize = Size.Empty;
+            labelEvery.Bounds = new Rectangle(0, 0, everyWidth, lineHeight);
+
+            checkBox.AutoSize = false;
+            checkBox.MinimumSize = Size.Empty;
+            checkBox.MaximumSize = Size.Empty;
+            int spareWidth = Math.Max(CheckBoxTickWidth, panelEvery.Left);
+            Size checkBoxText = TextRenderer.MeasureText(checkBox.Text, checkBox.Font, new Size(int.MaxValue, int.MaxValue), TextFormatFlags.SingleLine);
+            checkBox.Bounds = new Rectangle(0, 0, Math.Min(spareWidth, checkBoxText.Width + CheckBoxTickWidth), lineHeight);
         }
 
         public void AddItem(int value)

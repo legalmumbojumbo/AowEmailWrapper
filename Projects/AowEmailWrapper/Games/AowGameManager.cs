@@ -1,51 +1,61 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Text;
-using System.IO;
-using System.Diagnostics;
 
 using AowEmailWrapper.ASG;
 using AowEmailWrapper.Helpers;
 using AowEmailWrapper.ConfigFramework;
-using Lesnikowski.Mail;
+using MimeKit;
 
 namespace AowEmailWrapper.Games
 {
     public delegate void AowGameSavedEventHandler(object sender, AowGameSavedEventArgs e);
 
+    /// <summary>
+    /// Knows every installed copy of the games and decides which copy an incoming turn belongs to
+    /// and which copy an outgoing turn came from. Detection results are merged with the labels
+    /// and defaults the player set on the Games tab.
+    /// </summary>
     public class AowGameManager
     {
-        #region String Constants
-
-        private const string FileSearchTemplate = "*{0}*.asg";
-
-        #endregion
-
         #region Private Members
 
         private List<AowGame> _games;
-        private string _checkEmailFolder;
+        private readonly string _checkEmailFolder;
 
         #endregion
 
         #region Constructors
 
         public AowGameManager()
-            : this(AppDataHelper.CheckEmail.FullName)
-        { 
+            : this(AppDataHelper.CheckEmail.FullName, (GamesConfigValues)null)
+        {
         }
 
-        public AowGameManager(string checkEmailFolder)
+        /// <summary>
+        /// Detects the games from the cheap sources and the copies remembered in config. When nothing is
+        /// remembered yet, NeedsDeepScan asks the caller to run the slow drive walk in the background.
+        /// </summary>
+        public AowGameManager(string checkEmailFolder, GamesConfigValues config)
+            : this(checkEmailFolder, config, false)
+        {
+            NeedsDeepScan = config == null || config.Installs.Count == 0;
+        }
+
+        public AowGameManager(string checkEmailFolder, GamesConfigValues config, bool deepScan)
         {
             _checkEmailFolder = checkEmailFolder;
+            Reload(config, deepScan);
+        }
 
-            _games = new List<AowGame>();
-
-            _games.Add(new AowGame(AowGameType.Aow1));
-            _games.Add(new AowGame(AowGameType.Aow2));
-            _games.Add(new AowGame(AowGameType.AowSm));
-            _games.Add(new AowGame(AowGameType.AowMpe));
+        /// <summary>For tests and previews: uses the given installs instead of detecting.</summary>
+        public AowGameManager(string checkEmailFolder, IEnumerable<AowGame> installs, GamesConfigValues config)
+        {
+            _checkEmailFolder = checkEmailFolder;
+            _games = Merge(installs.ToList(), config);
         }
 
         #endregion
@@ -54,29 +64,282 @@ namespace AowEmailWrapper.Games
 
         public AowGameSavedEventHandler OnGameSaved;
 
+        /// <summary>
+        /// Asked which folder a game was last seen in (from the activity log), so a turn keeps
+        /// going to the copy it started in even when the label is missing.
+        /// </summary>
+        public Func<AowGameType, string, string> InstallHint { get; set; }
+
+        /// <summary>True until the drive walk has run once and its result was saved to config.</summary>
+        public bool NeedsDeepScan { get; private set; }
+
+        /// <summary>Every known copy, including manually added folders whose game has gone missing.</summary>
         public List<AowGame> Games
         {
             get { return _games; }
-            set { _games = value; }
+        }
+
+        public string CheckEmailFolder
+        {
+            get { return _checkEmailFolder; }
         }
 
         #endregion
 
-        #region Public Methods
+        #region Detection and configuration
+
+        /// <summary>Runs detection again and re-applies the labels and defaults in the config.</summary>
+        public void Reload(GamesConfigValues config)
+        {
+            Reload(config, false);
+        }
+
+        public void Reload(GamesConfigValues config, bool deepScan)
+        {
+            Stopwatch timer = Stopwatch.StartNew();
+            List<AowGame> detected = GameDetector.Detect(config != null ? config.Installs : null, deepScan);
+            _games = Merge(detected, config);
+            Trace.TraceInformation("Game detection ({0}) took {1} ms and found {2} copies", deepScan ? "deep scan" : "known folders", timer.ElapsedMilliseconds, _games.Count);
+
+            foreach (AowGame game in _games)
+            {
+                Trace.TraceInformation("Game copy: {0}{1}", game, game.IsInstalled ? string.Empty : " (missing)");
+            }
+        }
+
+        /// <summary>Takes the result of a detection run made elsewhere (a background deep scan) and merges it with the config.</summary>
+        public void Apply(List<AowGame> detected, GamesConfigValues config)
+        {
+            _games = Merge(detected, config);
+            NeedsDeepScan = false;
+            Trace.TraceInformation("Deep scan result applied: {0} copies", _games.Count);
+        }
+
+        /// <summary>The current installs as config entries, so labels and defaults survive a restart.</summary>
+        public GamesConfigValues ToConfig()
+        {
+            GamesConfigValues config = new GamesConfigValues();
+            foreach (AowGame game in _games)
+            {
+                config.Installs.Add(new GameInstallConfigValues(game));
+            }
+            return config;
+        }
+
+        private static List<AowGame> Merge(List<AowGame> detected, GamesConfigValues config)
+        {
+            List<AowGame> games = detected.Where(game => game.IsInstalled || game.IsManual).ToList();
+
+            if (config != null)
+            {
+                foreach (AowGame game in games)
+                {
+                    GameInstallConfigValues entry = config.Find(game);
+                    if (entry != null)
+                    {
+                        game.Label = entry.Label;
+                        game.IsDefault = entry.IsDefault;
+                    }
+                }
+
+                //A folder the player added whose game is no longer there stays visible so it can be removed
+                foreach (GameInstallConfigValues entry in config.Installs.Where(install => install.Manual))
+                {
+                    if (!games.Any(game => entry.Matches(game)) && !string.IsNullOrEmpty(entry.Folder))
+                    {
+                        AowGame missing = new AowGame(entry.GameType, entry.Folder, InstallSource.Manual);
+                        missing.Label = entry.Label;
+                        games.Add(missing);
+                    }
+                }
+            }
+
+            //Exactly one default per game type, preferring the copy from the most trustworthy source
+            foreach (AowGameType type in AowGame.AllTypes)
+            {
+                List<AowGame> installed = games.Where(game => game.GameType == type && game.IsInstalled).ToList();
+                AowGame current = installed.FirstOrDefault(game => game.IsDefault);
+                foreach (AowGame game in games.Where(game => game.GameType == type))
+                {
+                    game.IsDefault = false;
+                }
+                if (current == null)
+                {
+                    current = installed.OrderBy(game => game.Source).FirstOrDefault();
+                }
+                if (current != null)
+                {
+                    current.IsDefault = true;
+                }
+            }
+
+            return games.OrderBy(game => game.GameType).ThenBy(game => game.IsDefault ? 0 : 1).ThenBy(game => game.Folder).ToList();
+        }
+
+        #endregion
+
+        #region Lookup
 
         public bool IsInstalled(AowGameType theGameType)
         {
-            bool returnVal = false;
+            return GetGameByType(theGameType) != null;
+        }
 
-            AowGame theGame = GetGameByType(theGameType);
+        /// <summary>Installed copies of one game type, default first.</summary>
+        public List<AowGame> GetInstalls(AowGameType theGameType)
+        {
+            return _games.Where(game => game.GameType == theGameType && game.IsInstalled)
+                         .OrderBy(game => game.IsDefault ? 0 : 1)
+                         .ToList();
+        }
 
-            if (theGame != null)
+        /// <summary>The default copy of a game type, or null when it is not installed.</summary>
+        public AowGame GetGameByType(AowGameType theGameType)
+        {
+            return GetInstalls(theGameType).FirstOrDefault();
+        }
+
+        public AowGame GetGameById(string id)
+        {
+            return _games.FirstOrDefault(game => game.Id == id);
+        }
+
+        public AowGame GetGameByFolder(AowGameType theGameType, string folder)
+        {
+            return string.IsNullOrEmpty(folder) ? null : GetInstalls(theGameType).FirstOrDefault(game => game.IsFolder(folder));
+        }
+
+        public AowGame GetGameByLabel(AowGameType theGameType, string label)
+        {
+            return string.IsNullOrEmpty(label) ? null : GetInstalls(theGameType).FirstOrDefault(game => AowGame.SameLabel(game.Label, label));
+        }
+
+        /// <summary>The copy an activity log entry points at, falling back to the default copy.</summary>
+        public AowGame GetGameForActivity(ConfigFramework.Activity activity)
+        {
+            if (activity == null)
             {
-                returnVal = theGame.IsInstalled;
+                return null;
+            }
+            return GetGameByFolder(activity.GameType, activity.InstallFolder) ?? GetGameByType(activity.GameType);
+        }
+
+        #endregion
+
+        #region Routing
+
+        /// <summary>
+        /// Where an incoming turn goes: the copy whose label the email names, else the copy the
+        /// game was last seen in, else the only copy that already holds a turn of that game, else
+        /// the default copy. Null when the game is not installed at all.
+        /// </summary>
+        public AowGame ResolveIncoming(AowGameType theGameType, string modLabel, string fileName)
+        {
+            List<AowGame> installs = GetInstalls(theGameType);
+            if (installs.Count == 0)
+            {
+                return null;
+            }
+            if (installs.Count == 1)
+            {
+                return installs[0];
             }
 
-            return returnVal;
+            AowGame byLabel = GetGameByLabel(theGameType, modLabel);
+            if (byLabel != null)
+            {
+                return byLabel;
+            }
+
+            return ResolveKnown(theGameType, fileName, installs) ?? installs[0];
         }
+
+        /// <summary>
+        /// Where an outgoing turn came from: the copy whose game is running right now, else the
+        /// copy the game was last seen in, else the only copy holding a turn of it, else the default.
+        /// </summary>
+        public AowGame ResolveOutgoing(AowGameType theGameType, string fileName)
+        {
+            List<AowGame> installs = GetInstalls(theGameType);
+            if (installs.Count == 0)
+            {
+                return null;
+            }
+            if (installs.Count == 1)
+            {
+                return installs[0];
+            }
+
+            List<AowGame> running = installs.Where(IsRunning).ToList();
+            if (running.Count == 1)
+            {
+                return running[0];
+            }
+
+            return ResolveKnown(theGameType, fileName, installs) ?? installs[0];
+        }
+
+        private AowGame ResolveKnown(AowGameType theGameType, string fileName, List<AowGame> installs)
+        {
+            if (string.IsNullOrEmpty(fileName))
+            {
+                return null;
+            }
+
+            if (InstallHint != null)
+            {
+                string folder = InstallHint(theGameType, fileName);
+                AowGame hinted = GetGameByFolder(theGameType, folder);
+                if (hinted != null)
+                {
+                    return hinted;
+                }
+            }
+
+            List<AowGame> holding = installs.Where(game => game.HoldsGameFile(fileName)).ToList();
+            return holding.Count == 1 ? holding[0] : null;
+        }
+
+        /// <summary>True when a process of this copy's executable is running from this folder.</summary>
+        public static bool IsRunning(AowGame game)
+        {
+            if (game == null || !game.IsInstalled)
+            {
+                return false;
+            }
+
+            try
+            {
+                foreach (Process process in Process.GetProcessesByName(Path.GetFileNameWithoutExtension(game.ExeFile)))
+                {
+                    using (process)
+                    {
+                        try
+                        {
+                            string path = process.MainModule != null ? process.MainModule.FileName : null;
+                            if (!string.IsNullOrEmpty(path) && AowGame.SameFolder(Path.GetDirectoryName(path), game.Folder))
+                            {
+                                return true;
+                            }
+                        }
+                        catch (Exception)
+                        {
+                            //A process we may not inspect is not ours
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Trace.TraceWarning("Could not list running games: {0}", ex.Message);
+            }
+
+            return false;
+        }
+
+        #endregion
+
+        #region Incoming turns
 
         public void StoreDownloadFile(ASGFileInfo theAsgFile)
         {
@@ -85,250 +348,178 @@ namespace AowEmailWrapper.Games
 
         public void StoreDownloadFile(ASGFileInfo theAsgFile, EmailSaveFolder saveFolder)
         {
-            bool success = false;
+            StoreDownloadFile(theAsgFile, saveFolder, null, null);
+        }
 
-            AowGame theGame = GetGameByType(theAsgFile.GameType);
-            if (theGame != null && theAsgFile.IsValid)
+        public void StoreDownloadFile(ASGFileInfo theAsgFile, EmailSaveFolder saveFolder, string accountName)
+        {
+            StoreDownloadFile(theAsgFile, saveFolder, accountName, null);
+        }
+
+        public void StoreDownloadFile(ASGFileInfo theAsgFile, EmailSaveFolder saveFolder, string accountName, string modLabel)
+        {
+            AowGame theGame = theAsgFile.IsValid ? ResolveIncoming(theAsgFile.GameType, modLabel, theAsgFile.FileNameTrue) : null;
+
+            if (theGame != null)
             {
                 DirectoryInfo saveFolderInfo = GetSaveFolder(theGame, saveFolder);
-                if (saveFolderInfo != null)
-                {
-                    theAsgFile.SaveToFolder(saveFolderInfo.FullName);
-                    success = true;
-                }
-            }
+                theAsgFile.SaveToFolder(saveFolderInfo.FullName);
 
-            if (success)
-            {
-                RaiseOnGameSaved(
-                    theAsgFile.GameType,
-                    theAsgFile.FileNameTrue,
-                    theAsgFile.GameTitle,
-                    theAsgFile.MapTitle,
-                    theAsgFile.TurnNumber.ToString());
+                Trace.TraceInformation("Turn {0} ({1}, label '{2}') stored in {3}", theAsgFile.FileNameTrue, theAsgFile.GameType, modLabel, saveFolderInfo.FullName);
+
+                RaiseOnGameSaved(new AowGameSavedEventArgs(theAsgFile.GameType, theAsgFile.FileNameTrue, theAsgFile.GameTitle, theAsgFile.MapTitle, theAsgFile.TurnNumber.ToString())
+                {
+                    AccountName = accountName,
+                    Install = theGame,
+                    ModLabel = modLabel
+                });
             }
             else
             {
                 theAsgFile.SaveToFolder(_checkEmailFolder);
-                RaiseOnGameSaved(AowGameType.Unknown, theAsgFile.FileName);
+                RaiseOnGameSaved(new AowGameSavedEventArgs(AowGameType.Unknown, theAsgFile.FileName) { AccountName = accountName, ModLabel = modLabel });
             }
-
-            //OLD CODE
-            /*
-            switch (theAsgFile.FileType)
-            {
-                case ASGFileType.Aow1:
-                    if (IsInstalled(AowGameType.Aow1))
-                    {
-                        theGame = GetGameByType(AowGameType.Aow1);
-                        theAsgFile.SaveToFolder(GetSaveFolder(theGame, saveFolder).FullName);
-                    }
-                    break;
-                case ASGFileType.Aow2Sm:
-                    bool aow2 = IsInstalled(AowGameType.Aow2);
-                    bool aowSm = IsInstalled(AowGameType.AowSm);
-
-                    if (aow2 && !aowSm)
-                    {
-                        theGame = GetGameByType(AowGameType.Aow2);
-                        theAsgFile.SaveToFolder(GetSaveFolder(theGame, saveFolder).FullName);
-                    }
-                    else if (!aow2 && aowSm)
-                    {
-                        theGame = GetGameByType(AowGameType.AowSm);
-                        theAsgFile.SaveToFolder(GetSaveFolder(theGame, saveFolder).FullName);
-                    }
-                    else if (aow2 && aowSm)
-                    {
-                        theGame = GetGameByFile(theAsgFile.FileName);
-
-                        if (theGame != null)
-                        {
-                            theAsgFile.SaveToFolder(GetSaveFolder(theGame, saveFolder).FullName);
-                        }
-                        else
-                        {
-                            theAsgFile.SaveToFolder(_checkEmailFolder);
-                        }
-                    }
-                    break;
-            }
-            */
         }
 
+        #endregion
+
+        #region Game folders
+
+        /// <summary>Points every installed game at the Wrapper. Copies of one game share the registry key, so each key is written once.</summary>
         public void SetEmailConfigAll(string attachmentDir, string localEmailAddress, string smtpServer)
         {
-            foreach (AowGame game in _games)
+            HashSet<string> done = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            foreach (AowGame game in _games.Where(game => game.IsInstalled))
             {
-                if (game.IsInstalled)
+                if (done.Add(game.GameName))
                 {
                     game.SetEmailConfig(attachmentDir, localEmailAddress, smtpServer);
                 }
             }
         }
 
-        public AowGame GetGameByType(AowGameType theGameType)
-        {
-            return _games.Find(game => game.GameType.Equals(theGameType));
-        }
-
-        /*
-        public AowGame GetGameByFile(string fileName)
-        {
-            AowGame returnVal = null;
-            string searchPattern = GetSearchPattern(fileName);
-
-            foreach (AowGame game in _games)
-            {
-                if (game.IsInstalled)
-                {
-                    int emailInCount = GetAllGameFiles(fileName, game.EmailIn, searchPattern).Length;
-                    int emailOutCount = GetAllGameFiles(fileName, game.EmailOut, searchPattern).Length;
-                    int saveCount = GetAllGameFiles(fileName, game.Save, searchPattern).Length;
-
-                    if (emailInCount > 0 || emailOutCount > 0 || saveCount > 0)
-                    {
-                        if (returnVal == null)
-                        {
-                            returnVal = game;
-                        }
-                        else
-                        {
-                            //Two games with the same file have been found
-                            returnVal = null;
-                            break;
-                        }
-                    }
-                }
-            }
-
-            return returnVal;
-        }
-        */ 
-
         public bool CheckWriteAccess()
         {
-            bool returnVal = true;
+            return _games.Where(game => game.IsInstalled).All(game => game.WriteAccess);
+        }
 
+        public void ResetWriteAccess()
+        {
             foreach (AowGame game in _games)
             {
-                if (game.IsInstalled)
+                game.ResetWriteAccess();
+            }
+        }
+
+        /// <summary>Game folders the Wrapper cannot write into, each named once.</summary>
+        public List<string> RootsWithoutWriteAccess
+        {
+            get
+            {
+                List<string> roots = new List<string>();
+                foreach (AowGame game in _games.Where(game => game.IsInstalled && !game.WriteAccess))
                 {
-                    if (!game.WriteAccess)
+                    if (!roots.Any(existing => AowGame.SameFolder(existing, game.Folder)))
                     {
-                        returnVal = false;
-                        break;
+                        roots.Add(game.Folder);
                     }
                 }
+                return roots;
             }
-
-            return returnVal;
         }
 
         public string GetEmailInFolderList()
         {
-            StringBuilder sb = new StringBuilder();
+            List<string> folders = new List<string>();
 
-            foreach (AowGame game in _games)
+            foreach (AowGame game in _games.Where(game => game.IsInstalled && !game.WriteAccess))
             {
-                if (game.IsInstalled && !game.WriteAccess)
+                foreach (string folder in new[] { game.EmailIn.FullName, game.Save.FullName })
                 {
-                    sb.Append(game.EmailIn.FullName);
-                    sb.Append(Environment.NewLine);
-                    sb.Append(game.Save.FullName);
-                    sb.Append(Environment.NewLine);
+                    if (!folders.Any(existing => AowGame.SameFolder(existing, folder)))
+                    {
+                        folders.Add(folder);
+                    }
                 }
             }
 
-            return sb.ToString().Trim();
+            return string.Join(Environment.NewLine, folders);
         }
 
+        /// <summary>Deletes a game's files from every copy of that game type.</summary>
         public void DeleteGame(AowGameType theGameType, string fileName)
         {
-            if (!theGameType.Equals(AowGameType.Unknown))
+            if (theGameType == AowGameType.Unknown)
             {
-                AowGame theGame = GetGameByType(theGameType);
+                //If it's an unknown game just delete
+                ClearCheckEmailFolder(fileName);
+                return;
+            }
 
-                if (theGame != null && theGame.IsInstalled)
+            foreach (AowGame theGame in GetInstalls(theGameType))
+            {
+                foreach (DirectoryInfo folder in theGame.TurnFolders)
                 {
-                    DirectoryInfo[] theFolders = new DirectoryInfo[] { theGame.EmailIn, theGame.EmailOut, theGame.Save };
-                    string searchPattern = GetSearchPattern(fileName);
-
-                    foreach (DirectoryInfo folder in theFolders)
+                    foreach (FileInfo file in GetAllGameFiles(fileName, folder))
                     {
-                        FileInfo[] matchingFiles = GetAllGameFiles(fileName, folder, searchPattern);
-                        if (matchingFiles.Length > 0)
+                        if (File.Exists(file.FullName))
                         {
-                            foreach (FileInfo file in matchingFiles)
-                            {
-                                if (File.Exists(file.FullName))
-                                {
-                                    File.Delete(file.FullName);
-                                }
-                            }
+                            File.Delete(file.FullName);
                         }
                     }
                 }
             }
-            else
-            {
-                //If it's an unknown game just delete
-                ClearCheckEmailFolder(fileName);
-            }
         }
 
+        /// <summary>Moves a game's files into an Ended sub folder in every copy that holds them.</summary>
         public void ArchiveEndedGame(AowGameType theGameType, string fileName, string endedFolderName)
         {
-            if (!theGameType.Equals(AowGameType.Unknown))
+            if (theGameType == AowGameType.Unknown)
             {
-                AowGame theGame = GetGameByType(theGameType);
+                //If it's an unknown game just delete
+                ClearCheckEmailFolder(fileName);
+                return;
+            }
 
-                if (theGame != null && theGame.IsInstalled)
+            foreach (AowGame theGame in GetInstalls(theGameType))
+            {
+                foreach (DirectoryInfo folder in theGame.TurnFolders)
                 {
-                    DirectoryInfo[] theFolders = new DirectoryInfo[] { theGame.EmailIn, theGame.EmailOut, theGame.Save };
-                    string searchPattern = GetSearchPattern(fileName);
-
-                    foreach (DirectoryInfo folder in theFolders)
+                    FileInfo[] matchingFiles = GetAllGameFiles(fileName, folder);
+                    if (matchingFiles.Length > 0)
                     {
-                        FileInfo[] matchingFiles = GetAllGameFiles(fileName, folder, searchPattern);
-                        if (matchingFiles.Length > 0)
+                        string endedFolderPath = Path.Combine(folder.FullName, endedFolderName);
+                        Directory.CreateDirectory(endedFolderPath);
+
+                        foreach (FileInfo file in matchingFiles)
                         {
-                            string endedFolderPath = Path.Combine(folder.FullName, endedFolderName);
-
-                            if (!Directory.Exists(endedFolderPath))
-                            {
-                                Directory.CreateDirectory(endedFolderPath);
-                            }
-
-                            DirectoryInfo theEndedFolder = new DirectoryInfo(endedFolderPath);
-
-                            foreach (FileInfo file in matchingFiles)
-                            {
-                                string newFileName = Path.Combine(theEndedFolder.FullName, file.Name);
-                                try
-                                {
-                                    if (File.Exists(newFileName))
-                                    {
-                                        File.Delete(newFileName);
-                                    }
-                                    //This is in a Try Catch incase it tries to move a non virtualized file in virtualization mode (UAC on)
-                                    File.Move(file.FullName, newFileName);
-                                }
-                                catch
-                                { }
-                            }
+                            MoveFile(file, Path.Combine(endedFolderPath, file.Name));
                         }
                     }
                 }
             }
-            else
+        }
+
+        /// <summary>
+        /// Moves a game's turn files from whichever copies hold them into the target copy, keeping
+        /// EmailIn, EmailOut and Save apart. Used when a first turn landed in the wrong copy.
+        /// </summary>
+        public void MoveGame(AowGameType theGameType, string fileName, AowGame target)
+        {
+            if (target == null || !target.IsInstalled || string.IsNullOrEmpty(fileName))
             {
-                //If it's an unknown game just delete
-                ClearCheckEmailFolder(fileName);
+                return;
+            }
+
+            foreach (AowGame source in GetInstalls(theGameType).Where(game => game.Id != target.Id))
+            {
+                MoveFiles(fileName, source.EmailIn, target.EmailIn);
+                MoveFiles(fileName, source.EmailOut, target.EmailOut);
+                MoveFiles(fileName, source.Save, target.Save);
             }
         }
 
-        public void CopyToEmailOut(MimeData theAttachment, AowGame theGame)
+        public void CopyToEmailOut(MimePart theAttachment, AowGame theGame)
         {
             if (theAttachment != null && theGame != null)
             {
@@ -343,7 +534,7 @@ namespace AowEmailWrapper.Games
                         File.Delete(destPath);
                     }
 
-                    theAttachment.Save(destPath);
+                    MailHelper.SaveAttachment(theAttachment, destPath);
                 }
             }
         }
@@ -351,6 +542,36 @@ namespace AowEmailWrapper.Games
         #endregion
 
         #region Private Methods
+
+        private void MoveFiles(string fileName, DirectoryInfo from, DirectoryInfo to)
+        {
+            if (AowGame.SameFolder(from.FullName, to.FullName))
+            {
+                return;
+            }
+            foreach (FileInfo file in GetAllGameFiles(fileName, from))
+            {
+                Directory.CreateDirectory(to.FullName);
+                MoveFile(file, Path.Combine(to.FullName, file.Name));
+            }
+        }
+
+        private static void MoveFile(FileInfo file, string destination)
+        {
+            try
+            {
+                if (File.Exists(destination))
+                {
+                    File.Delete(destination);
+                }
+                //This is in a Try Catch incase it tries to move a non virtualized file in virtualization mode (UAC on)
+                File.Move(file.FullName, destination);
+            }
+            catch (Exception ex)
+            {
+                Trace.TraceWarning("Could not move {0} to {1}: {2}", file.FullName, destination, ex.Message);
+            }
+        }
 
         private void ClearCheckEmailFolder(string fileName)
         {
@@ -361,47 +582,29 @@ namespace AowEmailWrapper.Games
             }
         }
 
-        private string GetSearchPattern(string fileName)
+        private static FileInfo[] GetAllGameFiles(string fileName, DirectoryInfo folder)
         {
-            return string.Format(FileSearchTemplate, ASGFileInfo.SafeSearchFileName(fileName));
+            try
+            {
+                return folder.Exists ? folder.GetFiles(AowGame.SearchPattern(fileName)) : new FileInfo[0];
+            }
+            catch (Exception)
+            {
+                return new FileInfo[0];
+            }
         }
 
-        private FileInfo[] GetAllGameFiles(string fileName, DirectoryInfo folder)
-        {
-            return GetAllGameFiles(fileName, folder, GetSearchPattern(fileName));
-        }
-
-        private FileInfo[] GetAllGameFiles(string fileName, DirectoryInfo folder, string searchPattern)
-        {
-            return folder.GetFiles(searchPattern);
-        }
-
-        private void RaiseOnGameSaved(AowGameType type, string fileName)
+        private void RaiseOnGameSaved(AowGameSavedEventArgs e)
         {
             if (OnGameSaved != null)
             {
-                OnGameSaved(this, new AowGameSavedEventArgs(type, fileName));
+                OnGameSaved(this, e);
             }
         }
 
-        private void RaiseOnGameSaved(AowGameType type, string fileName, string gameTitle, string mapTitle, string turnNo)
+        private static DirectoryInfo GetSaveFolder(AowGame theGame, EmailSaveFolder saveFolder)
         {
-            if (OnGameSaved != null)
-            {
-                OnGameSaved(this, new AowGameSavedEventArgs(type, fileName, gameTitle, mapTitle, turnNo));
-            }
-        }
-
-        private DirectoryInfo GetSaveFolder(AowGame theGame, EmailSaveFolder saveFolder)
-        {
-            DirectoryInfo returnVal = theGame.EmailIn;
-
-            if (saveFolder.Equals(EmailSaveFolder.Save))
-            {
-                returnVal = theGame.Save;
-            }
-
-            return returnVal;
+            return saveFolder == EmailSaveFolder.Save ? theGame.Save : theGame.EmailIn;
         }
 
         #endregion

@@ -186,7 +186,7 @@
             this.lblAutoconfigHeaderMessage.Name = "lblAutoconfigHeaderMessage";
             this.lblAutoconfigHeaderMessage.Size = new System.Drawing.Size(420, 32);
             this.lblAutoconfigHeaderMessage.TabIndex = 0;
-            this.lblAutoconfigHeaderMessage.Text = "Autoconfig Wizard";
+            this.lblAutoconfigHeaderMessage.Text = "Set up your email account";
             // 
             // panelLeft
             // 
@@ -206,15 +206,16 @@
             this.lblThunderbirdTitle.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblThunderbirdTitle.Location = new System.Drawing.Point(3, 237);
             this.lblThunderbirdTitle.Name = "lblThunderbirdTitle";
+            this.lblThunderbirdTitle.Padding = new System.Windows.Forms.Padding(0, 6, 0, 0);
             this.lblThunderbirdTitle.Size = new System.Drawing.Size(154, 79);
             this.lblThunderbirdTitle.TabIndex = 1;
-            this.lblThunderbirdTitle.Text = "Thunderbird Database";
+            this.lblThunderbirdTitle.Text = "The Chief Librarian";
             this.lblThunderbirdTitle.TextAlign = System.Drawing.ContentAlignment.TopCenter;
             // 
             // pictureBoxThunderbird
             // 
             this.pictureBoxThunderbird.Dock = System.Windows.Forms.DockStyle.Top;
-            this.pictureBoxThunderbird.Image = global::AowEmailWrapper.Properties.Resources.thunderbird;
+            this.pictureBoxThunderbird.Image = global::AowEmailWrapper.Properties.Resources.chiefLibrarian;
             this.pictureBoxThunderbird.Location = new System.Drawing.Point(3, 70);
             this.pictureBoxThunderbird.Name = "pictureBoxThunderbird";
             this.pictureBoxThunderbird.Size = new System.Drawing.Size(154, 167);

@@ -59,9 +59,14 @@ namespace AowEmailWrapper
                 {
                     Splash.ShowSplashScreen();
                 }
+                Application.SetHighDpiMode(HighDpiMode.SystemAware);
+                LogHelper.Start();
                 Application.EnableVisualStyles();
                 Application.SetCompatibleTextRenderingDefault(false);
                 Application.Run(new Main());
+
+                //An update the player accepted is installed once the window is gone
+                UpdateHelper.RunPendingInstaller();
             }
         }
     }

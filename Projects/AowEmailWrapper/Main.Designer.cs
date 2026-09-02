@@ -43,6 +43,8 @@
             this.accountsConfig = new AowEmailWrapper.Controls.AccountsConfig();
             this.tabActivity = new System.Windows.Forms.TabPage();
             this.activityListView = new AowEmailWrapper.Controls.ActivityListView();
+            this.tabGames = new System.Windows.Forms.TabPage();
+            this.gamesConfig = new AowEmailWrapper.Controls.GamesConfig();
             this.tabPreferences = new System.Windows.Forms.TabPage();
             this.preferencesConfig = new AowEmailWrapper.Controls.PreferencesConfig();
             this.tabAbout = new System.Windows.Forms.TabPage();
@@ -50,6 +52,7 @@
             this.panelCredits = new System.Windows.Forms.Panel();
             this.groupCodeContributors = new System.Windows.Forms.GroupBox();
             this.lblCodeCon5 = new System.Windows.Forms.Label();
+            this.lblCodeCon6 = new System.Windows.Forms.Label();
             this.lblCodeCon4 = new System.Windows.Forms.Label();
             this.lblCodeCon3 = new System.Windows.Forms.Label();
             this.lblCodeCon2 = new System.Windows.Forms.Label();
@@ -77,11 +80,33 @@
             this.lblTester1 = new System.Windows.Forms.Label();
             this.groupAuthors = new System.Windows.Forms.GroupBox();
             this.lblAuthor2 = new System.Windows.Forms.Label();
+            this.lblAuthor3 = new System.Windows.Forms.Label();
             this.lblAuthor1 = new System.Windows.Forms.Label();
             this.lblNotice = new System.Windows.Forms.Label();
             this.panelTitle = new System.Windows.Forms.Panel();
             this.lblVersion = new System.Windows.Forms.Label();
-            this.fbLink = new AowEmailWrapper.Controls.LinkButton();
+            this.groupDedication = new System.Windows.Forms.GroupBox();
+            this.lblDedication = new System.Windows.Forms.Label();
+            this.lblDedicationQuote = new System.Windows.Forms.Label();
+            this.lblDedicationBy = new System.Windows.Forms.Label();
+            this.tableDedication = new System.Windows.Forms.TableLayoutPanel();
+            this.tableDiscordIntro = new System.Windows.Forms.TableLayoutPanel();
+            this.groupDiscord = new System.Windows.Forms.GroupBox();
+            this.lblDiscordIntro = new System.Windows.Forms.Label();
+            this.tableDiscord = new System.Windows.Forms.TableLayoutPanel();
+            this.lblDiscordZig = new System.Windows.Forms.Label();
+            this.linkDiscordZig = new System.Windows.Forms.LinkLabel();
+            this.lblDiscordAow1 = new System.Windows.Forms.Label();
+            this.linkDiscordAow1 = new System.Windows.Forms.LinkLabel();
+            this.lblDiscordAowx = new System.Windows.Forms.Label();
+            this.linkDiscordAowx = new System.Windows.Forms.LinkLabel();
+            this.lblDiscordAow2 = new System.Windows.Forms.Label();
+            this.linkDiscordAow2 = new System.Windows.Forms.LinkLabel();
+            this.groupBoxSupport = new System.Windows.Forms.GroupBox();
+            this.flowSupport = new System.Windows.Forms.FlowLayoutPanel();
+            this.cmdCheckUpdates = new System.Windows.Forms.Button();
+            this.cmdLogFolder = new System.Windows.Forms.Button();
+            this.cmdReportBug = new System.Windows.Forms.Button();
             this.lblTrans11 = new System.Windows.Forms.Label();
             this.panelBottom.SuspendLayout();
             this.panelLocalMessageStore.SuspendLayout();
@@ -89,9 +114,17 @@
             this.tabControlMain.SuspendLayout();
             this.tabAccounts.SuspendLayout();
             this.tabActivity.SuspendLayout();
+            this.tabGames.SuspendLayout();
             this.tabPreferences.SuspendLayout();
             this.tabAbout.SuspendLayout();
             this.panelAbout.SuspendLayout();
+            this.groupDedication.SuspendLayout();
+            this.tableDedication.SuspendLayout();
+            this.tableDiscordIntro.SuspendLayout();
+            this.groupDiscord.SuspendLayout();
+            this.tableDiscord.SuspendLayout();
+            this.groupBoxSupport.SuspendLayout();
+            this.flowSupport.SuspendLayout();
             this.panelCredits.SuspendLayout();
             this.groupCodeContributors.SuspendLayout();
             this.groupTranslators.SuspendLayout();
@@ -108,16 +141,7 @@
             // 
             // imageListIcons
             // 
-            this.imageListIcons.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("imageListIcons.ImageStream")));
             this.imageListIcons.TransparentColor = System.Drawing.Color.Transparent;
-            this.imageListIcons.Images.SetKeyName(0, "EmailWaiting");
-            this.imageListIcons.Images.SetKeyName(1, "Sending");
-            this.imageListIcons.Images.SetKeyName(2, "Checking");
-            this.imageListIcons.Images.SetKeyName(3, "AoW1");
-            this.imageListIcons.Images.SetKeyName(4, "AoW2");
-            this.imageListIcons.Images.SetKeyName(5, "AoWSM");
-            this.imageListIcons.Images.SetKeyName(6, "AoWMpe");
-            this.imageListIcons.Images.SetKeyName(7, "CheckEmail");
             // 
             // panelBottom
             // 
@@ -178,6 +202,7 @@
             // 
             this.tabControlMain.Controls.Add(this.tabAccounts);
             this.tabControlMain.Controls.Add(this.tabActivity);
+            this.tabControlMain.Controls.Add(this.tabGames);
             this.tabControlMain.Controls.Add(this.tabPreferences);
             this.tabControlMain.Controls.Add(this.tabAbout);
             this.tabControlMain.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -228,16 +253,36 @@
             this.activityListView.Size = new System.Drawing.Size(514, 518);
             this.activityListView.SmallImageList = null;
             this.activityListView.TabIndex = 0;
-            // 
+            //
+            // tabGames
+            //
+            this.tabGames.Controls.Add(this.gamesConfig);
+            this.tabGames.Location = new System.Drawing.Point(4, 22);
+            this.tabGames.Name = "tabGames";
+            this.tabGames.Size = new System.Drawing.Size(514, 518);
+            this.tabGames.TabIndex = 8;
+            this.tabGames.Text = "Games";
+            this.tabGames.UseVisualStyleBackColor = true;
+            //
+            // gamesConfig
+            //
+            this.gamesConfig.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.gamesConfig.Location = new System.Drawing.Point(0, 0);
+            this.gamesConfig.Name = "gamesConfig";
+            this.gamesConfig.Size = new System.Drawing.Size(514, 518);
+            this.gamesConfig.TabIndex = 0;
+            //
             // tabPreferences
             // 
+            // The group box is added first so the top-docked preferences control is laid out above it
+            this.tabPreferences.Controls.Add(this.groupBoxSupport);
             this.tabPreferences.Controls.Add(this.preferencesConfig);
             this.tabPreferences.Location = new System.Drawing.Point(4, 22);
             this.tabPreferences.Margin = new System.Windows.Forms.Padding(2);
             this.tabPreferences.Name = "tabPreferences";
             this.tabPreferences.Size = new System.Drawing.Size(514, 518);
             this.tabPreferences.TabIndex = 3;
-            this.tabPreferences.Text = "Preferences";
+            this.tabPreferences.Text = "Settings";
             this.tabPreferences.UseVisualStyleBackColor = true;
             // 
             // preferencesConfig
@@ -270,7 +315,11 @@
             // 
             // panelAbout
             // 
+            // The fill-docked credits panel is first so it is laid out after the top-docked sections;
+            // those go in reverse order: title, notice, Discord servers, dedication
             this.panelAbout.Controls.Add(this.panelCredits);
+            this.panelAbout.Controls.Add(this.groupDedication);
+            this.panelAbout.Controls.Add(this.groupDiscord);
             this.panelAbout.Controls.Add(this.lblNotice);
             this.panelAbout.Controls.Add(this.panelTitle);
             this.panelAbout.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -296,6 +345,7 @@
             // 
             // groupCodeContributors
             // 
+            this.groupCodeContributors.Controls.Add(this.lblCodeCon6);
             this.groupCodeContributors.Controls.Add(this.lblCodeCon5);
             this.groupCodeContributors.Controls.Add(this.lblCodeCon4);
             this.groupCodeContributors.Controls.Add(this.lblCodeCon3);
@@ -304,13 +354,19 @@
             this.groupCodeContributors.Dock = System.Windows.Forms.DockStyle.Top;
             this.groupCodeContributors.Location = new System.Drawing.Point(0, 775);
             this.groupCodeContributors.Name = "groupCodeContributors";
-            this.groupCodeContributors.Size = new System.Drawing.Size(485, 172);
+            this.groupCodeContributors.Size = new System.Drawing.Size(485, 202);
             this.groupCodeContributors.TabIndex = 17;
             this.groupCodeContributors.TabStop = false;
             this.groupCodeContributors.Text = "Code Contributors";
             // 
             // lblCodeCon5
             // 
+            this.lblCodeCon6.Dock = System.Windows.Forms.DockStyle.Top;
+            this.lblCodeCon6.Location = new System.Drawing.Point(3, 166);
+            this.lblCodeCon6.Name = "lblCodeCon6";
+            this.lblCodeCon6.Size = new System.Drawing.Size(479, 30);
+            this.lblCodeCon6.TabIndex = 6;
+            this.lblCodeCon6.Text = "Microsoft sign-in; MSAL (Microsoft Authentication Library)";
             this.lblCodeCon5.Dock = System.Windows.Forms.DockStyle.Top;
             this.lblCodeCon5.Location = new System.Drawing.Point(3, 136);
             this.lblCodeCon5.Name = "lblCodeCon5";
@@ -327,7 +383,7 @@
             this.lblCodeCon4.Padding = new System.Windows.Forms.Padding(0, 10, 0, 0);
             this.lblCodeCon4.Size = new System.Drawing.Size(479, 30);
             this.lblCodeCon4.TabIndex = 42;
-            this.lblCodeCon4.Text = "Mail library; Pawel Lesnikowski";
+            this.lblCodeCon4.Text = "Mail library; MailKit by Jeffrey Stedfast";
             // 
             // lblCodeCon3
             // 
@@ -597,25 +653,33 @@
             // 
             // groupAuthors
             // 
+            this.groupAuthors.Controls.Add(this.lblAuthor3);
             this.groupAuthors.Controls.Add(this.lblAuthor2);
             this.groupAuthors.Controls.Add(this.lblAuthor1);
             this.groupAuthors.Dock = System.Windows.Forms.DockStyle.Top;
             this.groupAuthors.Location = new System.Drawing.Point(0, 0);
             this.groupAuthors.Name = "groupAuthors";
-            this.groupAuthors.Size = new System.Drawing.Size(485, 91);
+            this.groupAuthors.Size = new System.Drawing.Size(485, 124);
             this.groupAuthors.TabIndex = 13;
             this.groupAuthors.TabStop = false;
             this.groupAuthors.Text = "Authors";
             // 
             // lblAuthor2
             // 
+            this.lblAuthor3.Dock = System.Windows.Forms.DockStyle.Top;
+            this.lblAuthor3.Location = new System.Drawing.Point(3, 82);
+            this.lblAuthor3.Name = "lblAuthor3";
+            this.lblAuthor3.Padding = new System.Windows.Forms.Padding(0, 10, 0, 0);
+            this.lblAuthor3.Size = new System.Drawing.Size(479, 33);
+            this.lblAuthor3.TabIndex = 8;
+            this.lblAuthor3.Text = "Eugene Wolff: Version 2.0 (.NET 8, MailKit, Gmail and Microsoft sign-in)";
             this.lblAuthor2.Dock = System.Windows.Forms.DockStyle.Top;
             this.lblAuthor2.Location = new System.Drawing.Point(3, 49);
             this.lblAuthor2.Name = "lblAuthor2";
             this.lblAuthor2.Padding = new System.Windows.Forms.Padding(0, 10, 0, 0);
             this.lblAuthor2.Size = new System.Drawing.Size(479, 33);
             this.lblAuthor2.TabIndex = 7;
-            this.lblAuthor2.Text = "David N.T. Honess: Development, Programming";
+            this.lblAuthor2.Text = "David N.T. Honess (Retired): Development, Programming";
             // 
             // lblAuthor1
             // 
@@ -625,22 +689,267 @@
             this.lblAuthor1.Padding = new System.Windows.Forms.Padding(0, 10, 0, 0);
             this.lblAuthor1.Size = new System.Drawing.Size(479, 33);
             this.lblAuthor1.TabIndex = 6;
-            this.lblAuthor1.Text = "Bryan S. Carter: Original concept, QA Testing";
+            this.lblAuthor1.Text = "Bryan S. Carter (Retired): Original concept, QA Testing";
             // 
             // lblNotice
             // 
             this.lblNotice.Dock = System.Windows.Forms.DockStyle.Top;
             this.lblNotice.Location = new System.Drawing.Point(5, 45);
             this.lblNotice.Name = "lblNotice";
-            this.lblNotice.Padding = new System.Windows.Forms.Padding(0, 10, 0, 0);
+            this.lblNotice.Padding = new System.Windows.Forms.Padding(0, 10, 0, 6);
             this.lblNotice.Size = new System.Drawing.Size(504, 83);
             this.lblNotice.TabIndex = 10;
             this.lblNotice.Text = resources.GetString("lblNotice.Text");
             // 
             // panelTitle
             // 
+            //
+            // groupDedication
+            //
+            this.groupDedication.Controls.Add(this.tableDedication);
+            this.groupDedication.Dock = System.Windows.Forms.DockStyle.Top;
+            this.groupDedication.Name = "groupDedication";
+            this.groupDedication.Padding = new System.Windows.Forms.Padding(8, 3, 8, 8);
+            this.groupDedication.Size = new System.Drawing.Size(504, 140);
+            this.groupDedication.TabIndex = 18;
+            this.groupDedication.TabStop = false;
+            this.groupDedication.Text = "Dedication";
+            //
+            // lblDedication
+            //
+            this.lblDedication.AutoSize = true;
+            this.lblDedication.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lblDedication.Margin = new System.Windows.Forms.Padding(0);
+            this.lblDedication.Name = "lblDedication";
+            this.lblDedication.Padding = new System.Windows.Forms.Padding(0, 4, 0, 6);
+            this.lblDedication.Text = "To the Heroes and Wizards who have been sent forever to the void - their towers torn asunder and their mounts slain.";
+            //
+            // lblDedicationQuote
+            //
+            this.lblDedicationQuote.AutoSize = true;
+            this.lblDedicationQuote.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lblDedicationQuote.Margin = new System.Windows.Forms.Padding(0);
+            this.lblDedicationQuote.Font = new System.Drawing.Font(System.Drawing.SystemFonts.DefaultFont, System.Drawing.FontStyle.Italic);
+            this.lblDedicationQuote.Name = "lblDedicationQuote";
+            this.lblDedicationQuote.Padding = new System.Windows.Forms.Padding(12, 0, 12, 4);
+            this.lblDedicationQuote.Text = "\"We escape to a realm that knows no Death. Though we do not know exactly what lies beyond this door, we hope that it will bring peace and immortalization for our peoples and a proper tribute to the fallen.\"";
+            //
+            // lblDedicationBy
+            //
+            this.lblDedicationBy.AutoSize = true;
+            this.lblDedicationBy.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lblDedicationBy.Margin = new System.Windows.Forms.Padding(0);
+            this.lblDedicationBy.Name = "lblDedicationBy";
+            this.lblDedicationBy.Padding = new System.Windows.Forms.Padding(24, 0, 0, 0);
+            this.lblDedicationBy.Text = "- Black_Cat, Maugogam, Nov '24";
+            //
+            // tableDedication
+            //
+            this.tableDedication.AutoSize = true;
+            this.tableDedication.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.tableDedication.ColumnCount = 1;
+            this.tableDedication.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableDedication.Controls.Add(this.lblDedication, 0, 0);
+            this.tableDedication.Controls.Add(this.lblDedicationQuote, 0, 1);
+            this.tableDedication.Controls.Add(this.lblDedicationBy, 0, 2);
+            this.tableDedication.Dock = System.Windows.Forms.DockStyle.Top;
+            this.tableDedication.Name = "tableDedication";
+            this.tableDedication.RowCount = 3;
+            this.tableDedication.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableDedication.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableDedication.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            //
+            // tableDiscordIntro
+            //
+            this.tableDiscordIntro.AutoSize = true;
+            this.tableDiscordIntro.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.tableDiscordIntro.ColumnCount = 1;
+            this.tableDiscordIntro.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableDiscordIntro.Controls.Add(this.lblDiscordIntro, 0, 0);
+            this.tableDiscordIntro.Dock = System.Windows.Forms.DockStyle.Top;
+            this.tableDiscordIntro.Name = "tableDiscordIntro";
+            this.tableDiscordIntro.RowCount = 1;
+            this.tableDiscordIntro.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            //
+            // groupDiscord
+            //
+            this.groupDiscord.Controls.Add(this.tableDiscord);
+            this.groupDiscord.Controls.Add(this.tableDiscordIntro);
+            this.groupDiscord.Dock = System.Windows.Forms.DockStyle.Top;
+            this.groupDiscord.Location = new System.Drawing.Point(5, 45);
+            this.groupDiscord.Name = "groupDiscord";
+            this.groupDiscord.Padding = new System.Windows.Forms.Padding(8, 3, 8, 8);
+            this.groupDiscord.Size = new System.Drawing.Size(504, 140);
+            this.groupDiscord.TabIndex = 17;
+            this.groupDiscord.TabStop = false;
+            this.groupDiscord.Text = "Discord servers";
+            //
+            // lblDiscordIntro
+            //
+            this.lblDiscordIntro.AutoSize = true;
+            this.lblDiscordIntro.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lblDiscordIntro.Margin = new System.Windows.Forms.Padding(0);
+            this.lblDiscordIntro.Name = "lblDiscordIntro";
+            this.lblDiscordIntro.Padding = new System.Windows.Forms.Padding(0, 4, 0, 6);
+            this.lblDiscordIntro.Text = "A few friendly places where players meet for play-by-email games:";
+            //
+            // tableDiscord
+            //
+            this.tableDiscord.AutoSize = true;
+            this.tableDiscord.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.tableDiscord.ColumnCount = 2;
+            this.tableDiscord.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tableDiscord.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tableDiscord.Controls.Add(this.lblDiscordZig, 0, 0);
+            this.tableDiscord.Controls.Add(this.linkDiscordZig, 1, 0);
+            this.tableDiscord.Controls.Add(this.lblDiscordAow1, 0, 1);
+            this.tableDiscord.Controls.Add(this.linkDiscordAow1, 1, 1);
+            this.tableDiscord.Controls.Add(this.lblDiscordAowx, 0, 2);
+            this.tableDiscord.Controls.Add(this.linkDiscordAowx, 1, 2);
+            this.tableDiscord.Controls.Add(this.lblDiscordAow2, 0, 3);
+            this.tableDiscord.Controls.Add(this.linkDiscordAow2, 1, 3);
+            this.tableDiscord.Dock = System.Windows.Forms.DockStyle.Top;
+            this.tableDiscord.Name = "tableDiscord";
+            this.tableDiscord.RowCount = 4;
+            this.tableDiscord.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableDiscord.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableDiscord.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableDiscord.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableDiscord.TabIndex = 1;
+            //
+            // lblDiscordZig
+            //
+            this.lblDiscordZig.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblDiscordZig.AutoSize = true;
+            this.lblDiscordZig.Margin = new System.Windows.Forms.Padding(0, 2, 12, 2);
+            this.lblDiscordZig.Name = "lblDiscordZig";
+            this.lblDiscordZig.Text = "AoW 1 (Ziggurat)";
+            //
+            // linkDiscordZig
+            //
+            this.linkDiscordZig.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.linkDiscordZig.AutoSize = true;
+            this.linkDiscordZig.Margin = new System.Windows.Forms.Padding(0, 2, 0, 2);
+            this.linkDiscordZig.Name = "linkDiscordZig";
+            this.linkDiscordZig.TabStop = true;
+            this.linkDiscordZig.Tag = "https://discord.gg/UwnYdGwRrT";
+            this.linkDiscordZig.Text = "discord.gg/UwnYdGwRrT";
+            //
+            // lblDiscordAow1
+            //
+            this.lblDiscordAow1.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblDiscordAow1.AutoSize = true;
+            this.lblDiscordAow1.Margin = new System.Windows.Forms.Padding(0, 2, 12, 2);
+            this.lblDiscordAow1.Name = "lblDiscordAow1";
+            this.lblDiscordAow1.Text = "AoW 1";
+            //
+            // linkDiscordAow1
+            //
+            this.linkDiscordAow1.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.linkDiscordAow1.AutoSize = true;
+            this.linkDiscordAow1.Margin = new System.Windows.Forms.Padding(0, 2, 0, 2);
+            this.linkDiscordAow1.Name = "linkDiscordAow1";
+            this.linkDiscordAow1.TabStop = true;
+            this.linkDiscordAow1.Tag = "https://discord.gg/5kNCVaHNf5";
+            this.linkDiscordAow1.Text = "discord.gg/5kNCVaHNf5";
+            //
+            // lblDiscordAowx
+            //
+            this.lblDiscordAowx.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblDiscordAowx.AutoSize = true;
+            this.lblDiscordAowx.Margin = new System.Windows.Forms.Padding(0, 2, 12, 2);
+            this.lblDiscordAowx.Name = "lblDiscordAowx";
+            this.lblDiscordAowx.Text = "AoW 1 (AoWx)";
+            //
+            // linkDiscordAowx
+            //
+            this.linkDiscordAowx.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.linkDiscordAowx.AutoSize = true;
+            this.linkDiscordAowx.Margin = new System.Windows.Forms.Padding(0, 2, 0, 2);
+            this.linkDiscordAowx.Name = "linkDiscordAowx";
+            this.linkDiscordAowx.TabStop = true;
+            this.linkDiscordAowx.Tag = "https://discord.gg/a9je8DK7az";
+            this.linkDiscordAowx.Text = "discord.gg/a9je8DK7az";
+            //
+            // lblDiscordAow2
+            //
+            this.lblDiscordAow2.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblDiscordAow2.AutoSize = true;
+            this.lblDiscordAow2.Margin = new System.Windows.Forms.Padding(0, 2, 12, 2);
+            this.lblDiscordAow2.Name = "lblDiscordAow2";
+            this.lblDiscordAow2.Text = "AoW 2";
+            //
+            // linkDiscordAow2
+            //
+            this.linkDiscordAow2.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.linkDiscordAow2.AutoSize = true;
+            this.linkDiscordAow2.Margin = new System.Windows.Forms.Padding(0, 2, 0, 2);
+            this.linkDiscordAow2.Name = "linkDiscordAow2";
+            this.linkDiscordAow2.TabStop = true;
+            this.linkDiscordAow2.Tag = "https://discord.gg/s8MDNS3ERD";
+            this.linkDiscordAow2.Text = "discord.gg/s8MDNS3ERD";
+            //
+            // groupBoxSupport
+            //
+            this.groupBoxSupport.AutoSize = true;
+            this.groupBoxSupport.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.groupBoxSupport.Controls.Add(this.flowSupport);
+            this.groupBoxSupport.Dock = System.Windows.Forms.DockStyle.Top;
+            this.groupBoxSupport.Location = new System.Drawing.Point(0, 313);
+            this.groupBoxSupport.Margin = new System.Windows.Forms.Padding(2);
+            this.groupBoxSupport.Name = "groupBoxSupport";
+            this.groupBoxSupport.Padding = new System.Windows.Forms.Padding(8, 3, 8, 8);
+            this.groupBoxSupport.Size = new System.Drawing.Size(514, 60);
+            this.groupBoxSupport.TabIndex = 1;
+            this.groupBoxSupport.TabStop = false;
+            this.groupBoxSupport.Text = "Support";
+            //
+            // flowSupport
+            //
+            this.flowSupport.AutoSize = true;
+            this.flowSupport.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.flowSupport.Controls.Add(this.cmdCheckUpdates);
+            this.flowSupport.Controls.Add(this.cmdLogFolder);
+            this.flowSupport.Controls.Add(this.cmdReportBug);
+            this.flowSupport.Dock = System.Windows.Forms.DockStyle.Top;
+            this.flowSupport.Location = new System.Drawing.Point(8, 16);
+            this.flowSupport.Name = "flowSupport";
+            this.flowSupport.Size = new System.Drawing.Size(498, 34);
+            this.flowSupport.TabIndex = 0;
+            //
+            // cmdCheckUpdates
+            //
+            this.cmdCheckUpdates.AutoSize = true;
+            this.cmdCheckUpdates.Margin = new System.Windows.Forms.Padding(0, 4, 8, 0);
+            this.cmdCheckUpdates.Name = "cmdCheckUpdates";
+            this.cmdCheckUpdates.Padding = new System.Windows.Forms.Padding(6, 0, 6, 0);
+            this.cmdCheckUpdates.Size = new System.Drawing.Size(120, 26);
+            this.cmdCheckUpdates.TabIndex = 0;
+            this.cmdCheckUpdates.Text = "Check for updates";
+            this.cmdCheckUpdates.UseVisualStyleBackColor = true;
+            //
+            // cmdLogFolder
+            //
+            this.cmdLogFolder.AutoSize = true;
+            this.cmdLogFolder.Margin = new System.Windows.Forms.Padding(0, 4, 8, 0);
+            this.cmdLogFolder.Name = "cmdLogFolder";
+            this.cmdLogFolder.Padding = new System.Windows.Forms.Padding(6, 0, 6, 0);
+            this.cmdLogFolder.Size = new System.Drawing.Size(110, 26);
+            this.cmdLogFolder.TabIndex = 1;
+            this.cmdLogFolder.Text = "Open log folder";
+            this.cmdLogFolder.UseVisualStyleBackColor = true;
+            //
+            // cmdReportBug
+            //
+            this.cmdReportBug.AutoSize = true;
+            this.cmdReportBug.Margin = new System.Windows.Forms.Padding(0, 4, 8, 0);
+            this.cmdReportBug.Name = "cmdReportBug";
+            this.cmdReportBug.Padding = new System.Windows.Forms.Padding(6, 0, 6, 0);
+            this.cmdReportBug.Size = new System.Drawing.Size(110, 26);
+            this.cmdReportBug.TabIndex = 2;
+            this.cmdReportBug.Text = "Report a bug...";
+            this.cmdReportBug.UseVisualStyleBackColor = true;
             this.panelTitle.Controls.Add(this.lblVersion);
-            this.panelTitle.Controls.Add(this.fbLink);
             this.panelTitle.Dock = System.Windows.Forms.DockStyle.Top;
             this.panelTitle.Location = new System.Drawing.Point(5, 5);
             this.panelTitle.Name = "panelTitle";
@@ -659,25 +968,7 @@
             this.lblVersion.Size = new System.Drawing.Size(464, 40);
             this.lblVersion.TabIndex = 10;
             this.lblVersion.Text = "Age of Wonders Email Wrapper [{0}]";
-            // 
-            // fbLink
-            // 
-            this.fbLink.BackColor = System.Drawing.SystemColors.Window;
-            this.fbLink.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
-            this.fbLink.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.fbLink.Dock = System.Windows.Forms.DockStyle.Right;
-            this.fbLink.FlatAppearance.BorderColor = System.Drawing.SystemColors.MenuHighlight;
-            this.fbLink.FlatAppearance.BorderSize = 5;
-            this.fbLink.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.fbLink.Image = ((System.Drawing.Image)(resources.GetObject("fbLink.Image")));
-            this.fbLink.Location = new System.Drawing.Point(464, 0);
-            this.fbLink.Name = "fbLink";
-            this.fbLink.Size = new System.Drawing.Size(40, 40);
-            this.fbLink.TabIndex = 11;
-            this.fbLink.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.fbLink.Url = "http://www.facebook.com/pages/Age-of-Wonders-Email-Wrapper/173302036046975";
-            this.fbLink.UseVisualStyleBackColor = false;
-            // 
+            //
             // lblTrans11
             // 
             this.lblTrans11.Dock = System.Windows.Forms.DockStyle.Top;
@@ -692,7 +983,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(522, 593);
+            this.ClientSize = new System.Drawing.Size(522, 645);
             this.Controls.Add(this.panelMain);
             this.Controls.Add(this.panelBottom);
             this.DoubleBuffered = true;
@@ -708,9 +999,24 @@
             this.tabControlMain.ResumeLayout(false);
             this.tabAccounts.ResumeLayout(false);
             this.tabActivity.ResumeLayout(false);
+            this.tabGames.ResumeLayout(false);
             this.tabPreferences.ResumeLayout(false);
             this.tabAbout.ResumeLayout(false);
             this.panelAbout.ResumeLayout(false);
+            this.groupDedication.ResumeLayout(false);
+            this.groupDedication.PerformLayout();
+            this.tableDedication.ResumeLayout(false);
+            this.tableDedication.PerformLayout();
+            this.tableDiscordIntro.ResumeLayout(false);
+            this.tableDiscordIntro.PerformLayout();
+            this.groupDiscord.ResumeLayout(false);
+            this.groupDiscord.PerformLayout();
+            this.tableDiscord.ResumeLayout(false);
+            this.tableDiscord.PerformLayout();
+            this.groupBoxSupport.ResumeLayout(false);
+            this.groupBoxSupport.PerformLayout();
+            this.flowSupport.ResumeLayout(false);
+            this.flowSupport.PerformLayout();
             this.panelCredits.ResumeLayout(false);
             this.groupCodeContributors.ResumeLayout(false);
             this.groupTranslators.ResumeLayout(false);
@@ -729,6 +1035,8 @@
         private System.Windows.Forms.Panel panelMain;
         private System.Windows.Forms.TabControl tabControlMain;
         private System.Windows.Forms.TabPage tabPreferences;
+        private System.Windows.Forms.TabPage tabGames;
+        private AowEmailWrapper.Controls.GamesConfig gamesConfig;
         private AowEmailWrapper.Controls.PreferencesConfig preferencesConfig;
         private System.Windows.Forms.TabPage tabAbout;
         private System.Windows.Forms.Button button1;
@@ -746,7 +1054,28 @@
         private System.Windows.Forms.Button cmdMessageStore;
         private System.Windows.Forms.Panel panelTitle;
         private System.Windows.Forms.Label lblVersion;
-        private AowEmailWrapper.Controls.LinkButton fbLink;
+        private System.Windows.Forms.GroupBox groupDedication;
+        private System.Windows.Forms.Label lblDedication;
+        private System.Windows.Forms.Label lblDedicationQuote;
+        private System.Windows.Forms.Label lblDedicationBy;
+        private System.Windows.Forms.TableLayoutPanel tableDedication;
+        private System.Windows.Forms.TableLayoutPanel tableDiscordIntro;
+        private System.Windows.Forms.GroupBox groupDiscord;
+        private System.Windows.Forms.Label lblDiscordIntro;
+        private System.Windows.Forms.TableLayoutPanel tableDiscord;
+        private System.Windows.Forms.Label lblDiscordZig;
+        private System.Windows.Forms.LinkLabel linkDiscordZig;
+        private System.Windows.Forms.Label lblDiscordAow1;
+        private System.Windows.Forms.LinkLabel linkDiscordAow1;
+        private System.Windows.Forms.Label lblDiscordAowx;
+        private System.Windows.Forms.LinkLabel linkDiscordAowx;
+        private System.Windows.Forms.Label lblDiscordAow2;
+        private System.Windows.Forms.LinkLabel linkDiscordAow2;
+        private System.Windows.Forms.GroupBox groupBoxSupport;
+        private System.Windows.Forms.FlowLayoutPanel flowSupport;
+        private System.Windows.Forms.Button cmdCheckUpdates;
+        private System.Windows.Forms.Button cmdLogFolder;
+        private System.Windows.Forms.Button cmdReportBug;
         private System.Windows.Forms.Panel panelCredits;
         private System.Windows.Forms.GroupBox groupBetaTesters;
         private System.Windows.Forms.Label lblTester10;
@@ -761,6 +1090,7 @@
         private System.Windows.Forms.Label lblTester1;
         private System.Windows.Forms.GroupBox groupAuthors;
         private System.Windows.Forms.Label lblAuthor2;
+        private System.Windows.Forms.Label lblAuthor3;
         private System.Windows.Forms.Label lblAuthor1;
         private System.Windows.Forms.GroupBox groupCodeContributors;
         private System.Windows.Forms.GroupBox groupTranslators;
@@ -776,6 +1106,7 @@
         private System.Windows.Forms.Label lblTrans10;
         private System.Windows.Forms.Label lblCodeCon2;
         private System.Windows.Forms.Label lblCodeCon5;
+        private System.Windows.Forms.Label lblCodeCon6;
         private System.Windows.Forms.Label lblCodeCon4;
         private System.Windows.Forms.Label lblCodeCon3;
         private System.Windows.Forms.Label lblTrans11;
