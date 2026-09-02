@@ -36,7 +36,7 @@ if ($LASTEXITCODE -ne 0) { throw "gh release create failed" }
 
 # Keep only the newest build releases; proper versioned releases (no "-build." in the tag) are never touched
 $old = gh release list --limit 200 --json tagName,isPrerelease,createdAt `
-    --jq "[.[] | select(.isPrerelease and (.tagName | contains(`"-build.`")))] | sort_by(.createdAt) | reverse | .[$keep:] | .[].tagName"
+    --jq "[.[] | select(.isPrerelease and (.tagName | contains(`"-build.`")))] | sort_by(.createdAt) | reverse | .[${keep}:] | .[].tagName"
 if ($LASTEXITCODE -ne 0) { throw "gh release list failed" }
 
 foreach ($oldTag in @($old | Where-Object { $_ })) {
