@@ -133,7 +133,7 @@
 		<lookup key="msgWrapperPollAuthFailed" value="{0} rejected the sign-in for {1}. Checking for email is paused until the account is fixed: open the Accounts tab, correct the password and click Test connection."/>
 		<lookup key="buttonSignInMicrosoft" value="Sign in with Microsoft"/>
 		<lookup key="msgOAuthSignedIn" value="Signed in as {0}."/>
-		<lookup key="msgOAuthNotConfigured" value="Microsoft sign-in is not set up in this copy of the Wrapper. Register the Wrapper in the Azure portal and put the application (client) ID in AowEmailWrapper.dll.config, as described in the README."/>
+		<lookup key="msgOAuthNotConfigured" value="Microsoft sign-in is not available in this build of the Wrapper. Please install the official build, or use an email account that signs in with a password."/>
 		<lookup key="msgOAuthSessionExpired" value="The Microsoft sign-in for {0} has expired or was removed. Open the Accounts tab and sign in with Microsoft again."/>
 		<lookup key="lblOAuthAccount" value="This account signs in through Microsoft. No password is stored."/>
 		<lookup key="linkOAuthSignInAgain" value="Sign in with Microsoft again"/>
@@ -152,6 +152,9 @@
 		<lookup key="msgWrapperUpdateDownloading" value="Downloading {0}..."/>
 		<lookup key="msgWrapperUpdateDownloadFailed" value="The update could not be downloaded: {0}"/>
 		<lookup key="cmdReportBug" value="Report a bug..."/>
+		<lookup key="cmdQuickStart" value="Quick start guide"/>
+		<lookup key="cmdManual" value="Manual"/>
+		<lookup key="msgDocumentMissing" value="The document {0} could not be found. It is installed with the Wrapper in the Docs folder next to the program."/>
 		<lookup key="groupBoxSupport" value="Support"/>
 		<lookup key="groupDiscord" value="Discord servers"/>
 		<lookup key="lblDiscordIntro" value="A few friendly places where players meet for play-by-email games:"/>
@@ -379,7 +382,7 @@
 		<lookup key="msgOAuthOnly" value="Ce fournisseur n'autorise que la connexion OAuth depuis les programmes de messagerie, que le Wrapper ne prend pas encore en charge. La connexion par mot de passe sera probablement refusée."/>
 		<lookup key="buttonSignInMicrosoft" value="Se connecter avec Microsoft"/>
 		<lookup key="msgOAuthSignedIn" value="Connecté en tant que {0}."/>
-		<lookup key="msgOAuthNotConfigured" value="La connexion Microsoft n'est pas configurée dans cette copie du Wrapper. Enregistrez le Wrapper sur le portail Azure et placez l'ID d'application (client) dans AowEmailWrapper.dll.config, comme décrit dans le README."/>
+		<lookup key="msgOAuthNotConfigured" value="La connexion Microsoft n'est pas disponible dans cette version du Wrapper. Veuillez installer la version officielle, ou utiliser un compte e-mail qui se connecte avec un mot de passe."/>
 		<lookup key="msgOAuthSessionExpired" value="La connexion Microsoft pour {0} a expiré ou a été supprimée. Ouvrez l'onglet Comptes et reconnectez-vous avec Microsoft."/>
 		<lookup key="lblOAuthAccount" value="Ce compte se connecte via Microsoft. Aucun mot de passe n'est enregistré."/>
 		<lookup key="linkOAuthSignInAgain" value="Se reconnecter avec Microsoft"/>
@@ -396,6 +399,9 @@
 		<lookup key="msgWrapperUpdateDownloading" value="Téléchargement de {0}..."/>
 		<lookup key="msgWrapperUpdateDownloadFailed" value="La mise à jour n'a pas pu être téléchargée : {0}"/>
 		<lookup key="cmdReportBug" value="Signaler un bug..."/>
+		<lookup key="cmdQuickStart" value="Guide de démarrage rapide"/>
+		<lookup key="cmdManual" value="Manuel"/>
+		<lookup key="msgDocumentMissing" value="Le document {0} est introuvable. Il est installé avec le Wrapper dans le dossier Docs à côté du programme."/>
 		<lookup key="groupBoxSupport" value="Assistance"/>
 		<lookup key="groupDiscord" value="Serveurs Discord"/>
 		<lookup key="lblDiscordIntro" value="Quelques endroits conviviaux où les joueurs se retrouvent pour des parties par e-mail :"/>
@@ -616,7 +622,7 @@
 		<lookup key="msgOAuthOnly" value="Dieser E-Mail-Anbieter erlaubt E-Mail-Programmen nur die OAuth-Anmeldung, die der Wrapper noch nicht unterstützt. Die Anmeldung mit Passwort wird wahrscheinlich abgelehnt."/>
 		<lookup key="buttonSignInMicrosoft" value="Mit Microsoft anmelden"/>
 		<lookup key="msgOAuthSignedIn" value="Angemeldet als {0}."/>
-		<lookup key="msgOAuthNotConfigured" value="Die Microsoft-Anmeldung ist in dieser Kopie des Wrappers nicht eingerichtet. Registrieren Sie den Wrapper im Azure-Portal und tragen Sie die Anwendungs-ID (Client-ID) in AowEmailWrapper.dll.config ein, wie im README beschrieben."/>
+		<lookup key="msgOAuthNotConfigured" value="Die Microsoft-Anmeldung ist in diesem Build des Wrappers nicht verfügbar. Bitte installieren Sie den offiziellen Build oder verwenden Sie ein E-Mail-Konto, das sich mit einem Passwort anmeldet."/>
 		<lookup key="msgOAuthSessionExpired" value="Die Microsoft-Anmeldung für {0} ist abgelaufen oder wurde entfernt. Öffnen Sie die Registerkarte Konten und melden Sie sich erneut mit Microsoft an."/>
 		<lookup key="lblOAuthAccount" value="Dieses Konto meldet sich über Microsoft an. Es wird kein Passwort gespeichert."/>
 		<lookup key="linkOAuthSignInAgain" value="Erneut mit Microsoft anmelden"/>
@@ -633,6 +639,9 @@
 		<lookup key="msgWrapperUpdateDownloading" value="{0} wird heruntergeladen..."/>
 		<lookup key="msgWrapperUpdateDownloadFailed" value="Das Update konnte nicht heruntergeladen werden: {0}"/>
 		<lookup key="cmdReportBug" value="Fehler melden..."/>
+		<lookup key="cmdQuickStart" value="Schnellstartanleitung"/>
+		<lookup key="cmdManual" value="Handbuch"/>
+		<lookup key="msgDocumentMissing" value="Das Dokument {0} wurde nicht gefunden. Es wird mit dem Wrapper im Ordner Docs neben dem Programm installiert."/>
 		<lookup key="groupBoxSupport" value="Support"/>
 		<lookup key="groupDiscord" value="Discord-Server"/>
 		<lookup key="lblDiscordIntro" value="Ein paar freundliche Orte, an denen sich Spieler für Play-by-E-Mail-Partien treffen:"/>
@@ -853,7 +862,7 @@
 		<lookup key="msgOAuthOnly" value="Este proveedor de correo solo permite el inicio de sesión OAuth desde programas de correo, que el Wrapper todavía no admite. El inicio de sesión con contraseña probablemente será rechazado."/>
 		<lookup key="buttonSignInMicrosoft" value="Iniciar sesión con Microsoft"/>
 		<lookup key="msgOAuthSignedIn" value="Sesión iniciada como {0}."/>
-		<lookup key="msgOAuthNotConfigured" value="El inicio de sesión con Microsoft no está configurado en esta copia del Wrapper. Registre el Wrapper en el portal de Azure y ponga el ID de aplicación (cliente) en AowEmailWrapper.dll.config, como se describe en el README."/>
+		<lookup key="msgOAuthNotConfigured" value="El inicio de sesión con Microsoft no está disponible en esta versión del Wrapper. Instale la versión oficial o use una cuenta de correo que inicie sesión con contraseña."/>
 		<lookup key="msgOAuthSessionExpired" value="El inicio de sesión de Microsoft para {0} ha caducado o se ha eliminado. Abra la pestaña Cuentas e inicie sesión con Microsoft de nuevo."/>
 		<lookup key="lblOAuthAccount" value="Esta cuenta inicia sesión a través de Microsoft. No se guarda ninguna contraseña."/>
 		<lookup key="linkOAuthSignInAgain" value="Iniciar sesión con Microsoft de nuevo"/>
@@ -870,6 +879,9 @@
 		<lookup key="msgWrapperUpdateDownloading" value="Descargando {0}..."/>
 		<lookup key="msgWrapperUpdateDownloadFailed" value="No se pudo descargar la actualización: {0}"/>
 		<lookup key="cmdReportBug" value="Informar de un error..."/>
+		<lookup key="cmdQuickStart" value="Guía de inicio rápido"/>
+		<lookup key="cmdManual" value="Manual"/>
+		<lookup key="msgDocumentMissing" value="No se encontró el documento {0}. Se instala con el Wrapper en la carpeta Docs junto al programa."/>
 		<lookup key="groupBoxSupport" value="Soporte"/>
 		<lookup key="groupDiscord" value="Servidores de Discord"/>
 		<lookup key="lblDiscordIntro" value="Algunos lugares amistosos donde los jugadores se reúnen para partidas por correo:"/>
@@ -1090,7 +1102,7 @@
 		<lookup key="msgOAuthOnly" value="Deze e-mailprovider staat alleen OAuth-aanmelding toe vanuit e-mailprogramma's, wat de Wrapper nog niet ondersteunt. Aanmelden met een wachtwoord wordt waarschijnlijk geweigerd."/>
 		<lookup key="buttonSignInMicrosoft" value="Aanmelden met Microsoft"/>
 		<lookup key="msgOAuthSignedIn" value="Aangemeld als {0}."/>
-		<lookup key="msgOAuthNotConfigured" value="Aanmelden met Microsoft is in dit exemplaar van de Wrapper niet ingesteld. Registreer de Wrapper in de Azure-portal en zet de toepassings-id (client-id) in AowEmailWrapper.dll.config, zoals beschreven in de README."/>
+		<lookup key="msgOAuthNotConfigured" value="Aanmelden met Microsoft is niet beschikbaar in deze build van de Wrapper. Installeer de officiële build, of gebruik een e-mailaccount dat zich met een wachtwoord aanmeldt."/>
 		<lookup key="msgOAuthSessionExpired" value="De Microsoft-aanmelding voor {0} is verlopen of verwijderd. Open het tabblad Accounts en meld u opnieuw aan met Microsoft."/>
 		<lookup key="lblOAuthAccount" value="Dit account meldt zich aan via Microsoft. Er wordt geen wachtwoord opgeslagen."/>
 		<lookup key="linkOAuthSignInAgain" value="Opnieuw aanmelden met Microsoft"/>
@@ -1107,6 +1119,9 @@
 		<lookup key="msgWrapperUpdateDownloading" value="{0} wordt gedownload..."/>
 		<lookup key="msgWrapperUpdateDownloadFailed" value="De update kon niet worden gedownload: {0}"/>
 		<lookup key="cmdReportBug" value="Een fout melden..."/>
+		<lookup key="cmdQuickStart" value="Snelstartgids"/>
+		<lookup key="cmdManual" value="Handleiding"/>
+		<lookup key="msgDocumentMissing" value="Het document {0} is niet gevonden. Het wordt met de Wrapper geïnstalleerd in de map Docs naast het programma."/>
 		<lookup key="groupBoxSupport" value="Ondersteuning"/>
 		<lookup key="groupDiscord" value="Discord-servers"/>
 		<lookup key="lblDiscordIntro" value="Een paar gezellige plekken waar spelers elkaar vinden voor spellen per e-mail:"/>
@@ -1325,7 +1340,7 @@
 		<lookup key="msgOAuthOnly" value="Denne mailudbyder tillader kun OAuth-logind fra mailprogrammer, hvilket Wrapperen endnu ikke understøtter. Logind med adgangskode vil sandsynligvis blive afvist."/>
 		<lookup key="buttonSignInMicrosoft" value="Log ind med Microsoft"/>
 		<lookup key="msgOAuthSignedIn" value="Logget ind som {0}."/>
-		<lookup key="msgOAuthNotConfigured" value="Microsoft-logind er ikke sat op i denne kopi af Wrapperen. Registrer Wrapperen i Azure-portalen, og indsæt program-id'et (klient-id) i AowEmailWrapper.dll.config som beskrevet i README."/>
+		<lookup key="msgOAuthNotConfigured" value="Microsoft-logind er ikke tilgængeligt i denne udgave af Wrapperen. Installer den officielle udgave, eller brug en e-mailkonto, der logger ind med en adgangskode."/>
 		<lookup key="msgOAuthSessionExpired" value="Microsoft-logindet for {0} er udløbet eller fjernet. Åbn fanen Konti, og log ind med Microsoft igen."/>
 		<lookup key="lblOAuthAccount" value="Denne konto logger ind via Microsoft. Der gemmes ingen adgangskode."/>
 		<lookup key="linkOAuthSignInAgain" value="Log ind med Microsoft igen"/>
@@ -1342,6 +1357,9 @@
 		<lookup key="msgWrapperUpdateDownloading" value="Henter {0}..."/>
 		<lookup key="msgWrapperUpdateDownloadFailed" value="Opdateringen kunne ikke hentes: {0}"/>
 		<lookup key="cmdReportBug" value="Rapportér en fejl..."/>
+		<lookup key="cmdQuickStart" value="Kom godt i gang"/>
+		<lookup key="cmdManual" value="Manual"/>
+		<lookup key="msgDocumentMissing" value="Dokumentet {0} blev ikke fundet. Det installeres sammen med Wrapperen i mappen Docs ved siden af programmet."/>
 		<lookup key="groupBoxSupport" value="Support"/>
 		<lookup key="groupDiscord" value="Discord-servere"/>
 		<lookup key="lblDiscordIntro" value="Et par venlige steder, hvor spillere mødes til spil via e-mail:"/>
@@ -1561,7 +1579,7 @@
 		<lookup key="msgOAuthOnly" value="Den här e-postleverantören tillåter bara OAuth-inloggning från e-postprogram, vilket Wrappern ännu inte stöder. Inloggning med lösenord kommer troligen att avvisas."/>
 		<lookup key="buttonSignInMicrosoft" value="Logga in med Microsoft"/>
 		<lookup key="msgOAuthSignedIn" value="Inloggad som {0}."/>
-		<lookup key="msgOAuthNotConfigured" value="Microsoft-inloggning är inte inställd i den här kopian av Wrappern. Registrera Wrappern i Azure-portalen och ange program-id (klient-id) i AowEmailWrapper.dll.config enligt beskrivningen i README."/>
+		<lookup key="msgOAuthNotConfigured" value="Microsoft-inloggning är inte tillgänglig i den här versionen av Wrappern. Installera den officiella versionen eller använd ett e-postkonto som loggar in med lösenord."/>
 		<lookup key="msgOAuthSessionExpired" value="Microsoft-inloggningen för {0} har gått ut eller tagits bort. Öppna fliken Konton och logga in med Microsoft igen."/>
 		<lookup key="lblOAuthAccount" value="Det här kontot loggar in via Microsoft. Inget lösenord sparas."/>
 		<lookup key="linkOAuthSignInAgain" value="Logga in med Microsoft igen"/>
@@ -1578,6 +1596,9 @@
 		<lookup key="msgWrapperUpdateDownloading" value="Hämtar {0}..."/>
 		<lookup key="msgWrapperUpdateDownloadFailed" value="Uppdateringen kunde inte hämtas: {0}"/>
 		<lookup key="cmdReportBug" value="Rapportera ett fel..."/>
+		<lookup key="cmdQuickStart" value="Snabbstartsguide"/>
+		<lookup key="cmdManual" value="Manual"/>
+		<lookup key="msgDocumentMissing" value="Dokumentet {0} hittades inte. Det installeras tillsammans med Wrappern i mappen Docs bredvid programmet."/>
 		<lookup key="groupBoxSupport" value="Support"/>
 		<lookup key="groupDiscord" value="Discord-servrar"/>
 		<lookup key="lblDiscordIntro" value="Några trevliga ställen där spelare träffas för spel via e-post:"/>
@@ -1805,7 +1826,7 @@
 		<lookup key="msgOAuthOnly" value="Ten dostawca poczty zezwala programom pocztowym tylko na logowanie OAuth, którego Wrapper jeszcze nie obsługuje. Logowanie hasłem prawdopodobnie zostanie odrzucone."/>
 		<lookup key="buttonSignInMicrosoft" value="Zaloguj się przez Microsoft"/>
 		<lookup key="msgOAuthSignedIn" value="Zalogowano jako {0}."/>
-		<lookup key="msgOAuthNotConfigured" value="Logowanie Microsoft nie jest skonfigurowane w tej kopii Wrappera. Zarejestruj Wrapper w portalu Azure i wpisz identyfikator aplikacji (klienta) w pliku AowEmailWrapper.dll.config, jak opisano w README."/>
+		<lookup key="msgOAuthNotConfigured" value="Logowanie Microsoft nie jest dostępne w tej kompilacji Wrappera. Zainstaluj oficjalną kompilację lub użyj konta e-mail logującego się hasłem."/>
 		<lookup key="msgOAuthSessionExpired" value="Logowanie Microsoft dla {0} wygasło lub zostało usunięte. Otwórz kartę Konta i zaloguj się ponownie przez Microsoft."/>
 		<lookup key="lblOAuthAccount" value="To konto loguje się przez Microsoft. Hasło nie jest zapisywane."/>
 		<lookup key="linkOAuthSignInAgain" value="Zaloguj się ponownie przez Microsoft"/>
@@ -1822,6 +1843,9 @@
 		<lookup key="msgWrapperUpdateDownloading" value="Pobieranie {0}..."/>
 		<lookup key="msgWrapperUpdateDownloadFailed" value="Nie udało się pobrać aktualizacji: {0}"/>
 		<lookup key="cmdReportBug" value="Zgłoś błąd..."/>
+		<lookup key="cmdQuickStart" value="Szybki start"/>
+		<lookup key="cmdManual" value="Podręcznik"/>
+		<lookup key="msgDocumentMissing" value="Nie znaleziono dokumentu {0}. Jest on instalowany razem z Wrapperem w folderze Docs obok programu."/>
 		<lookup key="groupBoxSupport" value="Pomoc"/>
 		<lookup key="groupDiscord" value="Serwery Discord"/>
 		<lookup key="lblDiscordIntro" value="Kilka przyjaznych miejsc, w których gracze spotykają się na rozgrywki przez e-mail:"/>
@@ -2043,7 +2067,7 @@
 		<lookup key="msgOAuthOnly" value="Tämä sähköpostipalvelu sallii sähköpostiohjelmille vain OAuth-kirjautumisen, jota Wrapper ei vielä tue. Salasanalla kirjautuminen hylätään todennäköisesti."/>
 		<lookup key="buttonSignInMicrosoft" value="Kirjaudu Microsoft-tilillä"/>
 		<lookup key="msgOAuthSignedIn" value="Kirjauduttu käyttäjänä {0}."/>
-		<lookup key="msgOAuthNotConfigured" value="Microsoft-kirjautumista ei ole määritetty tässä Wrapperin kopiossa. Rekisteröi Wrapper Azure-portaalissa ja lisää sovelluksen (asiakkaan) tunnus tiedostoon AowEmailWrapper.dll.config README-ohjeen mukaisesti."/>
+		<lookup key="msgOAuthNotConfigured" value="Microsoft-kirjautuminen ei ole käytettävissä tässä Wrapperin versiossa. Asenna virallinen versio tai käytä sähköpostitiliä, joka kirjautuu salasanalla."/>
 		<lookup key="msgOAuthSessionExpired" value="Microsoft-kirjautuminen tilille {0} on vanhentunut tai poistettu. Avaa Tilit-välilehti ja kirjaudu uudelleen Microsoft-tilillä."/>
 		<lookup key="lblOAuthAccount" value="Tämä tili kirjautuu Microsoftin kautta. Salasanaa ei tallenneta."/>
 		<lookup key="linkOAuthSignInAgain" value="Kirjaudu uudelleen Microsoft-tilillä"/>
@@ -2060,6 +2084,9 @@
 		<lookup key="msgWrapperUpdateDownloading" value="Ladataan {0}..."/>
 		<lookup key="msgWrapperUpdateDownloadFailed" value="Päivitystä ei voitu ladata: {0}"/>
 		<lookup key="cmdReportBug" value="Ilmoita virheestä..."/>
+		<lookup key="cmdQuickStart" value="Pikaopas"/>
+		<lookup key="cmdManual" value="Käyttöohje"/>
+		<lookup key="msgDocumentMissing" value="Asiakirjaa {0} ei löytynyt. Se asennetaan Wrapperin mukana Docs-kansioon ohjelman viereen."/>
 		<lookup key="groupBoxSupport" value="Tuki"/>
 		<lookup key="groupDiscord" value="Discord-palvelimet"/>
 		<lookup key="lblDiscordIntro" value="Muutama ystävällinen paikka, joissa pelaajat kokoontuvat sähköpostipeleihin:"/>
@@ -2283,7 +2310,7 @@
 		<lookup key="msgOAuthOnly" value="Acest furnizor de e-mail permite programelor de e-mail doar autentificarea OAuth, pe care Wrapper-ul nu o acceptă încă. Autentificarea cu parolă va fi probabil respinsă."/>
 		<lookup key="buttonSignInMicrosoft" value="Conectare cu Microsoft"/>
 		<lookup key="msgOAuthSignedIn" value="Autentificat ca {0}."/>
-		<lookup key="msgOAuthNotConfigured" value="Autentificarea Microsoft nu este configurată în această copie a Wrapper-ului. Înregistrați Wrapper-ul în portalul Azure și puneți ID-ul aplicației (client) în AowEmailWrapper.dll.config, conform README."/>
+		<lookup key="msgOAuthNotConfigured" value="Autentificarea Microsoft nu este disponibilă în această versiune a Wrapper-ului. Instalați versiunea oficială sau folosiți un cont de e-mail care se autentifică cu parolă."/>
 		<lookup key="msgOAuthSessionExpired" value="Autentificarea Microsoft pentru {0} a expirat sau a fost eliminată. Deschideți fila Conturi și conectați-vă din nou cu Microsoft."/>
 		<lookup key="lblOAuthAccount" value="Acest cont se autentifică prin Microsoft. Nu se salvează nicio parolă."/>
 		<lookup key="linkOAuthSignInAgain" value="Conectare din nou cu Microsoft"/>
@@ -2300,6 +2327,9 @@
 		<lookup key="msgWrapperUpdateDownloading" value="Se descarcă {0}..."/>
 		<lookup key="msgWrapperUpdateDownloadFailed" value="Actualizarea nu a putut fi descărcată: {0}"/>
 		<lookup key="cmdReportBug" value="Raportează o eroare..."/>
+		<lookup key="cmdQuickStart" value="Ghid de pornire rapidă"/>
+		<lookup key="cmdManual" value="Manual"/>
+		<lookup key="msgDocumentMissing" value="Documentul {0} nu a fost găsit. Este instalat împreună cu Wrapper-ul în dosarul Docs de lângă program."/>
 		<lookup key="groupBoxSupport" value="Asistență"/>
 		<lookup key="groupDiscord" value="Servere Discord"/>
 		<lookup key="lblDiscordIntro" value="Câteva locuri prietenoase unde jucătorii se întâlnesc pentru partide prin e-mail:"/>
@@ -2521,7 +2551,7 @@
 		<lookup key="msgOAuthOnly" value="Этот почтовый провайдер разрешает почтовым программам только вход через OAuth, который Wrapper пока не поддерживает. Вход по паролю, скорее всего, будет отклонён."/>
 		<lookup key="buttonSignInMicrosoft" value="Войти через Microsoft"/>
 		<lookup key="msgOAuthSignedIn" value="Выполнен вход как {0}."/>
-		<lookup key="msgOAuthNotConfigured" value="Вход через Microsoft не настроен в этой копии Wrapper. Зарегистрируйте Wrapper на портале Azure и укажите идентификатор приложения (клиента) в файле AowEmailWrapper.dll.config, как описано в README."/>
+		<lookup key="msgOAuthNotConfigured" value="Вход через Microsoft недоступен в этой сборке программы. Установите официальную сборку или используйте учётную запись электронной почты с входом по паролю."/>
 		<lookup key="msgOAuthSessionExpired" value="Вход через Microsoft для {0} истёк или был удалён. Откройте вкладку «Аккаунты» и снова войдите через Microsoft."/>
 		<lookup key="lblOAuthAccount" value="Этот аккаунт входит через Microsoft. Пароль не сохраняется."/>
 		<lookup key="linkOAuthSignInAgain" value="Снова войти через Microsoft"/>
@@ -2538,6 +2568,9 @@
 		<lookup key="msgWrapperUpdateDownloading" value="Загрузка {0}..."/>
 		<lookup key="msgWrapperUpdateDownloadFailed" value="Не удалось загрузить обновление: {0}"/>
 		<lookup key="cmdReportBug" value="Сообщить об ошибке..."/>
+		<lookup key="cmdQuickStart" value="Краткое руководство"/>
+		<lookup key="cmdManual" value="Руководство"/>
+		<lookup key="msgDocumentMissing" value="Документ {0} не найден. Он устанавливается вместе с программой в папку Docs рядом с ней."/>
 		<lookup key="groupBoxSupport" value="Поддержка"/>
 		<lookup key="groupDiscord" value="Серверы Discord"/>
 		<lookup key="lblDiscordIntro" value="Несколько дружелюбных мест, где игроки собираются для игр по электронной почте:"/>

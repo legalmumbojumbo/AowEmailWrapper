@@ -61,7 +61,7 @@ namespace AowEmailWrapper.Tests
             {
                 AuthenticationException ex = Assert.Throws<AuthenticationException>(
                     () => MailHelper.Authenticate(imap, "someone@outlook.com", "", MicrosoftOAuth.ProviderName));
-                Assert.Contains("not set up", ex.Message);
+                Assert.Contains("not available", ex.Message);
             }
         }
 

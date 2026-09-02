@@ -66,6 +66,7 @@ namespace AowEmailWrapper
         private const string WrapperUpdateNoneKey = "msgWrapperUpdateNone";
         private const string WrapperUpdateFailedKey = "msgWrapperUpdateFailed";
         private const string WrapperUpdateInstallingKey = "msgWrapperUpdateInstalling";
+        private const string MsgDocumentMissingKey = "msgDocumentMissing";
         private const string LinkUpdateCheckingKey = "linkUpdateChecking";
         private const string LinkUpdateAvailableKey = "linkUpdateAvailable";
 
@@ -210,9 +211,11 @@ namespace AowEmailWrapper
             tableDedication.SizeChanged += (sender, e) => FitGroupToContents(groupDedication);
             tableDiscordIntro.SizeChanged += (sender, e) => FitGroupToContents(groupDiscord);
             tableDiscord.SizeChanged += (sender, e) => FitGroupToContents(groupDiscord);
-            Shown += (sender, e) => { FitGroupToContents(groupDedication); FitGroupToContents(groupDiscord); };
+            flowSupport.SizeChanged += (sender, e) => FitGroupToContents(groupBoxSupport);
+            Shown += (sender, e) => { FitGroupToContents(groupDedication); FitGroupToContents(groupDiscord); FitGroupToContents(groupBoxSupport); };
             FitGroupToContents(groupDedication);
             FitGroupToContents(groupDiscord);
+            FitGroupToContents(groupBoxSupport);
 
             _gameManager = new AowGameManager(AppDataHelper.CheckEmail.FullName, _wrapperConfig.GamesConfig);
             _gameManager.InstallHint = ActivityInstallHint;
@@ -238,6 +241,8 @@ namespace AowEmailWrapper
 
             LoadConfig();
 
+            cmdQuickStart.Click += (sender, e) => OpenDocument(DocsHelper.QuickStartFile);
+            cmdManual.Click += (sender, e) => OpenDocument(DocsHelper.ManualFile);
             cmdLogFolder.Click += new EventHandler(cmdLogFolder_Click);
             cmdCheckUpdates.Click += new EventHandler(cmdCheckUpdates_Click);
             cmdReportBug.Click += new EventHandler(cmdReportBug_Click);
@@ -886,6 +891,22 @@ namespace AowEmailWrapper
             
             this.Activate();
             this.ResumeLayout();
+        }
+
+        private void OpenDocument(string fileName)
+        {
+            try
+            {
+                if (!DocsHelper.Open(fileName))
+                {
+                    MessageBox.Show(this, Translator.Translate(MsgDocumentMissingKey, fileName), Translator.Translate(this.Name), MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                }
+            }
+            catch (Exception ex)
+            {
+                Trace.TraceError("Could not open {0}: {1}", fileName, ex);
+                MessageBox.Show(this, ex.Message, Translator.Translate(this.Name), MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         private void cmdLogFolder_Click(object sender, EventArgs e)

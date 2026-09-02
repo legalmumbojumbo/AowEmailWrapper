@@ -126,7 +126,7 @@ namespace AowEmailWrapper.Helpers
 
         private static string NotConfiguredText()
         {
-            return Text(NotConfiguredKey, "Microsoft sign-in is not set up in this copy of the Wrapper. Register the Wrapper in the Azure portal and put the application (client) ID in AowEmailWrapper.dll.config, as described in the README.");
+            return Text(NotConfiguredKey, "Microsoft sign-in is not available in this build of the Wrapper. Please install the official build, or use an email account that signs in with a password.");
         }
 
         private static string SessionExpiredText(string username)

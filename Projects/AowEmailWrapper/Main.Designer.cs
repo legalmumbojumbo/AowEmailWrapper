@@ -104,6 +104,8 @@
             this.linkDiscordAow2 = new System.Windows.Forms.LinkLabel();
             this.groupBoxSupport = new System.Windows.Forms.GroupBox();
             this.flowSupport = new System.Windows.Forms.FlowLayoutPanel();
+            this.cmdQuickStart = new System.Windows.Forms.Button();
+            this.cmdManual = new System.Windows.Forms.Button();
             this.cmdCheckUpdates = new System.Windows.Forms.Button();
             this.cmdLogFolder = new System.Windows.Forms.Button();
             this.cmdReportBug = new System.Windows.Forms.Button();
@@ -891,8 +893,6 @@
             //
             // groupBoxSupport
             //
-            this.groupBoxSupport.AutoSize = true;
-            this.groupBoxSupport.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.groupBoxSupport.Controls.Add(this.flowSupport);
             this.groupBoxSupport.Dock = System.Windows.Forms.DockStyle.Top;
             this.groupBoxSupport.Location = new System.Drawing.Point(0, 313);
@@ -908,6 +908,8 @@
             //
             this.flowSupport.AutoSize = true;
             this.flowSupport.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.flowSupport.Controls.Add(this.cmdQuickStart);
+            this.flowSupport.Controls.Add(this.cmdManual);
             this.flowSupport.Controls.Add(this.cmdCheckUpdates);
             this.flowSupport.Controls.Add(this.cmdLogFolder);
             this.flowSupport.Controls.Add(this.cmdReportBug);
@@ -916,6 +918,28 @@
             this.flowSupport.Name = "flowSupport";
             this.flowSupport.Size = new System.Drawing.Size(498, 34);
             this.flowSupport.TabIndex = 0;
+            //
+            // cmdQuickStart
+            //
+            this.cmdQuickStart.AutoSize = true;
+            this.cmdQuickStart.Margin = new System.Windows.Forms.Padding(0, 4, 8, 0);
+            this.cmdQuickStart.Name = "cmdQuickStart";
+            this.cmdQuickStart.Padding = new System.Windows.Forms.Padding(6, 0, 6, 0);
+            this.cmdQuickStart.Size = new System.Drawing.Size(110, 26);
+            this.cmdQuickStart.TabIndex = 3;
+            this.cmdQuickStart.Text = "Quick start guide";
+            this.cmdQuickStart.UseVisualStyleBackColor = true;
+            //
+            // cmdManual
+            //
+            this.cmdManual.AutoSize = true;
+            this.cmdManual.Margin = new System.Windows.Forms.Padding(0, 4, 8, 0);
+            this.cmdManual.Name = "cmdManual";
+            this.cmdManual.Padding = new System.Windows.Forms.Padding(6, 0, 6, 0);
+            this.cmdManual.Size = new System.Drawing.Size(110, 26);
+            this.cmdManual.TabIndex = 4;
+            this.cmdManual.Text = "Manual";
+            this.cmdManual.UseVisualStyleBackColor = true;
             //
             // cmdCheckUpdates
             //
@@ -1073,6 +1097,8 @@
         private System.Windows.Forms.LinkLabel linkDiscordAow2;
         private System.Windows.Forms.GroupBox groupBoxSupport;
         private System.Windows.Forms.FlowLayoutPanel flowSupport;
+        private System.Windows.Forms.Button cmdQuickStart;
+        private System.Windows.Forms.Button cmdManual;
         private System.Windows.Forms.Button cmdCheckUpdates;
         private System.Windows.Forms.Button cmdLogFolder;
         private System.Windows.Forms.Button cmdReportBug;
