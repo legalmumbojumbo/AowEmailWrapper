@@ -37,39 +37,6 @@ Gmail note: Google no longer accepts your normal account password from mail prog
 2-Step Verification, create an App Password (Google Account > Security > App passwords) and use
 that 16 character password in the wrapper.
 
-Outlook.com, Hotmail, Live and Microsoft 365 accounts
------------------------------------------------------
-
-Microsoft no longer accepts passwords from mail programs, so these accounts use Sign in with
-Microsoft (OAuth 2.0). In the account wizard the password box is replaced by a button; the sign-in
-happens in your web browser and the wrapper keeps a token (encrypted with DPAPI) instead of a
-password. The pollers and the sender then authenticate with XOAUTH2.
-
-For this to work the wrapper has to be registered as an application with Microsoft. That is a
-one-time, free step done by whoever builds or distributes the wrapper:
-
-1. Go to https://portal.azure.com, open Microsoft Entra ID > App registrations > New registration.
-2. Name: Age of Wonders Email Wrapper. Supported account types: choose the option that includes
-   personal Microsoft accounts (for example "Personal Microsoft accounts only").
-3. Redirect URI: platform "Mobile and desktop applications", value `http://localhost`.
-4. After registering, open Authentication and set "Allow public client flows" to Yes.
-5. API permissions can be left alone: the wrapper asks for IMAP.AccessAsUser.All and SMTP.Send at
-   sign-in and the user approves them on the Microsoft consent screen. To pre-list them anyway, use
-   Add a permission > the "APIs my organization uses" tab > search "Office 365 Exchange Online" >
-   Delegated permissions. That API is not in the default "Microsoft APIs" tab and may be absent in a
-   tenant created for a personal account.
-6. Copy the Application (client) ID from the Overview page and paste it into
-   `AowEmailWrapper.dll.config` next to the executable:
-
-       <add key="Microsoft.OAuth.ClientId" value="00000000-0000-0000-0000-000000000000"/>
-
-Without a client ID the Sign in with Microsoft button explains that the feature is not set up.
-The wrapper signs in at the `/consumers` endpoint, which is what a registration limited to personal
-accounts requires. If you registered for "any organizational directory and personal accounts", set
-`Microsoft.OAuth.Authority` in the same config file to `https://login.microsoftonline.com/common`.
-Gmail could use the same mechanism, but Google requires a paid security review for the mail scope
-before an app may serve the public, so Gmail stays on App Passwords for now.
-
 Building
 --------
 

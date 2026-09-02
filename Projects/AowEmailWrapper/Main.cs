@@ -211,9 +211,11 @@ namespace AowEmailWrapper
             tableDedication.SizeChanged += (sender, e) => FitGroupToContents(groupDedication);
             tableDiscordIntro.SizeChanged += (sender, e) => FitGroupToContents(groupDiscord);
             tableDiscord.SizeChanged += (sender, e) => FitGroupToContents(groupDiscord);
-            Shown += (sender, e) => { FitGroupToContents(groupDedication); FitGroupToContents(groupDiscord); };
+            flowSupport.SizeChanged += (sender, e) => FitGroupToContents(groupBoxSupport);
+            Shown += (sender, e) => { FitGroupToContents(groupDedication); FitGroupToContents(groupDiscord); FitGroupToContents(groupBoxSupport); };
             FitGroupToContents(groupDedication);
             FitGroupToContents(groupDiscord);
+            FitGroupToContents(groupBoxSupport);
 
             _gameManager = new AowGameManager(AppDataHelper.CheckEmail.FullName, _wrapperConfig.GamesConfig);
             _gameManager.InstallHint = ActivityInstallHint;

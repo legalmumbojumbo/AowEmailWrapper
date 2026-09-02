@@ -893,8 +893,6 @@
             //
             // groupBoxSupport
             //
-            this.groupBoxSupport.AutoSize = true;
-            this.groupBoxSupport.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.groupBoxSupport.Controls.Add(this.flowSupport);
             this.groupBoxSupport.Dock = System.Windows.Forms.DockStyle.Top;
             this.groupBoxSupport.Location = new System.Drawing.Point(0, 313);
