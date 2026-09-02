@@ -80,8 +80,44 @@ namespace AowEmailWrapper.Helpers
                 returnVal = new Config(true);
                 isNewConfig = true;
             }
+            else if (MigrateLegacyPasswords(returnVal))
+            {
+                SaveConfig(returnVal);
+            }
 
             return returnVal;
+        }
+
+        /// <summary>
+        /// Re-stores passwords saved by versions before 2.0 (reversible obfuscation) with Windows DPAPI.
+        /// </summary>
+        private static bool MigrateLegacyPasswords(Config config)
+        {
+            bool changed = false;
+
+            if (config.AccountsList != null && config.AccountsList.Accounts != null)
+            {
+                foreach (AccountConfigValues account in config.AccountsList.Accounts)
+                {
+                    if (account.PollingConfig != null &&
+                        !string.IsNullOrEmpty(account.PollingConfig.Password) &&
+                        !CryptographyHelper.IsProtected(account.PollingConfig.Password))
+                    {
+                        account.PollingConfig.PasswordTrue = account.PollingConfig.PasswordTrue;
+                        changed = true;
+                    }
+
+                    if (account.SmtpConfig != null &&
+                        !string.IsNullOrEmpty(account.SmtpConfig.Password) &&
+                        !CryptographyHelper.IsProtected(account.SmtpConfig.Password))
+                    {
+                        account.SmtpConfig.PasswordTrue = account.SmtpConfig.PasswordTrue;
+                        changed = true;
+                    }
+                }
+            }
+
+            return changed;
         }
 
         public static void SaveConfig(Config toSave)

@@ -1,33 +1,61 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.IO;
-using System.Text;
 using System.Diagnostics;
+using System.Linq;
 using System.Threading;
-using System.Timers;
-using AowEmailWrapper.Classes;
 using AowEmailWrapper.ASG;
-using AowEmailWrapper.Games;
 using AowEmailWrapper.ConfigFramework;
+using AowEmailWrapper.Games;
 using AowEmailWrapper.Helpers;
 using AowEmailWrapper.Pollers.MessageStore;
-using Lesnikowski.Client.IMAP;
-using Lesnikowski.Mail;
-using Lesnikowski.Mail.Headers;
-using Lesnikowski.Mail.Headers.Constants;
+using MailKit;
+using MailKit.Net.Imap;
+using MailKit.Search;
+using MailKit.Security;
+using MimeKit;
 
 namespace AowEmailWrapper.Pollers
 {
+    /// <summary>
+    /// Watches an IMAP mailbox. Where the server supports IMAP IDLE (all the big providers do) a
+    /// connection stays open and the server announces new mail the moment it arrives; the timed
+    /// interval from the settings is then only a safety net. Servers without IDLE are polled on the
+    /// interval as before.
+    /// </summary>
     public class ImapPoller : BasePoller
     {
+        /// <summary>
+        /// Unread mail older than this is never downloaded. It keeps a first poll on a busy mailbox
+        /// (or one whose local records are stale) from replaying old turns, and it bounds the work per poll.
+        /// </summary>
+        public const int LookBackDays = 365;
+
+        /// <summary>How many message structures to request from the server in one round trip.</summary>
+        private const int SummaryChunkSize = 250;
+
+        /// <summary>Servers drop an IDLE after about 30 minutes (Gmail sooner), so it is renewed well before that.</summary>
+        private const int IdleRenewMinutes = 9;
+
+        private const int ReconnectDelaySeconds = 30;
+        private const int ReconnectDelayMaxSeconds = 300;
+
+        /// <summary>Transient failures are only reported to the user after this many in a row.</summary>
+        private const int FailuresBeforeReporting = 3;
+
+        private Thread _worker;
+        private CancellationTokenSource _stop;
+        private CancellationTokenSource _wakeIdle;
+        private readonly object _wakeLock = new object();
+        private readonly ManualResetEventSlim _scanRequest = new ManualResetEventSlim(false);
+        private int _consecutiveFailures;
+
         public ImapPoller(
             string host,
             int port,
             SSLType sslType,
             string username,
             string password,
-            int pollInterval,            
+            int pollInterval,
             EmailSaveFolder saveFolder,
             AowGameManager gameManager)
             : base(
@@ -41,80 +69,235 @@ namespace AowEmailWrapper.Pollers
             gameManager)
         { }
 
+        /// <summary>True while the background connection loop is running.</summary>
+        public bool IsWatching
+        {
+            get { return _worker != null && _stop != null && !_stop.IsCancellationRequested; }
+        }
+
+        #region Start / stop / requests
+
+        public override void Start()
+        {
+            if (IsWatching)
+            {
+                return;
+            }
+
+            _stop = new CancellationTokenSource();
+            _consecutiveFailures = 0;
+            _scanRequest.Reset();
+            StartTimer();
+
+            _worker = new Thread(new ThreadStart(Run));
+            _worker.IsBackground = true;
+            _worker.Name = "IMAP watcher";
+            _worker.Start();
+        }
+
+        public override void Stop()
+        {
+            StopTimer();
+
+            CancellationTokenSource stop = _stop;
+            _stop = null;
+            _worker = null;
+
+            if (stop != null)
+            {
+                //Do not join the worker: Stop can be called from the worker's own event handlers
+                stop.Cancel();
+            }
+            WakeIdle();
+        }
+
+        public override void PollNow()
+        {
+            if (IsWatching)
+            {
+                RequestScan();
+            }
+            else
+            {
+                base.PollNow();
+            }
+        }
+
+        protected override void OnTimerElapsed()
+        {
+            if (IsWatching)
+            {
+                RequestScan();
+            }
+            else
+            {
+                base.OnTimerElapsed();
+            }
+        }
+
+        private void RequestScan()
+        {
+            _scanRequest.Set();
+            WakeIdle();
+        }
+
+        private void WakeIdle()
+        {
+            lock (_wakeLock)
+            {
+                if (_wakeIdle != null)
+                {
+                    try { _wakeIdle.Cancel(); }
+                    catch (ObjectDisposedException) { }
+                }
+            }
+        }
+
+        #endregion
+
+        #region Connection loop
+
+        private void Run()
+        {
+            CancellationTokenSource stop = _stop;
+            if (stop == null)
+            {
+                return;
+            }
+            CancellationToken token = stop.Token;
+            int delay = ReconnectDelaySeconds;
+
+            while (!token.IsCancellationRequested)
+            {
+                try
+                {
+                    using (ImapClient imap = new ImapClient())
+                    {
+                        imap.Timeout = NETWORK_TIMEOUT_MS;
+                        imap.Connect(_host, _port, MailHelper.ToSecureSocketOptions(_sslType), token);
+                        MailHelper.Authenticate(imap, _username, _password, OAuthProvider);
+
+                        IMailFolder inbox = imap.Inbox;
+                        inbox.Open(FolderAccess.ReadWrite, token);
+
+                        bool canIdle = imap.Capabilities.HasFlag(ImapCapabilities.Idle);
+                        Trace.TraceInformation("IMAP connected to {0}, IDLE {1}", _host, canIdle ? "supported" : "not supported, polling on the timer");
+
+                        _scanRequest.Reset();
+                        Scan(imap, inbox);
+                        _consecutiveFailures = 0;
+                        delay = ReconnectDelaySeconds;
+
+                        if (!canIdle)
+                        {
+                            imap.Disconnect(true, token);
+                            //Wait for the timer or Poll now, then reconnect and scan
+                            _scanRequest.Wait(token);
+                            continue;
+                        }
+
+                        EventHandler<EventArgs> newMail = (s, e) =>
+                        {
+                            Trace.TraceInformation("Server announced new mail in the inbox");
+                            RequestScan();
+                        };
+                        inbox.CountChanged += newMail;
+                        try
+                        {
+                            while (!token.IsCancellationRequested)
+                            {
+                                if (_scanRequest.IsSet)
+                                {
+                                    _scanRequest.Reset();
+                                    Scan(imap, inbox);
+                                    continue;
+                                }
+
+                                using (CancellationTokenSource renew = new CancellationTokenSource(TimeSpan.FromMinutes(IdleRenewMinutes)))
+                                using (CancellationTokenSource done = CancellationTokenSource.CreateLinkedTokenSource(token, renew.Token))
+                                {
+                                    lock (_wakeLock) { _wakeIdle = done; }
+                                    try
+                                    {
+                                        imap.Idle(done.Token, token);
+                                    }
+                                    finally
+                                    {
+                                        lock (_wakeLock) { _wakeIdle = null; }
+                                    }
+                                }
+                            }
+                        }
+                        finally
+                        {
+                            inbox.CountChanged -= newMail;
+                        }
+
+                        imap.Disconnect(true);
+                    }
+                }
+                catch (OperationCanceledException)
+                {
+                    //Stopping
+                }
+                catch (AuthenticationException ex)
+                {
+                    //A rejected sign-in will not fix itself; report it at once and stop, the main form pauses polling
+                    Trace.TraceError("IMAP sign-in rejected: {0}", ex.Message);
+                    ReportFailure(ex);
+                    return;
+                }
+                catch (Exception ex)
+                {
+                    _consecutiveFailures++;
+                    Trace.TraceWarning("IMAP connection problem ({0} in a row): {1}", _consecutiveFailures, ex.Message);
+
+                    if (_consecutiveFailures >= FailuresBeforeReporting)
+                    {
+                        ReportFailure(ex);
+                    }
+
+                    if (token.WaitHandle.WaitOne(TimeSpan.FromSeconds(delay)))
+                    {
+                        return;
+                    }
+                    delay = Math.Min(delay * 2, ReconnectDelayMaxSeconds);
+                }
+            }
+        }
+
+        private void ReportFailure(Exception ex)
+        {
+            PollBegin();
+            PollEnd(false, ex);
+        }
+
+        #endregion
+
+        #region Scanning
+
+        /// <summary>One-off check on its own connection, used when the watcher is not running.</summary>
         protected override void Poll()
         {
             bool emailDownloaded = false;
             Exception error = null;
 
             try
-            {                
+            {
                 PollBegin();
 
-                using (Imap imap = new Imap())
+                using (ImapClient imap = new ImapClient())
                 {
-                    switch (_sslType)
-                    { 
-                        case SSLType.None:
-                            imap.Connect(_host, _port);
-                            break;
-                        case SSLType.SSL:
-                            imap.ConnectSSL(_host, _port);
-                            break;
-                        case SSLType.TLS:
-                            imap.Connect(_host, _port);
-                            imap.StartTLS();
-                            break;
-                    }
+                    imap.Timeout = NETWORK_TIMEOUT_MS;
+                    imap.Connect(_host, _port, MailHelper.ToSecureSocketOptions(_sslType));
+                    MailHelper.Authenticate(imap, _username, _password, OAuthProvider);
 
-                    imap.UseBestLogin(_username, _password);
+                    IMailFolder inbox = imap.Inbox;
+                    inbox.Open(FolderAccess.ReadWrite);
 
-                    imap.SelectInbox();
+                    emailDownloaded = ScanMailbox(inbox);
 
-                    List<long> serverUids = imap.SearchFlag(Flag.Unseen);
-
-                    MessageStoreCollection localMessageStore = MessageStoreManager.LoadLocalMessageStore(_username, _host);
-
-                    if (localMessageStore != null)
-                    {
-                        MessageStoreManager.RemoveMessagesNoLongerOnServer(ref localMessageStore, serverUids);
-
-                        List<long> uidsToCheck = MessageStoreManager.GetMessagesToCheck(localMessageStore, serverUids);
-
-                        foreach (long uid in uidsToCheck)
-                        {
-                            //string fileName;
-
-                            string eml = imap.GetMessageByUID(uid);
-                            IMail email = new MailBuilder().CreateFromEml(eml); //SpoolEmlViaDisk(imap.GetMessageByUID(uid), out fileName);
-
-                            if (ProcessEmailAttachments(email) > 0)
-                            {
-                                //We want the user to be able to go Mark as Unread > Poll > Redownload
-                                //So just mark as read but don't add to local message store
-                                emailDownloaded = true;
-                                imap.MarkMessageSeenByUID(uid);
-                            }
-                            else
-                            {
-                                localMessageStore.Messages.Add(new MessageStoreMessage(uid));
-                                imap.MarkMessageUnseenByUID(uid);
-                            }
-
-                            //ClearSpooledEml(fileName);
-                        }
-                    }
-                    else
-                    {
-                        //New message store, add all unread currently on server
-                        localMessageStore = new MessageStoreCollection(serverUids);
-                    }
-
-                    MessageStoreManager.SaveLocalMessageStore(_username, _host, localMessageStore);
-
-                    localMessageStore.Dispose();
-                    localMessageStore = null;
-
-                    imap.Close();
+                    imap.Disconnect(true);
                 }
             }
             catch (Exception ex)
@@ -128,5 +311,132 @@ namespace AowEmailWrapper.Pollers
                 PollEnd(emailDownloaded, error);
             }
         }
+
+        /// <summary>A scan on the watcher's open connection. Errors propagate so the loop reconnects.</summary>
+        private void Scan(ImapClient imap, IMailFolder inbox)
+        {
+            bool emailDownloaded = false;
+            bool completed = false;
+
+            PollBegin();
+            try
+            {
+                emailDownloaded = ScanMailbox(inbox);
+                completed = true;
+            }
+            finally
+            {
+                if (completed)
+                {
+                    PollEnd(emailDownloaded, null);
+                }
+                else
+                {
+                    //Not reported here: the connection loop decides whether the failure is worth telling the user about
+                    PollAbort();
+                }
+            }
+        }
+
+        private bool ScanMailbox(IMailFolder inbox)
+        {
+            bool emailDownloaded = false;
+
+            IList<UniqueId> unseen = inbox.Search(SearchQuery.NotSeen);
+            List<long> serverUids = unseen.Select(uid => (long)uid.Id).ToList();
+
+            //Only unread mail from the look back window is a candidate for download
+            DateTime since = DateTime.Now.AddDays(-LookBackDays);
+            HashSet<long> recent = new HashSet<long>(
+                inbox.Search(SearchQuery.NotSeen.And(SearchQuery.DeliveredAfter(since))).Select(uid => (long)uid.Id));
+
+            MessageStoreCollection localMessageStore = MessageStoreManager.LoadLocalMessageStore(_username, _host)
+                ?? new MessageStoreCollection(new List<long>());
+
+            MessageStoreManager.RemoveMessagesNoLongerOnServer(ref localMessageStore, serverUids);
+
+            List<long> uidsToCheck = MessageStoreManager.GetMessagesToCheck(localMessageStore, serverUids);
+            List<long> recentToCheck = uidsToCheck.Where(uid => recent.Contains(uid)).ToList();
+
+            //Older unread mail is recorded as dealt with and never fetched
+            foreach (long uid in uidsToCheck.Where(uid => !recent.Contains(uid)))
+            {
+                localMessageStore.Messages.Add(new MessageStoreMessage(uid));
+            }
+
+            //Ask the server which of the recent messages carry a save game, without downloading them
+            HashSet<long> withSaveGame = FindMessagesWithSaveGames(inbox, recentToCheck);
+
+            Trace.TraceInformation("Mailbox scan: {0} unread, {1} not seen before within {2} days, {3} with a save game attached",
+                serverUids.Count, recentToCheck.Count, LookBackDays, withSaveGame.Count);
+
+            foreach (long uid in recentToCheck)
+            {
+                if (!withSaveGame.Contains(uid))
+                {
+                    localMessageStore.Messages.Add(new MessageStoreMessage(uid));
+                    continue;
+                }
+
+                UniqueId uniqueId = new UniqueId((uint)uid);
+
+                MimeMessage email = inbox.GetMessage(uniqueId);
+
+                if (ProcessEmailAttachments(email) > 0)
+                {
+                    //We want the user to be able to go Mark as Unread > Poll > Redownload
+                    //So just mark as read but don't add to local message store
+                    emailDownloaded = true;
+                    inbox.AddFlags(uniqueId, MessageFlags.Seen, true);
+                }
+                else
+                {
+                    localMessageStore.Messages.Add(new MessageStoreMessage(uid));
+                    inbox.RemoveFlags(uniqueId, MessageFlags.Seen, true);
+                }
+            }
+
+            MessageStoreManager.SaveLocalMessageStore(_username, _host, localMessageStore);
+            localMessageStore.Dispose();
+
+            return emailDownloaded;
+        }
+
+        /// <summary>
+        /// Uses the MIME structure the server already knows (BODYSTRUCTURE) to find messages with an
+        /// Age of Wonders save attached. Costs one request per chunk instead of one download per message.
+        /// </summary>
+        public static HashSet<long> FindMessagesWithSaveGames(IMailFolder folder, List<long> uids)
+        {
+            HashSet<long> found = new HashSet<long>();
+
+            for (int offset = 0; offset < uids.Count; offset += SummaryChunkSize)
+            {
+                List<UniqueId> chunk = uids.Skip(offset).Take(SummaryChunkSize).Select(uid => new UniqueId((uint)uid)).ToList();
+
+                IList<IMessageSummary> summaries = folder.Fetch(chunk, MessageSummaryItems.UniqueId | MessageSummaryItems.BodyStructure);
+
+                foreach (IMessageSummary summary in summaries)
+                {
+                    if (summary.Body == null)
+                    {
+                        continue;
+                    }
+
+                    foreach (BodyPartBasic part in summary.BodyParts)
+                    {
+                        if (!string.IsNullOrEmpty(part.FileName) && ASGFileInfo.IsAsg(part.FileName))
+                        {
+                            found.Add(summary.UniqueId.Id);
+                            break;
+                        }
+                    }
+                }
+            }
+
+            return found;
+        }
+
+        #endregion
     }
 }

@@ -1,0 +1,282 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Manual - Age of Wonders Email Wrapper</title>
+<style>
+  body { font-family: Segoe UI, Arial, sans-serif; font-size: 15px; line-height: 1.5; color: #222; background: #f6f6f4; margin: 0; }
+  main { max-width: 860px; margin: 0 auto; padding: 24px 28px 60px; background: #fff; }
+  h1 { font-size: 26px; margin: 0 0 4px; }
+  h2 { font-size: 20px; margin: 40px 0 10px; border-bottom: 1px solid #ddd; padding-bottom: 4px; }
+  h3 { font-size: 16px; margin: 24px 0 6px; }
+  .sub { color: #666; margin-bottom: 20px; }
+  figure { margin: 14px 0 22px; }
+  figure img { max-width: 100%; border: 1px solid #bbb; box-shadow: 0 2px 6px rgba(0,0,0,.15); }
+  figcaption { font-size: 13px; color: #555; margin-top: 6px; }
+  .note { background: #fff8dc; border-left: 4px solid #e0b400; padding: 10px 14px; margin: 14px 0; }
+  .icon { vertical-align: middle; margin-right: 6px; }
+  table { border-collapse: collapse; margin: 10px 0 16px; }
+  th, td { border: 1px solid #ccc; padding: 6px 10px; text-align: left; vertical-align: top; }
+  th { background: #f0f0ee; }
+  code { background: #eee; padding: 1px 5px; border-radius: 3px; font-size: 14px; }
+  ol li, ul li { margin: 6px 0; }
+  nav ul { columns: 2; padding-left: 20px; }
+</style>
+</head>
+<body>
+<main>
+<h1>Age of Wonders Email Wrapper</h1>
+<div class="sub">Manual for version 2.0 &middot; <a href="QuickStart.html">Quick Start Guide</a></div>
+
+<nav>
+<ul>
+  <li><a href="#intro">Introduction</a></li>
+  <li><a href="#install">Installing and uninstalling</a></li>
+  <li><a href="#tray">The tray icon</a></li>
+  <li><a href="#accounts">Accounts tab</a></li>
+  <li><a href="#wizard">Adding an account</a></li>
+  <li><a href="#providers">Email providers</a></li>
+  <li><a href="#activity">Activity Log tab</a></li>
+  <li><a href="#games">Games tab</a></li>
+  <li><a href="#preferences">Settings tab</a></li>
+  <li><a href="#playing">Playing a game</a></li>
+  <li><a href="#test-game">Create a test game</a></li>
+  <li><a href="#checking">How email checking works</a></li>
+  <li><a href="#security">Where your passwords go</a></li>
+  <li><a href="#troubleshooting">Troubleshooting</a></li>
+</ul>
+</nav>
+
+<h2 id="intro">Introduction</h2>
+<p>Age of Wonders, Age of Wonders II, Shadow Magic and MP Evolution can all be played by email: each player takes a turn and emails the saved game to the next player. The Wrapper automates that. It sits in the system tray, sends the turn the moment the game finishes it, watches your mailbox for incoming turns, drops them where the game expects them and reminds you when it is your move.</p>
+<p>The games talk to the Wrapper through a tiny mail server the Wrapper runs on your own PC (127.0.0.1, port 49252). The Wrapper then relays each turn through your real email account, so your opponents receive an ordinary email with the save game attached, whether or not they use the Wrapper themselves.</p>
+<p>Version 2.0 is a port of the 2013 program to current .NET. Its purpose is to work with today's email providers: it uses modern encryption, understands Gmail App Passwords and Microsoft's browser sign-in, checks even very full mailboxes quickly, and stores your passwords encrypted with Windows.</p>
+
+<h2 id="install">Installing and uninstalling</h2>
+<p><strong>Requirements:</strong> 64-bit Windows 10 or 11 and the .NET 8 Desktop Runtime. The setup program checks for the runtime and, if it is missing, downloads the official installer from Microsoft (about 55 MB) and installs it before continuing.</p>
+<p>The setup installs for the current Windows user only and needs no administrator password. It creates Start Menu shortcuts for the Wrapper, this manual, the Quick Start Guide and an uninstaller, and lists the Wrapper under <em>Apps and Features</em>. Installing a newer version over an older one upgrades it in place.</p>
+<p><strong>Uninstalling</strong> removes the program, its autostart entry and the email settings it wrote into the games, and asks whether to also delete your Wrapper settings folder (<code>%APPDATA%\AowEmailWrapper</code>). Keep it if you plan to reinstall.</p>
+<p><strong>Updating.</strong> Every time it starts, the Wrapper asks GitHub whether a newer build exists. By default it installs one straight away: a balloon says which build is going in, the Wrapper closes, the setup runs quietly for a few seconds and the Wrapper starts again. No administrator password is asked for and your accounts and settings are kept. If you would rather decide yourself, turn off <em>Install updates automatically</em> on the <a href="#preferences">Settings tab</a>; the Wrapper then mentions a new build once and <em>Check for updates</em> under <em>Support</em> on the same tab installs it whenever you are ready. If you start the Wrapper with Windows, an update may run during sign-in.</p>
+
+<h2 id="tray">The tray icon</h2>
+<p>The Wrapper lives in the notification area by the clock. If Windows hides the icon, click the small arrow there, or drag the icon onto the taskbar so it is always visible. Closing the main window only hides it; use <em>Exit</em> on the tray menu to stop the Wrapper.</p>
+<table>
+  <tr><th>Icon</th><th>Meaning</th></tr>
+  <tr><td><img src="images/state-Normal.png" width="20" height="20" alt=""></td><td>Idle. Everything is up to date.</td></tr>
+  <tr><td><img src="images/state-Checking.png" width="16" height="16" alt=""></td><td>Checking your mailbox.</td></tr>
+  <tr><td><img src="images/state-Sending.png" width="16" height="16" alt=""></td><td>Sending a turn.</td></tr>
+  <tr><td><img src="images/state-EmailWaiting.png" width="16" height="16" alt=""></td><td>A turn has arrived and is waiting for you.</td></tr>
+  <tr><td><img src="images/state-CheckEmail.png" width="16" height="16" alt=""></td><td>A turn arrived that the Wrapper could not match to a game. Look in the game's EmailIn folder.</td></tr>
+</table>
+<p><strong>Double-click</strong> the icon to open the main window (or, if a turn is waiting, to start the game). <strong>Right-click</strong> it for the menu:</p>
+<ul>
+  <li><em>Show</em> opens the main window.</li>
+  <li>One entry per installed game starts that game. A small envelope next to a game means it has a turn waiting.</li>
+  <li><em>Accounts</em> switches between your email accounts.</li>
+  <li><em>Poll now</em> checks your mailbox immediately instead of waiting for the next scheduled check.</li>
+  <li><em>Exit</em> stops the Wrapper. Turns cannot be sent or received while it is not running.</li>
+</ul>
+
+<h2 id="accounts">Accounts tab</h2>
+<figure>
+  <img src="images/main-accounts-incoming.png" alt="The Accounts tab">
+</figure>
+<p>The list at the top holds your email accounts. An account that has <em>Check for email</em> ticked is <strong>active</strong>: the Wrapper watches its inbox, and any turn that arrives there is answered through that same account, so your opponents always see replies from the address they wrote to. Several accounts can be active at once.</p>
+<p>The first active account in the list is also the <strong>primary</strong> one, shown as "Active, new games": the games are pointed at its address, and a game you start yourself is sent from it. Use <em>Move up</em> on the list's right-click menu to make a different account primary. Most people have one account and never think about this.</p>
+<ul>
+  <li><strong>Add New</strong> opens the <a href="#wizard">account wizard</a>.</li>
+  <li><strong>Activate</strong> / <strong>Deactivate</strong> switches the selected account on or off; it is the same as ticking <em>Check for email</em> on the Incoming Email tab. Inactive accounts stay in the list, shown in grey, but are not watched or used.</li>
+  <li><strong>Delete</strong> and <strong>Rename</strong> act on the selected account; <strong>Move up</strong> and <strong>Move down</strong> are on the right-click menu.</li>
+  <li>Selecting an account shows its settings in the two tabs below, so any account can be edited. Click <em>Save Settings</em> when done.</li>
+  <li>The tray menu's <em>Accounts</em> submenu shows a tick next to each active account; clicking one switches it on or off.</li>
+</ul>
+<p>The lower half shows the selected account's settings on two tabs.</p>
+
+<h3>Incoming Email</h3>
+<table>
+  <tr><th>Setting</th><th>Meaning</th></tr>
+  <tr><td>Check for email every</td><td>Ticked, this account is active: its inbox is watched and turns received on it are answered through it. The interval is how often the mailbox is checked in full; with IMAP new mail is announced by the server straight away, so that is only a safety net. Unticked, the account is kept but not used.</td></tr>
+  <tr><td>Email Type</td><td>IMAP or POP3. Use IMAP whenever your provider offers it; see <a href="#checking">how email checking works</a>.</td></tr>
+  <tr><td>Server, Port, SSL Type</td><td>The incoming mail server. SSL means an encrypted connection from the start (ports 993 and 995); TLS means the connection is upgraded after connecting (ports 143 and 110); None lets the Wrapper choose.</td></tr>
+  <tr><td>User name, Password</td><td>Your sign-in. For most providers the user name is the full email address. For Gmail, Yahoo and AOL the password is an <a href="#providers">app password</a>. Accounts that sign in through Microsoft show a link to sign in again instead of a password box.</td></tr>
+</table>
+
+<h3>Outgoing Email</h3>
+<figure>
+  <img src="images/main-accounts-outgoing.png" alt="The Outgoing Email tab">
+</figure>
+<table>
+  <tr><th>Setting</th><th>Meaning</th></tr>
+  <tr><td>Smtp Server, Port, SSL Type</td><td>The outgoing mail server. SSL is port 465, TLS is usually port 587.</td></tr>
+  <tr><td>Email Address</td><td>The address your turns are sent from. The games are told to use this address too.</td></tr>
+  <tr><td>Authentication Required</td><td>Nearly always ticked. With <em>Use Polling Credentials</em> ticked the same user name and password as the Incoming tab are used, which is right for every common provider.</td></tr>
+  <tr><td>BCC myself</td><td>Sends a copy of every turn to your own address. Only useful with providers that do not keep a Sent folder for mail sent by programs (Yahoo used to be one). If you turn it on, add a filter in your mailbox that moves those copies out of the Inbox so the Wrapper does not have to look at them.</td></tr>
+</table>
+
+<h3>Test connection</h3>
+<p>Each tab has a <strong>Test connection</strong> button. It connects to the server with the settings shown, signs in, and reports the result. A failure shows the server's exact reply and, for the big providers, what to do about it. Use it whenever you change a setting or a password.</p>
+<figure>
+  <img src="images/dialog-test-failed-details.png" alt="A failed connection test with the Details pane open">
+  <figcaption>Details shows the full technical error, useful when asking for help.</figcaption>
+</figure>
+<p><strong>Save Settings</strong> at the bottom of the window lights up when something has changed. Saving restarts the mailbox checking with the new settings.</p>
+
+<h2 id="wizard">Adding an account</h2>
+<p>Click <strong>Add New</strong> on the Accounts tab. The wizard needs your address and a password, then finds the server settings by itself.</p>
+<figure>
+  <img src="images/wizard-page1-gmail.png" alt="Wizard page 1 with a Gmail address">
+  <figcaption>Page 1. For Gmail, Yahoo, AOL and Microsoft addresses a note under the boxes explains what to enter.</figcaption>
+</figure>
+<p><strong>Page 2</strong> searches the Thunderbird settings database that Mozilla maintains for its own email program. Well known providers are always found. If yours is not, the page offers three more attempts:</p>
+<ul>
+  <li><em>Look up the mail provider for this domain</em> finds out which company actually handles mail for your address and searches for that company instead. Try this first.</li>
+  <li><em>Try common server names</em> tries names such as mail.yourdomain.com and keeps the ones that answer.</li>
+  <li><em>Enter the settings myself</em> creates the account with placeholder settings for you to fill in on the Accounts tab. Your provider's help pages or a web search for its "IMAP settings" will have them; the ports in <a href="#troubleshooting">Troubleshooting</a> are the usual ones.</li>
+</ul>
+<p><strong>Page 3</strong> asks which of the found servers to use. <em>Recommended settings</em> picks the most secure ones and prefers IMAP over POP3; <em>Prefer</em> lets you insist on one or the other. <em>Let me pick from the servers found</em> shows every server that was found so you can choose.</p>
+<p>Click <strong>Next</strong> on page 3 and the account is created and activated. Use <em>Test connection</em> to confirm it before playing.</p>
+
+<h2 id="providers">Email providers</h2>
+<h3>Gmail</h3>
+<p>Google does not accept your account password from mail programs. You need an <strong>App Password</strong>:</p>
+<ol>
+  <li>Turn on 2-Step Verification for your Google account (Google Account &gt; Security).</li>
+  <li>Open <a href="https://myaccount.google.com/apppasswords">myaccount.google.com/apppasswords</a>, give the app any name and click Create. The wizard links to this page.</li>
+  <li>Use the 16 letter code Google shows as the password in the Wrapper. Spaces do not matter.</li>
+</ol>
+<p>Gmail's servers are imap.gmail.com (993, SSL) and smtp.gmail.com (465 SSL or 587 TLS). IMAP access is on for all Gmail accounts.</p>
+<h3>Outlook.com, Hotmail, Live and Microsoft 365</h3>
+<p>Microsoft has switched off password sign-in for mail programs entirely. These accounts use <strong>Sign in with Microsoft</strong>: the wizard replaces the password box with a button, your web browser opens on Microsoft's sign-in page, and after you accept the Wrapper receives a sign-in token instead of a password. The token is renewed automatically. If Microsoft ever revokes it (for instance after you change your password) the Wrapper pauses checking and tells you to sign in again from the Accounts tab, where the Incoming Email tab shows a <em>Sign in with Microsoft again</em> link.</p>
+<figure>
+  <img src="images/wizard-page1-microsoft.png" alt="Wizard page 1 with a Microsoft address showing the Sign in with Microsoft button">
+</figure>
+<h3>Yahoo and AOL</h3>
+<p>Both need an app password generated on the account's Security page; the wizard links to it. The rest works like Gmail.</p>
+<h3>Everyone else</h3>
+<p>Most providers work with the settings the wizard finds and your normal password. Some smaller providers require you to switch on IMAP or "external access" in their web mail settings first.</p>
+
+<h2 id="activity">Activity Log tab</h2>
+<figure>
+  <img src="images/main-activity-log.png" alt="The Activity Log tab">
+</figure>
+<p>Every turn the Wrapper sends or receives is recorded here, one line per game. <em>Copy</em> is the label of the copy of the game the turn lives in, when you have more than one (see the <a href="#games">Games tab</a>). <em>Age</em> is the number of days since the last turn. A line turns amber after 14 days and pink after 28, which is your cue to nudge the other players.</p>
+<ul>
+  <li><strong>Received</strong> (yellow): a turn is waiting for you. Double-click the line to start the game shown by the icon.</li>
+  <li><strong>Sent</strong>: you sent the last turn and are waiting for the others.</li>
+  <li><strong>Ended</strong>: you marked the game as over.</li>
+</ul>
+<p>Right-click a line for:</p>
+<ul>
+  <li><strong>Mark as Ended</strong>. The Wrapper cannot tell from the save file when a game is over, so you do this yourself. It offers to move the game's files into an <em>Ended</em> folder, which the games can still load from.</li>
+  <li><strong>Mark as Sent</strong>, for when you sent a turn some other way.</li>
+  <li><strong>Resend</strong> sends the last turn you sent for that game again, in case an opponent lost the email. You can change the recipient address, but that does not change the address stored inside the save game; fix that in the game's send dialogue on your next turn. Resend is only offered while the game's status is Sent, so you cannot accidentally send an old turn after a newer one arrived.</li>
+  <li><strong>Delete</strong> removes the line and the game's files from the EmailIn, EmailOut and Save folders. Handy for test games.</li>
+  <li><strong>Move to</strong> appears when you have several copies of that game and moves the game's files into the copy you pick, for a turn that landed in the wrong one. Later turns of that game follow it.</li>
+</ul>
+
+<h2 id="games">Games tab</h2>
+<p>Every copy of Age of Wonders, Age of Wonders II, Shadow Magic and MP Evolution the Wrapper could find is listed here, with the folder it lives in and how it was found: the games' own registry entries, Steam (every library, including copies placed beside or inside the Steam copy), GOG, <em>Apps and Features</em>, or a scan of your fixed drives a few folders deep, which follows anything named like the game much deeper. The full drive scan runs in the background the first time the Wrapper starts and whenever you click <em>Rescan</em>; it can take a minute on large drives, and the list fills in when it is done. A normal start only re-checks the copies it already knows. Nothing on this tab does anything until you click <em>Save Settings</em>.</p>
+<ul>
+  <li><strong>Add folder...</strong> registers a copy the scan missed, for example one on another drive. Pick the folder that contains <code>AoW.exe</code>, <code>AoW2.exe</code> or <code>AoWSM.exe</code>.</li>
+  <li><strong>Set label...</strong> gives the selected copy a short name such as <em>Vanilla</em>, <em>AoWx</em> or <em>Ziggurat</em>, chosen from the list or typed under <em>Other</em>. Double-clicking a line does the same. A label can belong to only one copy of a game, so an incoming turn always has exactly one place to go.</li>
+  <li><strong>Set as default</strong> marks the copy that receives turns the Wrapper cannot place (see below) and that the tray menu lists first.</li>
+  <li><strong>Remove</strong> forgets a folder you added by hand. Detected copies cannot be removed; they simply come back on the next scan.</li>
+  <li><strong>Rescan</strong> runs the full drive scan again, keeping your labels. Use it after installing or copying a game.</li>
+</ul>
+<h3>Playing several mods at once</h3>
+<p>Mods such as AoWx or Ziggurat are installed into separate copies of the game folder. A save file looks the same whichever mod made it, so the Wrapper cannot tell them apart by content. Instead, the copy's <strong>label</strong> travels with every turn you send, in a hidden header of the email, and the Wrapper on the other side puts the turn into its copy with the same label. Labels are matched ignoring case, spaces and punctuation, so "Zig Mod" and "zigmod" agree, but everyone in a game does have to use the same word. Agree on it when you set the game up.</p>
+<p>When the Wrapper sends a turn it decides which copy it came from by looking at which copy of the game is running, then at which copy already holds that game's earlier turns. When a turn arrives it uses, in order: the label in the email, the copy the game was last seen in, the only copy that already holds the game, and finally the default copy. A turn from an opponent who does not use the Wrapper carries no label and goes through the same fallbacks. If a first turn lands in the wrong copy, right-click it on the <a href="#activity">Activity Log</a> and use <em>Move to</em>; the Wrapper remembers the choice for the rest of that game.</p>
+<p>All copies of one game share the same email settings in the registry, so each copy hands its turns to the Wrapper without any extra setup. The tray menu shows one entry per copy, with the label in brackets.</p>
+
+<h2 id="preferences">Settings tab</h2>
+<figure>
+  <img src="images/main-preferences.png" alt="The Settings tab">
+</figure>
+<table>
+  <tr><th>Setting</th><th>Meaning</th></tr>
+  <tr><td>Language</td><td>The Wrapper's interface language. Takes effect after saving and restarting.</td></tr>
+  <tr><td>Email Downloaded sound, Email Sent sound</td><td>Play a sound when a turn arrives or has been sent.</td></tr>
+  <tr><td>Autostart with Windows</td><td>Start the Wrapper when you sign in to Windows. Recommended if you play regularly, otherwise turns only arrive while it runs.</td></tr>
+  <tr><td>Install updates automatically</td><td>On (the default): a newer build found at start-up is installed right away and the Wrapper comes back by itself. Off: you are told once, with a balloon, and can install it whenever you like from <em>Check for updates</em> under <em>Support</em> on this tab.</td></tr>
+  <tr><td>Copy to EmailOut after sending</td><td>Also keep a copy of every sent turn in the game's EmailOut folder.</td></tr>
+  <tr><td>Game to Wrapper data port</td><td>The local port the games hand their turns to. Only change it if another program already uses 49252.</td></tr>
+  <tr><td>Download Folder</td><td>Where incoming turns are put. <em>EmailIn</em> means you load them with <em>Scenario &gt; Email &gt; Load Game</em>. <em>Save</em> puts them with your ordinary saved games so <em>Load Game</em> on the main menu finds them, which saves a few clicks.</td></tr>
+</table>
+
+<h2 id="playing">Playing a game</h2>
+<h3>Sending</h3>
+<p>Start a play-by-email game in any of the games as you always would; the Wrapper has already pointed the game at itself, so no email settings are needed inside the game. When you end your turn and the game sends the email, its progress bar reaches 100% almost at once: the game has handed the turn to the Wrapper. The Wrapper then sends it through your account in the background, plays the sent sound and shows a balloon naming the recipient. The Activity Log shows the game as Sent.</p>
+<p>If the send fails, a dialog explains why and offers to try again. Turns that could not be sent stay in the Activity Log as <em>Outbox</em> and are retried the next time the mailbox check succeeds.</p>
+<h3>Receiving</h3>
+<p>With IMAP the Wrapper keeps a connection open and the mail server tells it the moment a message arrives, so a turn normally shows up within seconds of being sent. The interval on the Incoming Email tab is a safety net check on top of that, and it is the only mechanism for POP3 or for the rare IMAP server without the IDLE feature. <em>Poll now</em> on the tray menu forces a check at any time. When it finds an email with a save game attached it downloads the attachment into the game's folder, marks the email as read, plays the downloaded sound and switches the tray icon to the envelope. Double-click the icon, or the game's line on the Activity Log, to start the game and load the turn.</p>
+
+<h2 id="test-game">Create a test game</h2>
+<p>A game against yourself proves that sending and receiving both work.</p>
+<ol>
+  <li>Start the game, choose <em>Scenario</em>, then <em>Email</em> (or <em>Play by email</em>), then <em>New Game</em>.</li>
+  <li>Pick a two player map and make both players Human.</li>
+  <li>Enter your own email address for both players and give the game a distinctive name.</li>
+  <li>Play a turn and let the game send it. You will hear the sent sound and the Activity Log shows the game as Sent.</li>
+  <li>Right-click the tray icon and choose <em>Poll now</em>. Within a few seconds the icon changes to the envelope and the Activity Log shows Received.</li>
+  <li>Start the game again and load the turn with <em>Scenario &gt; Email &gt; Load Game</em> (or <em>Load Game</em>, if Download Folder is set to Save). You are now the second player.</li>
+  <li>Repeat until convinced. Then right-click the game in the Activity Log and choose Delete.</li>
+</ol>
+<p>For a real game the only difference is entering your opponents' addresses in step 3.</p>
+
+<h2 id="checking">How email checking works</h2>
+<h3>IMAP</h3>
+<p>The Wrapper asks the server for the <strong>unread</strong> messages in the <strong>Inbox</strong> and only considers those from the <strong>last year</strong>. It asks the server for the structure of those messages rather than downloading them, so it can tell in one request which ones carry a save game, even in a mailbox with tens of thousands of unread messages. Only messages with a save game attached are downloaded; those are then marked as read. Messages without one are recorded in a small local file so they are never examined again.</p>
+<p>To download a turn a second time, mark its email as unread in your mail program and choose <em>Poll now</em>. Turns older than a year are never fetched.</p>
+<h3>POP3</h3>
+<p>POP3 has no concept of read and unread, so the Wrapper keeps its own record of every message it has seen and checks only new ones. Game emails are left on the server so your usual mail program still sees them. To download a turn again, click <em>Show POP3 emails</em> at the bottom of the main window, tick the email and choose Re-Download.</p>
+<div class="note">If you also read the same POP3 mailbox with a mail program on your PC (Outlook, Thunderbird), set that program to <em>leave messages on the server</em>. Otherwise it removes each email before the Wrapper can see it. Reading your mail in a web browser is fine.</div>
+<h3>The first check</h3>
+<p>The first time the Wrapper checks a mailbox it looks at the unread mail from the last year, so a turn that is already waiting is picked up straight away. Older unread mail is recorded as seen and ignored.</p>
+
+<h2 id="security">Where your passwords go</h2>
+<p>Passwords are stored in <code>%APPDATA%\AowEmailWrapper\Config\config.xml</code>, encrypted with the Windows Data Protection API and tied to your Windows user account. Nobody else on the PC, and no copy of the file taken to another PC or user account, can read them; on another machine you simply enter the passwords again. Microsoft sign-in tokens are kept the same way. Settings files from earlier versions are converted when the Wrapper first starts.</p>
+<p>The Wrapper's own mail server only listens on 127.0.0.1, so it is not reachable from other computers.</p>
+
+<h2 id="troubleshooting">Troubleshooting</h2>
+<h3>"The server rejected the user name or password"</h3>
+<p>For Gmail, Yahoo and AOL this almost always means an ordinary password was entered instead of an app password; see <a href="#providers">Email providers</a>. For a Microsoft account, sign in again from the Incoming Email tab. Otherwise check the user name: some providers want the full address, a few want only the part before the @. <em>Test connection</em> shows the server's exact wording.</p>
+<h3>A balloon says checking for email is paused</h3>
+<p>The Wrapper stops checking after the server rejects the sign-in, rather than trying again every few minutes with the same wrong password. Correct the account on the Accounts tab, click <em>Test connection</em>, then <em>Save Settings</em>; checking starts again.</p>
+<h3>Nothing is downloaded</h3>
+<ul>
+  <li>IMAP: the email must be in the Inbox, unread, and less than a year old. A mail rule that files game emails into another folder, or a mail program that marks them read, hides them from the Wrapper.</li>
+  <li>POP3: a mail program on your PC may be removing the email from the server. See <a href="#checking">above</a>.</li>
+  <li>The attachment must be a <code>.asg</code> file. Some mail programs rename or wrap attachments; ask your opponent to send the turn from the game or the Wrapper.</li>
+  <li>Check the Spam folder. Mail from a new or rarely used address, especially with an unusual attachment, can be filed as spam and the Wrapper only watches the Inbox. Mark it as not spam and choose <em>Poll now</em>; after that, mail from that player usually arrives normally.</li>
+</ul>
+<h3>"The Wrapper does not have Write access to these folders"</h3>
+<p>A game installed under a Program Files folder, or on a drive that used to hold Windows, has permissions that let ordinary accounts read but not write, so neither the Wrapper nor the game can save turns there. The warning offers to fix this: answer <em>Yes</em>, allow the change when Windows asks, and the Wrapper grants your account write access to those game folders with the standard <code>icacls</code> tool. Nothing else on the PC is changed. If you decline, copy the game to a folder such as <code>E:\Age of Wonders</code> and use <em>Rescan</em> on the Games tab.</p>
+<h3>A game is missing from the tray menu</h3>
+<p>Open the <a href="#games">Games tab</a>. If the game is not listed, click <em>Add folder...</em> and pick the folder that holds its executable, then <em>Save Settings</em>. The Wrapper looks in the games' registry entries, every Steam library, GOG's registry, <em>Apps and Features</em> and the usual folders, but a copy on an unusual drive or inside a deeply nested folder has to be added by hand. A copy shown in grey as <em>Missing</em> was added by hand and its folder has since gone; remove it or add the new location.</p>
+<h3>Asking for help</h3>
+<p>The Wrapper writes what it does, and every error, to <code>%APPDATA%\AowEmailWrapper\Logs\wrapper.log</code>. <em>Open log folder</em> under <em>Support</em> on the Settings tab takes you there. <em>Report a bug</em> next to it sends a description you type, with that log attached, to the maintainer from your own email account; if no account is set up yet it opens the report in your email program instead.</p>
+<h3>Antivirus and security software</h3>
+<p>Some security programs treat an unfamiliar program that makes mail connections as suspicious and block it, or shut it down. If tests fail with connection errors while the same settings work in a mail program, add the Wrapper to your security software's list of allowed programs, or temporarily disable its mail scanning to confirm it is the cause.</p>
+<h3>Typing settings yourself</h3>
+<p>The usual combinations, if you chose <em>Enter the settings myself</em>:</p>
+<table>
+  <tr><th>Incoming</th><th>SSL Type</th><th>Port</th></tr>
+  <tr><td>IMAP</td><td>SSL</td><td>993</td></tr>
+  <tr><td>IMAP</td><td>TLS or None</td><td>143</td></tr>
+  <tr><td>POP3</td><td>SSL</td><td>995</td></tr>
+  <tr><td>POP3</td><td>TLS or None</td><td>110</td></tr>
+</table>
+<table>
+  <tr><th>Outgoing</th><th>Port</th></tr>
+  <tr><td>SSL</td><td>465</td></tr>
+  <tr><td>TLS</td><td>587</td></tr>
+  <tr><td>None</td><td>25 or 587</td></tr>
+</table>
+<h3>Starting the Wrapper from a shortcut or script</h3>
+<p><code>AowEmailWrapper.exe /autostart</code> starts it without the splash screen after a short delay, which is what the Autostart with Windows option uses.</p>
+
+<p class="sub" style="margin-top:40px">The Wrapper was written by David Honess; version 2.0 is by Eugene Wolff. It is maintained by the Age of Wonders play-by-email community. It is open source under the MIT licence. Mail transport by MailKit (Jeffrey Stedfast); account settings from the Mozilla Thunderbird autoconfig database.</p>
+</main>
+</body>
+</html>

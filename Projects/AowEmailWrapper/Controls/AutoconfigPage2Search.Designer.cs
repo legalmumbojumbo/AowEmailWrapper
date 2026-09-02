@@ -60,7 +60,7 @@
             this.lblAutoconfigPage2SearchMessage.Name = "lblAutoconfigPage2SearchMessage";
             this.lblAutoconfigPage2SearchMessage.Size = new System.Drawing.Size(413, 20);
             this.lblAutoconfigPage2SearchMessage.TabIndex = 0;
-            this.lblAutoconfigPage2SearchMessage.Text = "Searching for your email settings online…";
+            this.lblAutoconfigPage2SearchMessage.Text = "Looking up your mail settings…";
             // 
             // progressBar
             // 
@@ -126,7 +126,7 @@
             this.groupBoxNext.Size = new System.Drawing.Size(413, 180);
             this.groupBoxNext.TabIndex = 3;
             this.groupBoxNext.TabStop = false;
-            this.groupBoxNext.Text = "What next?";
+            this.groupBoxNext.Text = "Try another way";
             this.groupBoxNext.Visible = false;
             // 
             // panelRight
@@ -157,7 +157,7 @@
             this.radioAutoconfigPage2Search2.Size = new System.Drawing.Size(200, 38);
             this.radioAutoconfigPage2Search2.TabIndex = 3;
             this.radioAutoconfigPage2Search2.TabStop = true;
-            this.radioAutoconfigPage2Search2.Text = "Try to guess";
+            this.radioAutoconfigPage2Search2.Text = "Try common server names";
             this.radioAutoconfigPage2Search2.UseVisualStyleBackColor = true;
             this.radioAutoconfigPage2Search2.CheckedChanged += new System.EventHandler(this.radioAutoconfigPage2Search2_CheckedChanged);
             // 
@@ -188,7 +188,7 @@
             this.radioAutoconfigPage2Search1.Name = "radioAutoconfigPage2Search1";
             this.radioAutoconfigPage2Search1.Size = new System.Drawing.Size(200, 38);
             this.radioAutoconfigPage2Search1.TabIndex = 2;
-            this.radioAutoconfigPage2Search1.Text = "Try Mx Lookup";
+            this.radioAutoconfigPage2Search1.Text = "Look up the mail provider for this domain";
             this.radioAutoconfigPage2Search1.UseVisualStyleBackColor = true;
             this.radioAutoconfigPage2Search1.CheckedChanged += new System.EventHandler(this.radioAutoconfigPage2Search1_CheckedChanged);
             // 
@@ -210,7 +210,7 @@
             this.radioAutoconfigPage2Search3.Size = new System.Drawing.Size(413, 38);
             this.radioAutoconfigPage2Search3.TabIndex = 0;
             this.radioAutoconfigPage2Search3.TabStop = true;
-            this.radioAutoconfigPage2Search3.Text = "Manual override, let me enter the settings myself";
+            this.radioAutoconfigPage2Search3.Text = "Enter the settings myself";
             this.radioAutoconfigPage2Search3.UseVisualStyleBackColor = true;
             this.radioAutoconfigPage2Search3.CheckedChanged += new System.EventHandler(this.radioAutoconfigPage2Search3_CheckedChanged);
             // 

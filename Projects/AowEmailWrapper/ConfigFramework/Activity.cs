@@ -100,6 +100,18 @@ namespace AowEmailWrapper.ConfigFramework
             set { _status = value; }
         }
 
+        /// <summary>The account this game arrived on (or was last sent from); replies go out the same way.</summary>
+        [XmlAttribute("account")]
+        public string AccountName { get; set; }
+
+        /// <summary>Folder of the copy of the game this turn lives in, when the player has more than one.</summary>
+        [XmlAttribute("install")]
+        public string InstallFolder { get; set; }
+
+        /// <summary>The mod label the turn arrived with or was sent under.</summary>
+        [XmlAttribute("mod")]
+        public string ModLabel { get; set; }
+
         [XmlAttribute("ticks")]
         public string DateTicks
         {
@@ -112,7 +124,11 @@ namespace AowEmailWrapper.ConfigFramework
 
         public Activity(AowGameSavedEventArgs e)
             : this(ActivityState.Received, e.GameType, e.FileName, e.MapTitle, e.TurnNumber)
-        { }
+        {
+            AccountName = e.AccountName;
+            InstallFolder = e.Install != null ? e.Install.Folder : null;
+            ModLabel = e.ModLabel;
+        }
 
         public Activity(ActivityState status, AowGameType type, string fileName, string mapTitle, string turnNo)
         {

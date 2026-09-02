@@ -15,6 +15,18 @@ namespace AowEmailWrapper.Controls
     public partial class PollingConfig : UserControl
     {
         public EventHandler Config_Changed;
+        public EventHandler TestRequested;
+
+        private System.Windows.Forms.Panel panelTest;
+        private System.Windows.Forms.LinkLabel linkOAuthAccount;
+        private string _oauthProvider;
+
+        private const string OAuthAccountKey = "lblOAuthAccount";
+        private const string OAuthSignInAgainKey = "linkOAuthSignInAgain";
+        private const string OAuthSignedInKey = "msgOAuthSignedIn";
+        private const string OAuthTitleKey = "buttonSignInMicrosoft";
+        private const string ButtonOKKey = "buttonOK";
+        private System.Windows.Forms.Button buttonTestConnection;
 
         private PollingConfigValues _config;
 
@@ -54,6 +66,23 @@ namespace AowEmailWrapper.Controls
             fbPollingSetup.InnerCheckBox.CheckedChanged += raiseConfigChange;
             fbPollingSetup.InnerCheckBox.CheckedChanged += new EventHandler(fbPollingSetup_CheckedChanged);
             fbSSLType.InnerComboBox.SelectedIndexChanged += raiseConfigChange;
+
+            buttonTestConnection.Click += new EventHandler(buttonTestConnection_Click);
+            linkOAuthAccount.LinkClicked += new LinkLabelLinkClickedEventHandler(linkOAuthAccount_LinkClicked);
+        }
+
+        /// <summary>Empty for password sign-in, otherwise the OAuth provider name of the account being edited.</summary>
+        public string OAuthProvider
+        {
+            get { return _oauthProvider; }
+            set { _oauthProvider = value; ApplyOAuthLayout(); }
+        }
+
+        /// <summary>The Check for email box, which is what makes an account active.</summary>
+        public bool ChecksForEmail
+        {
+            get { return fbPollingSetup.Checked; }
+            set { fbPollingSetup.Checked = value; }
         }
 
         public string Prefix
@@ -112,6 +141,8 @@ namespace AowEmailWrapper.Controls
             fbUserName.TextValue = _config.Username;
             fbPassword.TextValue = _config.PasswordTrue;
             fbPollingSetup.SelectedValue = _config.PollInterval.ToString();
+            panelTest.Visible = _config.UsePolling;
+            ApplyOAuthLayout();
         }
 
         private void fbPollingSetup_CheckedChanged(object sender, EventArgs e)
@@ -120,8 +151,48 @@ namespace AowEmailWrapper.Controls
 
             groupBoxAuth.Visible = fbPollingSetup.Checked;
             groupBoxServer.Visible = fbPollingSetup.Checked;
+            panelTest.Visible = fbPollingSetup.Checked;
 
             this.ResumeLayout();
+        }
+
+        /// <summary>An OAuth account has no password; show how it signs in instead of the password box.</summary>
+        private void ApplyOAuthLayout()
+        {
+            bool oauth = MicrosoftOAuth.IsProvider(_oauthProvider);
+
+            fbPassword.Visible = !oauth;
+            linkOAuthAccount.Visible = oauth;
+
+            if (oauth)
+            {
+                string message = Translator.Translate(OAuthAccountKey);
+                string linkText = Translator.Translate(OAuthSignInAgainKey);
+                linkOAuthAccount.Text = message + " " + linkText;
+                linkOAuthAccount.LinkArea = new LinkArea(message.Length + 1, linkText.Length);
+            }
+        }
+
+        private async void linkOAuthAccount_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            try
+            {
+                string user = await MicrosoftOAuth.SignInAsync(fbUserName.TextValue);
+                fbUserName.TextValue = user;
+                MessageBox.Show(this, Translator.Translate(OAuthSignedInKey, user), Translator.Translate(OAuthTitleKey), MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            catch (Exception ex)
+            {
+                ExceptionDialog.Show(this, Translator.Translate(OAuthTitleKey), ex, MessageBoxIcon.Error, Translator.Translate(ButtonOKKey));
+            }
+        }
+
+        private void buttonTestConnection_Click(object sender, EventArgs e)
+        {
+            if (TestRequested != null)
+            {
+                TestRequested(this, e);
+            }
         }
 
         private void Raise_Config_Changed(object sender, EventArgs e)

@@ -35,8 +35,11 @@
             this.groupBoxAuth = new System.Windows.Forms.GroupBox();
             this.fbPassword = new AowEmailWrapper.Controls.FormBlockText();
             this.fbUserName = new AowEmailWrapper.Controls.FormBlockText();
+            this.linkOAuthAccount = new System.Windows.Forms.LinkLabel();
             this.fbPollingSetup = new AowEmailWrapper.Controls.FormBlockPollingSetup();
             this.fbSSLType = new AowEmailWrapper.Controls.FormBlockCombo();
+            this.panelTest = new System.Windows.Forms.Panel();
+            this.buttonTestConnection = new System.Windows.Forms.Button();
             this.groupBoxServer.SuspendLayout();
             this.groupBoxAuth.SuspendLayout();
             this.SuspendLayout();
@@ -108,6 +111,7 @@
             // groupBoxAuth
             // 
             this.groupBoxAuth.AutoSize = true;
+            this.groupBoxAuth.Controls.Add(this.linkOAuthAccount);
             this.groupBoxAuth.Controls.Add(this.fbPassword);
             this.groupBoxAuth.Controls.Add(this.fbUserName);
             this.groupBoxAuth.Dock = System.Windows.Forms.DockStyle.Top;
@@ -158,11 +162,12 @@
             this.fbPollingSetup.Dock = System.Windows.Forms.DockStyle.Top;
             this.fbPollingSetup.EveryText = "every:";
             this.fbPollingSetup.Location = new System.Drawing.Point(0, 0);
-            this.fbPollingSetup.MinimumSize = new System.Drawing.Size(0, 22);
+            this.fbPollingSetup.MinimumSize = new System.Drawing.Size(0, 29);
+            this.fbPollingSetup.Padding = new System.Windows.Forms.Padding(2, 4, 2, 4);
             this.fbPollingSetup.Name = "fbPollingSetup";
             this.fbPollingSetup.SelectedIndex = -1;
             this.fbPollingSetup.SelectedValue = "";
-            this.fbPollingSetup.Size = new System.Drawing.Size(484, 22);
+            this.fbPollingSetup.Size = new System.Drawing.Size(484, 29);
             this.fbPollingSetup.TabIndex = 24;
             // 
             // fbSSLType
@@ -181,8 +186,39 @@
             // 
             // PollingConfig
             // 
+            // 
+            // linkOAuthAccount
+            // 
+            this.linkOAuthAccount.Dock = System.Windows.Forms.DockStyle.Top;
+            this.linkOAuthAccount.LinkArea = new System.Windows.Forms.LinkArea(0, 0);
+            this.linkOAuthAccount.Name = "linkOAuthAccount";
+            this.linkOAuthAccount.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.linkOAuthAccount.Size = new System.Drawing.Size(480, 44);
+            this.linkOAuthAccount.TabIndex = 7;
+            this.linkOAuthAccount.TabStop = false;
+            this.linkOAuthAccount.Text = "";
+            this.linkOAuthAccount.Visible = false;
+            // 
+            // panelTest
+            // 
+            this.panelTest.Controls.Add(this.buttonTestConnection);
+            this.panelTest.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.panelTest.Name = "panelTest";
+            this.panelTest.Padding = new System.Windows.Forms.Padding(2, 6, 2, 2);
+            this.panelTest.Size = new System.Drawing.Size(484, 36);
+            this.panelTest.TabIndex = 40;
+            // 
+            // buttonTestConnection
+            // 
+            this.buttonTestConnection.Dock = System.Windows.Forms.DockStyle.Right;
+            this.buttonTestConnection.Name = "buttonTestConnection";
+            this.buttonTestConnection.Size = new System.Drawing.Size(130, 28);
+            this.buttonTestConnection.TabIndex = 0;
+            this.buttonTestConnection.Text = "Test connection";
+            this.buttonTestConnection.UseVisualStyleBackColor = true;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.panelTest);
             this.Controls.Add(this.groupBoxAuth);
             this.Controls.Add(this.groupBoxServer);
             this.Controls.Add(this.fbPollingSetup);

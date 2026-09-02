@@ -1,11 +1,11 @@
-<languages>
+﻿<languages>
 	<language code="en" display="English">
 		<!-- BEGIN: Main forms -->
 		<lookup key="Main" value="Age of Wonders Email Wrapper"/>
 		<lookup key="tabAccounts" value="Accounts"/>
 		<lookup key="panelTopHalflistViewAccounts0" value="Account"/>
 		<lookup key="panelTopHalflistViewAccounts1" value="Email Address"/>
-		<lookup key="panelTopHalflistViewAccounts2" value="Default"/>
+		<lookup key="panelTopHalflistViewAccounts2" value="Active"/>
 		<lookup key="buttonActivate" value="Activate"/>
 		<lookup key="buttonSetStartUp" value="Set as Default"/>
 		<lookup key="buttonRename" value="Rename"/>
@@ -32,7 +32,7 @@
 		<lookup key="fbSSLType" value="SSL Type:"/>
 		<lookup key="fbEmailAddress" value="Email Address:"/>
 		<lookup key="fbSmtpServer" value="Smtp Server:"/>
-		<lookup key="tabPreferences" value="Preferences"/>
+		<lookup key="tabPreferences" value="Settings"/>
 		<lookup key="fbSaveFolder" value="Download Folder:"/>
 		<lookup key="groupBoxPreferences" value="Preferences"/>
 		<lookup key="fbAutostart" value="Autostart with Windows:"/>
@@ -47,7 +47,8 @@
 		<lookup key="activityListViewlistView2" value="Turn"/>
 		<lookup key="activityListViewlistView3" value="Age"/>
 		<lookup key="activityListViewlistView4" value="Status"/>
-		<lookup key="activityListViewlistView5" value="Ticks"/>
+		<lookup key="activityListViewlistView5" value="Copy"/>
+		<lookup key="activityListViewlistView6" value="Ticks"/>
 		<lookup key="tabAbout" value="About"/>
 		<lookup key="groupBetaTesters" value="Beta Testers"/>
 		<lookup key="groupTranslators" value="Translators"/>
@@ -64,30 +65,31 @@
 		<lookup key="lblLocalMessageStoreMessage" value="Users that have a Windows based email client such as Outlook Express, Outlook, Mozilla Thunderbird, Eudora etc. should be aware that the default behaviour for POP3 access is to remove messages from the server after they have been downloaded.  You will need to change an option to tell your client to leave the messages on the server so that the Wrapper can find them.  The Wrapper will always leave messages on the server so your usual email client will also find them."/>
 		<lookup key="cmdRedownload" value="Re-Download"/>
 		<lookup key="cmdClose" value="Close"/>
-		<lookup key="AccountsCreationForm" value="Create a new account"/>
+		<lookup key="AccountsCreationForm" value="Add an email account"/>
 		<lookup key="buttonCreate" value="&amp;Create"/>
 		<lookup key="accountOther" value="Other"/>
-		<lookup key="lblThunderbirdTitle" value="Thunderbird Database"/>
-		<lookup key="lblAutoconfigHeaderMessage" value="Autoconfig Wizard"/>
-		<lookup key="lblAutoconfigPage1WrapperMessage" value="The Wrapper is a specialised email client and it uses the same server settings that you would use for programs like Outlook Express.  It uses an online database to find these settings for your email account.  The database is maintained by the Mozilla Foundation who use it for their own email client called Thunderbird.  They keep the database up to date, this endows the Wrapper with a great deal of future proofing and an excellent chance to auto detect your email settings."/>
+		<lookup key="lblThunderbirdTitle" value="The Chief Librarian"/>
+		<lookup key="lblAutoconfigHeaderMessage" value="Set up your email account"/>
+		<lookup key="lblAutoconfigPage1WrapperMessage" value="The Chief Librarian will look up the mail server settings for you by communing with the Thunderbird."/>
 		<lookup key="lblAutoconfigPage1AuthMessage" value="Please provide the authentication details for your email account."/>
-		<lookup key="lblAutoconfigPage2SearchMessage" value="Searching for your email settings online…"/>
+		<lookup key="groupBoxAccount" value="Your account"/>
+		<lookup key="lblAutoconfigPage2SearchMessage" value="Looking up your mail settings…"/>
 		<lookup key="groupBoxResult" value="Result"/>
-		<lookup key="groupBoxNext" value="What next?"/>
-		<lookup key="radioAutoconfigPage2Search1" value="Try Mx Lookup"/>
-		<lookup key="radioAutoconfigPage2Search2" value="Try to guess"/>
-		<lookup key="radioAutoconfigPage2Search3" value="Manual override, let me enter the settings myself"/>
-		<lookup key="lblAutoconfigPage2MxLookup" value="Sometimes your email server is listed in the online database under a different name to your email address.  If we do an Mx Lookup on your email address and then run the database search again this can often find the correct settings."/>
-		<lookup key="lblAutoconfigPage2Guess" value="Use this option as a last resort.  This will predict the name of your email server by attempting to contact them directly over the Internet, this is not guaranteed to work.  If this fails you may need to enter the settings manually."/>
-		<lookup key="lblAutoconfigPage3ServerMessage" value="Please specify which server settings should be used."/>
-		<lookup key="groupBoxOptions" value="Options"/>
-		<lookup key="radioAutoconfigPage3Select1" value="Let the Wrapper decide (default)"/>
-		<lookup key="radioAutoconfigPage3Select2" value="Manual override, show the settings so that I can choose"/>
-		<lookup key="fbServerPreference" value="Preference:"/>
-		<lookup key="serverPreferenceNoPreference" value="No preference"/>
-		<lookup key="lblAutoconfigPage3WrapperDecidesMessage" value="This is the safest option for most users.  It will instruct the Wrapper to choose the most secure servers based on the preference above.  If no preference is given the Wrapper will pick IMAP servers over POP3 ones when choosing."/>
-		<lookup key="lblAutoconfigPage3UserDecidesMessage" value="Use this option if you want to have precise control over which auto detected settings the Wrapper should use."/>
-		<lookup key="ServerChoiceForm" value="Manual override"/>
+		<lookup key="groupBoxNext" value="Try another way"/>
+		<lookup key="radioAutoconfigPage2Search1" value="Look up the mail provider for this domain"/>
+		<lookup key="radioAutoconfigPage2Search2" value="Try common server names"/>
+		<lookup key="radioAutoconfigPage2Search3" value="Enter the settings myself"/>
+		<lookup key="lblAutoconfigPage2MxLookup" value="Your address may be handled by a different provider than its domain suggests. This finds that provider and searches again."/>
+		<lookup key="lblAutoconfigPage2Guess" value="Tries the usual names such as mail.yourdomain.com. Works for many small providers, but not all."/>
+		<lookup key="lblAutoconfigPage3ServerMessage" value="Which settings should the Wrapper use?"/>
+		<lookup key="groupBoxOptions" value=""/>
+		<lookup key="radioAutoconfigPage3Select1" value="Recommended settings"/>
+		<lookup key="radioAutoconfigPage3Select2" value="Let me pick from the servers found"/>
+		<lookup key="fbServerPreference" value="Prefer:"/>
+		<lookup key="serverPreferenceNoPreference" value="Automatic"/>
+		<lookup key="lblAutoconfigPage3WrapperDecidesMessage" value="Uses the most secure servers found. IMAP is preferred unless you choose otherwise above."/>
+		<lookup key="lblAutoconfigPage3UserDecidesMessage" value="Shows every server that was found so you can choose."/>
+		<lookup key="ServerChoiceForm" value="Choose your servers"/>
 		<lookup key="groupBoxIncoming" value="Incoming Email"/>
 		<lookup key="groupBoxOutgoing" value="Outgoing Email"/>
 		<lookup key="lblServerChoiceCheckBoxServer" value="Server:"/>
@@ -96,6 +98,9 @@
 		<!-- END: Main forms -->
 		<!-- BEGIN: Messages -->
 		<lookup key="msgWrapperWriteAccess" value="The Wrapper does not have Write access to these folders:&#xA;{0}&#xA;&#xA;Please modify your system security settings or run the Wrapper as Administrator."/>
+		<lookup key="msgWrapperFixPermissions" value="Grant your Windows account write access to these folders now? Windows will ask you to allow the change."/>
+		<lookup key="msgWrapperFixPermissionsDone" value="Done. The Wrapper can now write to every game folder."/>
+		<lookup key="msgWrapperFixPermissionsFailed" value="The Wrapper still cannot write to:&#xA;{0}&#xA;&#xA;Run it as Administrator once, or copy the game to a folder outside Program Files."/>
 		<lookup key="msgWrapperArchiveGame" value="Would you also like to archive the selected game(s)? This will move their files into a separate folder named '{0}' which you can still access in game."/>
 		<lookup key="msgWrapperCannotActivateAccount" value="Cannot activate &quot;{0}&quot; account now.  Please wait for email sending to finish."/>
 		<lookup key="msgAccountPrompt" value="Enter the name of the account:"/>
@@ -110,8 +115,90 @@
 		<lookup key="msgWrapperGamesWaiting" value="You have {0} game(s) waiting."/>
 		<lookup key="msgInputEmailSettingsManual" value="You will enter the settings manually."/>
 		<lookup key="msgWrapperResendTo" value="Resend To:"/>
-		<lookup key="msgAutoconfigPage2Success" value="Success, email settings found.  Click Next to continue."/>
-		<lookup key="msgAutoconfigPage2Failed" value="Unsuccessful, no email settings were found in the online database.  Please choose one of the options below."/>
+		<lookup key="msgAutoconfigPage2Success" value="Found your mail settings. Click Next."/>
+		<lookup key="msgAutoconfigPage2Failed" value="No settings found for this address. Try one of the options below."/>
+		<lookup key="buttonTestConnection" value="Test connection"/>
+		<lookup key="msgTestTitle" value="Connection test"/>
+		<lookup key="msgTestIncomingSuccess" value="Signed in to {0} as {1}. Incoming email is working."/>
+		<lookup key="msgTestOutgoingSuccess" value="Connected to {0} as {1}. Outgoing email is working."/>
+		<lookup key="msgTestOutgoingSuccessNoAuth" value="Connected to {0}. Outgoing email is working."/>
+		<lookup key="msgTestFailed" value="The connection test failed."/>
+		<lookup key="msgTestAuthFailed" value="The server rejected the user name or password."/>
+		<lookup key="msgHintGmail" value="Gmail needs an App Password here, not your Google password. Create one (2-Step Verification must be on) and paste the 16 letter code above."/>
+		<lookup key="msgHintYahoo" value="Yahoo and AOL need an app password here. Create one on the Account Security page and paste it above."/>
+		<lookup key="msgHintMicrosoft" value="Outlook.com, Hotmail and Live sign in through Microsoft. Click Sign in with Microsoft and finish in your browser."/>
+		<lookup key="msgHintGmailShort" value="Gmail needs an App Password here, not your Google password."/>
+		<lookup key="msgHintYahooShort" value="Yahoo and AOL need an app password here."/>
+		<lookup key="msgHintMicrosoftShort" value="The Microsoft sign-in needs renewing."/>
+		<lookup key="msgWrapperPollAuthFailed" value="{0} rejected the sign-in for {1}. Checking for email is paused until the account is fixed: open the Accounts tab, correct the password and click Test connection."/>
+		<lookup key="buttonSignInMicrosoft" value="Sign in with Microsoft"/>
+		<lookup key="msgOAuthSignedIn" value="Signed in as {0}."/>
+		<lookup key="msgOAuthNotConfigured" value="Microsoft sign-in is not set up in this copy of the Wrapper. Register the Wrapper in the Azure portal and put the application (client) ID in AowEmailWrapper.dll.config, as described in the README."/>
+		<lookup key="msgOAuthSessionExpired" value="The Microsoft sign-in for {0} has expired or was removed. Open the Accounts tab and sign in with Microsoft again."/>
+		<lookup key="lblOAuthAccount" value="This account signs in through Microsoft. No password is stored."/>
+		<lookup key="linkOAuthSignInAgain" value="Sign in with Microsoft again"/>
+		<lookup key="linkCreateAppPassword" value="Create an App Password"/>
+		<lookup key="msgOAuthOnly" value="This email provider only allows OAuth sign-in from mail programs, which the Wrapper does not support yet. Password sign-in will probably be rejected."/>
+		<lookup key="cmdLogFolder" value="Open log folder"/>
+		<lookup key="fbAutoInstallUpdates" value="Install updates automatically:"/>
+		<lookup key="cmdCheckUpdates" value="Check for updates"/>
+		<lookup key="linkUpdateChecking" value="Checking for updates..."/>
+		<lookup key="linkUpdateAvailable" value="Update available: {0}"/>
+		<lookup key="msgWrapperUpdateAvailable" value="Update available"/>
+		<lookup key="msgWrapperUpdateBalloon" value="{0} is ready to install. Click here to update the Wrapper."/>
+		<lookup key="msgWrapperUpdateOffer" value="{0} is available (published {1}).&#xA;You are running {2}.&#xA;&#xA;Download and install it now? The Wrapper closes while the update installs and starts again afterwards."/>
+		<lookup key="msgWrapperUpdateNone" value="You are running the latest build ({0})."/>
+		<lookup key="msgWrapperUpdateFailed" value="Could not check for updates: {0}"/>
+		<lookup key="msgWrapperUpdateDownloading" value="Downloading {0}..."/>
+		<lookup key="msgWrapperUpdateDownloadFailed" value="The update could not be downloaded: {0}"/>
+		<lookup key="cmdReportBug" value="Report a bug..."/>
+		<lookup key="groupBoxSupport" value="Support"/>
+		<lookup key="groupDiscord" value="Discord servers"/>
+		<lookup key="lblDiscordIntro" value="A few friendly places where players meet for play-by-email games:"/>
+		<lookup key="groupDedication" value="Dedication"/>
+		<lookup key="buttonSend" value="Send"/>
+		<lookup key="msgBugReportTitle" value="Report a bug"/>
+		<lookup key="msgBugReportIntro" value="Describe what went wrong and what you expected to happen. The report is emailed to the developer from your account {0}, so a reply can reach you."/>
+		<lookup key="msgBugReportIntroNoAccount" value="Describe what went wrong and what you expected to happen. No email account is set up in the Wrapper yet, so the report opens in your own email program addressed to the developer. Please attach the log file from the log folder, which the Wrapper opens for you."/>
+		<lookup key="chkBugReportAttachLog" value="Attach the Wrapper's log file (it may contain email addresses and game names)"/>
+		<lookup key="msgBugReportEmpty" value="Please describe the problem before sending the report."/>
+		<lookup key="msgBugReportSending" value="Sending the report..."/>
+		<lookup key="msgBugReportSent" value="Thank you. The report has been sent to {0}."/>
+		<lookup key="msgBugReportFailed" value="The report could not be sent: {0}"/>
+		<lookup key="msgWrapperUpdateInstalling" value="Installing {0}. The Wrapper will be back in a moment."/>
+		<lookup key="tabGames" value="Games"/>
+		<lookup key="panelGameslistViewGames0" value="Game"/>
+		<lookup key="panelGameslistViewGames1" value="Label"/>
+		<lookup key="panelGameslistViewGames2" value="Folder"/>
+		<lookup key="panelGameslistViewGames3" value="Default"/>
+		<lookup key="panelGameslistViewGames4" value="Found by"/>
+		<lookup key="buttonAddFolder" value="Add folder..."/>
+		<lookup key="buttonSetLabel" value="Set label..."/>
+		<lookup key="buttonSetDefaultInstall" value="Set as default"/>
+		<lookup key="buttonRemoveInstall" value="Remove"/>
+		<lookup key="buttonRescan" value="Rescan"/>
+		<lookup key="buttonRescanning" value="Scanning..."/>
+		<lookup key="lblGamesHelp" value="Give each copy of a game a short label such as Vanilla, AoWx or Ziggurat. The label travels with the turns you send, so everyone in a game must use the same label. The default copy receives turns that carry no label."/>
+		<lookup key="msgInstallLabelPrompt" value="Label for this copy, for example Vanilla, AoWx or Ziggurat. Leave it empty for no label:"/>
+		<lookup key="radioNoLabel" value="No label"/>
+		<lookup key="radioOtherLabel" value="Other:"/>
+		<lookup key="msgLabelInUse" value="The label {0} is already used by the copy in {1}. Each label can point at only one copy of a game."/>
+		<lookup key="msgAddFolderNoGame" value="No Age of Wonders game was found in {0}. The folder must contain AoW.exe, AoW2.exe or AoWSM.exe."/>
+		<lookup key="msgInstallMissing" value="Missing"/>
+		<lookup key="menuItemMoveTo" value="Move to"/>
+		<lookup key="enumRegistry" value="Registry"/>
+		<lookup key="enumSteam" value="Steam"/>
+		<lookup key="enumGog" value="GOG"/>
+		<lookup key="enumUninstall" value="Apps and Features"/>
+		<lookup key="enumFolder" value="Folder scan"/>
+		<lookup key="enumManual" value="Added by you"/>
+		<lookup key="primaryAccount" value="Active, new games"/>
+		<lookup key="menuItemMoveUp" value="Move &amp;Up"/>
+		<lookup key="menuItemMoveDown" value="Move &amp;Down"/>
+		<lookup key="msgWrapperNoSendAccount" value="No email account is set up to send this turn. Add an account on the Accounts tab."/>
+		<lookup key="inactiveAccount" value="Inactive"/>
+		<lookup key="buttonDeactivate" value="Deactivate"/>
+		<lookup key="menuItemDeactivate" value="&amp;Deactivate"/>
 		<!-- END: Messages -->
 		<!-- BEGIN: Context Menus -->
 		<lookup key="menuItemShow" value="&amp;Show"/>
@@ -162,7 +249,7 @@
 		<lookup key="tabAccounts" value="Comptes"/>
 		<lookup key="panelTopHalflistViewAccounts0" value="Compte"/>
 		<lookup key="panelTopHalflistViewAccounts1" value="Adresse mail"/>
-		<lookup key="panelTopHalflistViewAccounts2" value="Défault"/>
+		<lookup key="panelTopHalflistViewAccounts2" value="Actif"/>
 		<lookup key="buttonActivate" value="Activer"/>
 		<lookup key="buttonSetStartUp" value="Utiliser par Défaut"/>
 		<lookup key="buttonRename" value="Renommer"/>
@@ -189,7 +276,7 @@
 		<lookup key="fbSSLType" value="Type de SSL:"/>
 		<lookup key="fbEmailAddress" value="Adresse mail:"/>
 		<lookup key="fbSmtpServer" value="Serveur SMTP:"/>
-		<lookup key="tabPreferences" value="Préférences"/>
+		<lookup key="tabPreferences" value="Paramètres"/>
 		<lookup key="fbSaveFolder" value="Répertoire de téléchargement:"/>
 		<lookup key="groupBoxPreferences" value="Préférences"/>
 		<lookup key="fbAutostart" value="Lancer au démarrage:"/>
@@ -204,7 +291,8 @@
 		<lookup key="activityListViewlistView2" value="Tour"/>
 		<lookup key="activityListViewlistView3" value="Ancienneté"/>
 		<lookup key="activityListViewlistView4" value="Statut"/>
-		<lookup key="activityListViewlistView5" value="Coches"/>
+		<lookup key="activityListViewlistView5" value="Copie"/>
+		<lookup key="activityListViewlistView6" value="Coches"/>
 		<lookup key="tabAbout" value="A propos"/>
 		<lookup key="groupBetaTesters" value="Béta Testeurs"/>
 		<lookup key="groupTranslators" value="Traducteurs"/>
@@ -221,30 +309,31 @@
 		<lookup key="lblLocalMessageStoreMessage" value="Les joueurs utilisant des logiciels Windows pour lire les mails, comme Outlook Express, Outlook, Mozilla Thunderbird, Eudora, etc… devraient être attentif au comportement par défaut de leur accès POP3 qui est de supprimer les mails du serveur à la fin de leur téléchargement. Vous devez modifier cette option pour indiquer à votre logiciel de conserver les mails sur le serveur afin que ce Wrapper puisse les lire. Quant à ce Wrapper, il laissera toujours les mails sur le serveur afin que votre logiciel habituel puisse les lire."/>
 		<lookup key="cmdRedownload" value="Re-Télécharger"/>
 		<lookup key="cmdClose" value="Fermer"/>
-		<lookup key="AccountsCreationForm" value="Créer un nouveau compte"/>
+		<lookup key="AccountsCreationForm" value="Ajouter un compte e-mail"/>
 		<lookup key="buttonCreate" value="&amp;Créer"/>
 		<lookup key="accountOther" value="Autre"/>
-		<lookup key="lblThunderbirdTitle" value="Base de données Thunderbird"/>
-		<lookup key="lblAutoconfigHeaderMessage" value="Assistant d'auto configuration"/>
-		<lookup key="lblAutoconfigPage1WrapperMessage" value="Le Wrapper est un client de messagerie specifique et il utilise les mêmes paramètres que vous utilisez pour vos autres programmes, tels que Outlook Express. Il initialise ses réglages grâce à une base de données en ligne qui est maintenue par la Fondation Mozilla, qui utilise le logiciel de messagerie appelé Thunderbird. Ils s'occupent de maintenir la base de données à jour, ce qui procure au Wrapper une forte capacité d'auto-correction et d'excellentes chances d'autodétection."/>
+		<lookup key="lblThunderbirdTitle" value="Le Bibliothécaire en chef"/>
+		<lookup key="lblAutoconfigHeaderMessage" value="Configurer votre compte e-mail"/>
+		<lookup key="lblAutoconfigPage1WrapperMessage" value="Le Bibliothécaire en chef recherchera pour vous les paramètres du serveur de messagerie en communiant avec le Thunderbird."/>
 		<lookup key="lblAutoconfigPage1AuthMessage" value="Veuillez entrer les paramètres d'identification de votre compte e-mail."/>
-		<lookup key="lblAutoconfigPage2SearchMessage" value="Recherche en ligne de vos paramètres d'e-mail..."/>
+		<lookup key="groupBoxAccount" value="Votre compte"/>
+		<lookup key="lblAutoconfigPage2SearchMessage" value="Recherche de vos paramètres de messagerie…"/>
 		<lookup key="groupBoxResult" value="Résultat"/>
-		<lookup key="groupBoxNext" value="Quoi d'autre?"/>
-		<lookup key="radioAutoconfigPage2Search1" value="Essai de recherche des données Mx"/>
-		<lookup key="radioAutoconfigPage2Search2" value="Essai de détection"/>
-		<lookup key="radioAutoconfigPage2Search3" value="Mode manuel, laissez-moi entrer les paramètres moi-même"/>
-		<lookup key="lblAutoconfigPage2MxLookup" value="Parfois votre serveur de messagerie peut-être listé dans la base de données en ligne sous un domaine différent que celui de votre adresse e-mail. Si on lance une recherche de Mx sur votre adresse e-mail et qu'on lance à nouveau la recherche dans la base de données, on peut souvent trouver les paramètres corrects."/>
-		<lookup key="lblAutoconfigPage2Guess" value="Employez ce mode en dernier recours. Vos paramètres de compte d'e-mail vont être déterminés en testant directement en ligne, mais cette méthode n'abouti pas toujours. En cas d'échec, vous devrez probablement entrer les paramètres manuellement."/>
-		<lookup key="lblAutoconfigPage3ServerMessage" value="Veuillez spécifier les paramètres de serveur utilisés."/>
-		<lookup key="groupBoxOptions" value="Options"/>
-		<lookup key="radioAutoconfigPage3Select1" value="Laisser le Wrapper déterminer (défaut)"/>
-		<lookup key="radioAutoconfigPage3Select2" value="Mode manuel, affichez les paramètres afin que je choisisse"/>
-		<lookup key="fbServerPreference" value="Préférences:"/>
-		<lookup key="serverPreferenceNoPreference" value="Pas de préférences"/>
-		<lookup key="lblAutoconfigPage3WrapperDecidesMessage" value="Ce mode est le plus fiable pour la plupart des utilisateurs. Il va guider le Wrapper pour choisir les serveurs les plus sécurisés à partir des préférences données. Si aucune préférence n'est choisie, le Wrapper va prendre les serveurs IMAP en préférence aux serveurs POP3."/>
-		<lookup key="lblAutoconfigPage3UserDecidesMessage" value="Utilisez ce mode si vous préférez spécifier le type de détection que le Wrapper utilisera."/>
-		<lookup key="ServerChoiceForm" value="Mode manuel"/>
+		<lookup key="groupBoxNext" value="Essayer autrement"/>
+		<lookup key="radioAutoconfigPage2Search1" value="Rechercher le fournisseur de messagerie de ce domaine"/>
+		<lookup key="radioAutoconfigPage2Search2" value="Essayer les noms de serveur courants"/>
+		<lookup key="radioAutoconfigPage2Search3" value="Saisir les paramètres moi-même"/>
+		<lookup key="lblAutoconfigPage2MxLookup" value="Votre adresse est peut-être gérée par un autre fournisseur que son domaine ne le laisse penser. Cette option trouve ce fournisseur et relance la recherche."/>
+		<lookup key="lblAutoconfigPage2Guess" value="Essaie les noms habituels tels que mail.votredomaine.com. Fonctionne pour de nombreux petits fournisseurs, mais pas tous."/>
+		<lookup key="lblAutoconfigPage3ServerMessage" value="Quels paramètres le Wrapper doit-il utiliser ?"/>
+		<lookup key="groupBoxOptions" value=""/>
+		<lookup key="radioAutoconfigPage3Select1" value="Paramètres recommandés"/>
+		<lookup key="radioAutoconfigPage3Select2" value="Me laisser choisir parmi les serveurs trouvés"/>
+		<lookup key="fbServerPreference" value="Préférer :"/>
+		<lookup key="serverPreferenceNoPreference" value="Automatique"/>
+		<lookup key="lblAutoconfigPage3WrapperDecidesMessage" value="Utilise les serveurs les plus sûrs trouvés. IMAP est préféré sauf choix contraire ci-dessus."/>
+		<lookup key="lblAutoconfigPage3UserDecidesMessage" value="Affiche tous les serveurs trouvés pour que vous puissiez choisir."/>
+		<lookup key="ServerChoiceForm" value="Choisissez vos serveurs"/>
 		<lookup key="groupBoxIncoming" value="E-mail entrant"/>
 		<lookup key="groupBoxOutgoing" value="E-mail sortant"/>
 		<lookup key="lblServerChoiceCheckBoxServer" value="Serveur:"/>
@@ -253,6 +342,9 @@
 		<!-- END: Main forms -->
 		<!-- BEGIN: Messages -->
 		<lookup key="msgWrapperWriteAccess" value="Le Wrapper n'a pas les autorisations en écriture sur les répertoires suivants : &#xA;{0}&#xA;&#xA;Merci de modifier les réglages de sécurité de votre système ou d'éxécuter ce Wrapper en tant qu'Administrateur."/>
+		<lookup key="msgWrapperFixPermissions" value="Accorder maintenant à votre compte Windows l'accès en écriture à ces dossiers ? Windows vous demandera d'autoriser la modification."/>
+		<lookup key="msgWrapperFixPermissionsDone" value="Terminé. Le Wrapper peut maintenant écrire dans tous les dossiers des jeux."/>
+		<lookup key="msgWrapperFixPermissionsFailed" value="Le Wrapper ne peut toujours pas écrire dans :&#xA;{0}&#xA;&#xA;Exécutez-le une fois en tant qu'administrateur, ou copiez le jeu dans un dossier hors de Program Files."/>
 		<lookup key="msgWrapperArchiveGame" value="Souhaitez-vous également archiver les parties sélectionnées ? Ceci déplacera leurs fichiers dans un dossier séparé nommé '{0}' et demeurera accessible depuis le jeu."/>
 		<lookup key="msgWrapperCannotActivateAccount" value="Impossible d'activer le compte &quot;{0}&quot; pour l'instant. Merci d'attendre la fin de l'envoi de mail."/>
 		<lookup key="msgAccountPrompt" value="Saisissez le nom du compte :"/>
@@ -267,8 +359,90 @@
 		<lookup key="msgWrapperGamesWaiting" value="Vous avez {0} partie(s) en attente."/>
 		<lookup key="msgInputEmailSettingsManual" value="Vous remplirez les paramètres manuellement."/>
 		<lookup key="msgWrapperResendTo" value="Renvoyer à:"/>
-		<lookup key="msgAutoconfigPage2Success" value="Réussi, paramètres d'e-mail trouvés. Cliquez Suivant pour continuer."/>
-		<lookup key="msgAutoconfigPage2Failed" value="Echec, aucun paramètre d'e-mail n'a été trouvé dans la base de données en ligne. Veuillez choisir une des options suivantes."/>
+		<lookup key="msgAutoconfigPage2Success" value="Paramètres de messagerie trouvés. Cliquez sur Suivant."/>
+		<lookup key="msgAutoconfigPage2Failed" value="Aucun paramètre trouvé pour cette adresse. Essayez l'une des options ci-dessous."/>
+		<lookup key="buttonTestConnection" value="Tester la connexion"/>
+		<lookup key="msgTestTitle" value="Test de connexion"/>
+		<lookup key="msgTestIncomingSuccess" value="Connecté à {0} en tant que {1}. La réception du courrier fonctionne."/>
+		<lookup key="msgTestOutgoingSuccess" value="Connecté à {0} en tant que {1}. L'envoi du courrier fonctionne."/>
+		<lookup key="msgTestOutgoingSuccessNoAuth" value="Connecté à {0}. L'envoi du courrier fonctionne."/>
+		<lookup key="msgTestFailed" value="Le test de connexion a échoué."/>
+		<lookup key="msgTestAuthFailed" value="Le serveur a refusé le nom d'utilisateur ou le mot de passe."/>
+		<lookup key="msgHintGmail" value="Gmail exige ici un mot de passe d'application, pas votre mot de passe Google. Créez-en un (la validation en deux étapes doit être activée) et collez le code de 16 lettres ci-dessus."/>
+		<lookup key="msgHintYahoo" value="Yahoo et AOL exigent ici un mot de passe d'application. Créez-en un sur la page Sécurité du compte et collez-le ci-dessus."/>
+		<lookup key="msgHintMicrosoft" value="Outlook.com, Hotmail et Live se connectent via Microsoft. Cliquez sur Se connecter avec Microsoft et terminez dans votre navigateur."/>
+		<lookup key="msgHintGmailShort" value="Gmail exige ici un mot de passe d'application, pas votre mot de passe Google."/>
+		<lookup key="msgHintYahooShort" value="Yahoo et AOL exigent ici un mot de passe d'application."/>
+		<lookup key="msgHintMicrosoftShort" value="La connexion Microsoft doit être renouvelée."/>
+		<lookup key="msgWrapperPollAuthFailed" value="{0} a refusé la connexion pour {1}. La vérification du courrier est suspendue jusqu'à la correction du compte : ouvrez l'onglet Comptes, corrigez le mot de passe et cliquez sur Tester la connexion."/>
+		<lookup key="linkCreateAppPassword" value="Créer un mot de passe d'application"/>
+		<lookup key="msgOAuthOnly" value="Ce fournisseur n'autorise que la connexion OAuth depuis les programmes de messagerie, que le Wrapper ne prend pas encore en charge. La connexion par mot de passe sera probablement refusée."/>
+		<lookup key="buttonSignInMicrosoft" value="Se connecter avec Microsoft"/>
+		<lookup key="msgOAuthSignedIn" value="Connecté en tant que {0}."/>
+		<lookup key="msgOAuthNotConfigured" value="La connexion Microsoft n'est pas configurée dans cette copie du Wrapper. Enregistrez le Wrapper sur le portail Azure et placez l'ID d'application (client) dans AowEmailWrapper.dll.config, comme décrit dans le README."/>
+		<lookup key="msgOAuthSessionExpired" value="La connexion Microsoft pour {0} a expiré ou a été supprimée. Ouvrez l'onglet Comptes et reconnectez-vous avec Microsoft."/>
+		<lookup key="lblOAuthAccount" value="Ce compte se connecte via Microsoft. Aucun mot de passe n'est enregistré."/>
+		<lookup key="linkOAuthSignInAgain" value="Se reconnecter avec Microsoft"/>
+		<lookup key="cmdLogFolder" value="Ouvrir le dossier des journaux"/>
+		<lookup key="fbAutoInstallUpdates" value="Installer les mises à jour automatiquement :"/>
+		<lookup key="cmdCheckUpdates" value="Rechercher les mises à jour"/>
+		<lookup key="linkUpdateChecking" value="Recherche de mises à jour..."/>
+		<lookup key="linkUpdateAvailable" value="Mise à jour disponible : {0}"/>
+		<lookup key="msgWrapperUpdateAvailable" value="Mise à jour disponible"/>
+		<lookup key="msgWrapperUpdateBalloon" value="{0} est prêt à être installé. Cliquez ici pour mettre à jour le Wrapper."/>
+		<lookup key="msgWrapperUpdateOffer" value="{0} est disponible (publié le {1}).&#xA;Vous utilisez {2}.&#xA;&#xA;Télécharger et installer maintenant ? Le Wrapper se ferme pendant l'installation et redémarre ensuite."/>
+		<lookup key="msgWrapperUpdateNone" value="Vous utilisez la dernière version ({0})."/>
+		<lookup key="msgWrapperUpdateFailed" value="Impossible de rechercher les mises à jour : {0}"/>
+		<lookup key="msgWrapperUpdateDownloading" value="Téléchargement de {0}..."/>
+		<lookup key="msgWrapperUpdateDownloadFailed" value="La mise à jour n'a pas pu être téléchargée : {0}"/>
+		<lookup key="cmdReportBug" value="Signaler un bug..."/>
+		<lookup key="groupBoxSupport" value="Assistance"/>
+		<lookup key="groupDiscord" value="Serveurs Discord"/>
+		<lookup key="lblDiscordIntro" value="Quelques endroits conviviaux où les joueurs se retrouvent pour des parties par e-mail :"/>
+		<lookup key="groupDedication" value="Dédicace"/>
+		<lookup key="buttonSend" value="Envoyer"/>
+		<lookup key="msgBugReportTitle" value="Signaler un bug"/>
+		<lookup key="msgBugReportIntro" value="Décrivez ce qui s'est mal passé et ce que vous attendiez. Le rapport est envoyé par e-mail au développeur depuis votre compte {0}, afin qu'une réponse puisse vous parvenir."/>
+		<lookup key="msgBugReportIntroNoAccount" value="Décrivez ce qui s'est mal passé et ce que vous attendiez. Aucun compte e-mail n'est encore configuré dans le Wrapper : le rapport s'ouvre donc dans votre propre programme de messagerie, adressé au développeur. Veuillez joindre le fichier journal du dossier des journaux, que le Wrapper ouvre pour vous."/>
+		<lookup key="chkBugReportAttachLog" value="Joindre le fichier journal du Wrapper (il peut contenir des adresses e-mail et des noms de parties)"/>
+		<lookup key="msgBugReportEmpty" value="Veuillez décrire le problème avant d'envoyer le rapport."/>
+		<lookup key="msgBugReportSending" value="Envoi du rapport..."/>
+		<lookup key="msgBugReportSent" value="Merci. Le rapport a été envoyé à {0}."/>
+		<lookup key="msgBugReportFailed" value="Le rapport n'a pas pu être envoyé : {0}"/>
+		<lookup key="msgWrapperUpdateInstalling" value="Installation de {0}. Le Wrapper sera de retour dans un instant."/>
+		<lookup key="tabGames" value="Jeux"/>
+		<lookup key="panelGameslistViewGames0" value="Jeu"/>
+		<lookup key="panelGameslistViewGames1" value="Étiquette"/>
+		<lookup key="panelGameslistViewGames2" value="Dossier"/>
+		<lookup key="panelGameslistViewGames3" value="Par défaut"/>
+		<lookup key="panelGameslistViewGames4" value="Trouvé par"/>
+		<lookup key="buttonAddFolder" value="Ajouter un dossier..."/>
+		<lookup key="buttonSetLabel" value="Définir l'étiquette..."/>
+		<lookup key="buttonSetDefaultInstall" value="Définir par défaut"/>
+		<lookup key="buttonRemoveInstall" value="Retirer"/>
+		<lookup key="buttonRescan" value="Rechercher à nouveau"/>
+		<lookup key="buttonRescanning" value="Recherche..."/>
+		<lookup key="lblGamesHelp" value="Donnez à chaque copie d'un jeu une courte étiquette, par exemple Vanilla, AoWx ou Ziggurat. L'étiquette accompagne les tours que vous envoyez : tous les joueurs d'une partie doivent utiliser la même. La copie par défaut reçoit les tours sans étiquette."/>
+		<lookup key="msgInstallLabelPrompt" value="Étiquette de cette copie, par exemple Vanilla, AoWx ou Ziggurat. Laissez vide pour aucune :"/>
+		<lookup key="radioNoLabel" value="Aucune étiquette"/>
+		<lookup key="radioOtherLabel" value="Autre :"/>
+		<lookup key="msgLabelInUse" value="L'étiquette {0} est déjà utilisée par la copie dans {1}. Chaque étiquette ne peut désigner qu'une seule copie d'un jeu."/>
+		<lookup key="msgAddFolderNoGame" value="Aucun jeu Age of Wonders trouvé dans {0}. Le dossier doit contenir AoW.exe, AoW2.exe ou AoWSM.exe."/>
+		<lookup key="msgInstallMissing" value="Introuvable"/>
+		<lookup key="menuItemMoveTo" value="Déplacer vers"/>
+		<lookup key="enumRegistry" value="Registre"/>
+		<lookup key="enumSteam" value="Steam"/>
+		<lookup key="enumGog" value="GOG"/>
+		<lookup key="enumUninstall" value="Applications et fonctionnalités"/>
+		<lookup key="enumFolder" value="Analyse des dossiers"/>
+		<lookup key="enumManual" value="Ajouté par vous"/>
+		<lookup key="primaryAccount" value="Actif, nouvelles parties"/>
+		<lookup key="menuItemMoveUp" value="Monter"/>
+		<lookup key="menuItemMoveDown" value="Descendre"/>
+		<lookup key="msgWrapperNoSendAccount" value="Aucun compte de messagerie n'est configuré pour envoyer ce tour. Ajoutez un compte dans l'onglet Comptes."/>
+		<lookup key="inactiveAccount" value="Inactif"/>
+		<lookup key="buttonDeactivate" value="Désactiver"/>
+		<lookup key="menuItemDeactivate" value="Désactiver"/>
 		<!-- END: Messages -->
 		<!-- BEGIN: Context Menus -->
 		<lookup key="menuItemShow" value="Ouvrir"/>
@@ -312,7 +486,7 @@
 		<lookup key="tabAccounts" value="Konten"/>
 		<lookup key="panelTopHalflistViewAccounts0" value="Konto"/>
 		<lookup key="panelTopHalflistViewAccounts1" value="E-Mail Adresse"/>
-		<lookup key="panelTopHalflistViewAccounts2" value="Default"/>
+		<lookup key="panelTopHalflistViewAccounts2" value="Aktiv"/>
 		<lookup key="buttonActivate" value="Aktivieren"/>
 		<lookup key="buttonSetStartUp" value="Als default festlegen"/>
 		<lookup key="buttonRename" value="Umbenennen"/>
@@ -339,7 +513,7 @@
 		<lookup key="fbSSLType" value="SSL Typ:"/>
 		<lookup key="fbEmailAddress" value="E-Mail Adresse:"/>
 		<lookup key="fbSmtpServer" value="SMTP Server:"/>
-		<lookup key="tabPreferences" value="Präferenzen"/>
+		<lookup key="tabPreferences" value="Einstellungen"/>
 		<lookup key="fbSaveFolder" value="Downloadverzeichnis:"/>
 		<lookup key="groupBoxPreferences" value="Präferenzen"/>
 		<lookup key="fbAutostart" value="Automatisch mit Windows starten:"/>
@@ -354,7 +528,8 @@
 		<lookup key="activityListViewlistView2" value="Zug"/>
 		<lookup key="activityListViewlistView3" value="Alter"/>
 		<lookup key="activityListViewlistView4" value="Status"/>
-		<lookup key="activityListViewlistView5" value="Zeiteinheit"/>
+		<lookup key="activityListViewlistView5" value="Kopie"/>
+		<lookup key="activityListViewlistView6" value="Zeiteinheit"/>
 		<lookup key="tabAbout" value="Über"/>
 		<lookup key="groupBetaTesters" value="Beta Tester"/>
 		<lookup key="groupTranslators" value="Übersetzer"/>
@@ -371,30 +546,31 @@
 		<lookup key="lblLocalMessageStoreMessage" value="Benutzer die einen Windows basierten E-Mail Client wie Outlook Express, Outlook, Mozilla Thunderbird, Eudora, etc. verwenden, sollten beachten, dass das Standardverhalten für den POP3 Zugriff bedeutet, dass die Nachrichten nach dem Herunterladen vom Server entfernt werden. Sie müssen eine Option ändern um den Client so zu konfigurieren, dass die Nachrichten auf dem Server verbleiben und der Wrapper diese finden kann. Der Wrapper beläßt die Nachrichten immer auf dem Server, so dass der normale E-Mail Client diese auch finden kann."/>
 		<lookup key="cmdRedownload" value="Erneut herunterladen"/>
 		<lookup key="cmdClose" value="Schließen"/>
-		<lookup key="AccountsCreationForm" value="Neues Konto erstellen"/>
+		<lookup key="AccountsCreationForm" value="E-Mail-Konto hinzufügen"/>
 		<lookup key="buttonCreate" value="&amp;Erstellen"/>
 		<lookup key="accountOther" value="Andere"/>
-		<lookup key="lblThunderbirdTitle" value="Thunderbird Datenbank"/>
-		<lookup key="lblAutoconfigHeaderMessage" value="Autoconfig Assistent"/>
-		<lookup key="lblAutoconfigPage1WrapperMessage" value="Der Wrapper ist ein spezieller E-Mail Client und nutzt die gleichen Servereinstellungen, die Sie für Programme wie Outlook Express verwenden würden. Es verwendet eine online Datenbank um diese Einstellungen für Ihr E-Mail-Konto zu finden. Diese Datenbank wird von der Mozilla Foundation gepflegt, welche sie für ihren eigenen E-Mail-Client, Thunderbird genannt, nutzt. Sie halten diese Datenbank aktuell, was dem Wrapper Zukunftssicherheit garantiert und zudem eine exzellente Möglichkeit eröffnet, Ihre E-Mail-Einstellungen automatisch zu ermitteln."/>
+		<lookup key="lblThunderbirdTitle" value="Der Oberbibliothekar"/>
+		<lookup key="lblAutoconfigHeaderMessage" value="E-Mail-Konto einrichten"/>
+		<lookup key="lblAutoconfigPage1WrapperMessage" value="Der Oberbibliothekar sucht die Mailserver-Einstellungen für Sie heraus, indem er Zwiesprache mit dem Thunderbird hält."/>
 		<lookup key="lblAutoconfigPage1AuthMessage" value="Bitte geben Sie die Authentifizierungsdetails für Ihr E-Mail-Konto an."/>
-		<lookup key="lblAutoconfigPage2SearchMessage" value="Suche online nach Ihren E-Mail-Einstellungen..."/>
+		<lookup key="groupBoxAccount" value="Ihr Konto"/>
+		<lookup key="lblAutoconfigPage2SearchMessage" value="Ihre E-Mail-Einstellungen werden gesucht…"/>
 		<lookup key="groupBoxResult" value="Ergebnis"/>
-		<lookup key="groupBoxNext" value="Weiter?"/>
-		<lookup key="radioAutoconfigPage2Search1" value="Versuche Mx Lookup"/>
-		<lookup key="radioAutoconfigPage2Search2" value="Versuche zu ermittlen"/>
-		<lookup key="radioAutoconfigPage2Search3" value="Manueller Eingriff, lassen Sie mich die Einstellungen selbst eingeben"/>
-		<lookup key="lblAutoconfigPage2MxLookup" value="Manchmal ist Ihr E-Mail-Server in der online Datenbank unter einem anderen Namen als der Ihrer E-Mail-Adresse eingetragen. Wenn wir einen Mx Lookup auf Ihre E-Mail-Adresse durchführen und dann die Datenbanksuche erneut durchführen, finden sich häufig die korrekten Einstellungen."/>
-		<lookup key="lblAutoconfigPage2Guess" value="Verwenden  Sie diese Option als letzten Ausweg. Dies wird den Namen Ihres E-Mail-Servers durch direkten Kontakt über das Internet ermitteln, allerdings nicht sicher ob es funktioniert. Wenn dies fehlschlägt müssen Sie die Einstellungen manuell eingeben."/>
-		<lookup key="lblAutoconfigPage3ServerMessage" value="Bitte geben Sie an welche Servereinstellungen verwendet werden sollen."/>
-		<lookup key="groupBoxOptions" value="Optionen"/>
-		<lookup key="radioAutoconfigPage3Select1" value="Lassen Sie den Wrapper entscheiden (Standard)"/>
-		<lookup key="radioAutoconfigPage3Select2" value="Manueller Eingriff, zeige mir die Einstellungen, so dass ich auswählen kann"/>
-		<lookup key="fbServerPreference" value="Priorität:"/>
-		<lookup key="serverPreferenceNoPreference" value="Keine priorität"/>
-		<lookup key="lblAutoconfigPage3WrapperDecidesMessage" value="Dies ist die sicherste Option für die meisten Benutzer. Es wird den Wrapper anweisen, die sichersten Server basierend auf der oben gewählten Priorität zu verwenden. Falls keine Priorität angegeben wurde, wird der Wrapper IMAP Servern POP3 Servern vorziehen."/>
-		<lookup key="lblAutoconfigPage3UserDecidesMessage" value="Verwenden Sie diese Option, wenn sie genaue Kontrolle über die automatisch ermittelten Einstellungen haben möchten, die der Wrapper nutzen soll."/>
-		<lookup key="ServerChoiceForm" value="Manueller Eingriff"/>
+		<lookup key="groupBoxNext" value="Anders versuchen"/>
+		<lookup key="radioAutoconfigPage2Search1" value="Den Mailanbieter dieser Domain nachschlagen"/>
+		<lookup key="radioAutoconfigPage2Search2" value="Übliche Servernamen ausprobieren"/>
+		<lookup key="radioAutoconfigPage2Search3" value="Einstellungen selbst eingeben"/>
+		<lookup key="lblAutoconfigPage2MxLookup" value="Ihre Adresse wird möglicherweise von einem anderen Anbieter verwaltet, als die Domain vermuten lässt. Diese Option findet den Anbieter und sucht erneut."/>
+		<lookup key="lblAutoconfigPage2Guess" value="Probiert die üblichen Namen wie mail.ihredomain.de aus. Funktioniert bei vielen kleinen Anbietern, aber nicht bei allen."/>
+		<lookup key="lblAutoconfigPage3ServerMessage" value="Welche Einstellungen soll der Wrapper verwenden?"/>
+		<lookup key="groupBoxOptions" value=""/>
+		<lookup key="radioAutoconfigPage3Select1" value="Empfohlene Einstellungen"/>
+		<lookup key="radioAutoconfigPage3Select2" value="Selbst aus den gefundenen Servern wählen"/>
+		<lookup key="fbServerPreference" value="Bevorzugt:"/>
+		<lookup key="serverPreferenceNoPreference" value="Automatisch"/>
+		<lookup key="lblAutoconfigPage3WrapperDecidesMessage" value="Verwendet die sichersten gefundenen Server. IMAP wird bevorzugt, sofern Sie oben nichts anderes wählen."/>
+		<lookup key="lblAutoconfigPage3UserDecidesMessage" value="Zeigt alle gefundenen Server an, damit Sie wählen können."/>
+		<lookup key="ServerChoiceForm" value="Server auswählen"/>
 		<lookup key="groupBoxIncoming" value="Eingehende E-Mail"/>
 		<lookup key="groupBoxOutgoing" value="Ausgehende E-Mail"/>
 		<lookup key="lblServerChoiceCheckBoxServer" value="Server:"/>
@@ -403,6 +579,9 @@
 		<!-- END: Main forms -->
 		<!-- BEGIN: Messages -->
 		<lookup key="msgWrapperWriteAccess" value="Der Wrapper hat keinen Schreibzugriff auf diese Verzeichnisse:&#xA;{0}&#xA;&#xA; Bitte ändern Sie Ihre System Sicherheitseinstellungen oder starten Sie den Wrapper als Administrator."/>
+		<lookup key="msgWrapperFixPermissions" value="Ihrem Windows-Konto jetzt Schreibzugriff auf diese Ordner geben? Windows fragt nach, ob die Änderung erlaubt werden soll."/>
+		<lookup key="msgWrapperFixPermissionsDone" value="Fertig. Der Wrapper kann jetzt in alle Spielordner schreiben."/>
+		<lookup key="msgWrapperFixPermissionsFailed" value="Der Wrapper kann weiterhin nicht schreiben in:&#xA;{0}&#xA;&#xA;Starten Sie ihn einmal als Administrator oder kopieren Sie das Spiel in einen Ordner außerhalb von Program Files."/>
 		<lookup key="msgWrapperArchiveGame" value="Möchten Sie die gewählten Spiele archivieren? Dies verschiebt die Dateien in einen seperaten Ordner mit dem Namen '{0}' , welchen Sie auch im Spiel zur Verfügung haben."/>
 		<lookup key="msgWrapperCannotActivateAccount" value="Kann das Konto &quot;{0}&quot; jetzt nicht aktivieren.  Bitte warten Sie bis der E-Mail Versand beendet ist."/>
 		<lookup key="msgAccountPrompt" value="Geben Sie den Namen des Kontos ein:"/>
@@ -417,8 +596,90 @@
 		<lookup key="msgWrapperGamesWaiting" value="Sie haben {0} Spiel(e) wartend."/>
 		<lookup key="msgInputEmailSettingsManual" value="Ich werde die Einstellungen manuell vornehmen."/>
 		<lookup key="msgWrapperResendTo" value="Erneut senden:"/>
-		<lookup key="msgAutoconfigPage2Success" value="Erfolgreich, die E-Mail-Einstellungen wurden gefunden. Klicken Sie weiter um fortzusetzen."/>
-		<lookup key="msgAutoconfigPage2Failed" value="Nicht erfolgreich, es konnten keine E-Mail-Einstellungen in der Datenbank gefunden werden. Bitte wählen Sie eine der untenstehenden Optionen."/>
+		<lookup key="msgAutoconfigPage2Success" value="E-Mail-Einstellungen gefunden. Klicken Sie auf Weiter."/>
+		<lookup key="msgAutoconfigPage2Failed" value="Keine Einstellungen für diese Adresse gefunden. Versuchen Sie eine der Optionen unten."/>
+		<lookup key="buttonTestConnection" value="Verbindung testen"/>
+		<lookup key="msgTestTitle" value="Verbindungstest"/>
+		<lookup key="msgTestIncomingSuccess" value="Bei {0} als {1} angemeldet. Der E-Mail-Empfang funktioniert."/>
+		<lookup key="msgTestOutgoingSuccess" value="Mit {0} als {1} verbunden. Der E-Mail-Versand funktioniert."/>
+		<lookup key="msgTestOutgoingSuccessNoAuth" value="Mit {0} verbunden. Der E-Mail-Versand funktioniert."/>
+		<lookup key="msgTestFailed" value="Der Verbindungstest ist fehlgeschlagen."/>
+		<lookup key="msgTestAuthFailed" value="Der Server hat Benutzername oder Passwort abgelehnt."/>
+		<lookup key="msgHintGmail" value="Gmail braucht hier ein App-Passwort, nicht Ihr Google-Passwort. Erstellen Sie eines (Bestätigung in zwei Schritten muss aktiv sein) und fügen Sie den 16-stelligen Code oben ein."/>
+		<lookup key="msgHintYahoo" value="Yahoo und AOL brauchen hier ein App-Passwort. Erstellen Sie eines auf der Seite Kontosicherheit und fügen Sie es oben ein."/>
+		<lookup key="msgHintMicrosoft" value="Outlook.com, Hotmail und Live melden sich über Microsoft an. Klicken Sie auf Mit Microsoft anmelden und schließen Sie die Anmeldung im Browser ab."/>
+		<lookup key="msgHintGmailShort" value="Gmail braucht hier ein App-Passwort, nicht Ihr Google-Passwort."/>
+		<lookup key="msgHintYahooShort" value="Yahoo und AOL brauchen hier ein App-Passwort."/>
+		<lookup key="msgHintMicrosoftShort" value="Die Microsoft-Anmeldung muss erneuert werden."/>
+		<lookup key="msgWrapperPollAuthFailed" value="{0} hat die Anmeldung für {1} abgelehnt. Das Abrufen von E-Mails ist angehalten, bis das Konto korrigiert ist: Öffnen Sie die Registerkarte Konten, korrigieren Sie das Passwort und klicken Sie auf Verbindung testen."/>
+		<lookup key="linkCreateAppPassword" value="App-Passwort erstellen"/>
+		<lookup key="msgOAuthOnly" value="Dieser E-Mail-Anbieter erlaubt E-Mail-Programmen nur die OAuth-Anmeldung, die der Wrapper noch nicht unterstützt. Die Anmeldung mit Passwort wird wahrscheinlich abgelehnt."/>
+		<lookup key="buttonSignInMicrosoft" value="Mit Microsoft anmelden"/>
+		<lookup key="msgOAuthSignedIn" value="Angemeldet als {0}."/>
+		<lookup key="msgOAuthNotConfigured" value="Die Microsoft-Anmeldung ist in dieser Kopie des Wrappers nicht eingerichtet. Registrieren Sie den Wrapper im Azure-Portal und tragen Sie die Anwendungs-ID (Client-ID) in AowEmailWrapper.dll.config ein, wie im README beschrieben."/>
+		<lookup key="msgOAuthSessionExpired" value="Die Microsoft-Anmeldung für {0} ist abgelaufen oder wurde entfernt. Öffnen Sie die Registerkarte Konten und melden Sie sich erneut mit Microsoft an."/>
+		<lookup key="lblOAuthAccount" value="Dieses Konto meldet sich über Microsoft an. Es wird kein Passwort gespeichert."/>
+		<lookup key="linkOAuthSignInAgain" value="Erneut mit Microsoft anmelden"/>
+		<lookup key="cmdLogFolder" value="Protokollordner öffnen"/>
+		<lookup key="fbAutoInstallUpdates" value="Updates automatisch installieren:"/>
+		<lookup key="cmdCheckUpdates" value="Nach Updates suchen"/>
+		<lookup key="linkUpdateChecking" value="Suche nach Updates..."/>
+		<lookup key="linkUpdateAvailable" value="Update verfügbar: {0}"/>
+		<lookup key="msgWrapperUpdateAvailable" value="Update verfügbar"/>
+		<lookup key="msgWrapperUpdateBalloon" value="{0} kann installiert werden. Hier klicken, um den Wrapper zu aktualisieren."/>
+		<lookup key="msgWrapperUpdateOffer" value="{0} ist verfügbar (veröffentlicht am {1}).&#xA;Sie verwenden {2}.&#xA;&#xA;Jetzt herunterladen und installieren? Der Wrapper wird während der Installation beendet und danach neu gestartet."/>
+		<lookup key="msgWrapperUpdateNone" value="Sie verwenden die neueste Version ({0})."/>
+		<lookup key="msgWrapperUpdateFailed" value="Die Suche nach Updates ist fehlgeschlagen: {0}"/>
+		<lookup key="msgWrapperUpdateDownloading" value="{0} wird heruntergeladen..."/>
+		<lookup key="msgWrapperUpdateDownloadFailed" value="Das Update konnte nicht heruntergeladen werden: {0}"/>
+		<lookup key="cmdReportBug" value="Fehler melden..."/>
+		<lookup key="groupBoxSupport" value="Support"/>
+		<lookup key="groupDiscord" value="Discord-Server"/>
+		<lookup key="lblDiscordIntro" value="Ein paar freundliche Orte, an denen sich Spieler für Play-by-E-Mail-Partien treffen:"/>
+		<lookup key="groupDedication" value="Widmung"/>
+		<lookup key="buttonSend" value="Senden"/>
+		<lookup key="msgBugReportTitle" value="Fehler melden"/>
+		<lookup key="msgBugReportIntro" value="Beschreiben Sie, was schiefgelaufen ist und was Sie erwartet haben. Der Bericht wird per E-Mail von Ihrem Konto {0} an den Entwickler gesendet, damit eine Antwort Sie erreichen kann."/>
+		<lookup key="msgBugReportIntroNoAccount" value="Beschreiben Sie, was schiefgelaufen ist und was Sie erwartet haben. Im Wrapper ist noch kein E-Mail-Konto eingerichtet, daher wird der Bericht in Ihrem eigenen E-Mail-Programm an den Entwickler adressiert geöffnet. Bitte hängen Sie die Protokolldatei aus dem Protokollordner an, den der Wrapper für Sie öffnet."/>
+		<lookup key="chkBugReportAttachLog" value="Protokolldatei des Wrappers anhängen (sie kann E-Mail-Adressen und Spielnamen enthalten)"/>
+		<lookup key="msgBugReportEmpty" value="Bitte beschreiben Sie das Problem, bevor Sie den Bericht senden."/>
+		<lookup key="msgBugReportSending" value="Bericht wird gesendet..."/>
+		<lookup key="msgBugReportSent" value="Vielen Dank. Der Bericht wurde an {0} gesendet."/>
+		<lookup key="msgBugReportFailed" value="Der Bericht konnte nicht gesendet werden: {0}"/>
+		<lookup key="msgWrapperUpdateInstalling" value="{0} wird installiert. Der Wrapper ist gleich wieder da."/>
+		<lookup key="tabGames" value="Spiele"/>
+		<lookup key="panelGameslistViewGames0" value="Spiel"/>
+		<lookup key="panelGameslistViewGames1" value="Bezeichnung"/>
+		<lookup key="panelGameslistViewGames2" value="Ordner"/>
+		<lookup key="panelGameslistViewGames3" value="Standard"/>
+		<lookup key="panelGameslistViewGames4" value="Gefunden über"/>
+		<lookup key="buttonAddFolder" value="Ordner hinzufügen..."/>
+		<lookup key="buttonSetLabel" value="Bezeichnung festlegen..."/>
+		<lookup key="buttonSetDefaultInstall" value="Als Standard festlegen"/>
+		<lookup key="buttonRemoveInstall" value="Entfernen"/>
+		<lookup key="buttonRescan" value="Erneut suchen"/>
+		<lookup key="buttonRescanning" value="Suche läuft..."/>
+		<lookup key="lblGamesHelp" value="Geben Sie jeder Kopie eines Spiels eine kurze Bezeichnung wie Vanilla, AoWx oder Ziggurat. Die Bezeichnung reist mit den gesendeten Zügen mit, daher müssen alle Spieler einer Partie dieselbe verwenden. Die Standardkopie erhält Züge ohne Bezeichnung."/>
+		<lookup key="msgInstallLabelPrompt" value="Bezeichnung für diese Kopie, z. B. Vanilla, AoWx oder Ziggurat. Leer lassen für keine:"/>
+		<lookup key="radioNoLabel" value="Keine Bezeichnung"/>
+		<lookup key="radioOtherLabel" value="Andere:"/>
+		<lookup key="msgLabelInUse" value="Die Bezeichnung {0} wird bereits von der Kopie in {1} verwendet. Jede Bezeichnung kann nur auf eine Kopie eines Spiels zeigen."/>
+		<lookup key="msgAddFolderNoGame" value="In {0} wurde kein Age of Wonders Spiel gefunden. Der Ordner muss AoW.exe, AoW2.exe oder AoWSM.exe enthalten."/>
+		<lookup key="msgInstallMissing" value="Fehlt"/>
+		<lookup key="menuItemMoveTo" value="Verschieben nach"/>
+		<lookup key="enumRegistry" value="Registrierung"/>
+		<lookup key="enumSteam" value="Steam"/>
+		<lookup key="enumGog" value="GOG"/>
+		<lookup key="enumUninstall" value="Apps und Features"/>
+		<lookup key="enumFolder" value="Ordnersuche"/>
+		<lookup key="enumManual" value="Von Ihnen hinzugefügt"/>
+		<lookup key="primaryAccount" value="Aktiv, neue Spiele"/>
+		<lookup key="menuItemMoveUp" value="Nach oben"/>
+		<lookup key="menuItemMoveDown" value="Nach unten"/>
+		<lookup key="msgWrapperNoSendAccount" value="Kein E-Mail-Konto ist zum Senden dieses Zuges eingerichtet. Fügen Sie auf der Registerkarte Konten ein Konto hinzu."/>
+		<lookup key="inactiveAccount" value="Inaktiv"/>
+		<lookup key="buttonDeactivate" value="Deaktivieren"/>
+		<lookup key="menuItemDeactivate" value="Deaktivieren"/>
 		<!-- END: Messages -->
 		<!-- BEGIN: Context Menus -->
 		<lookup key="menuItemShow" value="Anzeigen"/>
@@ -463,7 +724,7 @@
 		<lookup key="tabAccounts" value="Cuentas"/>
 		<lookup key="panelTopHalflistViewAccounts0" value="Cuenta"/>
 		<lookup key="panelTopHalflistViewAccounts1" value="Dirección de Email"/>
-		<lookup key="panelTopHalflistViewAccounts2" value="Por omisión"/>
+		<lookup key="panelTopHalflistViewAccounts2" value="Activo"/>
 		<lookup key="buttonActivate" value="Activar"/>
 		<lookup key="buttonSetStartUp" value="Uso por omisión"/>
 		<lookup key="buttonRename" value="Renombrar"/>
@@ -490,7 +751,7 @@
 		<lookup key="fbSSLType" value="Tipo de SSL:"/>
 		<lookup key="fbEmailAddress" value="Dirección de Email:"/>
 		<lookup key="fbSmtpServer" value="Servidor Smtp:"/>
-		<lookup key="tabPreferences" value="Preferencias"/>
+		<lookup key="tabPreferences" value="Configuración"/>
 		<lookup key="fbSaveFolder" value="Carpeta de descarga:"/>
 		<lookup key="groupBoxPreferences" value="Preferencias"/>
 		<lookup key="fbAutostart" value="Inicio automatico con Windows:"/>
@@ -505,6 +766,7 @@
 		<lookup key="activityListViewlistView2" value="Turno"/>
 		<lookup key="activityListViewlistView3" value="Edad"/>
 		<lookup key="activityListViewlistView4" value="Estado"/>
+		<lookup key="activityListViewlistView5" value="Copia"/>
 		<lookup key="tabAbout" value="Acerca de"/>
 		<lookup key="groupBetaTesters" value="Beta Testers"/>
 		<lookup key="groupTranslators" value="Traductores"/>
@@ -521,30 +783,31 @@
 		<lookup key="lblLocalMessageStoreMessage" value="Aquellos usuarios con un cliente de email basado en Windows, tal como Outlook Express, Outlook, Mozilla Thunderbird, Eudora, etc. deben tener en cuenta que el comportamiento por defecto del acceso POP3 es el de remover los mensajes del servidor una vez descargados. Estos usuarios deberán cambiar las preferencias de su cliente de manera que deje los mensajes en el servidor de manera que el Wrapper pueda acceder a ellos. El Wrapper siempre dejará los mensajes en el servidor, de manera que su cliente de email usual también los encontrará."/>
 		<lookup key="cmdRedownload" value="Volver a descargar"/>
 		<lookup key="cmdClose" value="Cerrar"/>
-		<lookup key="AccountsCreationForm" value="Crear una nueva cuenta"/>
+		<lookup key="AccountsCreationForm" value="Añadir una cuenta de correo"/>
 		<lookup key="buttonCreate" value="&amp;Crear"/>
 		<lookup key="accountOther" value="Otro"/>
-		<lookup key="lblThunderbirdTitle" value="Base de datos de Thunderbird"/>
-		<lookup key="lblAutoconfigHeaderMessage" value="Cliente de configuración automática"/>
-		<lookup key="lblAutoconfigPage1WrapperMessage" value="El Wrapper es un cliente de email especializado y usa las mismas configuraciones de servidor que utilizarías en un programa como Outlook Express. Usa una base de datos online para encontrar las configuraciones para tu dirección de email. La base de datos es mantenida por la Fundación Mozilla, que la utiliza para su cliente Thunderbird. La mantienen al día, lo que permite al Wrapper un gran posibilidad de detectar automáticamente tu configuración."/>
+		<lookup key="lblThunderbirdTitle" value="El Bibliotecario Jefe"/>
+		<lookup key="lblAutoconfigHeaderMessage" value="Configura tu cuenta de correo"/>
+		<lookup key="lblAutoconfigPage1WrapperMessage" value="El Bibliotecario Jefe buscará por usted la configuración del servidor de correo comulgando con el Thunderbird."/>
 		<lookup key="lblAutoconfigPage1AuthMessage" value="Por favor, provee los detalles de autenticación de tu cuenta."/>
-		<lookup key="lblAutoconfigPage2SearchMessage" value="Buscando las configuraciones de tu email..."/>
+		<lookup key="groupBoxAccount" value="Tu cuenta"/>
+		<lookup key="lblAutoconfigPage2SearchMessage" value="Buscando tu configuración de correo…"/>
 		<lookup key="groupBoxResult" value="Resultado"/>
-		<lookup key="groupBoxNext" value="¿Qué sigue?"/>
-		<lookup key="radioAutoconfigPage2Search1" value="Probar Mx Lookup"/>
-		<lookup key="radioAutoconfigPage2Search2" value="Probar adivinar"/>
-		<lookup key="radioAutoconfigPage2Search3" value="Control Manual. Mostrarme las preferencias para yo poder elegir"/>
-		<lookup key="lblAutoconfigPage2MxLookup" value="A veces tu servidor de email se encuentra en la base de datos bajo un nombre diferente que tu cuenta de email. Usando Mx Lookup con tu cuenta, usualmente podemos encontrar las configuraciones correctas."/>
-		<lookup key="lblAutoconfigPage2Guess" value="Usar esta opción como último recurso. Esto predice el nombre de tu servidor de email intentando contactarlo directamente por Internet. No garantiza que funcione, y si falla tendrás que entrar la configuración manualmente."/>
-		<lookup key="lblAutoconfigPage3ServerMessage" value="Especifica qué configuración de servidor debe ser utilizada."/>
-		<lookup key="groupBoxOptions" value="Opciones"/>
-		<lookup key="radioAutoconfigPage3Select1" value="Dejar que el Wrapper decida (por defecto)"/>
-		<lookup key="radioAutoconfigPage3Select2" value="Control Manual. Mostrarme las preferencias para yo poder elegir"/>
-		<lookup key="fbServerPreference" value="Preferencia:"/>
-		<lookup key="serverPreferenceNoPreference" value="Sin Preferencia"/>
-		<lookup key="lblAutoconfigPage3WrapperDecidesMessage" value="Esta es la opción más segura para la mayoría de los usuarios. Le indica al Wrapper que elija los servidores más seguros utilizando las preferencias anteriores. Si no se dan preferencias, el Wrapper elegirá servidores IMAP sobre POP3."/>
-		<lookup key="lblAutoconfigPage3UserDecidesMessage" value="Elige esta opción si quieres tener control preciso sobre qué configuraciones auto-detectadas el Wrapper debería utillizar."/>
-		<lookup key="ServerChoiceForm" value="Control Manual"/>
+		<lookup key="groupBoxNext" value="Probar de otra forma"/>
+		<lookup key="radioAutoconfigPage2Search1" value="Buscar el proveedor de correo de este dominio"/>
+		<lookup key="radioAutoconfigPage2Search2" value="Probar nombres de servidor habituales"/>
+		<lookup key="radioAutoconfigPage2Search3" value="Introducir la configuración yo mismo"/>
+		<lookup key="lblAutoconfigPage2MxLookup" value="Puede que tu dirección la gestione un proveedor distinto del que sugiere su dominio. Esta opción localiza ese proveedor y vuelve a buscar."/>
+		<lookup key="lblAutoconfigPage2Guess" value="Prueba los nombres habituales, como mail.tudominio.com. Funciona con muchos proveedores pequeños, pero no con todos."/>
+		<lookup key="lblAutoconfigPage3ServerMessage" value="¿Qué configuración debe usar el Wrapper?"/>
+		<lookup key="groupBoxOptions" value=""/>
+		<lookup key="radioAutoconfigPage3Select1" value="Configuración recomendada"/>
+		<lookup key="radioAutoconfigPage3Select2" value="Dejarme elegir entre los servidores encontrados"/>
+		<lookup key="fbServerPreference" value="Preferir:"/>
+		<lookup key="serverPreferenceNoPreference" value="Automático"/>
+		<lookup key="lblAutoconfigPage3WrapperDecidesMessage" value="Usa los servidores más seguros encontrados. Se prefiere IMAP salvo que elijas otra cosa arriba."/>
+		<lookup key="lblAutoconfigPage3UserDecidesMessage" value="Muestra todos los servidores encontrados para que elijas."/>
+		<lookup key="ServerChoiceForm" value="Elige tus servidores"/>
 		<lookup key="groupBoxIncoming" value="Email entrante"/>
 		<lookup key="groupBoxOutgoing" value="Email saliente"/>
 		<lookup key="lblServerChoiceCheckBoxServer" value="Servidor:"/>
@@ -553,6 +816,9 @@
 		<!-- END: Main forms -->
 		<!-- BEGIN: Messages -->
 		<lookup key="msgWrapperWriteAccess" value="El Wrapper no tiene acceso de escritura a las siguientes carpetas:&#xA;{0}&#xA;&#xA;Por favor, modifique las opciones de seguridad de su sistema o inicie el Wrapper en modo de Administrador."/>
+		<lookup key="msgWrapperFixPermissions" value="¿Conceder ahora a su cuenta de Windows acceso de escritura a estas carpetas? Windows pedirá permiso para el cambio."/>
+		<lookup key="msgWrapperFixPermissionsDone" value="Listo. El Wrapper ya puede escribir en todas las carpetas de los juegos."/>
+		<lookup key="msgWrapperFixPermissionsFailed" value="El Wrapper sigue sin poder escribir en:&#xA;{0}&#xA;&#xA;Ejecútelo una vez como administrador o copie el juego a una carpeta fuera de Program Files."/>
 		<lookup key="msgWrapperArchiveGame" value="Desea también archivar el/los juego(s) seleccionados? Esto moverá los archivos a una carpeta por separado llamada '{0}' a la cual todavía puede acceder dentro del juego."/>
 		<lookup key="msgWrapperCannotActivateAccount" value="No se puede activar la cuenta &quot;{0}&quot; en este momento. Por favor espere a que se termine de enviar los emails."/>
 		<lookup key="msgAccountPrompt" value="Ingrese el nombre de la cuenta:"/>
@@ -567,8 +833,90 @@
 		<lookup key="msgWrapperGamesWaiting" value="Tienes {0} juegos esperando."/>
 		<lookup key="msgInputEmailSettingsManual" value="Entrarás la configuracoón manualmente."/>
 		<lookup key="msgWrapperResendTo" value="Reenviar a:"/>
-		<lookup key="msgAutoconfigPage2Success" value="Éxito, se encontraron las configuraciones del servidor. Apreta Siguiente para continuar."/>
-		<lookup key="msgAutoconfigPage2Failed" value="No se encontraron configuraciones del servidor en la base online. Elige una de las siguientes opciones."/>
+		<lookup key="msgAutoconfigPage2Success" value="Configuración de correo encontrada. Haz clic en Siguiente."/>
+		<lookup key="msgAutoconfigPage2Failed" value="No se encontró configuración para esta dirección. Prueba una de las opciones de abajo."/>
+		<lookup key="buttonTestConnection" value="Probar conexión"/>
+		<lookup key="msgTestTitle" value="Prueba de conexión"/>
+		<lookup key="msgTestIncomingSuccess" value="Sesión iniciada en {0} como {1}. El correo entrante funciona."/>
+		<lookup key="msgTestOutgoingSuccess" value="Conectado a {0} como {1}. El correo saliente funciona."/>
+		<lookup key="msgTestOutgoingSuccessNoAuth" value="Conectado a {0}. El correo saliente funciona."/>
+		<lookup key="msgTestFailed" value="La prueba de conexión ha fallado."/>
+		<lookup key="msgTestAuthFailed" value="El servidor rechazó el nombre de usuario o la contraseña."/>
+		<lookup key="msgHintGmail" value="Gmail necesita aquí una contraseña de aplicación, no tu contraseña de Google. Crea una (la verificación en dos pasos debe estar activada) y pega arriba el código de 16 letras."/>
+		<lookup key="msgHintYahoo" value="Yahoo y AOL necesitan aquí una contraseña de aplicación. Crea una en la página Seguridad de la cuenta y pégala arriba."/>
+		<lookup key="msgHintMicrosoft" value="Outlook.com, Hotmail y Live inician sesión a través de Microsoft. Haz clic en Iniciar sesión con Microsoft y termina en tu navegador."/>
+		<lookup key="msgHintGmailShort" value="Gmail necesita aquí una contraseña de aplicación, no su contraseña de Google."/>
+		<lookup key="msgHintYahooShort" value="Yahoo y AOL necesitan aquí una contraseña de aplicación."/>
+		<lookup key="msgHintMicrosoftShort" value="Hay que renovar el inicio de sesión de Microsoft."/>
+		<lookup key="msgWrapperPollAuthFailed" value="{0} rechazó el inicio de sesión de {1}. La comprobación de correo queda en pausa hasta que se corrija la cuenta: abra la pestaña Cuentas, corrija la contraseña y pulse Probar conexión."/>
+		<lookup key="linkCreateAppPassword" value="Crear una contraseña de aplicación"/>
+		<lookup key="msgOAuthOnly" value="Este proveedor de correo solo permite el inicio de sesión OAuth desde programas de correo, que el Wrapper todavía no admite. El inicio de sesión con contraseña probablemente será rechazado."/>
+		<lookup key="buttonSignInMicrosoft" value="Iniciar sesión con Microsoft"/>
+		<lookup key="msgOAuthSignedIn" value="Sesión iniciada como {0}."/>
+		<lookup key="msgOAuthNotConfigured" value="El inicio de sesión con Microsoft no está configurado en esta copia del Wrapper. Registre el Wrapper en el portal de Azure y ponga el ID de aplicación (cliente) en AowEmailWrapper.dll.config, como se describe en el README."/>
+		<lookup key="msgOAuthSessionExpired" value="El inicio de sesión de Microsoft para {0} ha caducado o se ha eliminado. Abra la pestaña Cuentas e inicie sesión con Microsoft de nuevo."/>
+		<lookup key="lblOAuthAccount" value="Esta cuenta inicia sesión a través de Microsoft. No se guarda ninguna contraseña."/>
+		<lookup key="linkOAuthSignInAgain" value="Iniciar sesión con Microsoft de nuevo"/>
+		<lookup key="cmdLogFolder" value="Abrir la carpeta de registros"/>
+		<lookup key="fbAutoInstallUpdates" value="Instalar actualizaciones automáticamente:"/>
+		<lookup key="cmdCheckUpdates" value="Buscar actualizaciones"/>
+		<lookup key="linkUpdateChecking" value="Buscando actualizaciones..."/>
+		<lookup key="linkUpdateAvailable" value="Actualización disponible: {0}"/>
+		<lookup key="msgWrapperUpdateAvailable" value="Actualización disponible"/>
+		<lookup key="msgWrapperUpdateBalloon" value="{0} está listo para instalarse. Haga clic aquí para actualizar el Wrapper."/>
+		<lookup key="msgWrapperUpdateOffer" value="{0} está disponible (publicado el {1}).&#xA;Está usando {2}.&#xA;&#xA;¿Descargar e instalar ahora? El Wrapper se cierra durante la instalación y se inicia de nuevo después."/>
+		<lookup key="msgWrapperUpdateNone" value="Está usando la versión más reciente ({0})."/>
+		<lookup key="msgWrapperUpdateFailed" value="No se pudo buscar actualizaciones: {0}"/>
+		<lookup key="msgWrapperUpdateDownloading" value="Descargando {0}..."/>
+		<lookup key="msgWrapperUpdateDownloadFailed" value="No se pudo descargar la actualización: {0}"/>
+		<lookup key="cmdReportBug" value="Informar de un error..."/>
+		<lookup key="groupBoxSupport" value="Soporte"/>
+		<lookup key="groupDiscord" value="Servidores de Discord"/>
+		<lookup key="lblDiscordIntro" value="Algunos lugares amistosos donde los jugadores se reúnen para partidas por correo:"/>
+		<lookup key="groupDedication" value="Dedicatoria"/>
+		<lookup key="buttonSend" value="Enviar"/>
+		<lookup key="msgBugReportTitle" value="Informar de un error"/>
+		<lookup key="msgBugReportIntro" value="Describa qué ha fallado y qué esperaba que ocurriera. El informe se envía por correo al desarrollador desde su cuenta {0}, para que pueda recibir una respuesta."/>
+		<lookup key="msgBugReportIntroNoAccount" value="Describa qué ha fallado y qué esperaba que ocurriera. Aún no hay ninguna cuenta de correo configurada en el Wrapper, así que el informe se abre en su propio programa de correo dirigido al desarrollador. Adjunte el archivo de registro de la carpeta de registros, que el Wrapper abre por usted."/>
+		<lookup key="chkBugReportAttachLog" value="Adjuntar el archivo de registro del Wrapper (puede contener direcciones de correo y nombres de partidas)"/>
+		<lookup key="msgBugReportEmpty" value="Describa el problema antes de enviar el informe."/>
+		<lookup key="msgBugReportSending" value="Enviando el informe..."/>
+		<lookup key="msgBugReportSent" value="Gracias. El informe se ha enviado a {0}."/>
+		<lookup key="msgBugReportFailed" value="No se pudo enviar el informe: {0}"/>
+		<lookup key="msgWrapperUpdateInstalling" value="Instalando {0}. El Wrapper volverá en un momento."/>
+		<lookup key="tabGames" value="Juegos"/>
+		<lookup key="panelGameslistViewGames0" value="Juego"/>
+		<lookup key="panelGameslistViewGames1" value="Etiqueta"/>
+		<lookup key="panelGameslistViewGames2" value="Carpeta"/>
+		<lookup key="panelGameslistViewGames3" value="Predeterminada"/>
+		<lookup key="panelGameslistViewGames4" value="Encontrado por"/>
+		<lookup key="buttonAddFolder" value="Añadir carpeta..."/>
+		<lookup key="buttonSetLabel" value="Definir etiqueta..."/>
+		<lookup key="buttonSetDefaultInstall" value="Establecer como predeterminada"/>
+		<lookup key="buttonRemoveInstall" value="Quitar"/>
+		<lookup key="buttonRescan" value="Volver a buscar"/>
+		<lookup key="buttonRescanning" value="Buscando..."/>
+		<lookup key="lblGamesHelp" value="Dé a cada copia de un juego una etiqueta corta, como Vanilla, AoWx o Ziggurat. La etiqueta viaja con los turnos que envía, así que todos los jugadores de una partida deben usar la misma. La copia predeterminada recibe los turnos sin etiqueta."/>
+		<lookup key="msgInstallLabelPrompt" value="Etiqueta de esta copia, por ejemplo Vanilla, AoWx o Ziggurat. Déjela vacía para ninguna:"/>
+		<lookup key="radioNoLabel" value="Sin etiqueta"/>
+		<lookup key="radioOtherLabel" value="Otra:"/>
+		<lookup key="msgLabelInUse" value="La etiqueta {0} ya la usa la copia en {1}. Cada etiqueta solo puede señalar una copia de un juego."/>
+		<lookup key="msgAddFolderNoGame" value="No se encontró ningún juego Age of Wonders en {0}. La carpeta debe contener AoW.exe, AoW2.exe o AoWSM.exe."/>
+		<lookup key="msgInstallMissing" value="Falta"/>
+		<lookup key="menuItemMoveTo" value="Mover a"/>
+		<lookup key="enumRegistry" value="Registro"/>
+		<lookup key="enumSteam" value="Steam"/>
+		<lookup key="enumGog" value="GOG"/>
+		<lookup key="enumUninstall" value="Aplicaciones y características"/>
+		<lookup key="enumFolder" value="Búsqueda en carpetas"/>
+		<lookup key="enumManual" value="Añadido por usted"/>
+		<lookup key="primaryAccount" value="Activo, partidas nuevas"/>
+		<lookup key="menuItemMoveUp" value="Subir"/>
+		<lookup key="menuItemMoveDown" value="Bajar"/>
+		<lookup key="msgWrapperNoSendAccount" value="No hay ninguna cuenta de correo configurada para enviar este turno. Añada una cuenta en la pestaña Cuentas."/>
+		<lookup key="inactiveAccount" value="Inactivo"/>
+		<lookup key="buttonDeactivate" value="Desactivar"/>
+		<lookup key="menuItemDeactivate" value="Desactivar"/>
 		<!-- END: Messages -->
 		<!-- BEGIN: Context Menus -->
 		<lookup key="menuItemShow" value="Mostrar"/>
@@ -613,7 +961,7 @@
 		<lookup key="tabAccounts" value="Accounts"/>
 		<lookup key="panelTopHalflistViewAccounts0" value="Account"/>
 		<lookup key="panelTopHalflistViewAccounts1" value="E-mailadres"/>
-		<lookup key="panelTopHalflistViewAccounts2" value="Default"/>
+		<lookup key="panelTopHalflistViewAccounts2" value="Actief"/>
 		<lookup key="buttonActivate" value="Activeer"/>
 		<lookup key="buttonSetStartUp" value="Gebruik als Default"/>
 		<lookup key="buttonRename" value="Hernoem"/>
@@ -655,6 +1003,7 @@
 		<lookup key="activityListViewlistView2" value="Beurt"/>
 		<lookup key="activityListViewlistView3" value="Leeftijd"/>
 		<lookup key="activityListViewlistView4" value="Staat"/>
+		<lookup key="activityListViewlistView5" value="Kopie"/>
 		<lookup key="tabAbout" value="Programma Informatie"/>
 		<lookup key="groupBetaTesters" value="Beta testers "/>
 		<lookup key="groupTranslators" value="Vertalers"/>
@@ -671,30 +1020,31 @@
 		<lookup key="lblLocalMessageStoreMessage" value="Gebruikers die clients gebruiken die op Windows zijn gebaseerd zoals Outlook Express, Outlook, Mozilla Thunderbird, Eudora, etc… moeten weten dat het standaard gedrag voor POP3 toegang is om berichten te verwijderen van de server nadat ze gedownload zijn. Je moet een optie veranderen om je client te vertellen de verichten op de server te laten zodat de Wrapper ze kan vinden. De wrapper zal altijd berichten op de server achterlaten zodat je e-mail client ze ook kan vinden. "/>
 		<lookup key="cmdRedownload" value="Opnieuw Downloaden"/>
 		<lookup key="cmdClose" value="Sluiten"/>
-		<lookup key="AccountsCreationForm" value="Creëer een nieuw account"/>
+		<lookup key="AccountsCreationForm" value="Een e-mailaccount toevoegen"/>
 		<lookup key="buttonCreate" value="&amp;Creëren"/>
 		<lookup key="accountOther" value="Ander"/>
-		<lookup key="lblThunderbirdTitle" value="Thunderbird Database"/>
-		<lookup key="lblAutoconfigHeaderMessage" value="Autoconfiguratie Wizard"/>
-		<lookup key="lblAutoconfigPage1WrapperMessage" value="De 'Wrapper' is een e-mail client die dezelfde server instellingen gebruikt als voor programma's zoals Outlook Express. Een online database wordt gebruikt om deze instellingen te vinden voor jouw e-mail account. Deze database wordt beheerd door de Mozilla Foundation die het ook gebruikt voor de bekende 'Thunderbird' e-mail client.  Ze houden deze database up to date en dit heeft als enorm voordeel dat de Wrapper flexibel kan inspelen op veranderingen en daardoor altijd automatisch de e-mail instellingen kan bepalen."/>
+		<lookup key="lblThunderbirdTitle" value="De Hoofdbibliothecaris"/>
+		<lookup key="lblAutoconfigHeaderMessage" value="Uw e-mailaccount instellen"/>
+		<lookup key="lblAutoconfigPage1WrapperMessage" value="De Hoofdbibliothecaris zoekt de mailserverinstellingen voor u op door zich te verstaan met de Thunderbird."/>
 		<lookup key="lblAutoconfigPage1AuthMessage" value="Verleen hier alstublieft de details voor toegang tot uw e-mail account."/>
-		<lookup key="lblAutoconfigPage2SearchMessage" value="Uw e-mail instellingen worden online gezocht..."/>
+		<lookup key="groupBoxAccount" value="Uw account"/>
+		<lookup key="lblAutoconfigPage2SearchMessage" value="Uw mailinstellingen worden opgezocht…"/>
 		<lookup key="groupBoxResult" value="Resultaat"/>
-		<lookup key="groupBoxNext" value="Wat nu?"/>
-		<lookup key="radioAutoconfigPage2Search1" value="Probeer Mx Lookup"/>
-		<lookup key="radioAutoconfigPage2Search2" value="Waag een gok"/>
-		<lookup key="radioAutoconfigPage2Search3" value="Laat me de instellingen handmatig invoeren"/>
-		<lookup key="lblAutoconfigPage2MxLookup" value="Soms is uw e-mail server geregistreerd in de online database onder een andere naam dan uw e-mail address. Een oplossing is een Mx Lookup uitvoeren op uw e-mail address."/>
-		<lookup key="lblAutoconfigPage2Guess" value="Gebruik deze optie als laatste. Deze zal de naam van uw e-mail server voorspellen door deze direct to bereiken via het internet. Als dit niet werkt, dan zult u de instellingen handmatig moeten invoeren."/>
-		<lookup key="lblAutoconfigPage3ServerMessage" value="Specificeer Server instellingen."/>
-		<lookup key="groupBoxOptions" value="Opties"/>
-		<lookup key="radioAutoconfigPage3Select1" value="Laat de 'Wrapper' beslissen (Standaard)"/>
-		<lookup key="radioAutoconfigPage3Select2" value="Laat de instellingen zien zodat ik zelf kan kiezen"/>
+		<lookup key="groupBoxNext" value="Anders proberen"/>
+		<lookup key="radioAutoconfigPage2Search1" value="De mailprovider van dit domein opzoeken"/>
+		<lookup key="radioAutoconfigPage2Search2" value="Gangbare servernamen proberen"/>
+		<lookup key="radioAutoconfigPage2Search3" value="De instellingen zelf invoeren"/>
+		<lookup key="lblAutoconfigPage2MxLookup" value="Uw adres wordt misschien beheerd door een andere provider dan het domein doet vermoeden. Deze optie zoekt die provider op en zoekt opnieuw."/>
+		<lookup key="lblAutoconfigPage2Guess" value="Probeert de gebruikelijke namen zoals mail.uwdomein.nl. Werkt bij veel kleine providers, maar niet bij alle."/>
+		<lookup key="lblAutoconfigPage3ServerMessage" value="Welke instellingen moet de Wrapper gebruiken?"/>
+		<lookup key="groupBoxOptions" value=""/>
+		<lookup key="radioAutoconfigPage3Select1" value="Aanbevolen instellingen"/>
+		<lookup key="radioAutoconfigPage3Select2" value="Zelf kiezen uit de gevonden servers"/>
 		<lookup key="fbServerPreference" value="Voorkeur:"/>
-		<lookup key="serverPreferenceNoPreference" value="Geen voorkeur"/>
-		<lookup key="lblAutoconfigPage3WrapperDecidesMessage" value="Dit is de veiligste optie voor de meeste gebruikers. De Wrapper zal de meest  veilige servers kiezen gebaseerd op de hierboven aangegeven voorkeur. De wrapper zal IMAP servers gebruiken in plaats van POP3 als er geen voorkeur is opgegeven."/>
-		<lookup key="lblAutoconfigPage3UserDecidesMessage" value="Gebruik deze optie als je volledige controle wilt hebben over de automatische detectie instellingen voor de 'Wrapper'."/>
-		<lookup key="ServerChoiceForm" value="Manual override"/>
+		<lookup key="serverPreferenceNoPreference" value="Automatisch"/>
+		<lookup key="lblAutoconfigPage3WrapperDecidesMessage" value="Gebruikt de veiligste gevonden servers. IMAP krijgt de voorkeur, tenzij u hierboven anders kiest."/>
+		<lookup key="lblAutoconfigPage3UserDecidesMessage" value="Toont elke gevonden server zodat u kunt kiezen."/>
+		<lookup key="ServerChoiceForm" value="Kies uw servers"/>
 		<lookup key="groupBoxIncoming" value="Inkomende e-mail"/>
 		<lookup key="groupBoxOutgoing" value="Uitgaande e-mail"/>
 		<lookup key="lblServerChoiceCheckBoxServer" value="Server:"/>
@@ -703,6 +1053,9 @@
 		<!-- END: Main forms -->
 		<!-- BEGIN: Messages -->
 		<lookup key="msgWrapperWriteAccess" value="De wrapper heeft geen toestemming tot deze folders: &#xA;{0}&#xA;&#xA; Verander aub uw beveiligings instellingen, of run de Wrapper als Administrator. "/>
+		<lookup key="msgWrapperFixPermissions" value="Uw Windows-account nu schrijftoegang tot deze mappen geven? Windows vraagt om de wijziging toe te staan."/>
+		<lookup key="msgWrapperFixPermissionsDone" value="Klaar. De Wrapper kan nu in alle spelmappen schrijven."/>
+		<lookup key="msgWrapperFixPermissionsFailed" value="De Wrapper kan nog steeds niet schrijven in:&#xA;{0}&#xA;&#xA;Start hem eenmaal als administrator, of kopieer het spel naar een map buiten Program Files."/>
 		<lookup key="msgWrapperArchiveGame" value="Wil je ook de geselecteerde games archiveren? Dit zal de files in een aparte folder stopen genaamd '{0}' die je nog kan bereiken in het spel."/>
 		<lookup key="msgWrapperCannotActivateAccount" value="Kan het &quot;{0}&quot; account niet activeren. Wacht aub tot het verzenden klaar is."/>
 		<lookup key="msgAccountPrompt" value="Account naam:"/>
@@ -717,8 +1070,90 @@
 		<lookup key="msgWrapperGamesWaiting" value="Je hebt {0} game(s) wachten."/>
 		<lookup key="msgInputEmailSettingsManual" value="Instellingen zelf invoeren."/>
 		<lookup key="msgWrapperResendTo" value="Verzend opnieuw:"/>
-		<lookup key="msgAutoconfigPage2Success" value="Success, e-mail instellingen gevonden. Klik op volgende om verder te gaan."/>
-		<lookup key="msgAutoconfigPage2Failed" value="Mislukt, geen e-mail instellingen gevonden in de online databases. Kies aub uit de opties hieronder."/>
+		<lookup key="msgAutoconfigPage2Success" value="Uw mailinstellingen zijn gevonden. Klik op Volgende."/>
+		<lookup key="msgAutoconfigPage2Failed" value="Geen instellingen gevonden voor dit adres. Probeer een van de opties hieronder."/>
+		<lookup key="buttonTestConnection" value="Verbinding testen"/>
+		<lookup key="msgTestTitle" value="Verbindingstest"/>
+		<lookup key="msgTestIncomingSuccess" value="Aangemeld bij {0} als {1}. Inkomende e-mail werkt."/>
+		<lookup key="msgTestOutgoingSuccess" value="Verbonden met {0} als {1}. Uitgaande e-mail werkt."/>
+		<lookup key="msgTestOutgoingSuccessNoAuth" value="Verbonden met {0}. Uitgaande e-mail werkt."/>
+		<lookup key="msgTestFailed" value="De verbindingstest is mislukt."/>
+		<lookup key="msgTestAuthFailed" value="De server heeft de gebruikersnaam of het wachtwoord geweigerd."/>
+		<lookup key="msgHintGmail" value="Gmail heeft hier een app-wachtwoord nodig, niet uw Google-wachtwoord. Maak er een aan (tweestapsverificatie moet aan staan) en plak de code van 16 letters hierboven."/>
+		<lookup key="msgHintYahoo" value="Yahoo en AOL hebben hier een app-wachtwoord nodig. Maak er een aan op de pagina Accountbeveiliging en plak het hierboven."/>
+		<lookup key="msgHintMicrosoft" value="Outlook.com, Hotmail en Live melden zich aan via Microsoft. Klik op Aanmelden met Microsoft en rond het af in uw browser."/>
+		<lookup key="msgHintGmailShort" value="Gmail heeft hier een app-wachtwoord nodig, niet uw Google-wachtwoord."/>
+		<lookup key="msgHintYahooShort" value="Yahoo en AOL hebben hier een app-wachtwoord nodig."/>
+		<lookup key="msgHintMicrosoftShort" value="De Microsoft-aanmelding moet worden vernieuwd."/>
+		<lookup key="msgWrapperPollAuthFailed" value="{0} heeft de aanmelding voor {1} geweigerd. Het controleren op e-mail is gepauzeerd tot het account is hersteld: open het tabblad Accounts, corrigeer het wachtwoord en klik op Verbinding testen."/>
+		<lookup key="linkCreateAppPassword" value="Een app-wachtwoord aanmaken"/>
+		<lookup key="msgOAuthOnly" value="Deze e-mailprovider staat alleen OAuth-aanmelding toe vanuit e-mailprogramma's, wat de Wrapper nog niet ondersteunt. Aanmelden met een wachtwoord wordt waarschijnlijk geweigerd."/>
+		<lookup key="buttonSignInMicrosoft" value="Aanmelden met Microsoft"/>
+		<lookup key="msgOAuthSignedIn" value="Aangemeld als {0}."/>
+		<lookup key="msgOAuthNotConfigured" value="Aanmelden met Microsoft is in dit exemplaar van de Wrapper niet ingesteld. Registreer de Wrapper in de Azure-portal en zet de toepassings-id (client-id) in AowEmailWrapper.dll.config, zoals beschreven in de README."/>
+		<lookup key="msgOAuthSessionExpired" value="De Microsoft-aanmelding voor {0} is verlopen of verwijderd. Open het tabblad Accounts en meld u opnieuw aan met Microsoft."/>
+		<lookup key="lblOAuthAccount" value="Dit account meldt zich aan via Microsoft. Er wordt geen wachtwoord opgeslagen."/>
+		<lookup key="linkOAuthSignInAgain" value="Opnieuw aanmelden met Microsoft"/>
+		<lookup key="cmdLogFolder" value="Logboekmap openen"/>
+		<lookup key="fbAutoInstallUpdates" value="Updates automatisch installeren:"/>
+		<lookup key="cmdCheckUpdates" value="Op updates controleren"/>
+		<lookup key="linkUpdateChecking" value="Controleren op updates..."/>
+		<lookup key="linkUpdateAvailable" value="Update beschikbaar: {0}"/>
+		<lookup key="msgWrapperUpdateAvailable" value="Update beschikbaar"/>
+		<lookup key="msgWrapperUpdateBalloon" value="{0} is klaar om te installeren. Klik hier om de Wrapper bij te werken."/>
+		<lookup key="msgWrapperUpdateOffer" value="{0} is beschikbaar (gepubliceerd op {1}).&#xA;U gebruikt {2}.&#xA;&#xA;Nu downloaden en installeren? De Wrapper sluit tijdens de installatie en start daarna opnieuw."/>
+		<lookup key="msgWrapperUpdateNone" value="U gebruikt de nieuwste versie ({0})."/>
+		<lookup key="msgWrapperUpdateFailed" value="Kon niet op updates controleren: {0}"/>
+		<lookup key="msgWrapperUpdateDownloading" value="{0} wordt gedownload..."/>
+		<lookup key="msgWrapperUpdateDownloadFailed" value="De update kon niet worden gedownload: {0}"/>
+		<lookup key="cmdReportBug" value="Een fout melden..."/>
+		<lookup key="groupBoxSupport" value="Ondersteuning"/>
+		<lookup key="groupDiscord" value="Discord-servers"/>
+		<lookup key="lblDiscordIntro" value="Een paar gezellige plekken waar spelers elkaar vinden voor spellen per e-mail:"/>
+		<lookup key="groupDedication" value="Opdracht"/>
+		<lookup key="buttonSend" value="Verzenden"/>
+		<lookup key="msgBugReportTitle" value="Een fout melden"/>
+		<lookup key="msgBugReportIntro" value="Beschrijf wat er misging en wat u had verwacht. Het rapport wordt vanaf uw account {0} per e-mail naar de ontwikkelaar gestuurd, zodat een antwoord u kan bereiken."/>
+		<lookup key="msgBugReportIntroNoAccount" value="Beschrijf wat er misging en wat u had verwacht. Er is nog geen e-mailaccount ingesteld in de Wrapper, dus het rapport wordt geopend in uw eigen e-mailprogramma, gericht aan de ontwikkelaar. Voeg het logbestand uit de logboekmap toe, die de Wrapper voor u opent."/>
+		<lookup key="chkBugReportAttachLog" value="Logbestand van de Wrapper bijvoegen (het kan e-mailadressen en spelnamen bevatten)"/>
+		<lookup key="msgBugReportEmpty" value="Beschrijf het probleem voordat u het rapport verzendt."/>
+		<lookup key="msgBugReportSending" value="Rapport wordt verzonden..."/>
+		<lookup key="msgBugReportSent" value="Bedankt. Het rapport is verzonden naar {0}."/>
+		<lookup key="msgBugReportFailed" value="Het rapport kon niet worden verzonden: {0}"/>
+		<lookup key="msgWrapperUpdateInstalling" value="{0} wordt geïnstalleerd. De Wrapper is zo terug."/>
+		<lookup key="tabGames" value="Spellen"/>
+		<lookup key="panelGameslistViewGames0" value="Spel"/>
+		<lookup key="panelGameslistViewGames1" value="Label"/>
+		<lookup key="panelGameslistViewGames2" value="Map"/>
+		<lookup key="panelGameslistViewGames3" value="Standaard"/>
+		<lookup key="panelGameslistViewGames4" value="Gevonden via"/>
+		<lookup key="buttonAddFolder" value="Map toevoegen..."/>
+		<lookup key="buttonSetLabel" value="Label instellen..."/>
+		<lookup key="buttonSetDefaultInstall" value="Als standaard instellen"/>
+		<lookup key="buttonRemoveInstall" value="Verwijderen"/>
+		<lookup key="buttonRescan" value="Opnieuw zoeken"/>
+		<lookup key="buttonRescanning" value="Bezig met zoeken..."/>
+		<lookup key="lblGamesHelp" value="Geef elke kopie van een spel een kort label, zoals Vanilla, AoWx of Ziggurat. Het label reist mee met de beurten die u verstuurt, dus iedereen in een partij moet hetzelfde label gebruiken. De standaardkopie ontvangt beurten zonder label."/>
+		<lookup key="msgInstallLabelPrompt" value="Label voor deze kopie, bijvoorbeeld Vanilla, AoWx of Ziggurat. Laat leeg voor geen label:"/>
+		<lookup key="radioNoLabel" value="Geen label"/>
+		<lookup key="radioOtherLabel" value="Anders:"/>
+		<lookup key="msgLabelInUse" value="Het label {0} wordt al gebruikt door de kopie in {1}. Elk label kan maar naar één kopie van een spel verwijzen."/>
+		<lookup key="msgAddFolderNoGame" value="Geen Age of Wonders spel gevonden in {0}. De map moet AoW.exe, AoW2.exe of AoWSM.exe bevatten."/>
+		<lookup key="msgInstallMissing" value="Ontbreekt"/>
+		<lookup key="menuItemMoveTo" value="Verplaatsen naar"/>
+		<lookup key="enumRegistry" value="Register"/>
+		<lookup key="enumSteam" value="Steam"/>
+		<lookup key="enumGog" value="GOG"/>
+		<lookup key="enumUninstall" value="Apps en onderdelen"/>
+		<lookup key="enumFolder" value="Mapscan"/>
+		<lookup key="enumManual" value="Door u toegevoegd"/>
+		<lookup key="primaryAccount" value="Actief, nieuwe spellen"/>
+		<lookup key="menuItemMoveUp" value="Omhoog"/>
+		<lookup key="menuItemMoveDown" value="Omlaag"/>
+		<lookup key="msgWrapperNoSendAccount" value="Er is geen e-mailaccount ingesteld om deze beurt te verzenden. Voeg een account toe op het tabblad Accounts."/>
+		<lookup key="inactiveAccount" value="Inactief"/>
+		<lookup key="buttonDeactivate" value="Deactiveren"/>
+		<lookup key="menuItemDeactivate" value="Deactiveren"/>
 		<!-- END: Messages -->
 		<!-- BEGIN: Context Menus -->
 		<lookup key="menuItemShow" value="Show"/>
@@ -767,7 +1202,7 @@
 		<lookup key="tabAccounts" value="Konti"/>
 		<lookup key="panelTopHalflistViewAccounts0" value="Konto"/>
 		<lookup key="panelTopHalflistViewAccounts1" value="Emailadresse"/>
-		<lookup key="panelTopHalflistViewAccounts2" value="Standard"/>
+		<lookup key="panelTopHalflistViewAccounts2" value="Aktiv"/>
 		<lookup key="buttonActivate" value="Aktiver"/>
 		<lookup key="buttonSetStartUp" value="Sæt som standard"/>
 		<lookup key="buttonRename" value="Omdøb"/>
@@ -802,7 +1237,8 @@
 		<lookup key="activityListViewlistView2" value="Tur"/>
 		<lookup key="activityListViewlistView3" value="Alder"/>
 		<lookup key="activityListViewlistView4" value="Status"/>
-		<lookup key="activityListViewlistView5" value="Tidsenheder"/>
+		<lookup key="activityListViewlistView5" value="Kopi"/>
+		<lookup key="activityListViewlistView6" value="Tidsenheder"/>
 		<lookup key="tabAbout" value="Om"/>
 		<lookup key="groupBetaTesters" value="Betatestere"/>
 		<lookup key="groupTranslators" value="Oversættere"/>
@@ -819,30 +1255,31 @@
 		<lookup key="lblLocalMessageStoreMessage" value="Brugere der anvender en Windows-baseret Email-klient såsom Outlook Express, Outlook, Mozilla Thunderbird, Eudora, osv. skal være opmærksomme på at standard for POP3 adgang er at fjerne beskederne fra serveren efter de er hentet ned. Du er nødt til at ændre i indstillingerne så din klient efterlader beskederne på serveren, således at Wrapper'en kan finde dem der. Wrapper'en vil altid selv efterlade beskeder på serveren, så de også kan hentes i din normale Email-klient. "/>
 		<lookup key="cmdRedownload" value="Gendownload"/>
 		<lookup key="cmdClose" value="Luk"/>
-		<lookup key="AccountsCreationForm" value="Opret ny konto"/>
+		<lookup key="AccountsCreationForm" value="Tilføj en e-mailkonto"/>
 		<lookup key="buttonCreate" value="&amp;Tilføj"/>
 		<lookup key="accountOther" value="Andet"/>
-		<lookup key="lblThunderbirdTitle" value="Thunderbird Database"/>
-		<lookup key="lblAutoconfigHeaderMessage" value="Autoconfig Wizard"/>
-		<lookup key="lblAutoconfigPage1WrapperMessage" value="Wrapper'en er en specialiseret email-klient, og den bruger de samme server-indstillinger, som du ville bruge i programmer som Outlook Express. Den bruger en online-database til at finde disse indstillinger til din email-konto. Databasen vedligeholdes af Mozilla Foundation, som bruger den til deres email-klient kaldet Thunderbird. De holder databasen opdateret, og dette forsyner Wrapper'en med en betydelig langtidsholdbarhed og rigtig gode chancer for automatisk at finde dine email-indstillinger."/>
+		<lookup key="lblThunderbirdTitle" value="Overbibliotekaren"/>
+		<lookup key="lblAutoconfigHeaderMessage" value="Opsæt din e-mailkonto"/>
+		<lookup key="lblAutoconfigPage1WrapperMessage" value="Overbibliotekaren finder mailserverens indstillinger for dig ved at rådføre sig med Thunderbird."/>
 		<lookup key="lblAutoconfigPage1AuthMessage" value="Indtast venligst autentificeringsdetaljerne for din email-konto."/>
-		<lookup key="lblAutoconfigPage2SearchMessage" value="Søger online efter dine email-indstillinger..."/>
+		<lookup key="groupBoxAccount" value="Din konto"/>
+		<lookup key="lblAutoconfigPage2SearchMessage" value="Finder dine mailindstillinger…"/>
 		<lookup key="groupBoxResult" value="Resultat"/>
-		<lookup key="groupBoxNext" value="Og så hvad?"/>
-		<lookup key="radioAutoconfigPage2Search1" value="Prøv Mx Lookup"/>
-		<lookup key="radioAutoconfigPage2Search2" value="Prøv at gætte"/>
-		<lookup key="radioAutoconfigPage2Search3" value="Manuel tilsidesættelse. Lad mig selv indtaste indstillingerne"/>
-		<lookup key="lblAutoconfigPage2MxLookup" value="Nogle gange er din email-server opført i online-databasen under et andet server-navn end din email-adresse. Hvis vi udfører en Mx Lookup på din email-adresse og så udfører databasesøgningen igen, så kan det ofte finde de korrekte indstillinger."/>
-		<lookup key="lblAutoconfigPage2Guess" value="Brug dette som sidste mulighed. Det vil forudsige navnet på din email-server ved at forsøge at kontakte dem direkte over Internettet. Der er ikke nogen garanti for, at det virker. Hvis det mislykkes, så kan du blive nødt til at indtaste indstillingerne manuelt."/>
-		<lookup key="lblAutoconfigPage3ServerMessage" value="Angiv venligst hvilke server-indstillinger der skal bruges."/>
-		<lookup key="groupBoxOptions" value="Indstillinger"/>
-		<lookup key="radioAutoconfigPage3Select1" value="Lad Wrapper'en afgøre det (standard)"/>
-		<lookup key="radioAutoconfigPage3Select2" value="Manuel tilsidesættelse. Vis indstillingerne så jeg kan vælge"/>
-		<lookup key="fbServerPreference" value="Indstilling:"/>
-		<lookup key="serverPreferenceNoPreference" value="Ingen indstilling"/>
-		<lookup key="lblAutoconfigPage3WrapperDecidesMessage" value="Dette er det sikreste valg for de fleste brugere. Det vil instruere Wrapper'en om at vælge de mest sikre servere baseret på indstillingerne ovenfor. Hvis der ikke forefindes nogen indstilling, så vil Wrapper'en i valgsituationer vælge IMAP-servere fremfor POP3."/>
-		<lookup key="lblAutoconfigPage3UserDecidesMessage" value="Brug denne indstilling hvis du vil have præcis kontrol over hvilke automatisk opfangede indstillinger, Wrapper'en skal bruge."/>
-		<lookup key="ServerChoiceForm" value="Manuel tilsidesættelse"/>
+		<lookup key="groupBoxNext" value="Prøv en anden måde"/>
+		<lookup key="radioAutoconfigPage2Search1" value="Slå mailudbyderen for dette domæne op"/>
+		<lookup key="radioAutoconfigPage2Search2" value="Prøv almindelige servernavne"/>
+		<lookup key="radioAutoconfigPage2Search3" value="Indtast indstillingerne selv"/>
+		<lookup key="lblAutoconfigPage2MxLookup" value="Din adresse håndteres måske af en anden udbyder, end domænet antyder. Denne mulighed finder udbyderen og søger igen."/>
+		<lookup key="lblAutoconfigPage2Guess" value="Prøver de sædvanlige navne som mail.ditdomæne.dk. Virker hos mange små udbydere, men ikke alle."/>
+		<lookup key="lblAutoconfigPage3ServerMessage" value="Hvilke indstillinger skal Wrapperen bruge?"/>
+		<lookup key="groupBoxOptions" value=""/>
+		<lookup key="radioAutoconfigPage3Select1" value="Anbefalede indstillinger"/>
+		<lookup key="radioAutoconfigPage3Select2" value="Lad mig vælge blandt de fundne servere"/>
+		<lookup key="fbServerPreference" value="Foretræk:"/>
+		<lookup key="serverPreferenceNoPreference" value="Automatisk"/>
+		<lookup key="lblAutoconfigPage3WrapperDecidesMessage" value="Bruger de sikreste servere, der blev fundet. IMAP foretrækkes, medmindre du vælger andet ovenfor."/>
+		<lookup key="lblAutoconfigPage3UserDecidesMessage" value="Viser alle fundne servere, så du kan vælge."/>
+		<lookup key="ServerChoiceForm" value="Vælg dine servere"/>
 		<lookup key="groupBoxIncoming" value="Indgående email"/>
 		<lookup key="groupBoxOutgoing" value="Udgående email"/>
 		<lookup key="lblServerChoiceCheckBoxServer" value="Server:"/>
@@ -851,6 +1288,9 @@
 		<!-- END: Main forms -->
 		<!-- BEGIN: Messages -->
 		<lookup key="msgWrapperWriteAccess" value="Wrapper'en har ikke skriveadgang til følgende mappe(r):&#xA;{0}&#xA;&#xA;Juster venligst dine sikkerhedsindstillinger eller kør Wrapper'en som Administrator."/>
+		<lookup key="msgWrapperFixPermissions" value="Giv din Windows-konto skriveadgang til disse mapper nu? Windows beder dig om at tillade ændringen."/>
+		<lookup key="msgWrapperFixPermissionsDone" value="Færdig. Wrapperen kan nu skrive til alle spilmapper."/>
+		<lookup key="msgWrapperFixPermissionsFailed" value="Wrapperen kan stadig ikke skrive til:&#xA;{0}&#xA;&#xA;Kør den én gang som administrator, eller kopiér spillet til en mappe uden for Program Files."/>
 		<lookup key="msgWrapperArchiveGame" value="Vil du også gerne arkivere de(t) valgte spil? Det vil flytte deres filer til en separat mappe kaldet '{0}' som du stadig kan tilgå i spillet."/>
 		<lookup key="msgWrapperCannotActivateAccount" value="Kan ikke aktivere &quot;{0}&quot; kontoen lige nu. Vent venligst til email afsendingen er fuldført."/>
 		<lookup key="msgAccountPrompt" value="Skriv navnet på kontoen:"/>
@@ -865,8 +1305,90 @@
 		<lookup key="msgWrapperGamesWaiting" value="Du har {0} spil der venter."/>
 		<lookup key="msgInputEmailSettingsManual" value="Du vil angive indstillingerne manuelt."/>
 		<lookup key="msgWrapperResendTo" value="Gensend:"/>
-		<lookup key="msgAutoconfigPage2Success" value="Succes. Email-indstillinger fundet. Vælg “Næste” for at fortsætte."/>
-		<lookup key="msgAutoconfigPage2Failed" value="Ingen succes. Der blev ikke fundet nogen email-indstillinger i online-databasen. Vælg venligst en af nedenstående muligheder."/>
+		<lookup key="msgAutoconfigPage2Success" value="Dine mailindstillinger blev fundet. Klik på Næste."/>
+		<lookup key="msgAutoconfigPage2Failed" value="Ingen indstillinger fundet for denne adresse. Prøv en af mulighederne nedenfor."/>
+		<lookup key="buttonTestConnection" value="Test forbindelse"/>
+		<lookup key="msgTestTitle" value="Forbindelsestest"/>
+		<lookup key="msgTestIncomingSuccess" value="Logget ind på {0} som {1}. Indgående e-mail virker."/>
+		<lookup key="msgTestOutgoingSuccess" value="Forbundet til {0} som {1}. Udgående e-mail virker."/>
+		<lookup key="msgTestOutgoingSuccessNoAuth" value="Forbundet til {0}. Udgående e-mail virker."/>
+		<lookup key="msgTestFailed" value="Forbindelsestesten mislykkedes."/>
+		<lookup key="msgTestAuthFailed" value="Serveren afviste brugernavnet eller adgangskoden."/>
+		<lookup key="msgHintGmail" value="Gmail kræver en app-adgangskode her, ikke din Google-adgangskode. Opret en (totrinsbekræftelse skal være slået til) og indsæt koden på 16 bogstaver ovenfor."/>
+		<lookup key="msgHintYahoo" value="Yahoo og AOL kræver en app-adgangskode her. Opret en på siden Kontosikkerhed og indsæt den ovenfor."/>
+		<lookup key="msgHintMicrosoft" value="Outlook.com, Hotmail og Live logger ind via Microsoft. Klik på Log ind med Microsoft og gør det færdigt i din browser."/>
+		<lookup key="msgHintGmailShort" value="Gmail kræver en app-adgangskode her, ikke din Google-adgangskode."/>
+		<lookup key="msgHintYahooShort" value="Yahoo og AOL kræver en app-adgangskode her."/>
+		<lookup key="msgHintMicrosoftShort" value="Microsoft-logindet skal fornys."/>
+		<lookup key="msgWrapperPollAuthFailed" value="{0} afviste logindet for {1}. Kontrol af e-mail er sat på pause, indtil kontoen er rettet: åbn fanen Konti, ret adgangskoden, og klik på Test forbindelse."/>
+		<lookup key="linkCreateAppPassword" value="Opret en app-adgangskode"/>
+		<lookup key="msgOAuthOnly" value="Denne mailudbyder tillader kun OAuth-logind fra mailprogrammer, hvilket Wrapperen endnu ikke understøtter. Logind med adgangskode vil sandsynligvis blive afvist."/>
+		<lookup key="buttonSignInMicrosoft" value="Log ind med Microsoft"/>
+		<lookup key="msgOAuthSignedIn" value="Logget ind som {0}."/>
+		<lookup key="msgOAuthNotConfigured" value="Microsoft-logind er ikke sat op i denne kopi af Wrapperen. Registrer Wrapperen i Azure-portalen, og indsæt program-id'et (klient-id) i AowEmailWrapper.dll.config som beskrevet i README."/>
+		<lookup key="msgOAuthSessionExpired" value="Microsoft-logindet for {0} er udløbet eller fjernet. Åbn fanen Konti, og log ind med Microsoft igen."/>
+		<lookup key="lblOAuthAccount" value="Denne konto logger ind via Microsoft. Der gemmes ingen adgangskode."/>
+		<lookup key="linkOAuthSignInAgain" value="Log ind med Microsoft igen"/>
+		<lookup key="cmdLogFolder" value="Åbn logmappen"/>
+		<lookup key="fbAutoInstallUpdates" value="Installer opdateringer automatisk:"/>
+		<lookup key="cmdCheckUpdates" value="Søg efter opdateringer"/>
+		<lookup key="linkUpdateChecking" value="Søger efter opdateringer..."/>
+		<lookup key="linkUpdateAvailable" value="Opdatering tilgængelig: {0}"/>
+		<lookup key="msgWrapperUpdateAvailable" value="Opdatering tilgængelig"/>
+		<lookup key="msgWrapperUpdateBalloon" value="{0} er klar til installation. Klik her for at opdatere Wrapperen."/>
+		<lookup key="msgWrapperUpdateOffer" value="{0} er tilgængelig (udgivet {1}).&#xA;Du bruger {2}.&#xA;&#xA;Hent og installer nu? Wrapperen lukker under installationen og starter igen bagefter."/>
+		<lookup key="msgWrapperUpdateNone" value="Du bruger den nyeste version ({0})."/>
+		<lookup key="msgWrapperUpdateFailed" value="Kunne ikke søge efter opdateringer: {0}"/>
+		<lookup key="msgWrapperUpdateDownloading" value="Henter {0}..."/>
+		<lookup key="msgWrapperUpdateDownloadFailed" value="Opdateringen kunne ikke hentes: {0}"/>
+		<lookup key="cmdReportBug" value="Rapportér en fejl..."/>
+		<lookup key="groupBoxSupport" value="Support"/>
+		<lookup key="groupDiscord" value="Discord-servere"/>
+		<lookup key="lblDiscordIntro" value="Et par venlige steder, hvor spillere mødes til spil via e-mail:"/>
+		<lookup key="groupDedication" value="Dedikation"/>
+		<lookup key="buttonSend" value="Send"/>
+		<lookup key="msgBugReportTitle" value="Rapportér en fejl"/>
+		<lookup key="msgBugReportIntro" value="Beskriv, hvad der gik galt, og hvad du forventede. Rapporten sendes som e-mail til udvikleren fra din konto {0}, så et svar kan nå dig."/>
+		<lookup key="msgBugReportIntroNoAccount" value="Beskriv, hvad der gik galt, og hvad du forventede. Der er endnu ikke oprettet en e-mailkonto i Wrapperen, så rapporten åbnes i dit eget e-mailprogram adresseret til udvikleren. Vedhæft venligst logfilen fra logmappen, som Wrapperen åbner for dig."/>
+		<lookup key="chkBugReportAttachLog" value="Vedhæft Wrapperens logfil (den kan indeholde e-mailadresser og spilnavne)"/>
+		<lookup key="msgBugReportEmpty" value="Beskriv venligst problemet, før du sender rapporten."/>
+		<lookup key="msgBugReportSending" value="Sender rapporten..."/>
+		<lookup key="msgBugReportSent" value="Tak. Rapporten er sendt til {0}."/>
+		<lookup key="msgBugReportFailed" value="Rapporten kunne ikke sendes: {0}"/>
+		<lookup key="msgWrapperUpdateInstalling" value="Installerer {0}. Wrapperen er tilbage om et øjeblik."/>
+		<lookup key="tabGames" value="Spil"/>
+		<lookup key="panelGameslistViewGames0" value="Spil"/>
+		<lookup key="panelGameslistViewGames1" value="Mærkat"/>
+		<lookup key="panelGameslistViewGames2" value="Mappe"/>
+		<lookup key="panelGameslistViewGames3" value="Standard"/>
+		<lookup key="panelGameslistViewGames4" value="Fundet via"/>
+		<lookup key="buttonAddFolder" value="Tilføj mappe..."/>
+		<lookup key="buttonSetLabel" value="Angiv mærkat..."/>
+		<lookup key="buttonSetDefaultInstall" value="Sæt som standard"/>
+		<lookup key="buttonRemoveInstall" value="Fjern"/>
+		<lookup key="buttonRescan" value="Søg igen"/>
+		<lookup key="buttonRescanning" value="Søger..."/>
+		<lookup key="lblGamesHelp" value="Giv hver kopi af et spil en kort mærkat som Vanilla, AoWx eller Ziggurat. Mærkaten følger med de ture du sender, så alle i et spil skal bruge den samme. Standardkopien modtager ture uden mærkat."/>
+		<lookup key="msgInstallLabelPrompt" value="Mærkat for denne kopi, f.eks. Vanilla, AoWx eller Ziggurat. Lad den være tom for ingen:"/>
+		<lookup key="radioNoLabel" value="Ingen mærkat"/>
+		<lookup key="radioOtherLabel" value="Anden:"/>
+		<lookup key="msgLabelInUse" value="Mærkaten {0} bruges allerede af kopien i {1}. Hver mærkat kan kun pege på én kopi af et spil."/>
+		<lookup key="msgAddFolderNoGame" value="Der blev ikke fundet noget Age of Wonders spil i {0}. Mappen skal indeholde AoW.exe, AoW2.exe eller AoWSM.exe."/>
+		<lookup key="msgInstallMissing" value="Mangler"/>
+		<lookup key="menuItemMoveTo" value="Flyt til"/>
+		<lookup key="enumRegistry" value="Registreringsdatabase"/>
+		<lookup key="enumSteam" value="Steam"/>
+		<lookup key="enumGog" value="GOG"/>
+		<lookup key="enumUninstall" value="Apps og funktioner"/>
+		<lookup key="enumFolder" value="Mappesøgning"/>
+		<lookup key="enumManual" value="Tilføjet af dig"/>
+		<lookup key="primaryAccount" value="Aktiv, nye spil"/>
+		<lookup key="menuItemMoveUp" value="Flyt op"/>
+		<lookup key="menuItemMoveDown" value="Flyt ned"/>
+		<lookup key="msgWrapperNoSendAccount" value="Der er ingen e-mailkonto sat op til at sende denne tur. Tilføj en konto under fanen Konti."/>
+		<lookup key="inactiveAccount" value="Inaktiv"/>
+		<lookup key="buttonDeactivate" value="Deaktiver"/>
+		<lookup key="menuItemDeactivate" value="Deaktiver"/>
 		<!-- END: Messages -->
 		<!-- BEGIN: Context Menus -->
 		<lookup key="menuItemShow" value="Vis"/>
@@ -909,7 +1431,7 @@
 		<lookup key="tabAccounts" value="Konton"/>
 		<lookup key="panelTopHalflistViewAccounts0" value="Konto"/>
 		<lookup key="panelTopHalflistViewAccounts1" value="Email Adress"/>
-		<lookup key="panelTopHalflistViewAccounts2" value="Standard"/>
+		<lookup key="panelTopHalflistViewAccounts2" value="Aktiv"/>
 		<lookup key="buttonActivate" value="Aktivera"/>
 		<lookup key="buttonSetStartUp" value="Ange som standard"/>
 		<lookup key="buttonRename" value="Byt namn"/>
@@ -936,7 +1458,7 @@
 		<lookup key="fbSSLType" value="SSL Typ:"/>
 		<lookup key="fbEmailAddress" value="Email Adress:"/>
 		<lookup key="fbSmtpServer" value="Smtp Server:"/>
-		<lookup key="tabPreferences" value="Preferenser"/>
+		<lookup key="tabPreferences" value="Inställningar"/>
 		<lookup key="fbSaveFolder" value="Mapp för Nerladdning:"/>
 		<lookup key="groupBoxPreferences" value="Preferenser"/>
 		<lookup key="fbAutostart" value="Starta automatiskt med Windows:"/>
@@ -951,7 +1473,8 @@
 		<lookup key="activityListViewlistView2" value="Tur"/>
 		<lookup key="activityListViewlistView3" value="Ålder"/>
 		<lookup key="activityListViewlistView4" value="Status"/>
-		<lookup key="activityListViewlistView5" value="Ticks"/>
+		<lookup key="activityListViewlistView5" value="Kopia"/>
+		<lookup key="activityListViewlistView6" value="Ticks"/>
 		<lookup key="tabAbout" value="Om"/>
 		<lookup key="groupBetaTesters" value="Beta Testare"/>
 		<lookup key="groupTranslators" value="Översättare"/>
@@ -968,30 +1491,31 @@
 		<lookup key="lblLocalMessageStoreMessage" value="Användare som har en Windows baserad e-klient såsom Outlook Express, Outlook, Mozilla, Thunderbird, Eudora m.m., bör vara medvetna att standardbeteendet för POP3-åtkomst är att ta bort meddelanden från servern."/>
 		<lookup key="cmdRedownload" value="Ladda ner igen"/>
 		<lookup key="cmdClose" value="Stäng"/>
-		<lookup key="AccountsCreationForm" value="Skapa nytt konto"/>
+		<lookup key="AccountsCreationForm" value="Lägg till ett e-postkonto"/>
 		<lookup key="buttonCreate" value="&amp;Skapa"/>
 		<lookup key="accountOther" value="Annat"/>
-		<lookup key="lblThunderbirdTitle" value="Thunderbird Databas"/>
-		<lookup key="lblAutoconfigHeaderMessage" value="Autoconfig Wizard"/>
-		<lookup key="lblAutoconfigPage1WrapperMessage" value="Wrappern är en specialiserad a-klient och använder samma server inställningar som används för program som Outlook Express. Det använder en online databas för att hitta dessa inställningar för ditt email konto. Databasen underhålls av Mozilla Foundation som använder det för deras egen e-klient Thunderbird. De håller databasen uppdaterad,vilket gör Wrappern framtidssäker med en utmärkt chans att automatiskt upptäcka dina email inställningar."/>
+		<lookup key="lblThunderbirdTitle" value="Chefsbibliotekarien"/>
+		<lookup key="lblAutoconfigHeaderMessage" value="Ställ in ditt e-postkonto"/>
+		<lookup key="lblAutoconfigPage1WrapperMessage" value="Chefsbibliotekarien letar upp e-postserverns inställningar åt dig genom att rådgöra med Thunderbird."/>
 		<lookup key="lblAutoconfigPage1AuthMessage" value="Vänligen fyll i dina autentiseringuppgifter för ditt email konto."/>
-		<lookup key="lblAutoconfigPage2SearchMessage" value="Söker efter dina emailinställningar online..."/>
+		<lookup key="groupBoxAccount" value="Ditt konto"/>
+		<lookup key="lblAutoconfigPage2SearchMessage" value="Letar upp dina e-postinställningar…"/>
 		<lookup key="groupBoxResult" value="Resultat"/>
-		<lookup key="groupBoxNext" value="Vad händer härnäst?"/>
-		<lookup key="radioAutoconfigPage2Search1" value="Försök med Mx Lookup"/>
-		<lookup key="radioAutoconfigPage2Search2" value="Försök att gissa"/>
-		<lookup key="radioAutoconfigPage2Search3" value="Manuell överskridning, låt mig fylla i inställningarna själv"/>
-		<lookup key="lblAutoconfigPage2MxLookup" value="Ibland listas din email server i databasen online under ett annat namn än din email adress. Om vi kan göra en Mx Lookup på din email adress och sedan köra en databas sökning brukar vi kunna hitta rätt inställning."/>
-		<lookup key="lblAutoconfigPage2Guess" value="Använd denna inställning som sista utväg. Detta kommer att förutsäga namnet på din email server genom att kontakta dem direkt över internet, detta garanteras inte att fungera. Om detta misslyckas behöver du fylla i inställningarna manuellt."/>
-		<lookup key="lblAutoconfigPage3ServerMessage" value="Var vänlig och specificera vilka server inställningar som ska användas."/>
-		<lookup key="groupBoxOptions" value="Alternativ"/>
-		<lookup key="radioAutoconfigPage3Select1" value="Låt Wrappern välja (standard)"/>
-		<lookup key="radioAutoconfigPage3Select2" value="Manuell överskridning, visa inställningarna så att jag kan välja"/>
-		<lookup key="fbServerPreference" value="Preferens:"/>
-		<lookup key="serverPreferenceNoPreference" value="Ingen preferens"/>
-		<lookup key="lblAutoconfigPage3WrapperDecidesMessage" value="Detta är det säkraste alternativet för de flesta användare. Det kommer att instruera Wrappern att välja de säkraste servrarna baserat på preferensen ovan. Om ingen preferens är angiven kommer Wrappern att föredra IMAP servers över POP3 servers."/>
-		<lookup key="lblAutoconfigPage3UserDecidesMessage" value="Använd detta alternativ om du vill ha precis kontroll över vilken automatisk identifierad inställning som Wrappern bör använda."/>
-		<lookup key="ServerChoiceForm" value="Manuell överskridning"/>
+		<lookup key="groupBoxNext" value="Prova ett annat sätt"/>
+		<lookup key="radioAutoconfigPage2Search1" value="Slå upp e-postleverantören för den här domänen"/>
+		<lookup key="radioAutoconfigPage2Search2" value="Prova vanliga servernamn"/>
+		<lookup key="radioAutoconfigPage2Search3" value="Ange inställningarna själv"/>
+		<lookup key="lblAutoconfigPage2MxLookup" value="Din adress kanske hanteras av en annan leverantör än domänen antyder. Det här alternativet hittar leverantören och söker igen."/>
+		<lookup key="lblAutoconfigPage2Guess" value="Provar de vanliga namnen som mail.dindomän.se. Fungerar hos många små leverantörer, men inte alla."/>
+		<lookup key="lblAutoconfigPage3ServerMessage" value="Vilka inställningar ska Wrappern använda?"/>
+		<lookup key="groupBoxOptions" value=""/>
+		<lookup key="radioAutoconfigPage3Select1" value="Rekommenderade inställningar"/>
+		<lookup key="radioAutoconfigPage3Select2" value="Låt mig välja bland de servrar som hittades"/>
+		<lookup key="fbServerPreference" value="Föredra:"/>
+		<lookup key="serverPreferenceNoPreference" value="Automatiskt"/>
+		<lookup key="lblAutoconfigPage3WrapperDecidesMessage" value="Använder de säkraste servrarna som hittades. IMAP föredras om du inte väljer annat ovan."/>
+		<lookup key="lblAutoconfigPage3UserDecidesMessage" value="Visar alla servrar som hittades så att du kan välja."/>
+		<lookup key="ServerChoiceForm" value="Välj dina servrar"/>
 		<lookup key="groupBoxIncoming" value="Inkommande Email"/>
 		<lookup key="groupBoxOutgoing" value="Utgående Email"/>
 		<lookup key="lblServerChoiceCheckBoxServer" value="Server:"/>
@@ -1000,6 +1524,9 @@
 		<!-- END: Main forms -->
 		<!-- BEGIN: Messages -->
 		<lookup key="msgWrapperWriteAccess" value="Wrappern har inte tillgång till att skriva till dessa mappar:&#xA;{0}&#xA;&#xA;Vänligen modifiera ditt systems säkerhetsinställningar eller starta Wrappern som administratör."/>
+		<lookup key="msgWrapperFixPermissions" value="Ge ditt Windows-konto skrivåtkomst till dessa mappar nu? Windows ber dig tillåta ändringen."/>
+		<lookup key="msgWrapperFixPermissionsDone" value="Klart. Wrappern kan nu skriva till alla spelmappar."/>
+		<lookup key="msgWrapperFixPermissionsFailed" value="Wrappern kan fortfarande inte skriva till:&#xA;{0}&#xA;&#xA;Kör den en gång som administratör, eller kopiera spelet till en mapp utanför Program Files."/>
 		<lookup key="msgWrapperArchiveGame" value="Would you also like to archive the selected game(s)? This will move their files into a separate folder named '{0}' which you can still access in game."/>
 		<lookup key="msgWrapperCannotActivateAccount" value="Kan inte aktivera &quot;{0}&quot; kontot nu.  Var vänlig och vänta tills eposten har skickats."/>
 		<lookup key="msgAccountPrompt" value="Ange namnet på kontot:"/>
@@ -1014,8 +1541,90 @@
 		<lookup key="msgWrapperGamesWaiting" value="Du har {0} spel som väntar."/>
 		<lookup key="msgInputEmailSettingsManual" value="Du kommer att skriva in inställningarna manuellt."/>
 		<lookup key="msgWrapperResendTo" value="Skicka om Till:"/>
-		<lookup key="msgAutoconfigPage2Success" value="Det lyckades, email inställningarna hittades. Klicka på Nästa för att fortsätta."/>
-		<lookup key="msgAutoconfigPage2Failed" value="Misslyckades, ingen email inställning hittades i databasen online. Vänligen välj ett av nedanstående alternativ."/>
+		<lookup key="msgAutoconfigPage2Success" value="Dina e-postinställningar hittades. Klicka på Nästa."/>
+		<lookup key="msgAutoconfigPage2Failed" value="Inga inställningar hittades för den här adressen. Prova ett av alternativen nedan."/>
+		<lookup key="buttonTestConnection" value="Testa anslutning"/>
+		<lookup key="msgTestTitle" value="Anslutningstest"/>
+		<lookup key="msgTestIncomingSuccess" value="Inloggad på {0} som {1}. Inkommande e-post fungerar."/>
+		<lookup key="msgTestOutgoingSuccess" value="Ansluten till {0} som {1}. Utgående e-post fungerar."/>
+		<lookup key="msgTestOutgoingSuccessNoAuth" value="Ansluten till {0}. Utgående e-post fungerar."/>
+		<lookup key="msgTestFailed" value="Anslutningstestet misslyckades."/>
+		<lookup key="msgTestAuthFailed" value="Servern avvisade användarnamnet eller lösenordet."/>
+		<lookup key="msgHintGmail" value="Gmail kräver ett applösenord här, inte ditt Google-lösenord. Skapa ett (tvåstegsverifiering måste vara på) och klistra in koden med 16 bokstäver ovan."/>
+		<lookup key="msgHintYahoo" value="Yahoo och AOL kräver ett applösenord här. Skapa ett på sidan Kontosäkerhet och klistra in det ovan."/>
+		<lookup key="msgHintMicrosoft" value="Outlook.com, Hotmail och Live loggar in via Microsoft. Klicka på Logga in med Microsoft och slutför i din webbläsare."/>
+		<lookup key="msgHintGmailShort" value="Gmail kräver ett applösenord här, inte ditt Google-lösenord."/>
+		<lookup key="msgHintYahooShort" value="Yahoo och AOL kräver ett applösenord här."/>
+		<lookup key="msgHintMicrosoftShort" value="Microsoft-inloggningen behöver förnyas."/>
+		<lookup key="msgWrapperPollAuthFailed" value="{0} avvisade inloggningen för {1}. Kontrollen av e-post är pausad tills kontot är åtgärdat: öppna fliken Konton, rätta lösenordet och klicka på Testa anslutning."/>
+		<lookup key="linkCreateAppPassword" value="Skapa ett applösenord"/>
+		<lookup key="msgOAuthOnly" value="Den här e-postleverantören tillåter bara OAuth-inloggning från e-postprogram, vilket Wrappern ännu inte stöder. Inloggning med lösenord kommer troligen att avvisas."/>
+		<lookup key="buttonSignInMicrosoft" value="Logga in med Microsoft"/>
+		<lookup key="msgOAuthSignedIn" value="Inloggad som {0}."/>
+		<lookup key="msgOAuthNotConfigured" value="Microsoft-inloggning är inte inställd i den här kopian av Wrappern. Registrera Wrappern i Azure-portalen och ange program-id (klient-id) i AowEmailWrapper.dll.config enligt beskrivningen i README."/>
+		<lookup key="msgOAuthSessionExpired" value="Microsoft-inloggningen för {0} har gått ut eller tagits bort. Öppna fliken Konton och logga in med Microsoft igen."/>
+		<lookup key="lblOAuthAccount" value="Det här kontot loggar in via Microsoft. Inget lösenord sparas."/>
+		<lookup key="linkOAuthSignInAgain" value="Logga in med Microsoft igen"/>
+		<lookup key="cmdLogFolder" value="Öppna loggmappen"/>
+		<lookup key="fbAutoInstallUpdates" value="Installera uppdateringar automatiskt:"/>
+		<lookup key="cmdCheckUpdates" value="Sök efter uppdateringar"/>
+		<lookup key="linkUpdateChecking" value="Söker efter uppdateringar..."/>
+		<lookup key="linkUpdateAvailable" value="Uppdatering tillgänglig: {0}"/>
+		<lookup key="msgWrapperUpdateAvailable" value="Uppdatering tillgänglig"/>
+		<lookup key="msgWrapperUpdateBalloon" value="{0} är klar att installeras. Klicka här för att uppdatera Wrappern."/>
+		<lookup key="msgWrapperUpdateOffer" value="{0} finns tillgänglig (publicerad {1}).&#xA;Du använder {2}.&#xA;&#xA;Hämta och installera nu? Wrappern stängs under installationen och startas om efteråt."/>
+		<lookup key="msgWrapperUpdateNone" value="Du använder den senaste versionen ({0})."/>
+		<lookup key="msgWrapperUpdateFailed" value="Kunde inte söka efter uppdateringar: {0}"/>
+		<lookup key="msgWrapperUpdateDownloading" value="Hämtar {0}..."/>
+		<lookup key="msgWrapperUpdateDownloadFailed" value="Uppdateringen kunde inte hämtas: {0}"/>
+		<lookup key="cmdReportBug" value="Rapportera ett fel..."/>
+		<lookup key="groupBoxSupport" value="Support"/>
+		<lookup key="groupDiscord" value="Discord-servrar"/>
+		<lookup key="lblDiscordIntro" value="Några trevliga ställen där spelare träffas för spel via e-post:"/>
+		<lookup key="groupDedication" value="Dedikation"/>
+		<lookup key="buttonSend" value="Skicka"/>
+		<lookup key="msgBugReportTitle" value="Rapportera ett fel"/>
+		<lookup key="msgBugReportIntro" value="Beskriv vad som gick fel och vad du förväntade dig. Rapporten skickas med e-post till utvecklaren från ditt konto {0}, så att ett svar kan nå dig."/>
+		<lookup key="msgBugReportIntroNoAccount" value="Beskriv vad som gick fel och vad du förväntade dig. Inget e-postkonto är inställt i Wrappern ännu, så rapporten öppnas i ditt eget e-postprogram adresserad till utvecklaren. Bifoga loggfilen från loggmappen, som Wrappern öppnar åt dig."/>
+		<lookup key="chkBugReportAttachLog" value="Bifoga Wrapperns loggfil (den kan innehålla e-postadresser och spelnamn)"/>
+		<lookup key="msgBugReportEmpty" value="Beskriv problemet innan du skickar rapporten."/>
+		<lookup key="msgBugReportSending" value="Skickar rapporten..."/>
+		<lookup key="msgBugReportSent" value="Tack. Rapporten har skickats till {0}."/>
+		<lookup key="msgBugReportFailed" value="Rapporten kunde inte skickas: {0}"/>
+		<lookup key="msgWrapperUpdateInstalling" value="Installerar {0}. Wrappern är strax tillbaka."/>
+		<lookup key="tabGames" value="Spel"/>
+		<lookup key="panelGameslistViewGames0" value="Spel"/>
+		<lookup key="panelGameslistViewGames1" value="Etikett"/>
+		<lookup key="panelGameslistViewGames2" value="Mapp"/>
+		<lookup key="panelGameslistViewGames3" value="Standard"/>
+		<lookup key="panelGameslistViewGames4" value="Hittad via"/>
+		<lookup key="buttonAddFolder" value="Lägg till mapp..."/>
+		<lookup key="buttonSetLabel" value="Ange etikett..."/>
+		<lookup key="buttonSetDefaultInstall" value="Ange som standard"/>
+		<lookup key="buttonRemoveInstall" value="Ta bort"/>
+		<lookup key="buttonRescan" value="Sök igen"/>
+		<lookup key="buttonRescanning" value="Söker..."/>
+		<lookup key="lblGamesHelp" value="Ge varje kopia av ett spel en kort etikett, till exempel Vanilla, AoWx eller Ziggurat. Etiketten följer med de drag du skickar, så alla i ett parti måste använda samma etikett. Standardkopian tar emot drag utan etikett."/>
+		<lookup key="msgInstallLabelPrompt" value="Etikett för den här kopian, t.ex. Vanilla, AoWx eller Ziggurat. Lämna tomt för ingen:"/>
+		<lookup key="radioNoLabel" value="Ingen etikett"/>
+		<lookup key="radioOtherLabel" value="Annan:"/>
+		<lookup key="msgLabelInUse" value="Etiketten {0} används redan av kopian i {1}. Varje etikett kan bara peka på en kopia av ett spel."/>
+		<lookup key="msgAddFolderNoGame" value="Inget Age of Wonders spel hittades i {0}. Mappen måste innehålla AoW.exe, AoW2.exe eller AoWSM.exe."/>
+		<lookup key="msgInstallMissing" value="Saknas"/>
+		<lookup key="menuItemMoveTo" value="Flytta till"/>
+		<lookup key="enumRegistry" value="Registret"/>
+		<lookup key="enumSteam" value="Steam"/>
+		<lookup key="enumGog" value="GOG"/>
+		<lookup key="enumUninstall" value="Appar och funktioner"/>
+		<lookup key="enumFolder" value="Mappsökning"/>
+		<lookup key="enumManual" value="Tillagd av dig"/>
+		<lookup key="primaryAccount" value="Aktiv, nya spel"/>
+		<lookup key="menuItemMoveUp" value="Flytta upp"/>
+		<lookup key="menuItemMoveDown" value="Flytta ned"/>
+		<lookup key="msgWrapperNoSendAccount" value="Inget e-postkonto är inställt för att skicka det här draget. Lägg till ett konto på fliken Konton."/>
+		<lookup key="inactiveAccount" value="Inaktiv"/>
+		<lookup key="buttonDeactivate" value="Inaktivera"/>
+		<lookup key="menuItemDeactivate" value="Inaktivera"/>
 		<!-- END: Messages -->
 		<!-- BEGIN: Context Menus -->
 		<lookup key="menuItemShow" value="&amp;Visa"/>
@@ -1066,7 +1675,7 @@
 		<lookup key="tabAccounts" value="Konta"/>
 		<lookup key="panelTopHalflistViewAccounts0" value="Konto"/>
 		<lookup key="panelTopHalflistViewAccounts1" value="Adres email"/>
-		<lookup key="panelTopHalflistViewAccounts2" value="Domyślne"/>
+		<lookup key="panelTopHalflistViewAccounts2" value="Aktywne"/>
 		<lookup key="buttonActivate" value="Aktywuj"/>
 		<lookup key="buttonSetStartUp" value="Użyj jako domyślne"/>
 		<lookup key="buttonRename" value="Zmień Nazwę"/>
@@ -1093,7 +1702,7 @@
 		<lookup key="fbSSLType" value="Rodzaj SSL:"/>
 		<lookup key="fbEmailAddress" value="Adres email:"/>
 		<lookup key="fbSmtpServer" value="Serwer SMTP:"/>
-		<lookup key="tabPreferences" value="Preferencje"/>
+		<lookup key="tabPreferences" value="Ustawienia"/>
 		<lookup key="fbSaveFolder" value="Folder pobierania:"/>
 		<lookup key="groupBoxPreferences" value="Preferencje"/>
 		<lookup key="fbAutostart" value="Startuj z Windows:"/>
@@ -1108,7 +1717,8 @@
 		<lookup key="activityListViewlistView2" value="Tura"/>
 		<lookup key="activityListViewlistView3" value="Dni"/>
 		<lookup key="activityListViewlistView4" value="Stan"/>
-		<lookup key="activityListViewlistView5" value="Czas"/>
+		<lookup key="activityListViewlistView5" value="Kopia"/>
+		<lookup key="activityListViewlistView6" value="Czas"/>
 		<lookup key="tabAbout" value="O Programie"/>
 		<lookup key="groupBetaTesters" value="Betatesterzy"/>
 		<lookup key="groupTranslators" value="Tłumacze"/>
@@ -1125,30 +1735,31 @@
 		<lookup key="lblLocalMessageStoreMessage" value="Użytkownicy klientów email dla Windows, takich jak Outlook Express, Outlook, Mozilla Thunderbird, Eudora itp. powinni wiedzieć, że ich domyślnym zachowaniem w przypadku dostępu do konta POP3 jest usuwanie wiadomości z serwera po ich pobraniu. Należy zmienić odpowiednią opcję, żeby klient email pozostawiał wiadomości na serwerze, dzięki czemu Wrapper będzie mógł je tam znaleźć. Wrapper zawsze pozostawia wiadomości na serwerze, więc klient którego używasz również je znajdzie."/>
 		<lookup key="cmdRedownload" value="Pobierz ponownie"/>
 		<lookup key="cmdClose" value="Zamknij"/>
-		<lookup key="AccountsCreationForm" value="Utwórz nowe konto"/>
+		<lookup key="AccountsCreationForm" value="Dodaj konto e-mail"/>
 		<lookup key="buttonCreate" value="&amp;Utwórz"/>
 		<lookup key="accountOther" value="Inne"/>
-		<lookup key="lblThunderbirdTitle" value="Baza danych Thunderbird"/>
-		<lookup key="lblAutoconfigHeaderMessage" value="Kreator autokonfiguracji"/>
-		<lookup key="lblAutoconfigPage1WrapperMessage" value="Wrapper jest specjalistycznym klientem poczty, który używa tych samych ustawień serwera, których używa się dla programów takich jak Outlook Express. Baza danych do aplikacji utworzona jest przez Fundację Mozilla, która używa jej we własnym kliencie poczty - Thunderbird. Baza ta jest stale aktualizowana, co pozwala aplikacji Wrapper na skuteczne automatyczne wykrywanie ustawień poczty."/>
+		<lookup key="lblThunderbirdTitle" value="Główny Bibliotekarz"/>
+		<lookup key="lblAutoconfigHeaderMessage" value="Skonfiguruj swoje konto e-mail"/>
+		<lookup key="lblAutoconfigPage1WrapperMessage" value="Główny Bibliotekarz wyszuka ustawienia serwera pocztowego, naradzając się z Thunderbirdem."/>
 		<lookup key="lblAutoconfigPage1AuthMessage" value="Proszę podać dane identyfikacyjne dla konta e-mail."/>
-		<lookup key="lblAutoconfigPage2SearchMessage" value="Wyszukiwanie ustawień poczty w trybie online..."/>
+		<lookup key="groupBoxAccount" value="Twoje konto"/>
+		<lookup key="lblAutoconfigPage2SearchMessage" value="Wyszukiwanie ustawień poczty…"/>
 		<lookup key="groupBoxResult" value="Rezultat"/>
-		<lookup key="groupBoxNext" value="Co dalej?"/>
-		<lookup key="radioAutoconfigPage2Search1" value="Spróbuj wyszukiwania MX"/>
-		<lookup key="radioAutoconfigPage2Search2" value="Spróbuj zgadnąć"/>
-		<lookup key="radioAutoconfigPage2Search3" value="Ręczne wprowadzanie, pozwól mi samodzielnie wprowadzić ustawienia"/>
-		<lookup key="lblAutoconfigPage2MxLookup" value="Czasami serwer poczty figuruje w internetowej bazie danych pod inną nazwą, niż twój adres e-mail. Jeśli użyjemy wyszukiwania MX i następnie uruchomimy jeszcze raz wyszukiwanie bazy danych to mogą być znalezione wtedy  poprawne ustawienia."/>
-		<lookup key="lblAutoconfigPage2Guess" value="Użyj tej opcji tylko w ostateczności. Pozwoli to odnaleźć nazwę serwera poczty e-mail, poprzez próbę połączenia się  bezpośrednio przez Internet. Na to jednak nie ma gwarancji sukcesu. Jeśli to się nie uda, może trzeba będzie wprowadzić ustawienia ręcznie."/>
-		<lookup key="lblAutoconfigPage3ServerMessage" value="Sprecyzuj, które ustawienia serwera powinny być użyte."/>
-		<lookup key="groupBoxOptions" value="Opcje"/>
-		<lookup key="radioAutoconfigPage3Select1" value="Pozwól aplikacji Wrapper zdecydować (domyślne)"/>
-		<lookup key="radioAutoconfigPage3Select2" value="Ręczne wprowadzanie, pokaż ustawienia, żebym mógł wybrać"/>
-		<lookup key="fbServerPreference" value="Preferencje:"/>
-		<lookup key="serverPreferenceNoPreference" value="Brak preferencji"/>
-		<lookup key="lblAutoconfigPage3WrapperDecidesMessage" value="To jest najbezpieczniejsza opcja dla większości użytkowników. Poleci ona aplikacji Wrapper wybrać najlepiej zabezpieczone serwery bazując na powyższych preferencjach. Jeśli nie ma ustawionych preferencji, Wrapper wybierze serwery IMAP nad serwerami POP3."/>
-		<lookup key="lblAutoconfigPage3UserDecidesMessage" value="Użyj tej opcji jeśli chcesz kontrolować to, które automatycznie wykryte ustawienia powinny być użyte przez aplikację Wrapper."/>
-		<lookup key="ServerChoiceForm" value="Ręczne wprowadzanie"/>
+		<lookup key="groupBoxNext" value="Spróbuj inaczej"/>
+		<lookup key="radioAutoconfigPage2Search1" value="Sprawdź dostawcę poczty dla tej domeny"/>
+		<lookup key="radioAutoconfigPage2Search2" value="Wypróbuj typowe nazwy serwerów"/>
+		<lookup key="radioAutoconfigPage2Search3" value="Wprowadzę ustawienia samodzielnie"/>
+		<lookup key="lblAutoconfigPage2MxLookup" value="Twój adres może być obsługiwany przez innego dostawcę, niż sugeruje domena. Ta opcja znajduje tego dostawcę i szuka ponownie."/>
+		<lookup key="lblAutoconfigPage2Guess" value="Sprawdza typowe nazwy, takie jak mail.twojadomena.pl. Działa u wielu małych dostawców, ale nie u wszystkich."/>
+		<lookup key="lblAutoconfigPage3ServerMessage" value="Których ustawień ma używać Wrapper?"/>
+		<lookup key="groupBoxOptions" value=""/>
+		<lookup key="radioAutoconfigPage3Select1" value="Zalecane ustawienia"/>
+		<lookup key="radioAutoconfigPage3Select2" value="Pozwól mi wybrać spośród znalezionych serwerów"/>
+		<lookup key="fbServerPreference" value="Preferuj:"/>
+		<lookup key="serverPreferenceNoPreference" value="Automatycznie"/>
+		<lookup key="lblAutoconfigPage3WrapperDecidesMessage" value="Używa najbezpieczniejszych znalezionych serwerów. Preferowany jest IMAP, chyba że powyżej wybierzesz inaczej."/>
+		<lookup key="lblAutoconfigPage3UserDecidesMessage" value="Pokazuje wszystkie znalezione serwery, abyś mógł wybrać."/>
+		<lookup key="ServerChoiceForm" value="Wybierz serwery"/>
 		<lookup key="groupBoxIncoming" value="Poczta przychodząca"/>
 		<lookup key="groupBoxOutgoing" value="Poczta wychodząca"/>
 		<lookup key="lblServerChoiceCheckBoxServer" value="Serwer:"/>
@@ -1157,6 +1768,9 @@
 		<!-- END: Main forms -->
 		<!-- BEGIN: Messages -->
 		<lookup key="msgWrapperWriteAccess" value="Wrapper nie ma dostępu do zapisu dla następujących folderów: &#xA;{0}&#xA;&#xA; Proszę zmienić ustawienia bezpieczeństwa systemu lub uruchamiać program jako Administrator."/>
+		<lookup key="msgWrapperFixPermissions" value="Nadać teraz Twojemu kontu Windows prawo zapisu do tych folderów? Windows poprosi o zgodę na zmianę."/>
+		<lookup key="msgWrapperFixPermissionsDone" value="Gotowe. Wrapper może teraz zapisywać we wszystkich folderach gier."/>
+		<lookup key="msgWrapperFixPermissionsFailed" value="Wrapper nadal nie może zapisywać w:&#xA;{0}&#xA;&#xA;Uruchom go raz jako administrator lub skopiuj grę do folderu poza Program Files."/>
 		<lookup key="msgWrapperArchiveGame" value="Czy chcesz również zarchiwizować wybraną grę (gry)? To przeniesie ich pliki do osobnego folderu o nawie '{0}', do którego będzie możliwy dostęp w grze."/>
 		<lookup key="msgWrapperCannotActivateAccount" value="Nie można teraz aktywować konta &quot;{0}&quot;. Proszę czekać na zakończenie wysyłania emaila."/>
 		<lookup key="msgAccountPrompt" value="Wprowadź nazwę konta:"/>
@@ -1171,8 +1785,90 @@
 		<lookup key="msgWrapperGamesWaiting" value="Liczba oczekujących gier: {0}."/>
 		<lookup key="msgInputEmailSettingsManual" value="Ustawienia trzeba wprowadzić ręcznie."/>
 		<lookup key="msgWrapperResendTo" value="Wyślij ponownie do:"/>
-		<lookup key="msgAutoconfigPage2Success" value="Sukces, znaleziono ustawienia poczty. Wciśnij 'Dalej', żeby kontynuować."/>
-		<lookup key="msgAutoconfigPage2Failed" value="Nie znaleziono ustawień poczty w internetowej bazie danych. Wybierz jedną z poniższych opcji."/>
+		<lookup key="msgAutoconfigPage2Success" value="Znaleziono ustawienia poczty. Kliknij Dalej."/>
+		<lookup key="msgAutoconfigPage2Failed" value="Nie znaleziono ustawień dla tego adresu. Wypróbuj jedną z poniższych opcji."/>
+		<lookup key="buttonTestConnection" value="Testuj połączenie"/>
+		<lookup key="msgTestTitle" value="Test połączenia"/>
+		<lookup key="msgTestIncomingSuccess" value="Zalogowano do {0} jako {1}. Poczta przychodząca działa."/>
+		<lookup key="msgTestOutgoingSuccess" value="Połączono z {0} jako {1}. Poczta wychodząca działa."/>
+		<lookup key="msgTestOutgoingSuccessNoAuth" value="Połączono z {0}. Poczta wychodząca działa."/>
+		<lookup key="msgTestFailed" value="Test połączenia nie powiódł się."/>
+		<lookup key="msgTestAuthFailed" value="Serwer odrzucił nazwę użytkownika lub hasło."/>
+		<lookup key="msgHintGmail" value="Gmail wymaga tutaj hasła do aplikacji, a nie hasła Google. Utwórz je (weryfikacja dwuetapowa musi być włączona) i wklej powyżej 16-literowy kod."/>
+		<lookup key="msgHintYahoo" value="Yahoo i AOL wymagają tutaj hasła do aplikacji. Utwórz je na stronie Bezpieczeństwo konta i wklej powyżej."/>
+		<lookup key="msgHintMicrosoft" value="Outlook.com, Hotmail i Live logują się przez Microsoft. Kliknij Zaloguj się przez Microsoft i dokończ w przeglądarce."/>
+		<lookup key="msgHintGmailShort" value="Gmail wymaga tutaj hasła do aplikacji, a nie hasła Google."/>
+		<lookup key="msgHintYahooShort" value="Yahoo i AOL wymagają tutaj hasła do aplikacji."/>
+		<lookup key="msgHintMicrosoftShort" value="Logowanie Microsoft wymaga odnowienia."/>
+		<lookup key="msgWrapperPollAuthFailed" value="{0} odrzucił logowanie dla {1}. Sprawdzanie poczty jest wstrzymane do czasu poprawienia konta: otwórz kartę Konta, popraw hasło i kliknij Testuj połączenie."/>
+		<lookup key="linkCreateAppPassword" value="Utwórz hasło do aplikacji"/>
+		<lookup key="msgOAuthOnly" value="Ten dostawca poczty zezwala programom pocztowym tylko na logowanie OAuth, którego Wrapper jeszcze nie obsługuje. Logowanie hasłem prawdopodobnie zostanie odrzucone."/>
+		<lookup key="buttonSignInMicrosoft" value="Zaloguj się przez Microsoft"/>
+		<lookup key="msgOAuthSignedIn" value="Zalogowano jako {0}."/>
+		<lookup key="msgOAuthNotConfigured" value="Logowanie Microsoft nie jest skonfigurowane w tej kopii Wrappera. Zarejestruj Wrapper w portalu Azure i wpisz identyfikator aplikacji (klienta) w pliku AowEmailWrapper.dll.config, jak opisano w README."/>
+		<lookup key="msgOAuthSessionExpired" value="Logowanie Microsoft dla {0} wygasło lub zostało usunięte. Otwórz kartę Konta i zaloguj się ponownie przez Microsoft."/>
+		<lookup key="lblOAuthAccount" value="To konto loguje się przez Microsoft. Hasło nie jest zapisywane."/>
+		<lookup key="linkOAuthSignInAgain" value="Zaloguj się ponownie przez Microsoft"/>
+		<lookup key="cmdLogFolder" value="Otwórz folder dziennika"/>
+		<lookup key="fbAutoInstallUpdates" value="Instaluj aktualizacje automatycznie:"/>
+		<lookup key="cmdCheckUpdates" value="Sprawdź aktualizacje"/>
+		<lookup key="linkUpdateChecking" value="Sprawdzanie aktualizacji..."/>
+		<lookup key="linkUpdateAvailable" value="Dostępna aktualizacja: {0}"/>
+		<lookup key="msgWrapperUpdateAvailable" value="Dostępna aktualizacja"/>
+		<lookup key="msgWrapperUpdateBalloon" value="{0} jest gotowa do instalacji. Kliknij tutaj, aby zaktualizować Wrapper."/>
+		<lookup key="msgWrapperUpdateOffer" value="{0} jest dostępna (opublikowana {1}).&#xA;Używasz {2}.&#xA;&#xA;Pobrać i zainstalować teraz? Wrapper zostanie zamknięty na czas instalacji i uruchomiony ponownie."/>
+		<lookup key="msgWrapperUpdateNone" value="Używasz najnowszej wersji ({0})."/>
+		<lookup key="msgWrapperUpdateFailed" value="Nie udało się sprawdzić aktualizacji: {0}"/>
+		<lookup key="msgWrapperUpdateDownloading" value="Pobieranie {0}..."/>
+		<lookup key="msgWrapperUpdateDownloadFailed" value="Nie udało się pobrać aktualizacji: {0}"/>
+		<lookup key="cmdReportBug" value="Zgłoś błąd..."/>
+		<lookup key="groupBoxSupport" value="Pomoc"/>
+		<lookup key="groupDiscord" value="Serwery Discord"/>
+		<lookup key="lblDiscordIntro" value="Kilka przyjaznych miejsc, w których gracze spotykają się na rozgrywki przez e-mail:"/>
+		<lookup key="groupDedication" value="Dedykacja"/>
+		<lookup key="buttonSend" value="Wyślij"/>
+		<lookup key="msgBugReportTitle" value="Zgłoś błąd"/>
+		<lookup key="msgBugReportIntro" value="Opisz, co poszło nie tak i czego się spodziewałeś. Zgłoszenie zostanie wysłane e-mailem do autora programu z Twojego konta {0}, aby odpowiedź mogła do Ciebie dotrzeć."/>
+		<lookup key="msgBugReportIntroNoAccount" value="Opisz, co poszło nie tak i czego się spodziewałeś. W Wrapperze nie skonfigurowano jeszcze konta e-mail, więc zgłoszenie otworzy się w Twoim programie pocztowym zaadresowane do autora programu. Załącz plik dziennika z folderu dziennika, który Wrapper otworzy dla Ciebie."/>
+		<lookup key="chkBugReportAttachLog" value="Załącz plik dziennika Wrappera (może zawierać adresy e-mail i nazwy gier)"/>
+		<lookup key="msgBugReportEmpty" value="Opisz problem przed wysłaniem zgłoszenia."/>
+		<lookup key="msgBugReportSending" value="Wysyłanie zgłoszenia..."/>
+		<lookup key="msgBugReportSent" value="Dziękujemy. Zgłoszenie zostało wysłane na adres {0}."/>
+		<lookup key="msgBugReportFailed" value="Nie udało się wysłać zgłoszenia: {0}"/>
+		<lookup key="msgWrapperUpdateInstalling" value="Instalowanie {0}. Wrapper wróci za chwilę."/>
+		<lookup key="tabGames" value="Gry"/>
+		<lookup key="panelGameslistViewGames0" value="Gra"/>
+		<lookup key="panelGameslistViewGames1" value="Etykieta"/>
+		<lookup key="panelGameslistViewGames2" value="Folder"/>
+		<lookup key="panelGameslistViewGames3" value="Domyślna"/>
+		<lookup key="panelGameslistViewGames4" value="Znaleziono przez"/>
+		<lookup key="buttonAddFolder" value="Dodaj folder..."/>
+		<lookup key="buttonSetLabel" value="Ustaw etykietę..."/>
+		<lookup key="buttonSetDefaultInstall" value="Ustaw jako domyślną"/>
+		<lookup key="buttonRemoveInstall" value="Usuń"/>
+		<lookup key="buttonRescan" value="Szukaj ponownie"/>
+		<lookup key="buttonRescanning" value="Szukanie..."/>
+		<lookup key="lblGamesHelp" value="Nadaj każdej kopii gry krótką etykietę, np. Vanilla, AoWx lub Ziggurat. Etykieta podróżuje z wysyłanymi turami, więc wszyscy gracze w rozgrywce muszą używać tej samej. Kopia domyślna odbiera tury bez etykiety."/>
+		<lookup key="msgInstallLabelPrompt" value="Etykieta tej kopii, np. Vanilla, AoWx lub Ziggurat. Pozostaw puste, aby nie ustawiać:"/>
+		<lookup key="radioNoLabel" value="Bez etykiety"/>
+		<lookup key="radioOtherLabel" value="Inna:"/>
+		<lookup key="msgLabelInUse" value="Etykieta {0} jest już używana przez kopię w {1}. Każda etykieta może wskazywać tylko jedną kopię gry."/>
+		<lookup key="msgAddFolderNoGame" value="W {0} nie znaleziono gry Age of Wonders. Folder musi zawierać AoW.exe, AoW2.exe lub AoWSM.exe."/>
+		<lookup key="msgInstallMissing" value="Brak"/>
+		<lookup key="menuItemMoveTo" value="Przenieś do"/>
+		<lookup key="enumRegistry" value="Rejestr"/>
+		<lookup key="enumSteam" value="Steam"/>
+		<lookup key="enumGog" value="GOG"/>
+		<lookup key="enumUninstall" value="Aplikacje i funkcje"/>
+		<lookup key="enumFolder" value="Skanowanie folderów"/>
+		<lookup key="enumManual" value="Dodane przez Ciebie"/>
+		<lookup key="primaryAccount" value="Aktywne, nowe gry"/>
+		<lookup key="menuItemMoveUp" value="W górę"/>
+		<lookup key="menuItemMoveDown" value="W dół"/>
+		<lookup key="msgWrapperNoSendAccount" value="Żadne konto e-mail nie jest skonfigurowane do wysłania tej tury. Dodaj konto na karcie Konta."/>
+		<lookup key="inactiveAccount" value="Nieaktywne"/>
+		<lookup key="buttonDeactivate" value="Dezaktywuj"/>
+		<lookup key="menuItemDeactivate" value="Dezaktywuj"/>
 		<!-- END: Messages -->
 		<!-- BEGIN: Context Menus -->
 		<lookup key="menuItemShow" value="Pokaż"/>
@@ -1217,7 +1913,7 @@
 		<lookup key="tabAccounts" value="Käyttäjätilit"/>
 		<lookup key="panelTopHalflistViewAccounts0" value="Käyttäjätili"/>
 		<lookup key="panelTopHalflistViewAccounts1" value="Sähköpostiosoite"/>
-		<lookup key="panelTopHalflistViewAccounts2" value="Oletus"/>
+		<lookup key="panelTopHalflistViewAccounts2" value="Aktiivinen"/>
 		<lookup key="buttonActivate" value="Aktivoi"/>
 		<lookup key="buttonSetStartUp" value="Aseta oletukseksi"/>
 		<lookup key="buttonRename" value="Nimeä uudelleen"/>
@@ -1244,7 +1940,7 @@
 		<lookup key="fbSSLType" value="SSL-tyyppi:"/>
 		<lookup key="fbEmailAddress" value="Sähköpostiosoite:"/>
 		<lookup key="fbSmtpServer" value="Smtp-palvelin:"/>
-		<lookup key="tabPreferences" value="Henkilökohtaiset asetukset"/>
+		<lookup key="tabPreferences" value="Asetukset"/>
 		<lookup key="fbSaveFolder" value="Lataukset:"/>
 		<lookup key="groupBoxPreferences" value="Henkilökohtaiset asetukset"/>
 		<lookup key="fbAutostart" value="Automaattinen käynnistys Windowsilla:"/>
@@ -1259,7 +1955,8 @@
 		<lookup key="activityListViewlistView2" value="Vuoro"/>
 		<lookup key="activityListViewlistView3" value="Ikä"/>
 		<lookup key="activityListViewlistView4" value="Tila"/>
-		<lookup key="activityListViewlistView5" value="Ticks"/>
+		<lookup key="activityListViewlistView5" value="Kopio"/>
+		<lookup key="activityListViewlistView6" value="Ticks"/>
 		<lookup key="tabAbout" value="Tietoa Wrapperista"/>
 		<lookup key="groupBetaTesters" value="Beta-testaajat"/>
 		<lookup key="groupTranslators" value="Kääntäjät"/>
@@ -1276,30 +1973,31 @@
 		<lookup key="lblLocalMessageStoreMessage" value="Käyttäjät joilla on Windowsin sähköpostipalvelin, kuten Outlook Express, Outlook, Mozilla, Thunderbird, Eudora jne. Tulisi olla selvillä siitä, että palvelin poistaa oletuksena POP3 tapauksissa viestit, kun ne on ladattu. Käyttäjän täytyy vaihtaa asetuksensa, jotta palvelin tietää jättää viestit Wrapperin löydettäviksi. Wrapper jättää viestejä palvelimelle, joten käyttäjän oma sähköpostipalvelin voi myös löytää ne."/>
 		<lookup key="cmdRedownload" value="Käynnistä lataus"/>
 		<lookup key="cmdClose" value="Sulje"/>
-		<lookup key="AccountsCreationForm" value="Luo uusi tili"/>
+		<lookup key="AccountsCreationForm" value="Lisää sähköpostitili"/>
 		<lookup key="buttonCreate" value="Luo"/>
 		<lookup key="accountOther" value="Muut"/>
-		<lookup key="lblThunderbirdTitle" value="Thunderbird Database"/>
-		<lookup key="lblAutoconfigHeaderMessage" value="Autoconfig Wizard"/>
-		<lookup key="lblAutoconfigPage1WrapperMessage" value="Wrapper on erikoistunut sähköpostipalvelu ja se käyttää samanlaisia palvelinasetuksia, joita jotkut käyttävät esimerkiksi Outlook Expressin kaltasiin ohjelmiin. Wrapper käyttää verkkotietokantaa löytääkseen nämä asetukset sähköpostiasi varten. Tietokantaa ylläpitää Mozilla Foundation, joka käyttää sitä omaa sähköpostiohjelmaansa Thunderbirdiä varten. He päivittävät tietokantaa ajan tasalle ja tämä lisää Wrapperin turvallisuutta tulevaisuudessa ja antaa erittäin hyvät mahdollisuudet sähköpostisi asetusten automaattiseen havaitsemiseen."/>
+		<lookup key="lblThunderbirdTitle" value="Ylikirjastonhoitaja"/>
+		<lookup key="lblAutoconfigHeaderMessage" value="Määritä sähköpostitilisi"/>
+		<lookup key="lblAutoconfigPage1WrapperMessage" value="Ylikirjastonhoitaja hakee sähköpostipalvelimen asetukset puolestasi neuvottelemalla Thunderbirdin kanssa."/>
 		<lookup key="lblAutoconfigPage1AuthMessage" value="Anna sähkopostisi tunnistetiedot."/>
-		<lookup key="lblAutoconfigPage2SearchMessage" value="Etsii sähköpostisi asetuksia..."/>
+		<lookup key="groupBoxAccount" value="Tilisi"/>
+		<lookup key="lblAutoconfigPage2SearchMessage" value="Haetaan sähköpostiasetuksiasi…"/>
 		<lookup key="groupBoxResult" value="Tulos"/>
-		<lookup key="groupBoxNext" value="Mitä seuraavaksi?"/>
-		<lookup key="radioAutoconfigPage2Search1" value="Yritä Mx Lookup-toimintoa"/>
-		<lookup key="radioAutoconfigPage2Search2" value="Arvaa"/>
-		<lookup key="radioAutoconfigPage2Search3" value="Ohita, haluan kirjoittaa asetukseni itse"/>
-		<lookup key="lblAutoconfigPage2MxLookup" value="Joskus sähköpostisi on listattu verkkotietokantaan väärällä nimellä. Jos toteutamme Mx Lookup -tominnon sähköpostillesi ja teemme tietokannassa uuden etsinnän, voimme usein löytää oikeat tiedot sähköpostillesi."/>
-		<lookup key="lblAutoconfigPage2Guess" value="Käytä tätä vaihtoehtoa vain viimeisenä keinona. Tämä arvaa sähköpostiosoitteesi palvelimen yrittämällä ottaa siihen yhteyttä internetin välityksellä eikä sen toimivuudesta ole takeita. Jos tämä epäonnistuu, voit joutua lisäämään tiedot manuaalisesti."/>
-		<lookup key="lblAutoconfigPage3ServerMessage" value="Anna tarkemmat tiedot siitä, mitä palvelimia tulisi käyttää."/>
-		<lookup key="groupBoxOptions" value="Valikko"/>
-		<lookup key="radioAutoconfigPage3Select1" value="Anna Wrapperin päättää (oletusasteus)"/>
-		<lookup key="radioAutoconfigPage3Select2" value="Manuaaliset asetukset, näytä vaihtoehdot valintaa varten"/>
-		<lookup key="fbServerPreference" value="Oma valinta:"/>
-		<lookup key="serverPreferenceNoPreference" value="Ei valintaa"/>
-		<lookup key="lblAutoconfigPage3WrapperDecidesMessage" value="Tämä on käyttäjäturvallisin vaihtoehto. Se käskee Wrapperia valitsemaan vain turvallisimmat palvelimet ylhäällä olevien valintojen mukaisesti. Jos valintaa ei ole tehty Wrapper valitsee POP3 palvelimien sijaan IMAP-palvelimen."/>
-		<lookup key="lblAutoconfigPage3UserDecidesMessage" value="Käytä tätä vaihtoehtoa, jos haluat täyden kontrollin siitä, mitä automaattisesti havaittavia asetuksia Wrapperin tulisi käyttää."/>
-		<lookup key="ServerChoiceForm" value="Manuaaliset asetukset"/>
+		<lookup key="groupBoxNext" value="Kokeile toista tapaa"/>
+		<lookup key="radioAutoconfigPage2Search1" value="Selvitä tämän verkkotunnuksen sähköpostipalvelun tarjoaja"/>
+		<lookup key="radioAutoconfigPage2Search2" value="Kokeile yleisiä palvelinnimiä"/>
+		<lookup key="radioAutoconfigPage2Search3" value="Syötän asetukset itse"/>
+		<lookup key="lblAutoconfigPage2MxLookup" value="Osoitettasi saattaa hoitaa eri palveluntarjoaja kuin verkkotunnus antaa ymmärtää. Tämä vaihtoehto selvittää tarjoajan ja hakee uudelleen."/>
+		<lookup key="lblAutoconfigPage2Guess" value="Kokeilee tavallisia nimiä, kuten mail.omaverkkotunnus.fi. Toimii monilla pienillä tarjoajilla, muttei kaikilla."/>
+		<lookup key="lblAutoconfigPage3ServerMessage" value="Mitä asetuksia Wrapperin pitäisi käyttää?"/>
+		<lookup key="groupBoxOptions" value=""/>
+		<lookup key="radioAutoconfigPage3Select1" value="Suositellut asetukset"/>
+		<lookup key="radioAutoconfigPage3Select2" value="Anna minun valita löydetyistä palvelimista"/>
+		<lookup key="fbServerPreference" value="Suosi:"/>
+		<lookup key="serverPreferenceNoPreference" value="Automaattinen"/>
+		<lookup key="lblAutoconfigPage3WrapperDecidesMessage" value="Käyttää turvallisimpia löydettyjä palvelimia. IMAP on ensisijainen, ellet valitse yllä toisin."/>
+		<lookup key="lblAutoconfigPage3UserDecidesMessage" value="Näyttää kaikki löydetyt palvelimet, jotta voit valita."/>
+		<lookup key="ServerChoiceForm" value="Valitse palvelimesi"/>
 		<lookup key="groupBoxIncoming" value="Saapuvat"/>
 		<lookup key="groupBoxOutgoing" value="Lähtevät"/>
 		<lookup key="lblServerChoiceCheckBoxServer" value="Palvelin:"/>
@@ -1308,6 +2006,9 @@
 		<!-- END: Main forms -->
 		<!-- BEGIN: Messages -->
 		<lookup key="msgWrapperWriteAccess" value="Wrapperilla ei ole pääsyä näihin kansioihin:&#xA;{0}&#xA;&#xA;Muuta palvelun turvallisuusasetuksia tai muuta Wrapper järjestelmävalvojaksi."/>
+		<lookup key="msgWrapperFixPermissions" value="Annetaanko Windows-tilillesi nyt kirjoitusoikeus näihin kansioihin? Windows pyytää vahvistamaan muutoksen."/>
+		<lookup key="msgWrapperFixPermissionsDone" value="Valmis. Wrapper voi nyt kirjoittaa kaikkiin pelikansioihin."/>
+		<lookup key="msgWrapperFixPermissionsFailed" value="Wrapper ei vieläkään voi kirjoittaa kansioihin:&#xA;{0}&#xA;&#xA;Suorita se kerran järjestelmänvalvojana tai kopioi peli kansioon Program Files -kansion ulkopuolelle."/>
 		<lookup key="msgWrapperArchiveGame" value="Haluatko arkistoida valitut kohteet? Tällöin kohteet siirtyvät kansioon  '{0}' johon pääset käsiksi myös pelin aikana."/>
 		<lookup key="msgWrapperCannotActivateAccount" value="Ei voi aktivoida &quot;{0}&quot; tiliä juuri nyt. Odota kunnes viestin lähetys loppuu."/>
 		<lookup key="msgAccountPrompt" value="Lisää käyttäjätilin nimi:"/>
@@ -1322,8 +2023,90 @@
 		<lookup key="msgWrapperGamesWaiting" value="Sinulla on {0} peliä odottamassa."/>
 		<lookup key="msgInputEmailSettingsManual" value="Lisää asetukset manuaalisesti."/>
 		<lookup key="msgWrapperResendTo" value="Lähetä:"/>
-		<lookup key="msgAutoconfigPage2Success" value="Onnistui, sähköpostin tiedot löydetty. Paina seuraavaa jatkaaksesi."/>
-		<lookup key="msgAutoconfigPage2Failed" value="Epäonnistui, sähköpostin tietoja ei löytynyt. Valitse jokin alla olevista vaihtoehdoista."/>
+		<lookup key="msgAutoconfigPage2Success" value="Sähköpostiasetukset löytyivät. Napsauta Seuraava."/>
+		<lookup key="msgAutoconfigPage2Failed" value="Tälle osoitteelle ei löytynyt asetuksia. Kokeile jotakin alla olevista vaihtoehdoista."/>
+		<lookup key="buttonTestConnection" value="Testaa yhteys"/>
+		<lookup key="msgTestTitle" value="Yhteystesti"/>
+		<lookup key="msgTestIncomingSuccess" value="Kirjauduttu palvelimelle {0} käyttäjänä {1}. Saapuva sähköposti toimii."/>
+		<lookup key="msgTestOutgoingSuccess" value="Yhdistetty palvelimeen {0} käyttäjänä {1}. Lähtevä sähköposti toimii."/>
+		<lookup key="msgTestOutgoingSuccessNoAuth" value="Yhdistetty palvelimeen {0}. Lähtevä sähköposti toimii."/>
+		<lookup key="msgTestFailed" value="Yhteystesti epäonnistui."/>
+		<lookup key="msgTestAuthFailed" value="Palvelin hylkäsi käyttäjätunnuksen tai salasanan."/>
+		<lookup key="msgHintGmail" value="Gmail vaatii tähän sovellussalasanan, ei Google-salasanaasi. Luo sellainen (kaksivaiheisen vahvistuksen on oltava käytössä) ja liitä 16-kirjaiminen koodi yllä olevaan kenttään."/>
+		<lookup key="msgHintYahoo" value="Yahoo ja AOL vaativat tähän sovellussalasanan. Luo sellainen Tilin suojaus -sivulla ja liitä se yllä olevaan kenttään."/>
+		<lookup key="msgHintMicrosoft" value="Outlook.com, Hotmail ja Live kirjautuvat Microsoftin kautta. Napsauta Kirjaudu Microsoft-tilillä ja viimeistele selaimessa."/>
+		<lookup key="msgHintGmailShort" value="Gmail vaatii tähän sovellussalasanan, ei Google-salasanaasi."/>
+		<lookup key="msgHintYahooShort" value="Yahoo ja AOL vaativat tähän sovellussalasanan."/>
+		<lookup key="msgHintMicrosoftShort" value="Microsoft-kirjautuminen on uusittava."/>
+		<lookup key="msgWrapperPollAuthFailed" value="{0} hylkäsi kirjautumisen tilille {1}. Sähköpostin tarkistus on tauolla, kunnes tili on korjattu: avaa Tilit-välilehti, korjaa salasana ja napsauta Testaa yhteys."/>
+		<lookup key="linkCreateAppPassword" value="Luo sovellussalasana"/>
+		<lookup key="msgOAuthOnly" value="Tämä sähköpostipalvelu sallii sähköpostiohjelmille vain OAuth-kirjautumisen, jota Wrapper ei vielä tue. Salasanalla kirjautuminen hylätään todennäköisesti."/>
+		<lookup key="buttonSignInMicrosoft" value="Kirjaudu Microsoft-tilillä"/>
+		<lookup key="msgOAuthSignedIn" value="Kirjauduttu käyttäjänä {0}."/>
+		<lookup key="msgOAuthNotConfigured" value="Microsoft-kirjautumista ei ole määritetty tässä Wrapperin kopiossa. Rekisteröi Wrapper Azure-portaalissa ja lisää sovelluksen (asiakkaan) tunnus tiedostoon AowEmailWrapper.dll.config README-ohjeen mukaisesti."/>
+		<lookup key="msgOAuthSessionExpired" value="Microsoft-kirjautuminen tilille {0} on vanhentunut tai poistettu. Avaa Tilit-välilehti ja kirjaudu uudelleen Microsoft-tilillä."/>
+		<lookup key="lblOAuthAccount" value="Tämä tili kirjautuu Microsoftin kautta. Salasanaa ei tallenneta."/>
+		<lookup key="linkOAuthSignInAgain" value="Kirjaudu uudelleen Microsoft-tilillä"/>
+		<lookup key="cmdLogFolder" value="Avaa lokikansio"/>
+		<lookup key="fbAutoInstallUpdates" value="Asenna päivitykset automaattisesti:"/>
+		<lookup key="cmdCheckUpdates" value="Tarkista päivitykset"/>
+		<lookup key="linkUpdateChecking" value="Tarkistetaan päivityksiä..."/>
+		<lookup key="linkUpdateAvailable" value="Päivitys saatavilla: {0}"/>
+		<lookup key="msgWrapperUpdateAvailable" value="Päivitys saatavilla"/>
+		<lookup key="msgWrapperUpdateBalloon" value="{0} on valmis asennettavaksi. Päivitä Wrapper napsauttamalla tästä."/>
+		<lookup key="msgWrapperUpdateOffer" value="{0} on saatavilla (julkaistu {1}).&#xA;Käytössäsi on {2}.&#xA;&#xA;Ladataanko ja asennetaanko nyt? Wrapper sulkeutuu asennuksen ajaksi ja käynnistyy sen jälkeen uudelleen."/>
+		<lookup key="msgWrapperUpdateNone" value="Käytössäsi on uusin versio ({0})."/>
+		<lookup key="msgWrapperUpdateFailed" value="Päivitysten tarkistus epäonnistui: {0}"/>
+		<lookup key="msgWrapperUpdateDownloading" value="Ladataan {0}..."/>
+		<lookup key="msgWrapperUpdateDownloadFailed" value="Päivitystä ei voitu ladata: {0}"/>
+		<lookup key="cmdReportBug" value="Ilmoita virheestä..."/>
+		<lookup key="groupBoxSupport" value="Tuki"/>
+		<lookup key="groupDiscord" value="Discord-palvelimet"/>
+		<lookup key="lblDiscordIntro" value="Muutama ystävällinen paikka, joissa pelaajat kokoontuvat sähköpostipeleihin:"/>
+		<lookup key="groupDedication" value="Omistus"/>
+		<lookup key="buttonSend" value="Lähetä"/>
+		<lookup key="msgBugReportTitle" value="Ilmoita virheestä"/>
+		<lookup key="msgBugReportIntro" value="Kuvaile, mikä meni pieleen ja mitä odotit tapahtuvan. Ilmoitus lähetetään sähköpostilla kehittäjälle tililtäsi {0}, jotta vastaus voi tavoittaa sinut."/>
+		<lookup key="msgBugReportIntroNoAccount" value="Kuvaile, mikä meni pieleen ja mitä odotit tapahtuvan. Wrapperiin ei ole vielä määritetty sähköpostitiliä, joten ilmoitus avataan omassa sähköpostiohjelmassasi osoitettuna kehittäjälle. Liitä lokitiedosto lokikansiosta, jonka Wrapper avaa puolestasi."/>
+		<lookup key="chkBugReportAttachLog" value="Liitä Wrapperin lokitiedosto (se voi sisältää sähköpostiosoitteita ja pelien nimiä)"/>
+		<lookup key="msgBugReportEmpty" value="Kuvaile ongelma ennen ilmoituksen lähettämistä."/>
+		<lookup key="msgBugReportSending" value="Lähetetään ilmoitusta..."/>
+		<lookup key="msgBugReportSent" value="Kiitos. Ilmoitus on lähetetty osoitteeseen {0}."/>
+		<lookup key="msgBugReportFailed" value="Ilmoitusta ei voitu lähettää: {0}"/>
+		<lookup key="msgWrapperUpdateInstalling" value="Asennetaan {0}. Wrapper palaa hetken kuluttua."/>
+		<lookup key="tabGames" value="Pelit"/>
+		<lookup key="panelGameslistViewGames0" value="Peli"/>
+		<lookup key="panelGameslistViewGames1" value="Tunniste"/>
+		<lookup key="panelGameslistViewGames2" value="Kansio"/>
+		<lookup key="panelGameslistViewGames3" value="Oletus"/>
+		<lookup key="panelGameslistViewGames4" value="Löydetty"/>
+		<lookup key="buttonAddFolder" value="Lisää kansio..."/>
+		<lookup key="buttonSetLabel" value="Aseta tunniste..."/>
+		<lookup key="buttonSetDefaultInstall" value="Aseta oletukseksi"/>
+		<lookup key="buttonRemoveInstall" value="Poista"/>
+		<lookup key="buttonRescan" value="Etsi uudelleen"/>
+		<lookup key="buttonRescanning" value="Etsitään..."/>
+		<lookup key="lblGamesHelp" value="Anna jokaiselle pelin kopiolle lyhyt tunniste, kuten Vanilla, AoWx tai Ziggurat. Tunniste kulkee lähettämiesi vuorojen mukana, joten kaikkien saman pelin pelaajien on käytettävä samaa tunnistetta. Oletuskopio vastaanottaa tunnisteettomat vuorot."/>
+		<lookup key="msgInstallLabelPrompt" value="Tämän kopion tunniste, esimerkiksi Vanilla, AoWx tai Ziggurat. Jätä tyhjäksi, jos et halua tunnistetta:"/>
+		<lookup key="radioNoLabel" value="Ei tunnistetta"/>
+		<lookup key="radioOtherLabel" value="Muu:"/>
+		<lookup key="msgLabelInUse" value="Tunniste {0} on jo käytössä kopiolla kansiossa {1}. Kukin tunniste voi osoittaa vain yhteen pelin kopioon."/>
+		<lookup key="msgAddFolderNoGame" value="Kansiosta {0} ei löytynyt Age of Wonders -peliä. Kansiossa on oltava AoW.exe, AoW2.exe tai AoWSM.exe."/>
+		<lookup key="msgInstallMissing" value="Puuttuu"/>
+		<lookup key="menuItemMoveTo" value="Siirrä kohteeseen"/>
+		<lookup key="enumRegistry" value="Rekisteri"/>
+		<lookup key="enumSteam" value="Steam"/>
+		<lookup key="enumGog" value="GOG"/>
+		<lookup key="enumUninstall" value="Sovellukset ja ominaisuudet"/>
+		<lookup key="enumFolder" value="Kansiohaku"/>
+		<lookup key="enumManual" value="Itse lisätty"/>
+		<lookup key="primaryAccount" value="Aktiivinen, uudet pelit"/>
+		<lookup key="menuItemMoveUp" value="Siirrä ylös"/>
+		<lookup key="menuItemMoveDown" value="Siirrä alas"/>
+		<lookup key="msgWrapperNoSendAccount" value="Yhtään sähköpostitiliä ei ole määritetty tämän vuoron lähettämiseen. Lisää tili Tilit-välilehdellä."/>
+		<lookup key="inactiveAccount" value="Ei käytössä"/>
+		<lookup key="buttonDeactivate" value="Poista käytöstä"/>
+		<lookup key="menuItemDeactivate" value="Poista käytöstä"/>
 		<!-- END: Messages -->
 		<!-- BEGIN: Context Menus -->
 		<lookup key="menuItemShow" value="&amp;Näytä"/>
@@ -1370,7 +2153,7 @@
 		<lookup key="tabAccounts" value="Conturi"/>
 		<lookup key="panelTopHalflistViewAccounts0" value="Cont"/>
 		<lookup key="panelTopHalflistViewAccounts1" value="Adresă Mail"/>
-		<lookup key="panelTopHalflistViewAccounts2" value="Implicit"/>
+		<lookup key="panelTopHalflistViewAccounts2" value="Activ"/>
 		<lookup key="buttonActivate" value="Activare"/>
 		<lookup key="buttonSetStartUp" value="Setaţi ca Implicit"/>
 		<lookup key="buttonRename" value="Redenumire"/>
@@ -1397,7 +2180,7 @@
 		<lookup key="fbSSLType" value="Tip SSL:"/>
 		<lookup key="fbEmailAddress" value="Adresă Mail:"/>
 		<lookup key="fbSmtpServer" value="Server SMTP:"/>
-		<lookup key="tabPreferences" value="Preferinţe"/>
+		<lookup key="tabPreferences" value="Setări"/>
 		<lookup key="fbSaveFolder" value="Locaţie Descărcări:"/>
 		<lookup key="groupBoxPreferences" value="Preferinţe"/>
 		<lookup key="fbAutostart" value="Pornire Automată cu Windows:"/>
@@ -1412,7 +2195,8 @@
 		<lookup key="activityListViewlistView2" value="Tură"/>
 		<lookup key="activityListViewlistView3" value="Vârstă"/>
 		<lookup key="activityListViewlistView4" value="Status"/>
-		<lookup key="activityListViewlistView5" value="Bătăi"/>
+		<lookup key="activityListViewlistView5" value="Copie"/>
+		<lookup key="activityListViewlistView6" value="Bătăi"/>
 		<lookup key="tabAbout" value="Despre"/>
 		<lookup key="groupBetaTesters" value="Beta Testeri"/>
 		<lookup key="groupTranslators" value="Traducători"/>
@@ -1429,30 +2213,31 @@
 		<lookup key="lblLocalMessageStoreMessage" value="Utilizatorii clienţilor de email pentru Windows precum Outlook Express, Outlook, Mozilla Thunderbird, Eudora etc. trebuie să ţină cont că modul de operare implicit al protocolului POP3 este de a şterge mesajele de pe server odată cu descărcarea lor. Acest comportament va trebui modificat manual din cadrul clientului, astfel dând posibilitatea Wrapper-ului de a găsi mesajele pe server. Wrapper-ul nu va şterge niciodată mesajele de pe server."/>
 		<lookup key="cmdRedownload" value="Re-descărcare"/>
 		<lookup key="cmdClose" value="Închidere"/>
-		<lookup key="AccountsCreationForm" value="Creare cont nou"/>
+		<lookup key="AccountsCreationForm" value="Adăugați un cont de e-mail"/>
 		<lookup key="buttonCreate" value="&amp;Creere"/>
 		<lookup key="accountOther" value="Alte"/>
-		<lookup key="lblThunderbirdTitle" value="Baza de date Thunderbird"/>
-		<lookup key="lblAutoconfigHeaderMessage" value="Wizard-ul de autoconfigurare"/>
-		<lookup key="lblAutoconfigPage1WrapperMessage" value="Wrapper-ul este un client de email specializat și folosește aceleași setări de server pe care le folosesc alți clienți precum Outlook Express. Setările vor fi căutate într-o bază de date online, întreținută de Mozilla Foundation pentru clientul lor de email, Thunderbird. Baza de date este menținută la zi, ceea ce va asigura viitorul Wrapper-ului si îi oferă o precizie sporită în detectarea automată a propriilor dvs. setări de email."/>
+		<lookup key="lblThunderbirdTitle" value="Bibliotecarul-șef"/>
+		<lookup key="lblAutoconfigHeaderMessage" value="Configurați-vă contul de e-mail"/>
+		<lookup key="lblAutoconfigPage1WrapperMessage" value="Bibliotecarul-șef va căuta pentru dumneavoastră setările serverului de e-mail sfătuindu-se cu Thunderbird."/>
 		<lookup key="lblAutoconfigPage1AuthMessage" value="Introduceți vă rog detaliile de autentificare ale contului de email."/>
-		<lookup key="lblAutoconfigPage2SearchMessage" value="Se caută setările online..."/>
+		<lookup key="groupBoxAccount" value="Contul dumneavoastră"/>
+		<lookup key="lblAutoconfigPage2SearchMessage" value="Se caută setările de e-mail…"/>
 		<lookup key="groupBoxResult" value="Rezultat"/>
-		<lookup key="groupBoxNext" value="Ce urmează?"/>
-		<lookup key="radioAutoconfigPage2Search1" value="Incearcă Mx Lookup"/>
-		<lookup key="radioAutoconfigPage2Search2" value="Ghicire"/>
-		<lookup key="radioAutoconfigPage2Search3" value="Doresc să introduc manual setările"/>
-		<lookup key="lblAutoconfigPage2MxLookup" value="E posibil ca uneori serverul de email sa fie trecut in baza de date online sub un nume diferit adresei dvs de email. Dacă inițiem un Mx Lookup pe adresa dvs de email și apoi rulăm iar căutarea în baza de date, este foarte probabil să fie găsite setările corecte."/>
-		<lookup key="lblAutoconfigPage2Guess" value="Această variantă ar fi ultima opțiune. Aceasta va prezice numele serverului de email încercând să-l contacteze direct pe Internet, dar nu e garantat să funcționeze. Dacă nu funcționează, va fi nevoie să introduceți manual setările."/>
-		<lookup key="lblAutoconfigPage3ServerMessage" value="Vă rog specificați setările de server care urmează a fi folosite."/>
-		<lookup key="groupBoxOptions" value="Opțiuni"/>
-		<lookup key="radioAutoconfigPage3Select1" value="Permiteți Wrapper-ului să decidă (implicit)"/>
-		<lookup key="radioAutoconfigPage3Select2" value="Mod manual, doresc să aleg eu setările"/>
+		<lookup key="groupBoxNext" value="Încercați altfel"/>
+		<lookup key="radioAutoconfigPage2Search1" value="Căutați furnizorul de e-mail al acestui domeniu"/>
+		<lookup key="radioAutoconfigPage2Search2" value="Încercați nume de server obișnuite"/>
+		<lookup key="radioAutoconfigPage2Search3" value="Introduc setările eu însumi"/>
+		<lookup key="lblAutoconfigPage2MxLookup" value="Adresa dumneavoastră ar putea fi gestionată de alt furnizor decât sugerează domeniul. Această opțiune găsește furnizorul și caută din nou."/>
+		<lookup key="lblAutoconfigPage2Guess" value="Încearcă numele obișnuite, precum mail.domeniuldvs.ro. Funcționează la mulți furnizori mici, dar nu la toți."/>
+		<lookup key="lblAutoconfigPage3ServerMessage" value="Ce setări ar trebui să folosească Wrapper-ul?"/>
+		<lookup key="groupBoxOptions" value=""/>
+		<lookup key="radioAutoconfigPage3Select1" value="Setări recomandate"/>
+		<lookup key="radioAutoconfigPage3Select2" value="Lăsați-mă să aleg dintre serverele găsite"/>
 		<lookup key="fbServerPreference" value="Preferință:"/>
-		<lookup key="serverPreferenceNoPreference" value="Fără preferință"/>
-		<lookup key="lblAutoconfigPage3WrapperDecidesMessage" value="Aceasta e cea mai sigură variantă pentru majoritatea utilizatorilor. Wrapper-ul va alege cele mai sigure servere bazat pe preferința de mai sus. Daca nu e setată nicio preferință, Wrapper-ul va alege IMAP mai degrabă decât POP3."/>
-		<lookup key="lblAutoconfigPage3UserDecidesMessage" value="Folosiți această opțiune dacă doriți control precis asupra căror setări autodetectate să fie utilizate."/>
-		<lookup key="ServerChoiceForm" value="Override manual"/>
+		<lookup key="serverPreferenceNoPreference" value="Automat"/>
+		<lookup key="lblAutoconfigPage3WrapperDecidesMessage" value="Folosește cele mai sigure servere găsite. IMAP este preferat, dacă nu alegeți altfel mai sus."/>
+		<lookup key="lblAutoconfigPage3UserDecidesMessage" value="Afișează toate serverele găsite ca să puteți alege."/>
+		<lookup key="ServerChoiceForm" value="Alegeți serverele"/>
 		<lookup key="groupBoxIncoming" value="Primire Email"/>
 		<lookup key="groupBoxOutgoing" value="Trimitere Email"/>
 		<lookup key="lblServerChoiceCheckBoxServer" value="Server:"/>
@@ -1461,6 +2246,9 @@
 		<!-- END: Main forms -->
 		<!-- BEGIN: Messages -->
 		<lookup key="msgWrapperWriteAccess" value="Wrapper-ul nu are Write Access pentru următoarele directoare:&#xA;{0}&#xA;&#xA;Este necesară modificarea setărilor de securitate ale sistemului ori rularea Wrapper-ului ca Administrator."/>
+		<lookup key="msgWrapperFixPermissions" value="Acordați acum contului dvs. Windows drept de scriere în aceste dosare? Windows vă va cere să permiteți modificarea."/>
+		<lookup key="msgWrapperFixPermissionsDone" value="Gata. Wrapper-ul poate scrie acum în toate dosarele jocurilor."/>
+		<lookup key="msgWrapperFixPermissionsFailed" value="Wrapper-ul tot nu poate scrie în:&#xA;{0}&#xA;&#xA;Rulați-l o dată ca administrator sau copiați jocul într-un dosar din afara Program Files."/>
 		<lookup key="msgWrapperArchiveGame" value="Doriţi arhivarea jocurilor selectate? Această alegere va muta fişierele respective într-un director separat intitulat '{0}' , accesibil din cadrul jocului."/>
 		<lookup key="msgWrapperCannotActivateAccount" value="Contul &quot;{0}&quot; nu poate fi activat momentan. Vă rugăm aşteptaţi terminarea procesului de trimitere. "/>
 		<lookup key="msgAccountPrompt" value="Introduceţi numele contului:"/>
@@ -1475,8 +2263,90 @@
 		<lookup key="msgWrapperGamesWaiting" value="Aveţi {0} jocuri în aşteptare."/>
 		<lookup key="msgInputEmailSettingsManual" value="Veţi introduce manual setările."/>
 		<lookup key="msgWrapperResendTo" value="Retrimiteţi:"/>
-		<lookup key="msgAutoconfigPage2Success" value="Setările au fost depistate. Dati click pe Inainte pentru continuare."/>
-		<lookup key="msgAutoconfigPage2Failed" value="Din păcate setările nu au fost găsite automat în baza de date. Alegeți vă rog una din variantele de mai jos."/>
+		<lookup key="msgAutoconfigPage2Success" value="Setările de e-mail au fost găsite. Apăsați Următorul."/>
+		<lookup key="msgAutoconfigPage2Failed" value="Nu s-au găsit setări pentru această adresă. Încercați una dintre opțiunile de mai jos."/>
+		<lookup key="buttonTestConnection" value="Testează conexiunea"/>
+		<lookup key="msgTestTitle" value="Test de conexiune"/>
+		<lookup key="msgTestIncomingSuccess" value="Autentificat la {0} ca {1}. E-mailul de intrare funcționează."/>
+		<lookup key="msgTestOutgoingSuccess" value="Conectat la {0} ca {1}. E-mailul de ieșire funcționează."/>
+		<lookup key="msgTestOutgoingSuccessNoAuth" value="Conectat la {0}. E-mailul de ieșire funcționează."/>
+		<lookup key="msgTestFailed" value="Testul de conexiune a eșuat."/>
+		<lookup key="msgTestAuthFailed" value="Serverul a respins numele de utilizator sau parola."/>
+		<lookup key="msgHintGmail" value="Gmail are nevoie aici de o parolă de aplicație, nu de parola Google. Creați una (verificarea în doi pași trebuie să fie activată) și lipiți codul de 16 litere mai sus."/>
+		<lookup key="msgHintYahoo" value="Yahoo și AOL au nevoie aici de o parolă de aplicație. Creați una în pagina Securitatea contului și lipiți-o mai sus."/>
+		<lookup key="msgHintMicrosoft" value="Outlook.com, Hotmail și Live se autentifică prin Microsoft. Apăsați Conectare cu Microsoft și finalizați în browser."/>
+		<lookup key="msgHintGmailShort" value="Gmail are nevoie aici de o parolă de aplicație, nu de parola Google."/>
+		<lookup key="msgHintYahooShort" value="Yahoo și AOL au nevoie aici de o parolă de aplicație."/>
+		<lookup key="msgHintMicrosoftShort" value="Autentificarea Microsoft trebuie reînnoită."/>
+		<lookup key="msgWrapperPollAuthFailed" value="{0} a respins autentificarea pentru {1}. Verificarea e-mailului este oprită până la corectarea contului: deschideți fila Conturi, corectați parola și apăsați Testează conexiunea."/>
+		<lookup key="linkCreateAppPassword" value="Creați o parolă de aplicație"/>
+		<lookup key="msgOAuthOnly" value="Acest furnizor de e-mail permite programelor de e-mail doar autentificarea OAuth, pe care Wrapper-ul nu o acceptă încă. Autentificarea cu parolă va fi probabil respinsă."/>
+		<lookup key="buttonSignInMicrosoft" value="Conectare cu Microsoft"/>
+		<lookup key="msgOAuthSignedIn" value="Autentificat ca {0}."/>
+		<lookup key="msgOAuthNotConfigured" value="Autentificarea Microsoft nu este configurată în această copie a Wrapper-ului. Înregistrați Wrapper-ul în portalul Azure și puneți ID-ul aplicației (client) în AowEmailWrapper.dll.config, conform README."/>
+		<lookup key="msgOAuthSessionExpired" value="Autentificarea Microsoft pentru {0} a expirat sau a fost eliminată. Deschideți fila Conturi și conectați-vă din nou cu Microsoft."/>
+		<lookup key="lblOAuthAccount" value="Acest cont se autentifică prin Microsoft. Nu se salvează nicio parolă."/>
+		<lookup key="linkOAuthSignInAgain" value="Conectare din nou cu Microsoft"/>
+		<lookup key="cmdLogFolder" value="Deschide dosarul de jurnale"/>
+		<lookup key="fbAutoInstallUpdates" value="Instalează actualizările automat:"/>
+		<lookup key="cmdCheckUpdates" value="Caută actualizări"/>
+		<lookup key="linkUpdateChecking" value="Se caută actualizări..."/>
+		<lookup key="linkUpdateAvailable" value="Actualizare disponibilă: {0}"/>
+		<lookup key="msgWrapperUpdateAvailable" value="Actualizare disponibilă"/>
+		<lookup key="msgWrapperUpdateBalloon" value="{0} este gata de instalare. Faceți clic aici pentru a actualiza Wrapper-ul."/>
+		<lookup key="msgWrapperUpdateOffer" value="{0} este disponibilă (publicată {1}).&#xA;Folosiți {2}.&#xA;&#xA;Descărcați și instalați acum? Wrapper-ul se închide în timpul instalării și pornește din nou după aceea."/>
+		<lookup key="msgWrapperUpdateNone" value="Folosiți cea mai recentă versiune ({0})."/>
+		<lookup key="msgWrapperUpdateFailed" value="Nu s-au putut căuta actualizări: {0}"/>
+		<lookup key="msgWrapperUpdateDownloading" value="Se descarcă {0}..."/>
+		<lookup key="msgWrapperUpdateDownloadFailed" value="Actualizarea nu a putut fi descărcată: {0}"/>
+		<lookup key="cmdReportBug" value="Raportează o eroare..."/>
+		<lookup key="groupBoxSupport" value="Asistență"/>
+		<lookup key="groupDiscord" value="Servere Discord"/>
+		<lookup key="lblDiscordIntro" value="Câteva locuri prietenoase unde jucătorii se întâlnesc pentru partide prin e-mail:"/>
+		<lookup key="groupDedication" value="Dedicație"/>
+		<lookup key="buttonSend" value="Trimite"/>
+		<lookup key="msgBugReportTitle" value="Raportează o eroare"/>
+		<lookup key="msgBugReportIntro" value="Descrie ce nu a funcționat și ce te așteptai să se întâmple. Raportul este trimis prin e-mail dezvoltatorului de pe contul tău {0}, astfel încât un răspuns să poată ajunge la tine."/>
+		<lookup key="msgBugReportIntroNoAccount" value="Descrie ce nu a funcționat și ce te așteptai să se întâmple. Niciun cont de e-mail nu este încă configurat în Wrapper, așa că raportul se deschide în propriul tău program de e-mail, adresat dezvoltatorului. Te rugăm să atașezi fișierul jurnal din dosarul de jurnale, pe care Wrapper-ul îl deschide pentru tine."/>
+		<lookup key="chkBugReportAttachLog" value="Atașează fișierul jurnal al Wrapper-ului (poate conține adrese de e-mail și nume de jocuri)"/>
+		<lookup key="msgBugReportEmpty" value="Te rugăm să descrii problema înainte de a trimite raportul."/>
+		<lookup key="msgBugReportSending" value="Se trimite raportul..."/>
+		<lookup key="msgBugReportSent" value="Mulțumim. Raportul a fost trimis la {0}."/>
+		<lookup key="msgBugReportFailed" value="Raportul nu a putut fi trimis: {0}"/>
+		<lookup key="msgWrapperUpdateInstalling" value="Se instalează {0}. Wrapper-ul revine imediat."/>
+		<lookup key="tabGames" value="Jocuri"/>
+		<lookup key="panelGameslistViewGames0" value="Joc"/>
+		<lookup key="panelGameslistViewGames1" value="Etichetă"/>
+		<lookup key="panelGameslistViewGames2" value="Dosar"/>
+		<lookup key="panelGameslistViewGames3" value="Implicit"/>
+		<lookup key="panelGameslistViewGames4" value="Găsit prin"/>
+		<lookup key="buttonAddFolder" value="Adaugă dosar..."/>
+		<lookup key="buttonSetLabel" value="Setează eticheta..."/>
+		<lookup key="buttonSetDefaultInstall" value="Setează ca implicit"/>
+		<lookup key="buttonRemoveInstall" value="Elimină"/>
+		<lookup key="buttonRescan" value="Caută din nou"/>
+		<lookup key="buttonRescanning" value="Se caută..."/>
+		<lookup key="lblGamesHelp" value="Dați fiecărei copii a unui joc o etichetă scurtă, de exemplu Vanilla, AoWx sau Ziggurat. Eticheta călătorește cu turele trimise, așa că toți jucătorii dintr-o partidă trebuie să folosească aceeași etichetă. Copia implicită primește turele fără etichetă."/>
+		<lookup key="msgInstallLabelPrompt" value="Eticheta acestei copii, de exemplu Vanilla, AoWx sau Ziggurat. Lăsați gol pentru niciuna:"/>
+		<lookup key="radioNoLabel" value="Fără etichetă"/>
+		<lookup key="radioOtherLabel" value="Alta:"/>
+		<lookup key="msgLabelInUse" value="Eticheta {0} este deja folosită de copia din {1}. Fiecare etichetă poate indica o singură copie a unui joc."/>
+		<lookup key="msgAddFolderNoGame" value="Nu s-a găsit niciun joc Age of Wonders în {0}. Dosarul trebuie să conțină AoW.exe, AoW2.exe sau AoWSM.exe."/>
+		<lookup key="msgInstallMissing" value="Lipsește"/>
+		<lookup key="menuItemMoveTo" value="Mută în"/>
+		<lookup key="enumRegistry" value="Registru"/>
+		<lookup key="enumSteam" value="Steam"/>
+		<lookup key="enumGog" value="GOG"/>
+		<lookup key="enumUninstall" value="Aplicații și caracteristici"/>
+		<lookup key="enumFolder" value="Scanare dosare"/>
+		<lookup key="enumManual" value="Adăugat de dvs."/>
+		<lookup key="primaryAccount" value="Activ, jocuri noi"/>
+		<lookup key="menuItemMoveUp" value="Mută în sus"/>
+		<lookup key="menuItemMoveDown" value="Mută în jos"/>
+		<lookup key="msgWrapperNoSendAccount" value="Niciun cont de e-mail nu este configurat pentru a trimite această tură. Adăugați un cont în fila Conturi."/>
+		<lookup key="inactiveAccount" value="Inactiv"/>
+		<lookup key="buttonDeactivate" value="Dezactivează"/>
+		<lookup key="menuItemDeactivate" value="Dezactivează"/>
 		<!-- END: Messages -->
 		<!-- BEGIN: Context Menus -->
 		<lookup key="menuItemShow" value="Afişare"/>
@@ -1521,7 +2391,7 @@
 		<lookup key="tabAccounts" value="Учётные записи"/>
 		<lookup key="panelTopHalflistViewAccounts0" value="Учётная запись"/>
 		<lookup key="panelTopHalflistViewAccounts1" value="E-mail"/>
-		<lookup key="panelTopHalflistViewAccounts2" value="По умолчанию"/>
+		<lookup key="panelTopHalflistViewAccounts2" value="Активен"/>
 		<lookup key="buttonActivate" value="Активировать"/>
 		<lookup key="buttonSetStartUp" value="Использовать по умолчанию"/>
 		<lookup key="buttonRename" value="Переименовать"/>
@@ -1563,7 +2433,8 @@
 		<lookup key="activityListViewlistView2" value="Ход"/>
 		<lookup key="activityListViewlistView3" value="Дней"/>
 		<lookup key="activityListViewlistView4" value="Статус"/>
-		<lookup key="activityListViewlistView5" value="Время"/>
+		<lookup key="activityListViewlistView5" value="Копия"/>
+		<lookup key="activityListViewlistView6" value="Время"/>
 		<lookup key="tabAbout" value="О программе"/>
 		<lookup key="groupBetaTesters" value="Бета-тестеры"/>
 		<lookup key="groupTranslators" value="Переводчики"/>
@@ -1580,30 +2451,31 @@
 		<lookup key="lblLocalMessageStoreMessage" value="Пользователям таких почтовых клиентов, как Outlook Express, Outlook, Mozilla Thunderbird, Eudora: по умолчанию эти клиенты удаляют с сервера новые письма, полученные через POP3. Чтобы Wrapper мог обнаружить и скачать письма с новыми ходами, вам надо отключить эту опцию в настройках клиента. Wrapper в свою очередь никогда не удаляет письма с сервера, так что ваш обычный клиент всё равно сможет их получить."/>
 		<lookup key="cmdRedownload" value="Скачать заново"/>
 		<lookup key="cmdClose" value="Закрыть"/>
-		<lookup key="AccountsCreationForm" value="Создать новую учетную запись"/>
+		<lookup key="AccountsCreationForm" value="Добавить учётную запись почты"/>
 		<lookup key="buttonCreate" value="&amp;Создать"/>
 		<lookup key="accountOther" value="Другой сервис"/>
-		<lookup key="lblThunderbirdTitle" value="База данных Thunderbird"/>
-		<lookup key="lblAutoconfigHeaderMessage" value="Автоматическая настройка"/>
-		<lookup key="lblAutoconfigPage1WrapperMessage" value="Будучи специализированным почтовым клиентом, Wrapper использует те же самые настройки, что и обычные почтовые программы (такие как Outlook Express). Для получения настроек используется база данных, созданная и поддерживаемая Mozilla Foundation с целью использования в их собственном почтовом клиенте под названием Thunderbird."/>
+		<lookup key="lblThunderbirdTitle" value="Главный библиотекарь"/>
+		<lookup key="lblAutoconfigHeaderMessage" value="Настройка учётной записи почты"/>
+		<lookup key="lblAutoconfigPage1WrapperMessage" value="Главный библиотекарь найдёт для вас настройки почтового сервера, посовещавшись с Thunderbird."/>
 		<lookup key="lblAutoconfigPage1AuthMessage" value="Укажите регистрационные данные вашего почтового аккаунта."/>
-		<lookup key="lblAutoconfigPage2SearchMessage" value="Поиск настроек..."/>
+		<lookup key="groupBoxAccount" value="Ваша учётная запись"/>
+		<lookup key="lblAutoconfigPage2SearchMessage" value="Поиск настроек почты…"/>
 		<lookup key="groupBoxResult" value="Результат"/>
-		<lookup key="groupBoxNext" value="И что теперь делать?"/>
-		<lookup key="radioAutoconfigPage2Search1" value="Поиск MX-записи"/>
-		<lookup key="radioAutoconfigPage2Search2" value="Попытаться угадать настройки"/>
-		<lookup key="radioAutoconfigPage2Search3" value="Ввести настройки вручную"/>
-		<lookup key="lblAutoconfigPage2MxLookup" value="В некоторых случаях ваш почтовый сервер хранится в базе данных под другим именем. Wrapper выполнит поиск MX-записи, соответствующей вашему почтовому адресу, и затем ещё раз попытается найти в базе корректные настройки."/>
-		<lookup key="lblAutoconfigPage2Guess" value="Используйте этот вариант, если предыдущий пункт не сработал. Имя почтового сервера будет определено путём попытки связаться с ним напрямую - успех этого процесса не гарантирован, и в случае неудачи вам придётся вводить настройки вручную."/>
-		<lookup key="lblAutoconfigPage3ServerMessage" value="Выберите какие настройки будут использованы Wrapper-ом."/>
-		<lookup key="groupBoxOptions" value="Настройки"/>
-		<lookup key="radioAutoconfigPage3Select1" value="Настройки по умолчанию (рекомендуется)"/>
-		<lookup key="radioAutoconfigPage3Select2" value="Выбрать настройки вручную"/>
-		<lookup key="fbServerPreference" value="Протокол:"/>
-		<lookup key="serverPreferenceNoPreference" value="По умолчанию"/>
-		<lookup key="lblAutoconfigPage3WrapperDecidesMessage" value="Наиболее стабильная опция для большинства случаев. Wrapper будет использовать наиболее безопасный вариант настроек, основываясь на предпочитаемом почтовом протоколе. По умолчанию используется протокол IMAP."/>
-		<lookup key="lblAutoconfigPage3UserDecidesMessage" value="Данная опция позволяет вручную определить какой из возможных вариантов настроек использовать."/>
-		<lookup key="ServerChoiceForm" value="Выбор настроек"/>
+		<lookup key="groupBoxNext" value="Попробовать иначе"/>
+		<lookup key="radioAutoconfigPage2Search1" value="Найти почтового провайдера этого домена"/>
+		<lookup key="radioAutoconfigPage2Search2" value="Попробовать типичные имена серверов"/>
+		<lookup key="radioAutoconfigPage2Search3" value="Ввести настройки самостоятельно"/>
+		<lookup key="lblAutoconfigPage2MxLookup" value="Возможно, вашу почту обслуживает не тот провайдер, на который указывает домен. Этот вариант находит провайдера и повторяет поиск."/>
+		<lookup key="lblAutoconfigPage2Guess" value="Пробует обычные имена, например mail.вашдомен.ru. Работает у многих небольших провайдеров, но не у всех."/>
+		<lookup key="lblAutoconfigPage3ServerMessage" value="Какие настройки использовать Wrapper?"/>
+		<lookup key="groupBoxOptions" value=""/>
+		<lookup key="radioAutoconfigPage3Select1" value="Рекомендуемые настройки"/>
+		<lookup key="radioAutoconfigPage3Select2" value="Выбрать из найденных серверов самому"/>
+		<lookup key="fbServerPreference" value="Предпочитать:"/>
+		<lookup key="serverPreferenceNoPreference" value="Автоматически"/>
+		<lookup key="lblAutoconfigPage3WrapperDecidesMessage" value="Использует самые безопасные из найденных серверов. IMAP предпочтителен, если выше не выбрано иное."/>
+		<lookup key="lblAutoconfigPage3UserDecidesMessage" value="Показывает все найденные серверы, чтобы вы могли выбрать."/>
+		<lookup key="ServerChoiceForm" value="Выберите серверы"/>
 		<lookup key="groupBoxIncoming" value="Входящие письма"/>
 		<lookup key="groupBoxOutgoing" value="Исходящие письма"/>
 		<lookup key="lblServerChoiceCheckBoxServer" value="Сервер:"/>
@@ -1612,6 +2484,9 @@
 		<!-- END: Main forms -->
 		<!-- BEGIN: Messages -->
 		<lookup key="msgWrapperWriteAccess" value="Нет прав на запись в папки: &#xA;{0}&#xA;&#xA; Исправьте настройки безопасности или запустите Wrapper с правами администратора."/>
+		<lookup key="msgWrapperFixPermissions" value="Предоставить вашей учётной записи Windows право записи в эти папки? Windows попросит разрешить изменение."/>
+		<lookup key="msgWrapperFixPermissionsDone" value="Готово. Wrapper теперь может записывать во все папки игр."/>
+		<lookup key="msgWrapperFixPermissionsFailed" value="Wrapper по-прежнему не может записывать в:&#xA;{0}&#xA;&#xA;Запустите его один раз от имени администратора или скопируйте игру в папку вне Program Files."/>
 		<lookup key="msgWrapperArchiveGame" value="Сохранить архив выбранной игры? Архивирование поместит файлы игры в отдельную папку ('{0}'), где они будут по-прежнему доступны из игры."/>
 		<lookup key="msgWrapperCannotActivateAccount" value="Невозможно сделать активной учётную запись &quot;{0}&quot;. Подождите завершения отправки почты."/>
 		<lookup key="msgAccountPrompt" value="Имя учётной записи:"/>
@@ -1626,8 +2501,90 @@
 		<lookup key="msgWrapperGamesWaiting" value="У вас есть {0} несыгранных игр(ы)."/>
 		<lookup key="msgInputEmailSettingsManual" value="Настройки надо будет прописать вручную."/>
 		<lookup key="msgWrapperResendTo" value="Отправить заново:"/>
-		<lookup key="msgAutoconfigPage2Success" value="Настройки для вашего почтового ящика успешно найдены."/>
-		<lookup key="msgAutoconfigPage2Failed" value="Не удалось найти настройки для вашего почтового ящика. Выберите один из перечисленных ниже вариантов разрешения проблемы."/>
+		<lookup key="msgAutoconfigPage2Success" value="Настройки почты найдены. Нажмите «Далее»."/>
+		<lookup key="msgAutoconfigPage2Failed" value="Для этого адреса настройки не найдены. Попробуйте один из вариантов ниже."/>
+		<lookup key="buttonTestConnection" value="Проверить соединение"/>
+		<lookup key="msgTestTitle" value="Проверка соединения"/>
+		<lookup key="msgTestIncomingSuccess" value="Выполнен вход на {0} как {1}. Входящая почта работает."/>
+		<lookup key="msgTestOutgoingSuccess" value="Подключено к {0} как {1}. Исходящая почта работает."/>
+		<lookup key="msgTestOutgoingSuccessNoAuth" value="Подключено к {0}. Исходящая почта работает."/>
+		<lookup key="msgTestFailed" value="Проверка соединения не удалась."/>
+		<lookup key="msgTestAuthFailed" value="Сервер отклонил имя пользователя или пароль."/>
+		<lookup key="msgHintGmail" value="Gmail требует здесь пароль приложения, а не ваш пароль Google. Создайте его (должна быть включена двухэтапная аутентификация) и вставьте выше код из 16 букв."/>
+		<lookup key="msgHintYahoo" value="Yahoo и AOL требуют здесь пароль приложения. Создайте его на странице «Безопасность аккаунта» и вставьте выше."/>
+		<lookup key="msgHintMicrosoft" value="Outlook.com, Hotmail и Live входят через учётную запись Microsoft. Нажмите «Войти через Microsoft» и завершите вход в браузере."/>
+		<lookup key="msgHintGmailShort" value="Gmail требует здесь пароль приложения, а не пароль Google."/>
+		<lookup key="msgHintYahooShort" value="Yahoo и AOL требуют здесь пароль приложения."/>
+		<lookup key="msgHintMicrosoftShort" value="Вход через Microsoft нужно обновить."/>
+		<lookup key="msgWrapperPollAuthFailed" value="{0} отклонил вход для {1}. Проверка почты приостановлена до исправления аккаунта: откройте вкладку «Аккаунты», исправьте пароль и нажмите «Проверить соединение»."/>
+		<lookup key="linkCreateAppPassword" value="Создать пароль приложения"/>
+		<lookup key="msgOAuthOnly" value="Этот почтовый провайдер разрешает почтовым программам только вход через OAuth, который Wrapper пока не поддерживает. Вход по паролю, скорее всего, будет отклонён."/>
+		<lookup key="buttonSignInMicrosoft" value="Войти через Microsoft"/>
+		<lookup key="msgOAuthSignedIn" value="Выполнен вход как {0}."/>
+		<lookup key="msgOAuthNotConfigured" value="Вход через Microsoft не настроен в этой копии Wrapper. Зарегистрируйте Wrapper на портале Azure и укажите идентификатор приложения (клиента) в файле AowEmailWrapper.dll.config, как описано в README."/>
+		<lookup key="msgOAuthSessionExpired" value="Вход через Microsoft для {0} истёк или был удалён. Откройте вкладку «Аккаунты» и снова войдите через Microsoft."/>
+		<lookup key="lblOAuthAccount" value="Этот аккаунт входит через Microsoft. Пароль не сохраняется."/>
+		<lookup key="linkOAuthSignInAgain" value="Снова войти через Microsoft"/>
+		<lookup key="cmdLogFolder" value="Открыть папку журналов"/>
+		<lookup key="fbAutoInstallUpdates" value="Устанавливать обновления автоматически:"/>
+		<lookup key="cmdCheckUpdates" value="Проверить обновления"/>
+		<lookup key="linkUpdateChecking" value="Проверка обновлений..."/>
+		<lookup key="linkUpdateAvailable" value="Доступно обновление: {0}"/>
+		<lookup key="msgWrapperUpdateAvailable" value="Доступно обновление"/>
+		<lookup key="msgWrapperUpdateBalloon" value="{0} готово к установке. Нажмите здесь, чтобы обновить Wrapper."/>
+		<lookup key="msgWrapperUpdateOffer" value="{0} доступно (опубликовано {1}).&#xA;Вы используете {2}.&#xA;&#xA;Загрузить и установить сейчас? Wrapper закроется на время установки и затем запустится снова."/>
+		<lookup key="msgWrapperUpdateNone" value="Вы используете последнюю версию ({0})."/>
+		<lookup key="msgWrapperUpdateFailed" value="Не удалось проверить обновления: {0}"/>
+		<lookup key="msgWrapperUpdateDownloading" value="Загрузка {0}..."/>
+		<lookup key="msgWrapperUpdateDownloadFailed" value="Не удалось загрузить обновление: {0}"/>
+		<lookup key="cmdReportBug" value="Сообщить об ошибке..."/>
+		<lookup key="groupBoxSupport" value="Поддержка"/>
+		<lookup key="groupDiscord" value="Серверы Discord"/>
+		<lookup key="lblDiscordIntro" value="Несколько дружелюбных мест, где игроки собираются для игр по электронной почте:"/>
+		<lookup key="groupDedication" value="Посвящение"/>
+		<lookup key="buttonSend" value="Отправить"/>
+		<lookup key="msgBugReportTitle" value="Сообщить об ошибке"/>
+		<lookup key="msgBugReportIntro" value="Опишите, что пошло не так и чего вы ожидали. Отчёт отправляется по электронной почте разработчику с вашей учётной записи {0}, чтобы ответ мог дойти до вас."/>
+		<lookup key="msgBugReportIntroNoAccount" value="Опишите, что пошло не так и чего вы ожидали. В программе ещё не настроена учётная запись электронной почты, поэтому отчёт откроется в вашей почтовой программе с адресом разработчика. Пожалуйста, приложите файл журнала из папки журналов, которую программа откроет для вас."/>
+		<lookup key="chkBugReportAttachLog" value="Приложить файл журнала программы (он может содержать адреса электронной почты и названия игр)"/>
+		<lookup key="msgBugReportEmpty" value="Пожалуйста, опишите проблему перед отправкой отчёта."/>
+		<lookup key="msgBugReportSending" value="Отправка отчёта..."/>
+		<lookup key="msgBugReportSent" value="Спасибо. Отчёт отправлен на {0}."/>
+		<lookup key="msgBugReportFailed" value="Не удалось отправить отчёт: {0}"/>
+		<lookup key="msgWrapperUpdateInstalling" value="Устанавливается {0}. Wrapper скоро вернётся."/>
+		<lookup key="tabGames" value="Игры"/>
+		<lookup key="panelGameslistViewGames0" value="Игра"/>
+		<lookup key="panelGameslistViewGames1" value="Метка"/>
+		<lookup key="panelGameslistViewGames2" value="Папка"/>
+		<lookup key="panelGameslistViewGames3" value="По умолчанию"/>
+		<lookup key="panelGameslistViewGames4" value="Найдено через"/>
+		<lookup key="buttonAddFolder" value="Добавить папку..."/>
+		<lookup key="buttonSetLabel" value="Задать метку..."/>
+		<lookup key="buttonSetDefaultInstall" value="Сделать основной"/>
+		<lookup key="buttonRemoveInstall" value="Удалить"/>
+		<lookup key="buttonRescan" value="Искать снова"/>
+		<lookup key="buttonRescanning" value="Поиск..."/>
+		<lookup key="lblGamesHelp" value="Дайте каждой копии игры короткую метку, например Vanilla, AoWx или Ziggurat. Метка передаётся вместе с отправляемыми ходами, поэтому все участники партии должны использовать одну и ту же метку. Копия по умолчанию получает ходы без метки."/>
+		<lookup key="msgInstallLabelPrompt" value="Метка этой копии, например Vanilla, AoWx или Ziggurat. Оставьте пустым, если метка не нужна:"/>
+		<lookup key="radioNoLabel" value="Без метки"/>
+		<lookup key="radioOtherLabel" value="Другая:"/>
+		<lookup key="msgLabelInUse" value="Метка {0} уже используется копией в {1}. Каждая метка может указывать только на одну копию игры."/>
+		<lookup key="msgAddFolderNoGame" value="В {0} не найдена игра Age of Wonders. В папке должен быть AoW.exe, AoW2.exe или AoWSM.exe."/>
+		<lookup key="msgInstallMissing" value="Отсутствует"/>
+		<lookup key="menuItemMoveTo" value="Переместить в"/>
+		<lookup key="enumRegistry" value="Реестр"/>
+		<lookup key="enumSteam" value="Steam"/>
+		<lookup key="enumGog" value="GOG"/>
+		<lookup key="enumUninstall" value="Приложения и возможности"/>
+		<lookup key="enumFolder" value="Поиск по папкам"/>
+		<lookup key="enumManual" value="Добавлено вами"/>
+		<lookup key="primaryAccount" value="Активен, новые игры"/>
+		<lookup key="menuItemMoveUp" value="Выше"/>
+		<lookup key="menuItemMoveDown" value="Ниже"/>
+		<lookup key="msgWrapperNoSendAccount" value="Ни один почтовый аккаунт не настроен для отправки этого хода. Добавьте аккаунт на вкладке «Аккаунты»."/>
+		<lookup key="inactiveAccount" value="Неактивен"/>
+		<lookup key="buttonDeactivate" value="Отключить"/>
+		<lookup key="menuItemDeactivate" value="Отключить"/>
 		<!-- END: Messages -->
 		<!-- BEGIN: Context Menus -->
 		<lookup key="menuItemShow" value="Открыть Wrapper"/>

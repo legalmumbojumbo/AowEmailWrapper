@@ -17,6 +17,11 @@ namespace AowEmailWrapper.Controls
     {
         private SmtpConfigValues _config;
         public EventHandler Config_Changed;
+        public EventHandler TestRequested;
+
+        private System.Windows.Forms.Panel panelTest;
+        private string _oauthProvider;
+        private System.Windows.Forms.Button buttonTestConnection;
 
         public SmtpConfig()
         {
@@ -41,6 +46,15 @@ namespace AowEmailWrapper.Controls
 
             fbAuthentication.InnerCheckBox.CheckedChanged += new EventHandler(fbAuthentication_CheckedChanged);
             fbUsePolling.InnerCheckBox.CheckedChanged += new EventHandler(fbUsePolling_CheckedChanged);
+
+            buttonTestConnection.Click += new EventHandler(buttonTestConnection_Click);
+        }
+
+        /// <summary>Empty for password sign-in, otherwise the OAuth provider name of the account being edited.</summary>
+        public string OAuthProvider
+        {
+            get { return _oauthProvider; }
+            set { _oauthProvider = value; }
         }
 
         public string Prefix
@@ -115,20 +129,35 @@ namespace AowEmailWrapper.Controls
                 fbPassword.TextValue = string.Empty;
             }
 
-            groupBoxAuth.Visible = _config.Authentication;
+            if (MicrosoftOAuth.IsProvider(_oauthProvider))
+            {
+                //Sending signs in with the same Microsoft token as polling; there is nothing to type here
+                fbAuthentication.Checked = true;
+                fbUsePolling.Checked = true;
+            }
+
+            groupBoxAuth.Visible = _config.Authentication && !MicrosoftOAuth.IsProvider(_oauthProvider);
             fbUserName.Enabled = !fbUsePolling.Checked;
             fbPassword.Enabled = !fbUsePolling.Checked;
         }
 
         private void fbAuthentication_CheckedChanged(object sender, EventArgs e)
         {
-            groupBoxAuth.Visible = fbAuthentication.Checked;
+            groupBoxAuth.Visible = fbAuthentication.Checked && !MicrosoftOAuth.IsProvider(_oauthProvider);
         }
 
         private void fbUsePolling_CheckedChanged(object sender, EventArgs e)
         {
             fbUserName.Enabled = !fbUsePolling.Checked;
             fbPassword.Enabled = !fbUsePolling.Checked;
+        }
+
+        private void buttonTestConnection_Click(object sender, EventArgs e)
+        {
+            if (TestRequested != null)
+            {
+                TestRequested(this, e);
+            }
         }
 
         private void Raise_Config_Changed(object sender, EventArgs e)

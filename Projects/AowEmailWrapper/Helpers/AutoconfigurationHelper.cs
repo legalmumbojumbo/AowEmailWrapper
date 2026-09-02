@@ -155,6 +155,7 @@ namespace AowEmailWrapper.Helpers
             PollingConfigValues returnVal = new PollingConfigValues();
 
             returnVal.Username = input.GetUsernameFormatted(emailAddress);
+            returnVal.RequiresOAuth = input.IsOAuthOnly;
 
             returnVal.UsePolling = true;
             returnVal.PollInterval = 10;
@@ -212,6 +213,7 @@ namespace AowEmailWrapper.Helpers
             SmtpConfigValues returnVal = new SmtpConfigValues();
 
             returnVal.Username = input.GetUsernameFormatted(emailAddress);
+            returnVal.RequiresOAuth = input.IsOAuthOnly;
 
             returnVal.Authentication = input.Authentication != AuthenticationType.None;
             returnVal.BCCMyself = false;

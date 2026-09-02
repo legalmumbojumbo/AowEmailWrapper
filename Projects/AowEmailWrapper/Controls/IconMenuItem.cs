@@ -1,151 +1,71 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using System;
 using System.Drawing;
 using System.Windows.Forms;
 
 namespace AowEmailWrapper.Controls
 {
-    public class IconMenuItem : MenuItem
+    /// <summary>
+    /// Menu item with the game icon on the left and an optional status icon on the right.
+    /// </summary>
+    public class IconMenuItem : ToolStripMenuItem
     {
-        private Image _startImage;
+        private const int EndImagePadding = 6;
+
         private Image _endImage;
         private bool _showEndImage;
-        private Font _font;
-        private const int _menuPaddingY = 2;
-        private const int _menuPaddingX = 0;
 
         public bool ShowEndImage
         {
             get { return _showEndImage; }
-            set { _showEndImage = value; }
+            set { _showEndImage = value; Invalidate(); }
         }
 
         public Image StartImage
         {
-            get { return _startImage; }
-            set { _startImage = value; }
+            get { return Image; }
+            set { Image = value; }
         }
 
         public Image EndImage
         {
             get { return _endImage; }
-            set { _endImage = value; }
+            set { _endImage = value; Invalidate(); }
         }
 
         public IconMenuItem(string text, Image startImage, Image endImage)
-            : this(text, startImage, endImage, SystemInformation.MenuFont)
-        { }
+            : base(text, startImage)
+        {
+            _endImage = endImage;
+            ImageScaling = ToolStripItemImageScaling.None;
+        }
 
         public IconMenuItem(string text, Image startImage, Image endImage, Font font)
-            : base(text)
+            : this(text, startImage, endImage)
         {
-            _startImage = startImage;
-            _endImage = endImage;
-            _font = font;
-
-            this.OwnerDraw = true;
+            Font = font;
         }
 
-        protected override void OnDrawItem(DrawItemEventArgs e)
-        {            
-            using (e.Graphics)
+        public override Size GetPreferredSize(Size constrainingSize)
+        {
+            Size size = base.GetPreferredSize(constrainingSize);
+            if (_endImage != null)
             {
-                base.OnDrawItem(e);
-
-                SolidBrush menuBrush = null;
-
-                if (!this.Enabled)
-                {
-                    menuBrush = new SolidBrush(SystemColors.GrayText);
-                }
-                else
-                {
-                    if ((e.State & DrawItemState.Selected) != 0)
-                    {
-                        // Text color when selected (highlighted)
-                        menuBrush = new SolidBrush(SystemColors.HighlightText);
-                    }
-                    else
-                    {
-                        // Text color during normal drawing
-                        menuBrush = new SolidBrush(SystemColors.MenuText);
-                    }
-                }
-
-                if ((e.State & DrawItemState.Selected) != 0)
-                {
-                    // Selected color
-                    e.Graphics.FillRectangle(SystemBrushes.Highlight, e.Bounds);
-                }
-                else
-                {
-                    e.Graphics.FillRectangle(SystemBrushes.Menu, e.Bounds);
-                }
-
-                GraphicsUnit pageUnits = e.Graphics.PageUnit;
-                
-                //Get bounds of Start Image
-                RectangleF startImageBounds = _startImage.GetBounds(ref pageUnits);
-
-                //Get bounds of End Image
-                RectangleF endImageBounds = _endImage.GetBounds(ref pageUnits);
-
-                //Get bounds of Text String
-                StringFormat strfmt = new StringFormat();
-                strfmt.Alignment = StringAlignment.Center;
-                SizeF textSize = e.Graphics.MeasureString(this.Text, _font, 1000, strfmt);
-                textSize.Height = (textSize.Height > startImageBounds.Height) ? textSize.Height : startImageBounds.Height;
-                RectangleF textBounds = new RectangleF(e.Bounds.Location, textSize);
-
-                //Set their locations relative to e.Bounds
-                int startY = (e.Bounds.Height - (int)startImageBounds.Height) / 2;
-                startY += e.Bounds.Y;
-
-                startImageBounds.Location = new PointF(e.Bounds.X, startY);
-                textBounds.Location = GetRelativeLocation(startImageBounds);
-                endImageBounds.Location = GetRelativeLocation(textBounds, 2);
-
-                //Draw everything
-                e.Graphics.DrawImage(_startImage, startImageBounds.Location);
-                e.Graphics.DrawString(this.Text, _font, menuBrush, textBounds, strfmt);
-                if (_showEndImage)
-                {
-                    e.Graphics.DrawImage(_endImage, endImageBounds.Location);
-                }
+                size.Width += _endImage.Width + EndImagePadding;
+                size.Height = Math.Max(size.Height, _endImage.Height + 4);
             }
+            return size;
         }
 
-        private PointF GetRelativeLocation(RectangleF relativeTo)
+        protected override void OnPaint(PaintEventArgs e)
         {
-            return GetRelativeLocation(relativeTo, 0);
-        }
+            base.OnPaint(e);
 
-        private PointF GetRelativeLocation(RectangleF relativeTo, int Xpad)
-        {
-            return new PointF((int)Math.Ceiling(relativeTo.X + relativeTo.Width) + Xpad, relativeTo.Y);
-        }
-
-        protected override void OnMeasureItem(MeasureItemEventArgs e)
-        {
-            Font menuFont = _font;
-
-            StringFormat strfmt = new StringFormat();
-
-            SizeF sizef = e.Graphics.MeasureString(this.Text, menuFont, 1000, strfmt);
-
-            e.ItemWidth = (int)Math.Ceiling(sizef.Width) + _startImage.Width + _menuPaddingX;
-
-            if (_showEndImage)
+            if (_showEndImage && _endImage != null)
             {
-                e.ItemWidth += _endImage.Width;
+                int x = Width - _endImage.Width - EndImagePadding;
+                int y = (Height - _endImage.Height) / 2;
+                e.Graphics.DrawImage(_endImage, x, y, _endImage.Width, _endImage.Height);
             }
-
-            int menuHeight = (int)Math.Ceiling(sizef.Height);
-            int imageHeight = _startImage.Height;
-
-            e.ItemHeight = ((menuHeight >= imageHeight) ? menuHeight : imageHeight) + _menuPaddingY;
         }
     }
 }

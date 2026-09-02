@@ -14,6 +14,7 @@ using AowEmailWrapper.Localization;
 namespace AowEmailWrapper.Controls
 {
     public delegate void ActivityListViewEventHandler(object sender, List<Activity> list);
+    public delegate void ActivityMoveEventHandler(object sender, Activity activity, AowGame target);
 
     public partial class ActivityListView : UserControl
     {
@@ -21,13 +22,15 @@ namespace AowEmailWrapper.Controls
 
         private ActivityList _activityLog;
         private ListViewColumnSorter _lvwColumnSorter;
-        private ContextMenu _contextMenu;
-        private MenuItem _resendMenuItem;
+        private ContextMenuStrip _contextMenu;
+        private ToolStripMenuItem _resendMenuItem;
+        private ToolStripMenuItem _moveToMenuItem;
 
         private const string Menu_Remove_Tag = "menuItemRemove";
         private const string Menu_MarkEnded_Tag = "menuItemMarkEnded";
         private const string Menu_MarkSent_Tag = "menuItemMarkSent";
         private const string Menu_Resend_Tag = "menuItemResend";
+        private const string Menu_MoveTo_Tag = "menuItemMoveTo";
 
         #endregion
 
@@ -38,6 +41,10 @@ namespace AowEmailWrapper.Controls
         public ActivityListViewEventHandler OnResendClick;
         public ActivityListViewEventHandler OnDeleteClick;
         public EventHandler OnListChanged;
+        public ActivityMoveEventHandler OnMoveTo;
+
+        /// <summary>Used to name the copy a game lives in and to offer the other copies under Move to.</summary>
+        public AowGameManager GameManager { get; set; }
 
         public ActivityList ActivityLog
         {
@@ -106,7 +113,8 @@ namespace AowEmailWrapper.Controls
                     item.SubItems.Add(new ListViewItem.ListViewSubItem(item, activity.MapTitle));
                     item.SubItems.Add(new ListViewItem.ListViewSubItem(item, activity.TurnNumber));
                     item.SubItems.Add(new ListViewItem.ListViewSubItem(item, (age > 0) ? age.ToString() : string.Empty));
-                    item.SubItems.Add(new ListViewItem.ListViewSubItem(item, activity.Status.Equals(ActivityState.None) ? string.Empty : Translator.TranslateEnum(activity.Status)));                    
+                    item.SubItems.Add(new ListViewItem.ListViewSubItem(item, activity.Status.Equals(ActivityState.None) ? string.Empty : Translator.TranslateEnum(activity.Status)));
+                    item.SubItems.Add(new ListViewItem.ListViewSubItem(item, CopyLabel(activity)));
                     item.SubItems.Add(new ListViewItem.ListViewSubItem(item, activity.DateTicks));
 
                     item.Tag = activity;
@@ -133,7 +141,7 @@ namespace AowEmailWrapper.Controls
                     listView.Items.Add(item);
                 }
 
-                _lvwColumnSorter.SortColumn = 5;
+                _lvwColumnSorter.SortColumn = 6;
                 listView.Sort();
 
                 ListViewColumnResizer.ResizeColumns(listView);
@@ -144,6 +152,20 @@ namespace AowEmailWrapper.Controls
             }
 
             listView.EndUpdate();
+        }
+
+        /// <summary>The label of the copy a game lives in, or the label it arrived with when the copy is unknown.</summary>
+        private string CopyLabel(Activity activity)
+        {
+            if (GameManager != null && !string.IsNullOrEmpty(activity.InstallFolder))
+            {
+                AowGame game = GameManager.GetGameByFolder(activity.GameType, activity.InstallFolder);
+                if (game != null)
+                {
+                    return game.Label;
+                }
+            }
+            return activity.ModLabel ?? string.Empty;
         }
 
         private void listView_ColumnWidthChanging(object sender, ColumnWidthChangingEventArgs e)
@@ -267,46 +289,42 @@ namespace AowEmailWrapper.Controls
 
         private void CreateContextMenu()
         {
-            _contextMenu = new ContextMenu();
+            _contextMenu = new ContextMenuStrip();
 
-            int indexCount = 0;
 
             EventHandler menuItemClickEvent = new EventHandler(ContextMenu_Click);
-            _contextMenu = new ContextMenu();
+            _contextMenu = new ContextMenuStrip();
 
-            MenuItem remove = new MenuItem();
-            MenuItem markEnded = new MenuItem();
-            MenuItem markSent = new MenuItem();
-            _resendMenuItem = new MenuItem();
+            ToolStripMenuItem remove = new ToolStripMenuItem();
+            ToolStripMenuItem markEnded = new ToolStripMenuItem();
+            ToolStripMenuItem markSent = new ToolStripMenuItem();
+            _resendMenuItem = new ToolStripMenuItem();
+            _moveToMenuItem = new ToolStripMenuItem();
 
-            _contextMenu.MenuItems.AddRange(new MenuItem[] { _resendMenuItem, markEnded, markSent, remove });
+            _contextMenu.Items.AddRange(new ToolStripMenuItem[] { _resendMenuItem, _moveToMenuItem, markEnded, markSent, remove });
 
-            _contextMenu.Popup += new EventHandler(ContextMenu_Popup);
+            _contextMenu.Opening += new System.ComponentModel.CancelEventHandler(ContextMenu_Popup);
 
-            _resendMenuItem.Index = indexCount;
             _resendMenuItem.Text = Translator.Translate(Menu_Resend_Tag);
             _resendMenuItem.Tag = Menu_Resend_Tag;
             _resendMenuItem.Click += menuItemClickEvent;
 
-            indexCount++;
-            markEnded.Index = indexCount;
+            _moveToMenuItem.Text = Translator.Translate(Menu_MoveTo_Tag);
+            _moveToMenuItem.Tag = Menu_MoveTo_Tag;
+
             markEnded.Text = Translator.Translate(Menu_MarkEnded_Tag);
             markEnded.Tag = Menu_MarkEnded_Tag;
             markEnded.Click += menuItemClickEvent;
 
-            indexCount++;
-            markSent.Index = indexCount;
             markSent.Text = Translator.Translate(Menu_MarkSent_Tag);
             markSent.Tag = Menu_MarkSent_Tag;
             markSent.Click += menuItemClickEvent;
 
-            indexCount++;
-            remove.Index = indexCount;
             remove.Text = Translator.Translate(Menu_Remove_Tag);
             remove.Tag = Menu_Remove_Tag;
             remove.Click += menuItemClickEvent;
 
-            listView.ContextMenu = _contextMenu;
+            listView.ContextMenuStrip = _contextMenu;
         }
 
         private void ContextMenu_Click(object sender, EventArgs e)
@@ -315,7 +333,7 @@ namespace AowEmailWrapper.Controls
 
             if (selected != null && selected.Count > 0)
             {
-                string senderTag = ((MenuItem)sender).Tag.ToString();
+                string senderTag = ((ToolStripMenuItem)sender).Tag.ToString();
 
                 switch (senderTag)
                 {
@@ -346,10 +364,10 @@ namespace AowEmailWrapper.Controls
             }
         }
 
-        private void ContextMenu_Popup(object sender, EventArgs e)
+        private void ContextMenu_Popup(object sender, System.ComponentModel.CancelEventArgs e)
         {
             bool enabled = listView.SelectedItems.Count > 0;
-            foreach (MenuItem menu in _contextMenu.MenuItems)
+            foreach (ToolStripMenuItem menu in _contextMenu.Items)
             {
                 menu.Enabled = enabled;
             }
@@ -365,6 +383,47 @@ namespace AowEmailWrapper.Controls
             }
 
             _resendMenuItem.Enabled = resend;
+
+            PopulateMoveTo();
+        }
+
+        /// <summary>Lists the other copies of the selected game's type; hidden when there is only one copy.</summary>
+        private void PopulateMoveTo()
+        {
+            _moveToMenuItem.DropDownItems.Clear();
+            _moveToMenuItem.Visible = false;
+
+            List<Activity> selected = GetSelectedActivities();
+            if (GameManager == null || selected.Count != 1 || selected[0].GameType.Equals(AowGameType.Unknown))
+            {
+                return;
+            }
+
+            Activity activity = selected[0];
+            AowGame current = GameManager.GetGameForActivity(activity);
+
+            foreach (AowGame game in GameManager.GetInstalls(activity.GameType))
+            {
+                if (current != null && game.Id == current.Id)
+                {
+                    continue;
+                }
+
+                AowGame target = game;
+                ToolStripMenuItem item = new ToolStripMenuItem(game.DisplayName);
+                item.ToolTipText = game.Folder;
+                item.Click += (sender, e) =>
+                {
+                    if (OnMoveTo != null)
+                    {
+                        OnMoveTo(this, activity, target);
+                    }
+                };
+                _moveToMenuItem.DropDownItems.Add(item);
+            }
+
+            _moveToMenuItem.Visible = _moveToMenuItem.DropDownItems.Count > 0;
+            _moveToMenuItem.Enabled = true;
         }
 
         #endregion

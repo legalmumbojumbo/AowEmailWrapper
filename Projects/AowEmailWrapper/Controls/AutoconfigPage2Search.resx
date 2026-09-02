@@ -118,9 +118,9 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="lblAutoconfigPage2Guess.Text" xml:space="preserve">
-    <value>Use this option as a last resort.  This will predict the name of your email server by attempting to contact them directly over the Internet, this is not guaranteed to work.  If this fails you may need to enter the settings manually.</value>
+    <value>Tries the usual names such as mail.yourdomain.com. Works for many small providers, but not all.</value>
   </data>
   <data name="lblAutoconfigPage2MxLookup.Text" xml:space="preserve">
-    <value>Sometimes your email server is listed in the online database under a different name to your email address.  If we do an Mx Lookup on your email address and then run the database search again this can often find the correct settings.</value>
+    <value>Your address may be handled by a different provider than its domain suggests. This finds that provider and searches again.</value>
   </data>
 </root>

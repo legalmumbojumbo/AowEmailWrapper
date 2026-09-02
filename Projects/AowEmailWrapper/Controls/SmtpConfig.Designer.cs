@@ -40,6 +40,8 @@
             this.fbUsePolling = new AowEmailWrapper.Controls.FormBlockCheckBox();
             this.fbPassword = new AowEmailWrapper.Controls.FormBlockText();
             this.fbUserName = new AowEmailWrapper.Controls.FormBlockText();
+            this.panelTest = new System.Windows.Forms.Panel();
+            this.buttonTestConnection = new System.Windows.Forms.Button();
             this.groupBoxServer.SuspendLayout();
             this.groupBoxAuth.SuspendLayout();
             this.SuspendLayout();
@@ -206,8 +208,27 @@
             // 
             // SmtpConfig
             // 
+            // 
+            // panelTest
+            // 
+            this.panelTest.Controls.Add(this.buttonTestConnection);
+            this.panelTest.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.panelTest.Name = "panelTest";
+            this.panelTest.Padding = new System.Windows.Forms.Padding(2, 6, 2, 2);
+            this.panelTest.Size = new System.Drawing.Size(363, 36);
+            this.panelTest.TabIndex = 40;
+            // 
+            // buttonTestConnection
+            // 
+            this.buttonTestConnection.Dock = System.Windows.Forms.DockStyle.Right;
+            this.buttonTestConnection.Name = "buttonTestConnection";
+            this.buttonTestConnection.Size = new System.Drawing.Size(130, 28);
+            this.buttonTestConnection.TabIndex = 0;
+            this.buttonTestConnection.Text = "Test connection";
+            this.buttonTestConnection.UseVisualStyleBackColor = true;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.panelTest);
             this.Controls.Add(this.groupBoxAuth);
             this.Controls.Add(this.groupBoxServer);
             this.Margin = new System.Windows.Forms.Padding(2);

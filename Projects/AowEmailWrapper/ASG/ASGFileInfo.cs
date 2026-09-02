@@ -7,7 +7,7 @@ using System.Diagnostics;
 using System.Text.RegularExpressions;
 using AowEmailWrapper.Helpers;
 using AowEmailWrapper.Games;
-using Lesnikowski.Mail;
+using MimeKit;
 
 namespace AowEmailWrapper.ASG
 {
@@ -25,7 +25,8 @@ namespace AowEmailWrapper.ASG
 
         private ASGFileType _fileType = ASGFileType.Unknown;
         private AowGameType _gameType = AowGameType.Unknown;
-        private MimeData _theAttachment;
+        private string _fileName;
+        private byte[] _data;
 
         private string _gameTitle = null;
         private string _mapTitle = null;
@@ -46,17 +47,17 @@ namespace AowEmailWrapper.ASG
 
         public string FileName
         {
-            get { return _theAttachment.FileName; }
+            get { return _fileName; }
         }
 
         public byte[] DataBytes
         {
-            get { return _theAttachment.Data; }
+            get { return _data; }
         }
 
         public int Length
         {
-            get { return _theAttachment.Data.Length; }
+            get { return _data.Length; }
         }
 
         //Calculated Properties
@@ -109,7 +110,7 @@ namespace AowEmailWrapper.ASG
 
                 if (string.IsNullOrEmpty(returnVal))
                 {
-                    returnVal = _theAttachment.FileName;
+                    returnVal = _fileName;
                 }
 
                 return returnVal;
@@ -120,9 +121,14 @@ namespace AowEmailWrapper.ASG
 
         #region Constructors
 
-        public ASGFileInfo(MimeData theAttachment)
+        public ASGFileInfo(MimePart theAttachment)
+            : this(theAttachment.FileName, MailHelper.GetAttachmentBytes(theAttachment))
+        { }
+
+        public ASGFileInfo(string fileName, byte[] data)
         {
-            _theAttachment = theAttachment;
+            _fileName = fileName;
+            _data = data ?? new byte[0];
             ParseProperties();
         }
 
@@ -161,13 +167,19 @@ namespace AowEmailWrapper.ASG
 
         private void ParseAowMajorVersion()
         {
-            switch (_theAttachment.Data[0])
+            if (_data.Length < 7)
+            {
+                _fileType = ASGFileType.Unknown;
+                return;
+            }
+
+            switch (_data[0])
             {
                 case 0x43:
                     _fileType = ASGFileType.Aow1;
                     break;
                 case 0x18:
-                    switch (_theAttachment.Data[6])
+                    switch (_data[6])
                     {
                         case 0x58:
                             _fileType = ASGFileType.AowMpe;
@@ -190,7 +202,7 @@ namespace AowEmailWrapper.ASG
         {
             _gameType = AowGameType.Aow1;
 
-            using (BinaryReader input = new BinaryReader(_theAttachment.GetMemoryStream()))
+            using (BinaryReader input = new BinaryReader(new MemoryStream(_data)))
             {
                 if (_fetch_compressed_data)
                 {
@@ -233,7 +245,7 @@ namespace AowEmailWrapper.ASG
 
         private void ParseAow2(byte[] signature)
         {
-            using (BinaryReader input = new BinaryReader(_theAttachment.GetMemoryStream()))
+            using (BinaryReader input = new BinaryReader(new MemoryStream(_data)))
             {
                 if (CheckSignature(input, signature))
                 {
@@ -348,7 +360,7 @@ namespace AowEmailWrapper.ASG
 
             if (Directory.Exists(folderPath))
             {
-                _theAttachment.Save(Path.Combine(folderPath, FileNameTrue));
+                File.WriteAllBytes(Path.Combine(folderPath, FileNameTrue), _data);
                 success = true;
             }
 
@@ -374,7 +386,7 @@ namespace AowEmailWrapper.ASG
 
         public void Dispose()
         {
-            this._theAttachment = null;
+            _data = null;
         }
 
         #endregion

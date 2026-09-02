@@ -1,18 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Diagnostics;
-using AowEmailWrapper.Classes;
-using AowEmailWrapper.ASG;
+using AowEmailWrapper.ConfigFramework;
 using AowEmailWrapper.Games;
 using AowEmailWrapper.Helpers;
-using AowEmailWrapper.ConfigFramework;
 using AowEmailWrapper.Pollers.MessageStore;
-using Lesnikowski.Client;
-using Lesnikowski.Mail;
-using Lesnikowski.Mail.Headers;
-using Lesnikowski.Mail.Headers.Constants;
+using MailKit.Net.Pop3;
+using MimeKit;
 
 namespace AowEmailWrapper.Pollers
 {
@@ -47,25 +41,23 @@ namespace AowEmailWrapper.Pollers
             {
                 PollBegin();
 
-                using (Pop3 pop3 = new Pop3())
+                using (Pop3Client pop3 = new Pop3Client())
                 {
-                    switch (_sslType)
+                    pop3.Timeout = NETWORK_TIMEOUT_MS;
+                    pop3.Connect(_host, _port, MailHelper.ToSecureSocketOptions(_sslType));
+                    MailHelper.Authenticate(pop3, _username, _password, OAuthProvider);
+
+                    //POP3 addresses messages by index; UIDL gives the stable id for each index
+                    IList<string> uidl = pop3.GetMessageUids();
+                    List<string> serverUids = new List<string>(uidl);
+                    Dictionary<string, int> uidIndex = new Dictionary<string, int>();
+                    for (int i = 0; i < uidl.Count; i++)
                     {
-                        case SSLType.None:
-                            pop3.Connect(_host, _port);
-                            break;
-                        case SSLType.SSL:
-                            pop3.ConnectSSL(_host, _port);
-                            break;
-                        case SSLType.TLS:
-                            pop3.Connect(_host, _port);
-                            pop3.STLS();
-                            break;
+                        if (!uidIndex.ContainsKey(uidl[i]))
+                        {
+                            uidIndex.Add(uidl[i], i);
+                        }
                     }
-
-                    pop3.UseBestLogin(_username, _password);
-
-                    List<string> serverUids = pop3.GetAll();
 
                     MessageStoreCollection localMessageStore = MessageStoreManager.LoadLocalMessageStore(_username, _host);
 
@@ -77,10 +69,13 @@ namespace AowEmailWrapper.Pollers
 
                         foreach (string uid in uidsToCheck)
                         {
-                            //string fileName;
+                            int index;
+                            if (!uidIndex.TryGetValue(uid, out index))
+                            {
+                                continue;
+                            }
 
-                            string eml = pop3.GetMessageByUID(uid);
-                            IMail email = new MailBuilder().CreateFromEml(eml); //SpoolEmlViaDisk(pop3.GetMessageByUID(uid), out fileName);
+                            MimeMessage email = pop3.GetMessage(index);
 
                             MessageStoreMessage theMessage = new MessageStoreMessage(uid);
 
@@ -89,32 +84,27 @@ namespace AowEmailWrapper.Pollers
                                 emailDownloaded = true;
 
                                 //Only populate the extra data for game emails
-                                if (email.From.Count > 0)
-                                {
-                                    theMessage.From = email.From[0].Address;
-                                }
-                                
+                                theMessage.From = MailHelper.GetFromAddress(email);
                                 theMessage.Subject = email.Subject;
 
-                                if (email.Date.HasValue)
+                                if (email.Date != DateTimeOffset.MinValue)
                                 {
-                                    theMessage.Date = email.Date.Value.ToString();
-                                    theMessage.DateTicks = email.Date.Value.Ticks.ToString();
+                                    DateTime stamp = email.Date.LocalDateTime;
+                                    theMessage.Date = stamp.ToString();
+                                    theMessage.DateTicks = stamp.Ticks.ToString();
                                 }
                                 //In case the email doesn't come down with a good date
                                 if (string.IsNullOrEmpty(theMessage.Date))
-                                { 
+                                {
                                     DateTime stamp = DateTime.Now;
                                     theMessage.Date = stamp.ToString();
                                     theMessage.DateTicks = stamp.Ticks.ToString();
                                 }
 
-                                theMessage.FileName = GetAttachmentsString(email);
+                                theMessage.FileName = MailHelper.GetAttachmentsString(email);
                             }
 
                             localMessageStore.Messages.Add(theMessage);
-
-                            //ClearSpooledEml(fileName);
                         }
                     }
                     else
@@ -128,7 +118,7 @@ namespace AowEmailWrapper.Pollers
                     localMessageStore.Dispose();
                     localMessageStore = null;
 
-                    pop3.Close();
+                    pop3.Disconnect(true);
                 }
             }
             catch (Exception ex)
@@ -141,26 +131,6 @@ namespace AowEmailWrapper.Pollers
             {
                 PollEnd(emailDownloaded, error);
             }
-        }
-
-        private string GetAttachmentsString(IMail email)
-        {
-            string returnVal = string.Empty;
-
-            if (email != null && email.Attachments != null && email.Attachments.Count > 0)
-            {
-                StringBuilder sb = new StringBuilder();
-
-                foreach (MimeData attachment in email.Attachments)
-                {
-                    sb.Append(attachment.FileName);
-                    sb.Append(Environment.NewLine);
-                }
-
-                returnVal = sb.ToString().Trim().Replace(Environment.NewLine, ", ");                
-            }
-
-            return returnVal;
         }
     }
 }

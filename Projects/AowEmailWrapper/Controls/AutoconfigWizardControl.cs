@@ -20,10 +20,13 @@ namespace AowEmailWrapper.Controls
 
         private const string OtherAccountTranslationKey = "accountOther";
         private const string OtherAccountType = "Other";
+        private const string OAuthOnlyKey = "msgOAuthOnly";
 
         private int _stage = 0;
         private string _emailAddress;
         private string _password;
+        private string _oauthProvider;
+        private string _oauthUsername;
 
         private Thread _autoConfigThread;
         private MechanismResponse _mechanismSuccess;
@@ -43,8 +46,27 @@ namespace AowEmailWrapper.Controls
 
             contentPage1.TextKeyDown += new KeyEventHandler(contentPage1_KeyDown);
             contentPage1.Next += new EventHandler(contentPage1_Next);
+            contentPage1.InputChanged += new EventHandler(contentPage1_InputChanged);
 
             _stages = new UserControl[] { contentPage1, contentPage2, contentPage3 };
+        }
+
+        protected override void OnLoad(EventArgs e)
+        {
+            base.OnLoad(e);
+            AlignPortrait();
+        }
+
+        /// <summary>
+        /// Lines the top of the portrait up with the top of the page text. The picture box is made square so the
+        /// square portrait fills it without being letterboxed, and the panel's top padding is taken from the
+        /// header, so the alignment holds whatever the DPI scaling does to the two widths and heights.
+        /// </summary>
+        private void AlignPortrait()
+        {
+            int top = panelMainHeader.Height + panelMainContent.Padding.Top;
+            panelLeft.Padding = new Padding(panelLeft.Padding.Left, top, panelLeft.Padding.Right, panelLeft.Padding.Bottom);
+            pictureBoxThunderbird.Height = pictureBoxThunderbird.Width;
         }
 
         public AccountConfigValues ChosenTemplate
@@ -79,7 +101,7 @@ namespace AowEmailWrapper.Controls
         {
             if (_autoConfigThread != null && _autoConfigThread.IsAlive)
             {
-                _autoConfigThread.Abort();
+                //Thread.Abort is unsupported on modern .NET: the search thread ends on its own once its network calls time out.
             }
         }
 
@@ -140,6 +162,8 @@ namespace AowEmailWrapper.Controls
                 HideControl(_stages[_stage]);
                 _emailAddress = contentPage1.EmailAddress;
                 _password = contentPage1.Password;
+                _oauthProvider = contentPage1.OAuthProvider;
+                _oauthUsername = contentPage1.OAuthUsername;
                 cmdNext.Enabled = false;
                 TryAutoConfig(RequestType.Standard);
                 _stage++;
@@ -160,6 +184,7 @@ namespace AowEmailWrapper.Controls
                     break;
                 case AutoconfigPage2Search.AutoconfigPage2Outcome.Manual:
                     _chosenTemplate = CreateOther(_emailAddress, _password);
+                    ApplyOAuth(_chosenTemplate);
                     if (ConfigChosen != null)
                     {
                         ConfigChosen(this, new EventArgs());
@@ -181,6 +206,8 @@ namespace AowEmailWrapper.Controls
                 case AutoconfigPage3Select.AutoconfigPage3Outcome.WrapperDecides:
                     EmailProvider provider = _mechanismSuccess.ClientConfig.EmailProvider;
                     _chosenTemplate = AutoconfigurationHelper.MapMechanismResponse(_mechanismSuccess, _emailAddress, _password, contentPage3.IncomingPreference);
+                    ApplyOAuth(_chosenTemplate);
+                    WarnIfOAuthOnly();
                     if (ConfigChosen != null)
                     {
                         ConfigChosen(this, new EventArgs());
@@ -194,6 +221,8 @@ namespace AowEmailWrapper.Controls
                     if (form.ShowDialog(this).Equals(DialogResult.OK))
                     {
                         _chosenTemplate = AutoconfigurationHelper.MapManualChoice(form.EmailProvider, _emailAddress, _password);
+                        ApplyOAuth(_chosenTemplate);
+                        WarnIfOAuthOnly();
 
                         if (ConfigChosen != null)
                         {
@@ -240,6 +269,14 @@ namespace AowEmailWrapper.Controls
             cmdNext.Enabled = contentPage1.Outcome == AutoconfigPage1Welcome.AutoconfigPage1Outcome.Success;
         }
 
+        private void contentPage1_InputChanged(object sender, EventArgs e)
+        {
+            if (_stage == 0)
+            {
+                cmdNext.Enabled = contentPage1.Outcome == AutoconfigPage1Welcome.AutoconfigPage1Outcome.Success;
+            }
+        }
+
         private void contentPage1_Next(object sender, EventArgs e)
         {
             cmdNext_Click(sender, e);
@@ -256,6 +293,7 @@ namespace AowEmailWrapper.Controls
             cmdBack.Visible = true;
 
             _autoConfigThread = new Thread(new ParameterizedThreadStart(AutoConfig_Search_Thread));
+            _autoConfigThread.IsBackground = true;
             _autoConfigThread.Start(requestType.ToString());
         }
 
@@ -312,6 +350,45 @@ namespace AowEmailWrapper.Controls
 
         #endregion
 
+        /// <summary>
+        /// When the user signed in with Microsoft on page 1, the account authenticates with that token
+        /// for both directions and stores no password.
+        /// </summary>
+        private void ApplyOAuth(AccountConfigValues account)
+        {
+            if (account == null || string.IsNullOrEmpty(_oauthProvider))
+            {
+                return;
+            }
+
+            account.OAuthProvider = _oauthProvider;
+
+            if (account.PollingConfig != null)
+            {
+                account.PollingConfig.Username = _oauthUsername;
+                account.PollingConfig.PasswordTrue = string.Empty;
+                account.PollingConfig.RequiresOAuth = false;
+            }
+
+            if (account.SmtpConfig != null)
+            {
+                account.SmtpConfig.Authentication = true;
+                account.SmtpConfig.UsePollingCredentials = true;
+                account.SmtpConfig.Username = string.Empty;
+                account.SmtpConfig.PasswordTrue = string.Empty;
+                account.SmtpConfig.RequiresOAuth = false;
+            }
+        }
+
+        private void WarnIfOAuthOnly()
+        {
+            if (_chosenTemplate != null && _chosenTemplate.RequiresOAuth)
+            {
+                string caption = this.ParentForm != null ? this.ParentForm.Text : string.Empty;
+                MessageBox.Show(this, Translator.Translate(OAuthOnlyKey), caption, MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+        }
+
         #region Mapping Code
 
         private AccountConfigValues CreateOther(string emailAddress, string password)
@@ -323,14 +400,15 @@ namespace AowEmailWrapper.Controls
             other.PollingConfig.UsePolling = true;
             other.PollingConfig.Username = emailAddress;
             other.PollingConfig.PasswordTrue = password;
-            other.PollingConfig.EmailType = EmailType.POP3;
-            other.PollingConfig.Port = 110;
+            other.PollingConfig.EmailType = EmailType.IMAP;
+            other.PollingConfig.Port = 993;
+            other.PollingConfig.SSLType = SSLType.SSL;
 
             other.SmtpConfig = new SmtpConfigValues();
             other.SmtpConfig.Authentication = true;
             other.SmtpConfig.EmailAddress = emailAddress;
-            other.SmtpConfig.Port = 25;
-            other.SmtpConfig.SmtpSSLType = SSLType.None;
+            other.SmtpConfig.Port = 587;
+            other.SmtpConfig.SmtpSSLType = SSLType.TLS;
             other.SmtpConfig.UsePollingCredentials = true;
 
             return other;

@@ -62,11 +62,33 @@ namespace AowEmailWrapper.ConfigFramework
             set { _shortUserName = value; }
         }
 
+        /// <summary>Empty for password sign-in, otherwise the OAuth provider name (see MicrosoftOAuth.ProviderName).</summary>
+        [XmlAttribute("oauthprovider")]
+        public string OAuthProvider { get; set; }
+
+        /// <summary>An active account checks for email and sends the replies for the games it received.</summary>
+        [XmlIgnore]
+        public bool IsActive
+        {
+            get { return _pollingConfigValues != null && _pollingConfigValues.UsePolling; }
+        }
+
         [XmlIgnore]
         public bool IsGuess
         {
             get { return _isGuess; }
             set { _isGuess = value; }
+        }
+
+        /// <summary>True when either chosen server accepts OAuth2 sign-in only, which the Wrapper cannot do yet.</summary>
+        [XmlIgnore]
+        public bool RequiresOAuth
+        {
+            get
+            {
+                return (_pollingConfigValues != null && _pollingConfigValues.RequiresOAuth) ||
+                    (_smtpConfigValues != null && _smtpConfigValues.RequiresOAuth);
+            }
         }
 
         public AccountConfigValues()

@@ -23,7 +23,7 @@ namespace Mozilla.Autoconfig
 
         private const string IspDbKey = "Mozilla.Autoconfig.IspDbTemplate";
 
-        private const string IspDbTemplateDefault = "https://autoconfig.thunderbird.net/autoconfig/v1.1/{0}";
+        private const string IspDbTemplateDefault = "https://autoconfig.thunderbird.net/v1.1/{0}";
         //"https://autoconfig-live.mozillamessaging.com/autoconfig/v1.1/{0}";
 
         private const string LocalDomainKey = "Mozilla.Autoconfig.LocalDomainTemplate";

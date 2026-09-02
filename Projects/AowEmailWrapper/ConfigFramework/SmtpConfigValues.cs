@@ -83,8 +83,8 @@ namespace AowEmailWrapper.ConfigFramework
         [XmlIgnore]
         public string PasswordTrue
         {
-            get { return CryptographyHelper.Decrypt(_password); }
-            set { _password = CryptographyHelper.Encrypt(value); }
+            get { return CryptographyHelper.UnprotectPassword(_password); }
+            set { _password = CryptographyHelper.ProtectPassword(value); }
         }
 
         [XmlAttribute("usepollingcredentials")]
@@ -107,6 +107,10 @@ namespace AowEmailWrapper.ConfigFramework
             get { return _verified; }
             set { _verified = value; }
         }
+
+        /// <summary>Set by autoconfiguration when the chosen server accepts OAuth2 sign-in only.</summary>
+        [XmlIgnore]
+        public bool RequiresOAuth { get; set; }
 
         public SmtpConfigValues()
         { }

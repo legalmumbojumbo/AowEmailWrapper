@@ -123,29 +123,7 @@
             // 
             // imageListIcons
             // 
-            this.imageListIcons.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("imageListIcons.ImageStream")));
             this.imageListIcons.TransparentColor = System.Drawing.Color.Transparent;
-            this.imageListIcons.Images.SetKeyName(0, "Other");
-            this.imageListIcons.Images.SetKeyName(1, "googlemail.com");
-            this.imageListIcons.Images.SetKeyName(2, "gmail.com");
-            this.imageListIcons.Images.SetKeyName(3, "hotmail.com");
-            this.imageListIcons.Images.SetKeyName(4, "yahoo.com");
-            this.imageListIcons.Images.SetKeyName(5, "aol.com");
-            this.imageListIcons.Images.SetKeyName(6, "mail.ru");
-            this.imageListIcons.Images.SetKeyName(7, "yandex.ru");
-            this.imageListIcons.Images.SetKeyName(8, "rambler.ru");
-            this.imageListIcons.Images.SetKeyName(9, "inbox.com");
-            this.imageListIcons.Images.SetKeyName(10, "mail.com");
-            this.imageListIcons.Images.SetKeyName(11, "gmx.com");
-            this.imageListIcons.Images.SetKeyName(12, "gmx.net");
-            this.imageListIcons.Images.SetKeyName(13, "web.de");
-            this.imageListIcons.Images.SetKeyName(14, "freenet.de");
-            this.imageListIcons.Images.SetKeyName(15, "t-online.de");
-            this.imageListIcons.Images.SetKeyName(16, "Wippies");
-            this.imageListIcons.Images.SetKeyName(17, "onet.pl");
-            this.imageListIcons.Images.SetKeyName(18, "wp.pl");
-            this.imageListIcons.Images.SetKeyName(19, "o2.pl");
-            this.imageListIcons.Images.SetKeyName(20, "abv.bg");
             // 
             // panelButtons
             // 
@@ -315,7 +293,7 @@
             pollingConfigValues1.Username = "";
             pollingConfigValues1.UseSSL = null;
             this.pollingConfig.Config = pollingConfigValues1;
-            this.pollingConfig.Dock = System.Windows.Forms.DockStyle.Top;
+            this.pollingConfig.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pollingConfig.Location = new System.Drawing.Point(3, 3);
             this.pollingConfig.Margin = new System.Windows.Forms.Padding(2);
             this.pollingConfig.Name = "pollingConfig";
@@ -347,7 +325,7 @@
             smtpConfigValues1.Username = "";
             smtpConfigValues1.Verified = false;
             this.smtpConfig.Config = smtpConfigValues1;
-            this.smtpConfig.Dock = System.Windows.Forms.DockStyle.Top;
+            this.smtpConfig.Dock = System.Windows.Forms.DockStyle.Fill;
             this.smtpConfig.Location = new System.Drawing.Point(3, 3);
             this.smtpConfig.Margin = new System.Windows.Forms.Padding(2);
             this.smtpConfig.Name = "smtpConfig";

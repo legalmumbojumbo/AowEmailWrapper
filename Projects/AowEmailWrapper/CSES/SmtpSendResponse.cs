@@ -3,10 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.IO;
-using System.Net.Mail;
 using System.Net;
 using AowEmailWrapper.Games;
-using Lesnikowski.Mail;
+using MimeKit;
 
 namespace AowEmailWrapper.CSES
 {
@@ -14,7 +13,7 @@ namespace AowEmailWrapper.CSES
     {
         #region Private Members
 
-        private IMail _theGameEmail;
+        private MimeMessage _theGameEmail;
         private bool _isSuccess;
         private Exception _ex;
 
@@ -22,7 +21,7 @@ namespace AowEmailWrapper.CSES
 
         #region Public Properties
 
-        public IMail GameEmail
+        public MimeMessage GameEmail
         {
             get { return _theGameEmail; }
             set { _theGameEmail = value; }
@@ -44,11 +43,11 @@ namespace AowEmailWrapper.CSES
 
         #region Constructors
 
-        public SmtpSendResponse(IMail theGameEmail, bool isSuccess)
+        public SmtpSendResponse(MimeMessage theGameEmail, bool isSuccess)
             : this(theGameEmail, isSuccess, null)
         { }
 
-        public SmtpSendResponse(IMail theGameEmail, bool isSuccess, Exception ex)
+        public SmtpSendResponse(MimeMessage theGameEmail, bool isSuccess, Exception ex)
         {
             _theGameEmail = theGameEmail;
             _isSuccess = isSuccess;

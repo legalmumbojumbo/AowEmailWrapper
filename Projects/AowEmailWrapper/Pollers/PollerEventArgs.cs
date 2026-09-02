@@ -8,7 +8,9 @@ namespace AowEmailWrapper.Pollers
     public enum PollState
     {
         Begin,
-        End
+        End,
+        /// <summary>The check stopped early; not an error the user needs to see.</summary>
+        Aborted
     }
 
     public class PollerEventArgs

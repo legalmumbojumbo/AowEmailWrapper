@@ -1,10 +1,10 @@
-namespace EricDaugherty.CSES.SmtpServer
+﻿namespace EricDaugherty.CSES.SmtpServer
 {
 	using System;
 	using System.Net.Sockets;
 	using System.Text;
     using System.Diagnostics;
-    using Lesnikowski.Mail;
+    using MimeKit;
 	
 	/// <summary>
 	/// Maintains the current state for a SMTP client connection.
@@ -36,7 +36,7 @@ namespace EricDaugherty.CSES.SmtpServer
 		private string clientDomain;
 		
 		/// <summary>The incoming message.</summary>
-		private IMail message;
+		private MimeMessage message;
 		
 		/// <summary>Encoding to use to send/receive data from the socket.</summary>
 		private Encoding encoding;
@@ -65,10 +65,10 @@ namespace EricDaugherty.CSES.SmtpServer
 			this.connectionId = connectionId;
 			this.lastCommand = -1;
 			this.socket = socket;
-            this.message = new MailBuilder().Create();
+            this.message = new MimeMessage();
 			
 			// Set the encoding to ASCII.  
-			encoding = Encoding.ASCII;
+			encoding = Encoding.Latin1;
 			
 			// Initialize the input buffer
 			inputBuffer = new StringBuilder();
@@ -133,7 +133,7 @@ namespace EricDaugherty.CSES.SmtpServer
 		/// <summary>
 		/// The SMTPMessage that is currently being received.
 		/// </summary>
-        public IMail Message
+        public MimeMessage Message
 		{
 			get
 			{
@@ -207,7 +207,7 @@ namespace EricDaugherty.CSES.SmtpServer
 		public void Reset()
 		{
             Trace.WriteLine(string.Format("Connection {0}: Reset", connectionId));
-            message = new MailBuilder().Create();
+            message = new MimeMessage();
 			lastCommand = SMTPProcessor.COMMAND_HELO;
 		}
 		

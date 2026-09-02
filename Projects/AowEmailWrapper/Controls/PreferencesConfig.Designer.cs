@@ -36,6 +36,7 @@
             this.fbGameWrapperDataPort = new AowEmailWrapper.Controls.FormBlockText();
             this.fbCopyToEmailOut = new AowEmailWrapper.Controls.FormBlockCheckBox();
             this.fbAutostart = new AowEmailWrapper.Controls.FormBlockCheckBox();
+            this.fbAutoInstallUpdates = new AowEmailWrapper.Controls.FormBlockCheckBox();
             this.fbSentSound = new AowEmailWrapper.Controls.FormBlockCheckBox();
             this.fbEmailSound = new AowEmailWrapper.Controls.FormBlockCheckBox();
             this.fbLocalization = new AowEmailWrapper.Controls.FormBlockCombo();
@@ -49,6 +50,7 @@
             this.groupBoxPreferences.AutoSize = true;
             this.groupBoxPreferences.Controls.Add(this.fbGameWrapperDataPort);
             this.groupBoxPreferences.Controls.Add(this.fbCopyToEmailOut);
+            this.groupBoxPreferences.Controls.Add(this.fbAutoInstallUpdates);
             this.groupBoxPreferences.Controls.Add(this.fbAutostart);
             this.groupBoxPreferences.Controls.Add(this.fbSentSound);
             this.groupBoxPreferences.Controls.Add(this.fbEmailSound);
@@ -136,9 +138,20 @@
             this.fbCopyToEmailOut.Name = "fbCopyToEmailOut";
             this.fbCopyToEmailOut.Size = new System.Drawing.Size(419, 24);
             this.fbCopyToEmailOut.TabIndex = 35;
-            // 
+            //
+            // fbAutoInstallUpdates
+            //
+            this.fbAutoInstallUpdates.Checked = true;
+            this.fbAutoInstallUpdates.Dock = System.Windows.Forms.DockStyle.Top;
+            this.fbAutoInstallUpdates.LabelName = "Install updates automatically:";
+            this.fbAutoInstallUpdates.Location = new System.Drawing.Point(2, 111);
+            this.fbAutoInstallUpdates.MinimumSize = new System.Drawing.Size(0, 24);
+            this.fbAutoInstallUpdates.Name = "fbAutoInstallUpdates";
+            this.fbAutoInstallUpdates.Size = new System.Drawing.Size(419, 24);
+            this.fbAutoInstallUpdates.TabIndex = 37;
+            //
             // fbAutostart
-            // 
+            //
             this.fbAutostart.Checked = false;
             this.fbAutostart.Dock = System.Windows.Forms.DockStyle.Top;
             this.fbAutostart.LabelName = "Autostart with Windows:";
@@ -210,6 +223,7 @@
         private FormBlockCombo fbSaveFolder;
         private FormBlockCombo fbLocalization;
         private FormBlockCheckBox fbAutostart;
+        private FormBlockCheckBox fbAutoInstallUpdates;
         private FormBlockCheckBox fbSentSound;
         private FormBlockCheckBox fbEmailSound;
         private FormBlockCheckBox fbCopyToEmailOut;

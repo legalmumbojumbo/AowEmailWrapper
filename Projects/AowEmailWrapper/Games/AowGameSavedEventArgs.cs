@@ -37,6 +37,15 @@ namespace AowEmailWrapper.Games
             set { _mapTitle = value; }
         }
 
+        /// <summary>Name of the email account the turn was downloaded from, if any.</summary>
+        public string AccountName { get; set; }
+
+        /// <summary>The copy of the game the turn was put in, null for an unknown game.</summary>
+        public AowGame Install { get; set; }
+
+        /// <summary>Mod label carried by the email, if any.</summary>
+        public string ModLabel { get; set; }
+
         public string TurnNumber
         {
             get { return _turnNo; }

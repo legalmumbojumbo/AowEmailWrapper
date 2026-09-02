@@ -1,35 +1,33 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.IO;
+using System;
 using System.Diagnostics;
-using AowEmailWrapper.Games;
-using AowEmailWrapper.Helpers;
-using AowEmailWrapper.Classes;
-using AowEmailWrapper.ConfigFramework;
-using AowEmailWrapper.ASG;
-using Lesnikowski.Mail;
-using Lesnikowski.Mail.Headers;
+using System.IO;
+using MimeKit;
 
 namespace AowEmailWrapper.Helpers
 {
     public class ResendHelper
     {
         #region Private Members
-        
+
         private const string ResendFileNameTemplate = "{0}_resend.eml";
 
         #endregion
 
         #region Public Methods
 
-        public static void Save(IMail theEmail)
+        /// <summary>
+        /// Writes the email to the resend folder so a failed send can be retried later.
+        /// Runs synchronously so the message is never being written and sent at the same time.
+        /// </summary>
+        public static void Save(MimeMessage theEmail)
         {
             try
             {
-                System.Threading.Thread saveThread = new System.Threading.Thread(new System.Threading.ParameterizedThreadStart(SaveEmail));
-                saveThread.Start(theEmail);
+                MimePart firstAttachment = MailHelper.GetFirstAttachment(theEmail);
+                if (firstAttachment != null && !string.IsNullOrEmpty(firstAttachment.FileName))
+                {
+                    theEmail.WriteTo(GetEmlFilePath(firstAttachment.FileName));
+                }
             }
             catch (Exception ex)
             {
@@ -38,13 +36,13 @@ namespace AowEmailWrapper.Helpers
             }
         }
 
-        public static IMail Load(string asgFileName)
+        public static MimeMessage Load(string asgFileName)
         {
-            IMail returnVal = null;
+            MimeMessage returnVal = null;
 
             try
             {
-                returnVal = new MailBuilder().CreateFromEmlFile(GetEmlFilePath(asgFileName));
+                returnVal = MimeMessage.Load(GetEmlFilePath(asgFileName));
             }
             catch (Exception ex)
             {
@@ -73,7 +71,7 @@ namespace AowEmailWrapper.Helpers
         }
 
         public static bool CanResend(string asgFileName)
-        { 
+        {
             string filePath = GetEmlFilePath(asgFileName);
             return File.Exists(filePath);
         }
@@ -81,28 +79,6 @@ namespace AowEmailWrapper.Helpers
         #endregion
 
         #region Private Methods
-
-        private static void SaveEmail(object obj)
-        {
-            try
-            {
-                IMail theEmail = (IMail)obj;
-                if (theEmail.Attachments.Count > 0)
-                {
-                    theEmail.Save(GetEmlFilePath(theEmail.Attachments[0].FileName));
-                }
-                theEmail = null;
-            }
-            catch (Exception ex)
-            {
-                Trace.TraceError(ex.ToString());
-                Trace.Flush();
-            }
-            finally
-            {
-                obj = null;
-            }
-        }
 
         private static string GetEmlFilePath(string fileName)
         {

@@ -1,4 +1,4 @@
-using Lesnikowski.Mail;
+﻿using MimeKit;
 
 namespace EricDaugherty.CSES.SmtpServer
 {
@@ -21,6 +21,6 @@ namespace EricDaugherty.CSES.SmtpServer
 		/// may vary.  Once this method returns with a value of true,
 		/// the message is considered delivered.
 		/// </summary>		
-		bool SpoolMessage( IMail message );
+		bool SpoolMessage( MimeMessage message );
 	}
 }

@@ -1,4 +1,4 @@
-using Lesnikowski.Mail;
+﻿using MimeKit;
 namespace EricDaugherty.CSES.SmtpServer
 {
 	using System;
@@ -30,7 +30,7 @@ namespace EricDaugherty.CSES.SmtpServer
 		/// Addes the message to the in memory queue.
 		/// </summary>
 		/// <param name='message'>The message to queue.</param>
-		public virtual bool SpoolMessage(IMail message)
+		public virtual bool SpoolMessage(MimeMessage message)
 		{
 			queue.Enqueue( message );
 			return true;
@@ -41,9 +41,9 @@ namespace EricDaugherty.CSES.SmtpServer
 		#region Public Methods
 		
 		/// <summary>Returns the oldest message in the spool.</summary>
-		public virtual SMTPMessage NextMessage()
+		public virtual MimeMessage NextMessage()
 		{
-			return (SMTPMessage) queue.Dequeue();
+			return (MimeMessage) queue.Dequeue();
 		}
 		
 		/// <summary>Removes any messages from the spool.</summary>

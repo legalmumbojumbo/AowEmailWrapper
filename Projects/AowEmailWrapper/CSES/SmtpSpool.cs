@@ -1,17 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using System;
 using System.Diagnostics;
-using EricDaugherty.CSES.SmtpServer;
-using System.IO;
-using System.Net.Mail;
-using System.Net;
+using System.Text;
 using AowEmailWrapper.ASG;
 using AowEmailWrapper.Classes;
-using AowEmailWrapper.Games;
 using AowEmailWrapper.Helpers;
-using Lesnikowski.Mail;
+using EricDaugherty.CSES.SmtpServer;
+using MimeKit;
+using MimeKit.Utils;
 
 namespace AowEmailWrapper.CSES
 {
@@ -21,13 +16,13 @@ namespace AowEmailWrapper.CSES
 
         private const string EMAIL_APPEND_TEXT = "--------------------------------------------------------\r\nAutosent with the Age of Wonders Email Wrapper [{0}]";
 
-        private IMail _message;
+        private MimeMessage _message;
 
         #endregion
 
         #region Public Properties
 
-        public IMail SpooledEmail
+        public MimeMessage SpooledEmail
         {
             get { return _message; }
         }
@@ -36,22 +31,25 @@ namespace AowEmailWrapper.CSES
 
         #region IMessageSpool Members
 
-        public bool SpoolMessage(IMail message)
+        public bool SpoolMessage(MimeMessage message)
         {
             bool isValid = false;
-            
+
             try
             {
-                StringBuilder bodyBuilder = new StringBuilder(message.TextData.Text);
+                string originalText = MailHelper.GetPlainText(message);
+                string fromAddress = MailHelper.GetFromAddress(message);
 
-                foreach (MimeData attachment in message.Attachments)
+                StringBuilder bodyBuilder = new StringBuilder(originalText);
+
+                foreach (MimePart attachment in MailHelper.GetAttachments(message))
                 {
                     if (!string.IsNullOrEmpty(attachment.FileName) &&
                         ASGFileInfo.IsAsg(attachment.FileName))
                     {
                         isValid = true;
 
-                        string turnLog = TurnLogger.LogTurn(attachment.FileName, message.From[0].Address, message.TextData.Text);
+                        string turnLog = TurnLogger.LogTurn(attachment.FileName, fromAddress, originalText);
 
                         bodyBuilder.Append(StringHelper.CrLf);
                         bodyBuilder.Append(turnLog);
@@ -64,9 +62,9 @@ namespace AowEmailWrapper.CSES
                     bodyBuilder.Append(StringHelper.CrLf);
                     bodyBuilder.Append(string.Format(EMAIL_APPEND_TEXT, ConfigHelper.BuildVersion));
 
-                    message.TextData.Text = bodyBuilder.ToString();
+                    MailHelper.SetPlainText(message, bodyBuilder.ToString());
 
-                    message.MessageID = Guid.NewGuid().ToString();
+                    message.MessageId = MimeUtils.GenerateMessageId();
 
                     _message = message;
                 }
@@ -89,7 +87,7 @@ namespace AowEmailWrapper.CSES
         #region Constructors
 
         public SmtpSpool()
-        {            
+        {
         }
 
         #endregion
