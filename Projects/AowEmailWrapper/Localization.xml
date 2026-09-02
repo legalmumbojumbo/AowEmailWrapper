@@ -152,6 +152,9 @@
 		<lookup key="msgWrapperUpdateDownloading" value="Downloading {0}..."/>
 		<lookup key="msgWrapperUpdateDownloadFailed" value="The update could not be downloaded: {0}"/>
 		<lookup key="cmdReportBug" value="Report a bug..."/>
+		<lookup key="cmdQuickStart" value="Quick start guide"/>
+		<lookup key="cmdManual" value="Manual"/>
+		<lookup key="msgDocumentMissing" value="The document {0} could not be found. It is installed with the Wrapper in the Docs folder next to the program."/>
 		<lookup key="groupBoxSupport" value="Support"/>
 		<lookup key="groupDiscord" value="Discord servers"/>
 		<lookup key="lblDiscordIntro" value="A few friendly places where players meet for play-by-email games:"/>
@@ -396,6 +399,9 @@
 		<lookup key="msgWrapperUpdateDownloading" value="Téléchargement de {0}..."/>
 		<lookup key="msgWrapperUpdateDownloadFailed" value="La mise à jour n'a pas pu être téléchargée : {0}"/>
 		<lookup key="cmdReportBug" value="Signaler un bug..."/>
+		<lookup key="cmdQuickStart" value="Guide de démarrage rapide"/>
+		<lookup key="cmdManual" value="Manuel"/>
+		<lookup key="msgDocumentMissing" value="Le document {0} est introuvable. Il est installé avec le Wrapper dans le dossier Docs à côté du programme."/>
 		<lookup key="groupBoxSupport" value="Assistance"/>
 		<lookup key="groupDiscord" value="Serveurs Discord"/>
 		<lookup key="lblDiscordIntro" value="Quelques endroits conviviaux où les joueurs se retrouvent pour des parties par e-mail :"/>
@@ -633,6 +639,9 @@
 		<lookup key="msgWrapperUpdateDownloading" value="{0} wird heruntergeladen..."/>
 		<lookup key="msgWrapperUpdateDownloadFailed" value="Das Update konnte nicht heruntergeladen werden: {0}"/>
 		<lookup key="cmdReportBug" value="Fehler melden..."/>
+		<lookup key="cmdQuickStart" value="Schnellstartanleitung"/>
+		<lookup key="cmdManual" value="Handbuch"/>
+		<lookup key="msgDocumentMissing" value="Das Dokument {0} wurde nicht gefunden. Es wird mit dem Wrapper im Ordner Docs neben dem Programm installiert."/>
 		<lookup key="groupBoxSupport" value="Support"/>
 		<lookup key="groupDiscord" value="Discord-Server"/>
 		<lookup key="lblDiscordIntro" value="Ein paar freundliche Orte, an denen sich Spieler für Play-by-E-Mail-Partien treffen:"/>
@@ -870,6 +879,9 @@
 		<lookup key="msgWrapperUpdateDownloading" value="Descargando {0}..."/>
 		<lookup key="msgWrapperUpdateDownloadFailed" value="No se pudo descargar la actualización: {0}"/>
 		<lookup key="cmdReportBug" value="Informar de un error..."/>
+		<lookup key="cmdQuickStart" value="Guía de inicio rápido"/>
+		<lookup key="cmdManual" value="Manual"/>
+		<lookup key="msgDocumentMissing" value="No se encontró el documento {0}. Se instala con el Wrapper en la carpeta Docs junto al programa."/>
 		<lookup key="groupBoxSupport" value="Soporte"/>
 		<lookup key="groupDiscord" value="Servidores de Discord"/>
 		<lookup key="lblDiscordIntro" value="Algunos lugares amistosos donde los jugadores se reúnen para partidas por correo:"/>
@@ -1107,6 +1119,9 @@
 		<lookup key="msgWrapperUpdateDownloading" value="{0} wordt gedownload..."/>
 		<lookup key="msgWrapperUpdateDownloadFailed" value="De update kon niet worden gedownload: {0}"/>
 		<lookup key="cmdReportBug" value="Een fout melden..."/>
+		<lookup key="cmdQuickStart" value="Snelstartgids"/>
+		<lookup key="cmdManual" value="Handleiding"/>
+		<lookup key="msgDocumentMissing" value="Het document {0} is niet gevonden. Het wordt met de Wrapper geïnstalleerd in de map Docs naast het programma."/>
 		<lookup key="groupBoxSupport" value="Ondersteuning"/>
 		<lookup key="groupDiscord" value="Discord-servers"/>
 		<lookup key="lblDiscordIntro" value="Een paar gezellige plekken waar spelers elkaar vinden voor spellen per e-mail:"/>
@@ -1342,6 +1357,9 @@
 		<lookup key="msgWrapperUpdateDownloading" value="Henter {0}..."/>
 		<lookup key="msgWrapperUpdateDownloadFailed" value="Opdateringen kunne ikke hentes: {0}"/>
 		<lookup key="cmdReportBug" value="Rapportér en fejl..."/>
+		<lookup key="cmdQuickStart" value="Kom godt i gang"/>
+		<lookup key="cmdManual" value="Manual"/>
+		<lookup key="msgDocumentMissing" value="Dokumentet {0} blev ikke fundet. Det installeres sammen med Wrapperen i mappen Docs ved siden af programmet."/>
 		<lookup key="groupBoxSupport" value="Support"/>
 		<lookup key="groupDiscord" value="Discord-servere"/>
 		<lookup key="lblDiscordIntro" value="Et par venlige steder, hvor spillere mødes til spil via e-mail:"/>
@@ -1578,6 +1596,9 @@
 		<lookup key="msgWrapperUpdateDownloading" value="Hämtar {0}..."/>
 		<lookup key="msgWrapperUpdateDownloadFailed" value="Uppdateringen kunde inte hämtas: {0}"/>
 		<lookup key="cmdReportBug" value="Rapportera ett fel..."/>
+		<lookup key="cmdQuickStart" value="Snabbstartsguide"/>
+		<lookup key="cmdManual" value="Manual"/>
+		<lookup key="msgDocumentMissing" value="Dokumentet {0} hittades inte. Det installeras tillsammans med Wrappern i mappen Docs bredvid programmet."/>
 		<lookup key="groupBoxSupport" value="Support"/>
 		<lookup key="groupDiscord" value="Discord-servrar"/>
 		<lookup key="lblDiscordIntro" value="Några trevliga ställen där spelare träffas för spel via e-post:"/>
@@ -1822,6 +1843,9 @@
 		<lookup key="msgWrapperUpdateDownloading" value="Pobieranie {0}..."/>
 		<lookup key="msgWrapperUpdateDownloadFailed" value="Nie udało się pobrać aktualizacji: {0}"/>
 		<lookup key="cmdReportBug" value="Zgłoś błąd..."/>
+		<lookup key="cmdQuickStart" value="Szybki start"/>
+		<lookup key="cmdManual" value="Podręcznik"/>
+		<lookup key="msgDocumentMissing" value="Nie znaleziono dokumentu {0}. Jest on instalowany razem z Wrapperem w folderze Docs obok programu."/>
 		<lookup key="groupBoxSupport" value="Pomoc"/>
 		<lookup key="groupDiscord" value="Serwery Discord"/>
 		<lookup key="lblDiscordIntro" value="Kilka przyjaznych miejsc, w których gracze spotykają się na rozgrywki przez e-mail:"/>
@@ -2060,6 +2084,9 @@
 		<lookup key="msgWrapperUpdateDownloading" value="Ladataan {0}..."/>
 		<lookup key="msgWrapperUpdateDownloadFailed" value="Päivitystä ei voitu ladata: {0}"/>
 		<lookup key="cmdReportBug" value="Ilmoita virheestä..."/>
+		<lookup key="cmdQuickStart" value="Pikaopas"/>
+		<lookup key="cmdManual" value="Käyttöohje"/>
+		<lookup key="msgDocumentMissing" value="Asiakirjaa {0} ei löytynyt. Se asennetaan Wrapperin mukana Docs-kansioon ohjelman viereen."/>
 		<lookup key="groupBoxSupport" value="Tuki"/>
 		<lookup key="groupDiscord" value="Discord-palvelimet"/>
 		<lookup key="lblDiscordIntro" value="Muutama ystävällinen paikka, joissa pelaajat kokoontuvat sähköpostipeleihin:"/>
@@ -2300,6 +2327,9 @@
 		<lookup key="msgWrapperUpdateDownloading" value="Se descarcă {0}..."/>
 		<lookup key="msgWrapperUpdateDownloadFailed" value="Actualizarea nu a putut fi descărcată: {0}"/>
 		<lookup key="cmdReportBug" value="Raportează o eroare..."/>
+		<lookup key="cmdQuickStart" value="Ghid de pornire rapidă"/>
+		<lookup key="cmdManual" value="Manual"/>
+		<lookup key="msgDocumentMissing" value="Documentul {0} nu a fost găsit. Este instalat împreună cu Wrapper-ul în dosarul Docs de lângă program."/>
 		<lookup key="groupBoxSupport" value="Asistență"/>
 		<lookup key="groupDiscord" value="Servere Discord"/>
 		<lookup key="lblDiscordIntro" value="Câteva locuri prietenoase unde jucătorii se întâlnesc pentru partide prin e-mail:"/>
@@ -2538,6 +2568,9 @@
 		<lookup key="msgWrapperUpdateDownloading" value="Загрузка {0}..."/>
 		<lookup key="msgWrapperUpdateDownloadFailed" value="Не удалось загрузить обновление: {0}"/>
 		<lookup key="cmdReportBug" value="Сообщить об ошибке..."/>
+		<lookup key="cmdQuickStart" value="Краткое руководство"/>
+		<lookup key="cmdManual" value="Руководство"/>
+		<lookup key="msgDocumentMissing" value="Документ {0} не найден. Он устанавливается вместе с программой в папку Docs рядом с ней."/>
 		<lookup key="groupBoxSupport" value="Поддержка"/>
 		<lookup key="groupDiscord" value="Серверы Discord"/>
 		<lookup key="lblDiscordIntro" value="Несколько дружелюбных мест, где игроки собираются для игр по электронной почте:"/>

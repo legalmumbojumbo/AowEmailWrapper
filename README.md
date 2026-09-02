@@ -83,9 +83,8 @@ Documentation
 -------------
 
 The Quick Start Guide and the manual are HTML pages in `Docs/` (`QuickStart.html`, `Manual.html`)
-with screenshots in `Docs/images/`. They are installed with the program and linked from the Start
-Menu. The 2013 PDF manuals are kept in `Docs/legacy/` for reference only; their provider settings
-and first-poll advice no longer apply.
+with screenshots in `Docs/images/`. They are installed with the program, linked from the Start
+Menu, and opened by the *Quick start guide* and *Manual* buttons on the Settings tab.
 
 Running the tests
 -----------------
