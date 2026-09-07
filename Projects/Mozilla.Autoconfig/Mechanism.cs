@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Net;
+using System.Net.Http;
 using System.IO;
 using System.Xml;
 using System.Xml.Serialization;
@@ -11,6 +11,9 @@ namespace Mozilla.Autoconfig
 {
     internal class Mechanism
     {
+        private const int FetchTimeoutSeconds = 15;
+        private static readonly HttpClient Http = new HttpClient() { Timeout = TimeSpan.FromSeconds(FetchTimeoutSeconds) };
+
         private string _format;
         private MechanismOriginType _type;
 
@@ -26,7 +29,7 @@ namespace Mozilla.Autoconfig
             returnVal.Origin = _type;
 
             string xmlPath = string.Format(_format, domain);
-            string xml = WebClientGetXml(xmlPath);
+            string xml = IspDbHandler.IsTrustedSource(xmlPath) ? GetXml(xmlPath) : null;
 
             if (!string.IsNullOrEmpty(xml))
             {
@@ -49,20 +52,23 @@ namespace Mozilla.Autoconfig
             return returnVal;
         }
 
-        private static string WebClientGetXml(string path)
+        private static string GetXml(string path)
         {
-            string returnVal = null;
-
-            using (WebClient fileReader = new WebClient())
+            try
             {
-                try
+                Uri uri = new Uri(path);
+                if (uri.Scheme == Uri.UriSchemeFile)
                 {
-                    returnVal = fileReader.DownloadString(path);
+                    return File.Exists(uri.LocalPath) ? File.ReadAllText(uri.LocalPath) : null;
                 }
-                catch { }
-            }
 
-            return returnVal;
+                //Certificate validation is left on: a bad certificate means this source is skipped
+                return Http.GetStringAsync(uri).GetAwaiter().GetResult();
+            }
+            catch
+            {
+                return null;
+            }
         }
 
         private static T Deserialize<T>(string theXml)

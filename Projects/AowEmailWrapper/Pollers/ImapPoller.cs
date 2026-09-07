@@ -7,6 +7,7 @@ using AowEmailWrapper.ASG;
 using AowEmailWrapper.ConfigFramework;
 using AowEmailWrapper.Games;
 using AowEmailWrapper.Helpers;
+using AowEmailWrapper.Classes;
 using AowEmailWrapper.Pollers.MessageStore;
 using MailKit;
 using MailKit.Net.Imap;
@@ -180,6 +181,11 @@ namespace AowEmailWrapper.Pollers
                         IMailFolder inbox = imap.Inbox;
                         inbox.Open(FolderAccess.ReadWrite, token);
 
+                        if (ImportHistoryOnNextScan)
+                        {
+                            ImportHistory(imap, token);
+                        }
+
                         bool canIdle = imap.Capabilities.HasFlag(ImapCapabilities.Idle);
                         Trace.TraceInformation("IMAP connected to {0}, IDLE {1}", _host, canIdle ? "supported" : "not supported, polling on the timer");
 
@@ -295,6 +301,11 @@ namespace AowEmailWrapper.Pollers
                     IMailFolder inbox = imap.Inbox;
                     inbox.Open(FolderAccess.ReadWrite);
 
+                    if (ImportHistoryOnNextScan)
+                    {
+                        ImportHistory(imap, CancellationToken.None);
+                    }
+
                     emailDownloaded = ScanMailbox(inbox);
 
                     imap.Disconnect(true);
@@ -338,6 +349,61 @@ namespace AowEmailWrapper.Pollers
             }
         }
 
+        /// <summary>
+        /// One-time look through the mailbox, before any new mail is processed: past opponents become
+        /// known, and turns the player still owes that this install has never seen (a new computer)
+        /// are downloaded and filed like any other turn.
+        /// </summary>
+        private void ImportHistory(ImapClient imap, CancellationToken token)
+        {
+            MailboxHistory history;
+            try
+            {
+                history = ContactHistory.Scan(imap, OwnAddresses, LookBackDays, token);
+                ImportHistoryOnNextScan = false;
+                RaiseHistoryImported(history);
+            }
+            catch (OperationCanceledException)
+            {
+                throw;
+            }
+            catch (Exception ex)
+            {
+                //Tried again on the next connection
+                Trace.TraceWarning("Could not look through {0} for past opponents: {1}", _host, ex.Message);
+                return;
+            }
+
+            if (history.ToRecover == null || history.ToRecover.Count == 0)
+            {
+                return;
+            }
+
+            IMailFolder inbox = imap.Inbox;
+            foreach (MailboxTurn turn in history.ToRecover)
+            {
+                try
+                {
+                    MimeMessage email = inbox.GetMessage(new UniqueId(turn.Uid), token);
+                    if (ProcessEmailAttachments(email) > 0)
+                    {
+                        history.Recovered++;
+                        Trace.TraceInformation("Recovered unplayed turn {0} from {1}", turn.FileName, turn.From);
+                    }
+                }
+                catch (OperationCanceledException)
+                {
+                    throw;
+                }
+                catch (Exception ex)
+                {
+                    Trace.TraceWarning("Could not recover {0}: {1}", turn.FileName, ex.Message);
+                }
+            }
+
+            RaiseTurnsRecovered(history.Recovered);
+        }
+
         private bool ScanMailbox(IMailFolder inbox)
         {
             bool emailDownloaded = false;
@@ -365,13 +431,32 @@ namespace AowEmailWrapper.Pollers
             }
 
             //Ask the server which of the recent messages carry a save game, without downloading them
-            HashSet<long> withSaveGame = FindMessagesWithSaveGames(inbox, recentToCheck);
+            HashSet<long> withSaveGame;
+            HashSet<long> wrapperMessages;
+            Classify(inbox, recentToCheck, out withSaveGame, out wrapperMessages);
+            List<UniqueId> toDelete = new List<UniqueId>();
 
             Trace.TraceInformation("Mailbox scan: {0} unread, {1} not seen before within {2} days, {3} with a save game attached",
                 serverUids.Count, recentToCheck.Count, LookBackDays, withSaveGame.Count);
 
             foreach (long uid in recentToCheck)
             {
+                if (wrapperMessages.Contains(uid))
+                {
+                    //A question from, or an answer to, another wrapper: dealt with and then removed from the mailbox
+                    UniqueId wrapperId = new UniqueId((uint)uid);
+                    try
+                    {
+                        HandleWrapperMessage(inbox.GetMessage(wrapperId));
+                    }
+                    catch (Exception ex)
+                    {
+                        Trace.TraceWarning("Could not read wrapper message {0}: {1}", uid, ex.Message);
+                    }
+                    toDelete.Add(wrapperId);
+                    continue;
+                }
+
                 if (!withSaveGame.Contains(uid))
                 {
                     localMessageStore.Messages.Add(new MessageStoreMessage(uid));
@@ -396,28 +481,50 @@ namespace AowEmailWrapper.Pollers
                 }
             }
 
+            RemoveWrapperMessages(inbox, toDelete);
+
             MessageStoreManager.SaveLocalMessageStore(_username, _host, localMessageStore);
             localMessageStore.Dispose();
 
             return emailDownloaded;
         }
 
-        /// <summary>
-        /// Uses the MIME structure the server already knows (BODYSTRUCTURE) to find messages with an
-        /// Age of Wonders save attached. Costs one request per chunk instead of one download per message.
-        /// </summary>
-        public static HashSet<long> FindMessagesWithSaveGames(IMailFolder folder, List<long> uids)
+        /// <summary>Messages carrying the wrapper's own header, found by fetching that header alone.</summary>
+        public static HashSet<long> FindWrapperMessages(IMailFolder folder, List<long> uids)
         {
-            HashSet<long> found = new HashSet<long>();
+            HashSet<long> withSaveGame;
+            HashSet<long> wrapperMessages;
+            Classify(folder, uids, out withSaveGame, out wrapperMessages);
+            return wrapperMessages;
+        }
+
+        /// <summary>
+        /// One request per chunk tells apart the messages with a save game attached and the wrapper's
+        /// own queries and replies, from the structure and the one header the server sends back.
+        /// Nothing is downloaded.
+        /// </summary>
+        public static void Classify(IMailFolder folder, List<long> uids, out HashSet<long> withSaveGame, out HashSet<long> wrapperMessages)
+        {
+            withSaveGame = new HashSet<long>();
+            wrapperMessages = new HashSet<long>();
 
             for (int offset = 0; offset < uids.Count; offset += SummaryChunkSize)
             {
                 List<UniqueId> chunk = uids.Skip(offset).Take(SummaryChunkSize).Select(uid => new UniqueId((uint)uid)).ToList();
 
-                IList<IMessageSummary> summaries = folder.Fetch(chunk, MessageSummaryItems.UniqueId | MessageSummaryItems.BodyStructure);
-
-                foreach (IMessageSummary summary in summaries)
+                FetchRequest request = new FetchRequest(MessageSummaryItems.UniqueId | MessageSummaryItems.BodyStructure)
                 {
+                    Headers = new HeaderSet(new[] { TurnQuery.KindHeader })
+                };
+
+                foreach (IMessageSummary summary in folder.Fetch(chunk, request))
+                {
+                    if (summary.Headers != null && TurnQuery.IsWrapperMessage(summary.Headers))
+                    {
+                        wrapperMessages.Add(summary.UniqueId.Id);
+                        continue;
+                    }
+
                     if (summary.Body == null)
                     {
                         continue;
@@ -427,14 +534,52 @@ namespace AowEmailWrapper.Pollers
                     {
                         if (!string.IsNullOrEmpty(part.FileName) && ASGFileInfo.IsAsg(part.FileName))
                         {
-                            found.Add(summary.UniqueId.Id);
+                            withSaveGame.Add(summary.UniqueId.Id);
                             break;
                         }
                     }
                 }
             }
+        }
 
-            return found;
+        /// <summary>Flags and expunges wrapper chatter so it never lingers in the player's mailbox.</summary>
+        public static void RemoveWrapperMessages(IMailFolder folder, IList<UniqueId> uids)
+        {
+            if (uids.Count == 0)
+            {
+                return;
+            }
+
+            try
+            {
+                folder.AddFlags(uids, MessageFlags.Deleted, true);
+                try
+                {
+                    folder.Expunge(uids);
+                }
+                catch (NotSupportedException)
+                {
+                    //No UIDPLUS: expunge everything flagged, which is only what this scan flagged
+                    folder.Expunge();
+                }
+                Trace.TraceInformation("Removed {0} wrapper message(s) from the mailbox", uids.Count);
+            }
+            catch (Exception ex)
+            {
+                Trace.TraceWarning("Could not remove wrapper messages: {0}", ex.Message);
+            }
+        }
+
+        /// <summary>
+        /// Uses the MIME structure the server already knows (BODYSTRUCTURE) to find messages with an
+        /// Age of Wonders save attached. Costs one request per chunk instead of one download per message.
+        /// </summary>
+        public static HashSet<long> FindMessagesWithSaveGames(IMailFolder folder, List<long> uids)
+        {
+            HashSet<long> withSaveGame;
+            HashSet<long> wrapperMessages;
+            Classify(folder, uids, out withSaveGame, out wrapperMessages);
+            return withSaveGame;
         }
 
         #endregion

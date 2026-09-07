@@ -112,6 +112,39 @@ namespace AowEmailWrapper.ConfigFramework
         [XmlAttribute("mod")]
         public string ModLabel { get; set; }
 
+        /// <summary>Address a received turn came from.</summary>
+        [XmlAttribute("sender")]
+        public string Sender { get; set; }
+
+        /// <summary>Addresses a sent turn went to, separated by ';'.</summary>
+        [XmlAttribute("recipients")]
+        public string Recipients { get; set; }
+
+        /// <summary>
+        /// True when nobody at the sender's address had sent the player a turn, or been sent one,
+        /// before this arrived. The Wrapper files a turn from anyone who emails one, so this is
+        /// the player's cue that the turn did not come from someone they are playing with.
+        /// </summary>
+        [XmlAttribute("new_sender")]
+        public bool NewSender { get; set; }
+
+        public bool ShouldSerializeNewSender()
+        {
+            return NewSender;
+        }
+
+        /// <summary>Every player's address from the save file, separated by ';'.</summary>
+        [XmlAttribute("players")]
+        public string Players { get; set; }
+
+        /// <summary>What other players' wrappers last said about where this turn is.</summary>
+        [XmlAttribute("whereabouts")]
+        public string Whereabouts { get; set; }
+
+        /// <summary>The player whose wrapper last said it holds the turn, if any.</summary>
+        [XmlAttribute("holder")]
+        public string Holder { get; set; }
+
         [XmlAttribute("ticks")]
         public string DateTicks
         {
@@ -128,6 +161,8 @@ namespace AowEmailWrapper.ConfigFramework
             AccountName = e.AccountName;
             InstallFolder = e.Install != null ? e.Install.Folder : null;
             ModLabel = e.ModLabel;
+            Sender = e.Sender;
+            Players = e.Players;
         }
 
         public Activity(ActivityState status, AowGameType type, string fileName, string mapTitle, string turnNo)

@@ -35,8 +35,15 @@ namespace AowEmailWrapper.ASG
         private bool _isValid = true;
 
         private bool _fetch_compressed_data = true;
+        private readonly List<string> _playerEmails = new List<string>();
 
-        private const string ASG_REGEX = ".[Aa][Ss][Gg]";
+        //Inside each player's PBEM settings (player -> 0x36 -> 0x15): 0x14 is the game title, 0x17 the player's address
+        private const int PlayerPbemWrapperField = 0x36;
+        private const int PlayerPbemSettingsField = 0x15;
+        private const int PlayerEmailField = 0x17;
+
+        //Anchored to the end of the name: an attachment is a save game only when its extension is .asg
+        private static readonly Regex AsgNamePattern = new Regex(@"\.asg\s*$", RegexOptions.IgnoreCase | RegexOptions.Compiled);
         private const string FileNameTrueTemplate = "{0}.asg";
 
         #endregion
@@ -97,6 +104,17 @@ namespace AowEmailWrapper.ASG
             get { return _isValid; }
         }
 
+        /// <summary>The email address of every player in the game, as the game needs them to address turns.</summary>
+        public IList<string> PlayerEmails
+        {
+            get { return _playerEmails; }
+        }
+
+        public static string JoinAddresses(IEnumerable<string> addresses)
+        {
+            return addresses == null ? string.Empty : string.Join(";", addresses);
+        }
+
         public string FileNameTrue
         {
             get
@@ -110,7 +128,8 @@ namespace AowEmailWrapper.ASG
 
                 if (string.IsNullOrEmpty(returnVal))
                 {
-                    returnVal = _fileName;
+                    //The attachment name comes from the sender, so it is reduced to a plain file name first
+                    returnVal = SanitizeFileName(_fileName);
                 }
 
                 return returnVal;
@@ -228,6 +247,7 @@ namespace AowEmailWrapper.ASG
                                 OffsetMap s_15_1_1_36 = s_15_1_1.GetSubFieldOffsetMap(0x36);
                                 OffsetMap s_15_1_1_36_15 = s_15_1_1_36.GetSubFieldOffsetMap(0x15);
                                 _gameTitle = s_15_1_1_36_15.ReadShortPascalString(0x14);
+                                ReadPlayerEmails(s_15_1);
                             }
                             else
                             {
@@ -282,6 +302,7 @@ namespace AowEmailWrapper.ASG
                                         OffsetMap player_1_pbem_settings_wrapper = player_1_om.GetSubFieldOffsetMap(0x36);
                                         OffsetMap player_1_pbem_settings = player_1_pbem_settings_wrapper.GetSubFieldOffsetMap(0x15);
                                         _gameTitle = player_1_pbem_settings.ReadShortPascalString(0x14);
+                                        ReadPlayerEmails(player_list_om);
 
                                         //	WT or SM?
                                         OffsetMap race_list_wrapper_om = map_om.GetSubFieldOffsetMap(0x1b);
@@ -317,6 +338,43 @@ namespace AowEmailWrapper.ASG
             }
         }
 
+        /// <summary>
+        /// Walks every entry of the player list for the address in its PBEM settings. Verified on the
+        /// AoW1 save corpus: field 0x17 is a length-prefixed string that exactly fits its field in every
+        /// player entry. The AoW2 family shares the structure but had no samples to check against.
+        /// </summary>
+        private void ReadPlayerEmails(OffsetMap playerList)
+        {
+            if (playerList == null)
+            {
+                return;
+            }
+
+            foreach (int playerId in playerList.Fields.Keys.OrderBy(id => id).ToList())
+            {
+                try
+                {
+                    OffsetMap player = playerList.GetSubFieldOffsetMap(playerId, true);
+                    OffsetMap wrapper = player != null ? player.GetSubFieldOffsetMap(PlayerPbemWrapperField) : null;
+                    OffsetMap settings = wrapper != null ? wrapper.GetSubFieldOffsetMap(PlayerPbemSettingsField) : null;
+                    string address = settings != null ? settings.ReadShortPascalString(PlayerEmailField) : null;
+
+                    if (!string.IsNullOrWhiteSpace(address) && address.Contains("@"))
+                    {
+                        string trimmed = address.Trim();
+                        if (!_playerEmails.Contains(trimmed, StringComparer.OrdinalIgnoreCase))
+                        {
+                            _playerEmails.Add(trimmed);
+                        }
+                    }
+                }
+                catch (Exception)
+                {
+                    //An entry without PBEM settings (a computer player)
+                }
+            }
+        }
+
         private static bool CheckSignature(BinaryReader in_stream, byte[] signature)
         {
             byte[] actual = in_stream.ReadBytes(signature.Length);
@@ -329,7 +387,54 @@ namespace AowEmailWrapper.ASG
 
         public static bool IsAsg(string path)
         {
-            return Regex.IsMatch(path, ASG_REGEX);
+            return !string.IsNullOrEmpty(path) && AsgNamePattern.IsMatch(path);
+        }
+
+        /// <summary>
+        /// Reduces a name supplied by an email sender to something safe to create inside a folder:
+        /// any directory part is dropped, characters Windows will not accept in a file name are
+        /// removed, and a name that is empty or only dots after that gives null.
+        /// </summary>
+        public static string SanitizeFileName(string fileName)
+        {
+            if (string.IsNullOrEmpty(fileName))
+            {
+                return null;
+            }
+
+            string name = fileName.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
+            int lastSeparator = name.LastIndexOf(Path.DirectorySeparatorChar);
+            if (lastSeparator >= 0)
+            {
+                name = name.Substring(lastSeparator + 1);
+            }
+
+            name = StringHelper.RemoveInvalidPathChars(name);
+
+            if (string.IsNullOrEmpty(name) || name.Trim('.').Length == 0)
+            {
+                return null;
+            }
+
+            return name;
+        }
+
+        /// <summary>
+        /// The full path a file called <paramref name="fileName"/> gets inside <paramref name="folderPath"/>,
+        /// or null when the name would escape the folder.
+        /// </summary>
+        public static string GetPathInside(string folderPath, string fileName)
+        {
+            string safeName = SanitizeFileName(fileName);
+            if (string.IsNullOrEmpty(folderPath) || safeName == null)
+            {
+                return null;
+            }
+
+            string folder = Path.GetFullPath(folderPath).TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar) + Path.DirectorySeparatorChar;
+            string full = Path.GetFullPath(Path.Combine(folder, safeName));
+
+            return full.StartsWith(folder, StringComparison.OrdinalIgnoreCase) && full.Length > folder.Length ? full : null;
         }
 
         //==== Game Bug Compensation ====
@@ -360,7 +465,14 @@ namespace AowEmailWrapper.ASG
 
             if (Directory.Exists(folderPath))
             {
-                File.WriteAllBytes(Path.Combine(folderPath, FileNameTrue), _data);
+                string path = GetPathInside(folderPath, FileNameTrue);
+                if (path == null)
+                {
+                    Trace.TraceWarning("Refusing to save attachment '{0}': it is not a plain file name", _fileName);
+                    return false;
+                }
+
+                File.WriteAllBytes(path, _data);
                 success = true;
             }
 

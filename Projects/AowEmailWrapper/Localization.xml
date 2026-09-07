@@ -113,6 +113,14 @@
 		<lookup key="msgWrapperRestartRequired" value="Please restart the Wrapper for these changes to take effect."/>
 		<lookup key="msgWrapperPollFailed" value="Poll failed"/>
 		<lookup key="msgWrapperGamesWaiting" value="You have {0} game(s) waiting."/>
+		<lookup key="msgWrapperNewSender" value="'{0}' came from {1}, who has not sent you a turn before. Only open turns from people you are playing with."/>
+		<lookup key="activityNewSender" value="new sender"/>
+		<lookup key="msgWrapperTurnsRecovered" value="Found {0} unplayed turn(s) in your mailbox and added them to the activity log."/>
+		<lookup key="menuItemWhereIs" value="Where is the turn?"/>
+		<lookup key="activityHeldBy" value="held by {0}"/>
+		<lookup key="msgWrapperWhereIsTitle" value="Where is the turn?"/>
+		<lookup key="msgWrapperWhereIsAsked" value="Asked {0} player(s) where '{1}' is. Answers arrive with the next mail checks."/>
+		<lookup key="msgWrapperWhereIsNobody" value="No other players are known for '{0}'."/>
 		<lookup key="msgInputEmailSettingsManual" value="You will enter the settings manually."/>
 		<lookup key="msgWrapperResendTo" value="Resend To:"/>
 		<lookup key="msgAutoconfigPage2Success" value="Found your mail settings. Click Next."/>
@@ -139,6 +147,7 @@
 		<lookup key="linkOAuthSignInAgain" value="Sign in with Microsoft again"/>
 		<lookup key="linkCreateAppPassword" value="Create an App Password"/>
 		<lookup key="msgOAuthOnly" value="This email provider only allows OAuth sign-in from mail programs, which the Wrapper does not support yet. Password sign-in will probably be rejected."/>
+		<lookup key="msgAutoconfigUnencryptedOnly" value="Settings were found for this address, but they would send your password without encryption, so the Wrapper will not use them. Please enter the server settings manually."/>
 		<lookup key="cmdLogFolder" value="Open log folder"/>
 		<lookup key="fbAutoInstallUpdates" value="Install updates automatically:"/>
 		<lookup key="cmdCheckUpdates" value="Check for updates"/>
@@ -175,6 +184,7 @@
 		<lookup key="panelGameslistViewGames2" value="Folder"/>
 		<lookup key="panelGameslistViewGames3" value="Default"/>
 		<lookup key="panelGameslistViewGames4" value="Found by"/>
+		<lookup key="panelGameslistViewGames5" value="Mod"/>
 		<lookup key="buttonAddFolder" value="Add folder..."/>
 		<lookup key="buttonSetLabel" value="Set label..."/>
 		<lookup key="buttonSetDefaultInstall" value="Set as default"/>
@@ -422,6 +432,7 @@
 		<lookup key="panelGameslistViewGames2" value="Dossier"/>
 		<lookup key="panelGameslistViewGames3" value="Par défaut"/>
 		<lookup key="panelGameslistViewGames4" value="Trouvé par"/>
+		<lookup key="panelGameslistViewGames5" value="Mod"/>
 		<lookup key="buttonAddFolder" value="Ajouter un dossier..."/>
 		<lookup key="buttonSetLabel" value="Définir l'étiquette..."/>
 		<lookup key="buttonSetDefaultInstall" value="Définir par défaut"/>
@@ -662,6 +673,7 @@
 		<lookup key="panelGameslistViewGames2" value="Ordner"/>
 		<lookup key="panelGameslistViewGames3" value="Standard"/>
 		<lookup key="panelGameslistViewGames4" value="Gefunden über"/>
+		<lookup key="panelGameslistViewGames5" value="Mod"/>
 		<lookup key="buttonAddFolder" value="Ordner hinzufügen..."/>
 		<lookup key="buttonSetLabel" value="Bezeichnung festlegen..."/>
 		<lookup key="buttonSetDefaultInstall" value="Als Standard festlegen"/>
@@ -902,6 +914,7 @@
 		<lookup key="panelGameslistViewGames2" value="Carpeta"/>
 		<lookup key="panelGameslistViewGames3" value="Predeterminada"/>
 		<lookup key="panelGameslistViewGames4" value="Encontrado por"/>
+		<lookup key="panelGameslistViewGames5" value="Mod"/>
 		<lookup key="buttonAddFolder" value="Añadir carpeta..."/>
 		<lookup key="buttonSetLabel" value="Definir etiqueta..."/>
 		<lookup key="buttonSetDefaultInstall" value="Establecer como predeterminada"/>
@@ -1142,6 +1155,7 @@
 		<lookup key="panelGameslistViewGames2" value="Map"/>
 		<lookup key="panelGameslistViewGames3" value="Standaard"/>
 		<lookup key="panelGameslistViewGames4" value="Gevonden via"/>
+		<lookup key="panelGameslistViewGames5" value="Mod"/>
 		<lookup key="buttonAddFolder" value="Map toevoegen..."/>
 		<lookup key="buttonSetLabel" value="Label instellen..."/>
 		<lookup key="buttonSetDefaultInstall" value="Als standaard instellen"/>
@@ -1380,6 +1394,7 @@
 		<lookup key="panelGameslistViewGames2" value="Mappe"/>
 		<lookup key="panelGameslistViewGames3" value="Standard"/>
 		<lookup key="panelGameslistViewGames4" value="Fundet via"/>
+		<lookup key="panelGameslistViewGames5" value="Mod"/>
 		<lookup key="buttonAddFolder" value="Tilføj mappe..."/>
 		<lookup key="buttonSetLabel" value="Angiv mærkat..."/>
 		<lookup key="buttonSetDefaultInstall" value="Sæt som standard"/>
@@ -1619,6 +1634,7 @@
 		<lookup key="panelGameslistViewGames2" value="Mapp"/>
 		<lookup key="panelGameslistViewGames3" value="Standard"/>
 		<lookup key="panelGameslistViewGames4" value="Hittad via"/>
+		<lookup key="panelGameslistViewGames5" value="Mod"/>
 		<lookup key="buttonAddFolder" value="Lägg till mapp..."/>
 		<lookup key="buttonSetLabel" value="Ange etikett..."/>
 		<lookup key="buttonSetDefaultInstall" value="Ange som standard"/>
@@ -1866,6 +1882,7 @@
 		<lookup key="panelGameslistViewGames2" value="Folder"/>
 		<lookup key="panelGameslistViewGames3" value="Domyślna"/>
 		<lookup key="panelGameslistViewGames4" value="Znaleziono przez"/>
+		<lookup key="panelGameslistViewGames5" value="Mod"/>
 		<lookup key="buttonAddFolder" value="Dodaj folder..."/>
 		<lookup key="buttonSetLabel" value="Ustaw etykietę..."/>
 		<lookup key="buttonSetDefaultInstall" value="Ustaw jako domyślną"/>
@@ -2107,6 +2124,7 @@
 		<lookup key="panelGameslistViewGames2" value="Kansio"/>
 		<lookup key="panelGameslistViewGames3" value="Oletus"/>
 		<lookup key="panelGameslistViewGames4" value="Löydetty"/>
+		<lookup key="panelGameslistViewGames5" value="Mod"/>
 		<lookup key="buttonAddFolder" value="Lisää kansio..."/>
 		<lookup key="buttonSetLabel" value="Aseta tunniste..."/>
 		<lookup key="buttonSetDefaultInstall" value="Aseta oletukseksi"/>
@@ -2350,6 +2368,7 @@
 		<lookup key="panelGameslistViewGames2" value="Dosar"/>
 		<lookup key="panelGameslistViewGames3" value="Implicit"/>
 		<lookup key="panelGameslistViewGames4" value="Găsit prin"/>
+		<lookup key="panelGameslistViewGames5" value="Mod"/>
 		<lookup key="buttonAddFolder" value="Adaugă dosar..."/>
 		<lookup key="buttonSetLabel" value="Setează eticheta..."/>
 		<lookup key="buttonSetDefaultInstall" value="Setează ca implicit"/>
@@ -2591,6 +2610,7 @@
 		<lookup key="panelGameslistViewGames2" value="Папка"/>
 		<lookup key="panelGameslistViewGames3" value="По умолчанию"/>
 		<lookup key="panelGameslistViewGames4" value="Найдено через"/>
+		<lookup key="panelGameslistViewGames5" value="Мод"/>
 		<lookup key="buttonAddFolder" value="Добавить папку..."/>
 		<lookup key="buttonSetLabel" value="Задать метку..."/>
 		<lookup key="buttonSetDefaultInstall" value="Сделать основной"/>

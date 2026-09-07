@@ -10,8 +10,9 @@ using Mozilla.Autoconfig;
 namespace AowEmailWrapper.Classes
 {
     /// <summary>
-    /// Checks that a mail server candidate from autoconfiguration accepts a connection
-    /// (and works out whether it wants plain or STARTTLS) within a time limit.
+    /// Checks that a mail server candidate from autoconfiguration accepts an encrypted connection
+    /// (and works out whether it wants SSL or STARTTLS) within a time limit. A server that only
+    /// talks in the clear fails the test: the Wrapper never sends a password unencrypted.
     /// </summary>
     public class TimeOutServerTest : IDisposable
     {
@@ -133,16 +134,10 @@ namespace AowEmailWrapper.Classes
                 return Connect(createClient, host, port, SecureSocketOptions.SslOnConnect);
             }
 
-            //Unknown, plain or STARTTLS: prefer STARTTLS and fall back to plain if the server cannot upgrade
+            //Unknown, plain or STARTTLS: the server must be able to upgrade to TLS, there is no plain fallback
             if (Connect(createClient, host, port, SecureSocketOptions.StartTls))
             {
                 setSocketType(SocketType.STARTTLS);
-                return true;
-            }
-
-            if (Connect(createClient, host, port, SecureSocketOptions.None))
-            {
-                setSocketType(SocketType.Plain);
                 return true;
             }
 

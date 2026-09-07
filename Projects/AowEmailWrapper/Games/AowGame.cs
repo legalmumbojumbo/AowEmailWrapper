@@ -149,9 +149,45 @@ namespace AowEmailWrapper.Games
             get { return _emailOut; }
         }
 
+        /// <summary>Where the game writes saves: AoWx keeps them in its X subfolder when that exists.</summary>
         public DirectoryInfo Save
         {
-            get { return _save; }
+            get { return ModSaveFolder ?? _save; }
+        }
+
+        private List<ModInfo> _mods;
+        private DirectoryInfo _modSave;
+
+        /// <summary>The mods found in this copy's folder (Age of Wonders 1 only), from the files the mods leave behind.</summary>
+        public IList<ModInfo> DetectedMods
+        {
+            get
+            {
+                if (_mods == null)
+                {
+                    _mods = _isInstalled && _gameType == AowGameType.Aow1 ? ModDetector.Detect(_root.FullName) : new List<ModInfo>();
+                }
+                return _mods;
+            }
+        }
+
+        /// <summary>"Ziggurat 2026-09-08, AoWx" for lists; empty when nothing was found.</summary>
+        public string DetectedModNames
+        {
+            get { return string.Join(", ", DetectedMods.Select(mod => mod.ToString())); }
+        }
+
+        private DirectoryInfo ModSaveFolder
+        {
+            get
+            {
+                if (_modSave == null && DetectedMods.Any(mod => mod.Name == ModDetector.AowX))
+                {
+                    string path = Path.Combine(_root.FullName, ModDetector.AowXSubfolder, SaveFolder);
+                    _modSave = Directory.Exists(path) ? new DirectoryInfo(path) : _save;
+                }
+                return _modSave;
+            }
         }
 
         public string ExeFile
@@ -355,7 +391,7 @@ namespace AowEmailWrapper.Games
             get
             {
                 List<DirectoryInfo> folders = new List<DirectoryInfo>();
-                foreach (DirectoryInfo folder in new[] { _emailIn, _emailOut, _save })
+                foreach (DirectoryInfo folder in new[] { _emailIn, _emailOut, Save })
                 {
                     if (!folders.Any(existing => SameFolder(existing.FullName, folder.FullName)))
                     {

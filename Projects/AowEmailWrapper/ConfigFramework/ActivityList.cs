@@ -53,6 +53,115 @@ namespace AowEmailWrapper.ConfigFramework
             return returnVal;
         }
 
+        public const char AddressSeparator = ';';
+
+        private List<string> _contacts = new List<string>();
+
+        /// <summary>
+        /// Every address a turn has come from or gone to. Kept apart from the activities, which are
+        /// capped at 100, so an opponent from an old game is still known.
+        /// </summary>
+        [XmlArray("contacts")]
+        [XmlArrayItem("address")]
+        public List<string> Contacts
+        {
+            get { return _contacts; }
+            set { _contacts = value ?? new List<string>(); }
+        }
+
+        /// <summary>True once the mailbox has been looked through for opponents from before the contact list existed.</summary>
+        [XmlAttribute("history_imported")]
+        public bool HistoryImported { get; set; }
+
+        public bool ShouldSerializeHistoryImported()
+        {
+            return HistoryImported;
+        }
+
+        /// <summary>
+        /// True when a turn has come from this address before, or one has been sent to it.
+        /// </summary>
+        public bool IsKnownAddress(string address)
+        {
+            if (string.IsNullOrWhiteSpace(address))
+            {
+                return false;
+            }
+
+            string wanted = address.Trim();
+
+            if (_contacts.Any(contact => string.Equals(contact, wanted, StringComparison.OrdinalIgnoreCase)))
+            {
+                return true;
+            }
+
+            if (_activities != null)
+            {
+                foreach (Activity activity in _activities)
+                {
+                    if (ContainsAddress(activity.Sender, wanted) || ContainsAddress(activity.Recipients, wanted))
+                    {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+
+        /// <summary>Adds an address to the contacts; returns true when it was not there yet.</summary>
+        public bool AddContact(string address)
+        {
+            if (string.IsNullOrWhiteSpace(address))
+            {
+                return false;
+            }
+
+            string trimmed = address.Trim();
+            if (_contacts.Any(contact => string.Equals(contact, trimmed, StringComparison.OrdinalIgnoreCase)))
+            {
+                return false;
+            }
+
+            _contacts.Add(trimmed);
+            return true;
+        }
+
+        /// <summary>Adds every address in a ';' separated list, or a sequence of them; returns how many were new.</summary>
+        public int AddContacts(IEnumerable<string> addresses)
+        {
+            int added = 0;
+            if (addresses != null)
+            {
+                foreach (string entry in addresses)
+                {
+                    foreach (string address in (entry ?? string.Empty).Split(AddressSeparator))
+                    {
+                        if (AddContact(address))
+                        {
+                            added++;
+                        }
+                    }
+                }
+            }
+            return added;
+        }
+
+        private static bool ContainsAddress(string list, string wanted)
+        {
+            if (string.IsNullOrEmpty(list))
+            {
+                return false;
+            }
+            foreach (string entry in list.Split(AddressSeparator))
+            {
+                if (string.Equals(entry.Trim(), wanted, StringComparison.OrdinalIgnoreCase))
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
         public int GetUnSentActivitiesCount()
         {
             int returnVal = 0;

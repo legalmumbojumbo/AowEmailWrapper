@@ -77,6 +77,13 @@ namespace AowEmailWrapper.Pollers
 
                             MimeMessage email = pop3.GetMessage(index);
 
+                            if (HandleWrapperMessage(email))
+                            {
+                                //Wrapper chatter is dealt with and removed, never kept or recorded
+                                pop3.DeleteMessage(index);
+                                continue;
+                            }
+
                             MessageStoreMessage theMessage = new MessageStoreMessage(uid);
 
                             if (ProcessEmailAttachments(email) > 0)

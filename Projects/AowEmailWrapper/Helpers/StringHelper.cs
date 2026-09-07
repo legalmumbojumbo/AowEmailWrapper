@@ -96,7 +96,7 @@ namespace AowEmailWrapper.Helpers
                 returnVal = RemoveChars(returnVal, System.IO.Path.GetInvalidFileNameChars());
             }
 
-            return returnVal.Trim();
+            return returnVal != null ? returnVal.Trim() : string.Empty;
         }
 
         private static string RemoveChars(string input, char[] toRemove)

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -94,6 +95,13 @@ namespace AowEmailWrapper.Helpers
             return GetAttachments(message).FirstOrDefault();
         }
 
+        /// <summary>
+        /// Largest attachment the Wrapper will decode. A real save game is a few megabytes at most;
+        /// anything far beyond that is not a turn and is not worth holding in memory.
+        /// </summary>
+        public const long MaxAttachmentBytes = 32L * 1024 * 1024;
+
+        /// <summary>The decoded attachment, or an empty array when there is none or it is over the size limit.</summary>
         public static byte[] GetAttachmentBytes(MimePart part)
         {
             if (part == null || part.Content == null)
@@ -101,10 +109,18 @@ namespace AowEmailWrapper.Helpers
                 return new byte[0];
             }
 
-            using (MemoryStream stream = new MemoryStream())
+            try
             {
-                part.Content.DecodeTo(stream);
-                return stream.ToArray();
+                using (BoundedMemoryStream stream = new BoundedMemoryStream(MaxAttachmentBytes))
+                {
+                    part.Content.DecodeTo(stream);
+                    return stream.ToArray();
+                }
+            }
+            catch (InvalidDataException ex)
+            {
+                Trace.TraceWarning("Attachment '{0}' skipped: {1}", part.FileName, ex.Message);
+                return new byte[0];
             }
         }
 
@@ -163,6 +179,24 @@ namespace AowEmailWrapper.Helpers
         {
             MailboxAddress to = (message == null) ? null : message.To.Mailboxes.FirstOrDefault();
             return to == null ? string.Empty : to.Address;
+        }
+
+        /// <summary>Every To, Cc and Bcc address, joined with the activity log's separator.</summary>
+        public static string GetRecipientAddresses(MimeMessage message)
+        {
+            if (message == null)
+            {
+                return string.Empty;
+            }
+
+            IEnumerable<string> addresses = message.To.Mailboxes
+                .Concat(message.Cc.Mailboxes)
+                .Concat(message.Bcc.Mailboxes)
+                .Select(mailbox => mailbox.Address)
+                .Where(address => !string.IsNullOrEmpty(address))
+                .Distinct(StringComparer.OrdinalIgnoreCase);
+
+            return string.Join(ActivityList.AddressSeparator.ToString(), addresses);
         }
     }
 }

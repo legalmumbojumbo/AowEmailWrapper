@@ -12,6 +12,9 @@ using MimeKit;
 namespace AowEmailWrapper.Pollers
 {
     public delegate void PollerEmailEventHandler(object sender, PollerEventArgs e);
+    public delegate void PollerHistoryEventHandler(BasePoller sender, MailboxHistory history);
+    public delegate void PollerRecoveredEventHandler(BasePoller sender, int count);
+    public delegate void PollerWrapperMessageEventHandler(BasePoller sender, MimeMessage message);
 
     public abstract class BasePoller
     {
@@ -28,6 +31,43 @@ namespace AowEmailWrapper.Pollers
         protected string _outputPath;
         protected int _pollInterval;
         public event PollerEmailEventHandler OnEmailEvent;
+
+        /// <summary>
+        /// Raised once, on the poller's thread, with what the mailbox scan found when <see cref="ImportHistoryOnNextScan"/>
+        /// was set. The handler fills in <see cref="MailboxHistory.ToRecover"/> before returning.
+        /// </summary>
+        public event PollerHistoryEventHandler OnHistoryImported;
+
+        /// <summary>Raised after unplayed turns from the mailbox were downloaded and filed.</summary>
+        public event PollerRecoveredEventHandler OnTurnsRecovered;
+
+        /// <summary>The player's own addresses; mail from them counts as a turn the player sent.</summary>
+        public IEnumerable<string> OwnAddresses { get; set; }
+
+        /// <summary>Raised on the poller's thread for a wrapper-to-wrapper query or reply; the message is then deleted from the mailbox.</summary>
+        public event PollerWrapperMessageEventHandler OnWrapperMessage;
+
+        /// <summary>True when the message is wrapper chatter, which has then been handed to the main form.</summary>
+        protected bool HandleWrapperMessage(MimeMessage email)
+        {
+            if (!TurnQuery.IsWrapperMessage(email))
+            {
+                return false;
+            }
+
+            PollerWrapperMessageEventHandler handler = OnWrapperMessage;
+            if (handler != null)
+            {
+                handler(this, email);
+            }
+            return true;
+        }
+
+        /// <summary>
+        /// When set, the next connection looks through the mailbox for the addresses the player has
+        /// exchanged turns with, so opponents from before the contact list existed are not reported as new.
+        /// </summary>
+        public bool ImportHistoryOnNextScan { get; set; }
         private Queue<string> _pollQueue;
         protected EmailSaveFolder _saveFolder;
 
@@ -151,6 +191,24 @@ namespace AowEmailWrapper.Pollers
             }
         }
 
+        protected void RaiseHistoryImported(MailboxHistory history)
+        {
+            PollerHistoryEventHandler handler = OnHistoryImported;
+            if (handler != null)
+            {
+                handler(this, history);
+            }
+        }
+
+        protected void RaiseTurnsRecovered(int count)
+        {
+            PollerRecoveredEventHandler handler = OnTurnsRecovered;
+            if (handler != null)
+            {
+                handler(this, count);
+            }
+        }
+
         /// <summary>
         /// Saves every Age of Wonders save game attached to the email and returns how many were found.
         /// </summary>
@@ -163,6 +221,7 @@ namespace AowEmailWrapper.Pollers
                 if (email != null)
                 {
                     string bodyText = MailHelper.GetPlainText(email);
+                    string sender = MailHelper.GetFromAddress(email);
 
                     foreach (MimePart attachment in MailHelper.GetAttachments(email))
                     {
@@ -175,7 +234,7 @@ namespace AowEmailWrapper.Pollers
                             {
                                 if (theASG.Length > 0)
                                 {
-                                    _gameManager.StoreDownloadFile(theASG, _saveFolder, AccountName, MailHelper.GetModLabel(email));
+                                    _gameManager.StoreDownloadFile(theASG, _saveFolder, AccountName, MailHelper.GetModLabel(email), sender);
 
                                     TurnLogger.SaveLog(theASG.FileNameTrue, bodyText);
                                 }
