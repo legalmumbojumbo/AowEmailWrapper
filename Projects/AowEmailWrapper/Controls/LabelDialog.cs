@@ -18,14 +18,14 @@ namespace AowEmailWrapper.Controls
         private const string OtherKey = "radioOtherLabel";
         private const string OkKey = "buttonOK";
         private const string CancelKey = "buttonCancel";
-        private const string InUseKey = "msgLabelInUse";
+        private const string HeldByKey = "msgLabelHeldBy";
         private const int Pad = 16;
         private const int RowHeight = 26;
 
         //Mods the community plays; the labels of other copies on this PC are offered as well
         private static readonly Dictionary<AowGameType, string[]> Presets = new Dictionary<AowGameType, string[]>
         {
-            { AowGameType.Aow1, new[] { "Vanilla", "AoWx", "Ziggurat" } },
+            { AowGameType.Aow1, new[] { ModDetector.Vanilla, ModDetector.Evolved, ModDetector.AowX, ModDetector.Ziggurat, ModDetector.DarkLord } },
             { AowGameType.Aow2, new[] { "Vanilla" } },
             { AowGameType.AowSm, new[] { "Vanilla" } },
             { AowGameType.AowMpe, new[] { "Vanilla" } },
