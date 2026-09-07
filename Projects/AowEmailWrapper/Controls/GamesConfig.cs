@@ -76,7 +76,6 @@ namespace AowEmailWrapper.Controls
             listViewGames.Columns.Add(new ColumnHeader { Text = "Mod", Tag = "ContentHeaderMax" });
             listViewGames.Columns.Add(new ColumnHeader { Text = "Folder", Tag = "Fill" });
             listViewGames.Columns.Add(new ColumnHeader { Text = "Default", Tag = "HeaderSize" });
-            listViewGames.Columns.Add(new ColumnHeader { Text = "Found by", Tag = "ContentHeaderMax" });
             listViewGames.SelectedIndexChanged += (sender, e) => UpdateButtons();
             //Sized on control resize only: reacting to the list's own client size changes loops when a scroll bar appears
             Resize += (sender, e) => FitColumns();
@@ -101,6 +100,16 @@ namespace AowEmailWrapper.Controls
             Controls.Add(lblGamesHelp);
 
             UpdateButtons();
+        }
+
+        /// <summary>The folder, how the copy was found (or that it is missing), and the evidence behind its mod.</summary>
+        private static string ToolTipFor(AowGame game)
+        {
+            string found = game.IsInstalled ? Translator.TranslateEnum(game.Source) : Translator.Translate(MissingKey);
+            string mods = game.DetectedMods.Count == 0
+                ? "No mod found: taken to be the stock game"
+                : string.Join(Environment.NewLine, game.DetectedMods.Select(mod => mod.ToString() + ": " + mod.Evidence));
+            return string.Concat(game.Folder, Environment.NewLine, found, Environment.NewLine, mods);
         }
 
         /// <summary>The list as config entries; setting it re-reads the detected copies from the game manager.</summary>
@@ -176,10 +185,7 @@ namespace AowEmailWrapper.Controls
                 }
                 item.SubItems.Add(game.Folder);
                 item.SubItems.Add(game.IsDefault ? DefaultMark : string.Empty);
-                item.SubItems.Add(game.IsInstalled ? Translator.TranslateEnum(game.Source) : Translator.Translate(MissingKey));
-                item.ToolTipText = game.DetectedMods.Count == 0
-                    ? string.Concat(game.Folder, Environment.NewLine, "No mod found: taken to be the stock game")
-                    : string.Concat(game.Folder, Environment.NewLine, string.Join(Environment.NewLine, game.DetectedMods.Select(mod => mod.ToString() + ": " + mod.Evidence)));
+                item.ToolTipText = ToolTipFor(game);
                 item.Tag = game;
                 if (!game.IsInstalled)
                 {
