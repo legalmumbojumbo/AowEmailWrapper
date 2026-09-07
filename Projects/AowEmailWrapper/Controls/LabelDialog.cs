@@ -19,6 +19,8 @@ namespace AowEmailWrapper.Controls
         private const string OkKey = "buttonOK";
         private const string CancelKey = "buttonCancel";
         private const string HeldByKey = "msgLabelHeldBy";
+        private const string MoveHintKey = "msgLabelMoveHint";
+        private const string MoveHintFallback = "Choosing a label another copy uses moves it to this copy.";
         private const int Pad = 16;
         private const int RowHeight = 26;
 
@@ -85,7 +87,7 @@ namespace AowEmailWrapper.Controls
         private static string HeldBy(string folderName)
         {
             string text = Translator.Translate(HeldByKey, folderName);
-            return string.IsNullOrEmpty(text) ? string.Format("now on {0}", folderName) : text;
+            return string.IsNullOrEmpty(text) ? string.Format("used by {0}", folderName) : text;
         }
 
         private static string FolderName(string folder)
@@ -127,6 +129,19 @@ namespace AowEmailWrapper.Controls
             _otherText.Enter += (sender, e) => _other.Checked = true;
             Controls.Add(_otherText);
             y += RowHeight + Pad;
+
+            if (options.Any(option => option.Key != option.Value))
+            {
+                Label hint = new Label();
+                string hintText = Translator.Translate(MoveHintKey);
+                hint.Text = string.IsNullOrEmpty(hintText) ? MoveHintFallback : hintText;
+                hint.AutoSize = false;
+                hint.Location = new Point(Pad, y);
+                hint.Size = new Size(width - Pad * 2, RowHeight);
+                hint.ForeColor = SystemColors.GrayText;
+                Controls.Add(hint);
+                y += RowHeight + Pad / 2;
+            }
 
             Button ok = new Button();
             ok.Text = Translator.Translate(OkKey);

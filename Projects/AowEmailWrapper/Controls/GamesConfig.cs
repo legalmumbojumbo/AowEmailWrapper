@@ -20,7 +20,6 @@ namespace AowEmailWrapper.Controls
     {
         private const string NoGameInFolderKey = "msgAddFolderNoGame";
         private const string MissingKey = "msgInstallMissing";
-        private const int FolderColumn = 2;
         private const string ScanningKey = "buttonRescanning";
         private const string DefaultMark = "✓";
         private const int ButtonPanelWidth = 113;
@@ -82,6 +81,7 @@ namespace AowEmailWrapper.Controls
             //Sized on control resize only: reacting to the list's own client size changes loops when a scroll bar appears
             Resize += (sender, e) => FitColumns();
             listViewGames.MouseDoubleClick += ListViewGames_MouseDoubleClick;
+            listViewGames.ContextMenuStrip = BuildContextMenu();
 
             panelButtons = new Panel();
             panelButtons.Dock = DockStyle.Right;
@@ -284,18 +284,46 @@ namespace AowEmailWrapper.Controls
             target.Label = label ?? string.Empty;
         }
 
-        /// <summary>Double-clicking the folder opens it in Explorer; anywhere else on the row edits the label.</summary>
+        /// <summary>Double-clicking a copy opens its folder in Explorer; the actions are on the right-click menu.</summary>
         private void ListViewGames_MouseDoubleClick(object sender, MouseEventArgs e)
         {
-            ListViewHitTestInfo hit = listViewGames.HitTest(e.Location);
-            if (hit.Item != null && hit.SubItem != null && hit.Item.SubItems.IndexOf(hit.SubItem) == FolderColumn)
+            if (listViewGames.HitTest(e.Location).Item != null)
             {
                 OpenFolder();
             }
-            else
+        }
+
+        private ToolStripMenuItem _menuSetLabel;
+        private ToolStripMenuItem _menuOpenFolder;
+        private ToolStripMenuItem _menuSetDefault;
+        private ToolStripMenuItem _menuRemove;
+
+        private ContextMenuStrip BuildContextMenu()
+        {
+            ContextMenuStrip menu = new ContextMenuStrip();
+            _menuSetLabel = AddMenuItem(menu, "buttonSetLabel", "Set label...", (sender, e) => SetLabel());
+            _menuOpenFolder = AddMenuItem(menu, "buttonOpenFolder", "Open folder", (sender, e) => OpenFolder());
+            _menuSetDefault = AddMenuItem(menu, "buttonSetDefaultInstall", "Set as default", (sender, e) => SetDefault());
+            _menuRemove = AddMenuItem(menu, "buttonRemoveInstall", "Remove", (sender, e) => RemoveSelected());
+            menu.Opening += (sender, e) =>
             {
-                SetLabel();
-            }
+                AowGame selected = Selected;
+                e.Cancel = selected == null;
+                _menuSetLabel.Enabled = buttonSetLabel.Enabled;
+                _menuOpenFolder.Enabled = buttonOpenFolder.Enabled;
+                _menuSetDefault.Enabled = buttonSetDefaultInstall.Enabled;
+                _menuRemove.Enabled = buttonRemoveInstall.Enabled;
+            };
+            return menu;
+        }
+
+        private static ToolStripMenuItem AddMenuItem(ContextMenuStrip menu, string key, string fallback, EventHandler onClick)
+        {
+            string text = Translator.Translate(key);
+            ToolStripMenuItem item = new ToolStripMenuItem(string.IsNullOrEmpty(text) ? fallback : text);
+            item.Click += onClick;
+            menu.Items.Add(item);
+            return item;
         }
 
         private void OpenFolder()
