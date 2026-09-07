@@ -1,10 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
-using System.Data;
-using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 using AowEmailWrapper.ConfigFramework;
 using AowEmailWrapper.Helpers;
@@ -15,9 +9,14 @@ namespace AowEmailWrapper.Controls
     public partial class PreferencesConfig : UserControl
     {
         public EventHandler Config_Changed;
+        /// <summary>Raised when the Look combo changes, so the window can restyle itself at once.</summary>
+        public event EventHandler ThemeChanged;
         private const string EmailInSelectedMessageKey = "msgEmailInSelected";
         private const string SaveSelectedMessageKey = "msgSaveSelected";
+        private const string ThemeClassicKey = "themeClassic";
+        private const string ThemeAgeOfWondersKey = "themeAgeOfWonders";
         private PreferencesConfigValues _config;
+        private bool _populating;
 
         public PreferencesConfig()
         {
@@ -34,6 +33,10 @@ namespace AowEmailWrapper.Controls
                 Translator.ComboBoxItems.ForEach(item => fbLocalization.AddItem(item));
             }
 
+            fbTheme.AddItem(Theme.ClassicName, Translator.Translate(ThemeClassicKey));
+            fbTheme.AddItem(Theme.AgeOfWondersName, Translator.Translate(ThemeAgeOfWondersKey));
+            fbTheme.SelectedValue = Theme.DefaultName;
+
             fbSaveFolder.SelectedIndex = 0;
 
             fbEmailSound.InnerCheckBox.CheckedChanged += raiseConfigChange;
@@ -44,6 +47,8 @@ namespace AowEmailWrapper.Controls
             fbSaveFolder.InnerComboBox.SelectedIndexChanged += new EventHandler(SaveFolder_SelectedIndexChanged);
             fbCopyToEmailOut.InnerCheckBox.CheckedChanged += raiseConfigChange;
             fbLocalization.InnerComboBox.SelectedIndexChanged += raiseConfigChange;
+            fbTheme.InnerComboBox.SelectedIndexChanged += raiseConfigChange;
+            fbTheme.InnerComboBox.SelectedIndexChanged += (sender, e) => { if (!_populating) ThemeChanged?.Invoke(this, e); };
             fbGameWrapperDataPort.InnerTextBox.TextChanged += raiseConfigChange;
         }
 
@@ -76,9 +81,10 @@ namespace AowEmailWrapper.Controls
             _config.AutoInstallUpdates = fbAutoInstallUpdates.Checked;
             _config.SaveFolder = ConfigHelper.ParseEnumString<EmailSaveFolder>(fbSaveFolder.SelectedValue);
             _config.CopyToEmailOut = fbCopyToEmailOut.Checked;
+            _config.Theme = !string.IsNullOrEmpty(fbTheme.SelectedValue) ? fbTheme.SelectedValue : Theme.DefaultName;
             _config.LanguageCode = !string.IsNullOrEmpty(fbLocalization.SelectedValue) ? fbLocalization.SelectedValue : Translator.CurrentLanguageCode;
 
-            int testValue = 0;
+            int testValue;
             if (int.TryParse(fbGameWrapperDataPort.TextValue, out testValue))
             {
                 _config.GameWrapperDataPort = IsUnassignedPortRange(testValue) ? testValue : PreferencesConfigValues.GameWrapperDataPortDefault;
@@ -92,15 +98,24 @@ namespace AowEmailWrapper.Controls
 
         private void Populate()
         {
-            fbEmailSound.Checked = _config.PlaySoundOnEmail;
-            fbSentSound.Checked = _config.PlaySoundOnSend;
-            fbAutostart.Checked = _config.Autostart;
-            fbAutoInstallUpdates.Checked = _config.AutoInstallUpdates;
-            fbSaveFolder.SelectedValue = _config.SaveFolder.ToString();
-            fbCopyToEmailOut.Checked = _config.CopyToEmailOut;
-            fbLocalization.SelectedValue = _config.LanguageCode;
-            fbGameWrapperDataPort.TextValue = _config.GameWrapperDataPort.ToString();
-            UpdateSaveFolderTip();
+            _populating = true;
+            try
+            {
+                fbEmailSound.Checked = _config.PlaySoundOnEmail;
+                fbSentSound.Checked = _config.PlaySoundOnSend;
+                fbAutostart.Checked = _config.Autostart;
+                fbAutoInstallUpdates.Checked = _config.AutoInstallUpdates;
+                fbSaveFolder.SelectedValue = _config.SaveFolder.ToString();
+                fbCopyToEmailOut.Checked = _config.CopyToEmailOut;
+                fbLocalization.SelectedValue = _config.LanguageCode;
+                fbTheme.SelectedValue = Theme.IsAgeOfWonders(_config.Theme) ? Theme.AgeOfWondersName : Theme.ClassicName;
+                fbGameWrapperDataPort.TextValue = _config.GameWrapperDataPort.ToString();
+                UpdateSaveFolderTip();
+            }
+            finally
+            {
+                _populating = false;
+            }
         }
 
         private void Raise_Config_Changed(object sender, EventArgs e)

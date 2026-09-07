@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using EricDaugherty.CSES.Common;
+﻿using EricDaugherty.CSES.Common;
 using EricDaugherty.CSES.SmtpServer;
 
 namespace AowEmailWrapper.CSES

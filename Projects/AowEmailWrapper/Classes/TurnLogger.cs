@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.IO;
 using System.Diagnostics;
 using System.Text.RegularExpressions;
 using AowEmailWrapper.Helpers;
@@ -51,26 +49,17 @@ namespace AowEmailWrapper.Classes
             return theLog;
         }
 
-        private static int CompareFileInfoLastWriteTime(FileInfo x, FileInfo y)
-        {
-            return x.LastWriteTime.CompareTo(y.LastWriteTime);
-        }
-
         private static string UpdateLog(string input, string email)
         {
             string returnVal = TURN_LOG_DISABLED_MESSAGE;
-            string turnNumber = string.Empty;
-            string previousTurnLog = string.Empty;
-
             if (!string.IsNullOrEmpty(input))
             {
                 int turnLogHeaderIndex = input.IndexOf(TURN_LOG_HEADER);
 
                 if (turnLogHeaderIndex > 0)
                 {
-                    turnNumber = GetTurnNumber(input.Substring(0, turnLogHeaderIndex));
-                    previousTurnLog = input.Substring(input.IndexOf(TURN_LOG_HEADER));
-
+                    string turnNumber = GetTurnNumber(input.Substring(0, turnLogHeaderIndex));
+                    string previousTurnLog = input.Substring(input.IndexOf(TURN_LOG_HEADER));
                     if (!string.IsNullOrEmpty(previousTurnLog))
                     {
                         string headerRemoved = previousTurnLog.Replace(TURN_LOG_HEADER, string.Empty);
@@ -113,8 +102,6 @@ namespace AowEmailWrapper.Classes
 
         private static string CreateLog(string email, string turnNumber)
         {
-            string returnVal = string.Empty;
-
             Turn thisTurn = new Turn(turnNumber, email, null);
 
             thisTurn.TimeTaken = TURN_LOG_STARTED;
@@ -122,8 +109,7 @@ namespace AowEmailWrapper.Classes
             StringBuilder sb = new StringBuilder(TURN_LOG_HEADER);
             sb.Append(StringHelper.CrLf);
             sb.Append(thisTurn.ToString());
-            returnVal = sb.ToString();
-
+            string returnVal = sb.ToString();
             return returnVal;
         }
 

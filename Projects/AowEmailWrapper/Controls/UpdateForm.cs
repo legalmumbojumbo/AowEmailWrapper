@@ -2,7 +2,6 @@ using System;
 using System.Diagnostics;
 using System.Drawing;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using AowEmailWrapper.Helpers;
 using AowEmailWrapper.Localization;
@@ -15,6 +14,12 @@ namespace AowEmailWrapper.Controls
     /// </summary>
     public class UpdateForm : Form
     {
+        protected override void OnLoad(EventArgs e)
+        {
+            base.OnLoad(e);
+            Theme.Apply(this);
+        }
+
         private const string DownloadingKey = "msgWrapperUpdateDownloading";
         private const string DownloadFailedKey = "msgWrapperUpdateDownloadFailed";
         private const string CancelKey = "buttonCancel";

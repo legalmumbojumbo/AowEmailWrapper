@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Xml.Serialization;
+﻿using System.Xml.Serialization;
 using AowEmailWrapper.Helpers;
 
 namespace AowEmailWrapper.ConfigFramework
@@ -61,7 +57,7 @@ namespace AowEmailWrapper.ConfigFramework
             get { return null; }
             set
             {
-                bool useSSL = false;
+                bool useSSL;
                 if (bool.TryParse(value, out useSSL))
                 {
                     _sslType = useSSL ? SSLType.SSL : SSLType.None;

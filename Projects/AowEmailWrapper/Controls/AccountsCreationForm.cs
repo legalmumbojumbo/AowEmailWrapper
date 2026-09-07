@@ -1,11 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
 using System.Windows.Forms;
+using AowEmailWrapper.Helpers;
 using AowEmailWrapper.ConfigFramework;
 using AowEmailWrapper.Localization;
 
@@ -16,6 +11,7 @@ namespace AowEmailWrapper.Controls
         public AccountsCreationForm()
         {
             InitializeComponent();
+            Theme.Apply(this);
             this.KeyPreview = true;
 
             autoconfigWizardControl.Cancelled += new EventHandler(autoconfigWizardControl_Cancelled);

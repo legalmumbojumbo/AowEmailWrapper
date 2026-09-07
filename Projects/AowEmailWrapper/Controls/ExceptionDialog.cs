@@ -1,4 +1,5 @@
 ﻿using System;
+using AowEmailWrapper.Helpers;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
@@ -11,8 +12,14 @@ namespace AowEmailWrapper.Controls
     /// </summary>
     public class ExceptionDialog : Form
     {
+        protected override void OnLoad(EventArgs e)
+        {
+            base.OnLoad(e);
+            Theme.Apply(this);
+        }
+
         private const int Pad = 16;
-        private const int ButtonHeight = 26;
+        private const int ButtonHeight = 28;
         private const int DetailsHeight = 230;
 
         private int _collapsedHeight;
@@ -45,6 +52,9 @@ namespace AowEmailWrapper.Controls
             ShowInTaskbar = false;
             ClientSize = new Size(520, 200);
 
+            //The theme swaps the text font in OnLoad, so measure with the font the text will actually use
+            Font measureFont = Theme.Enabled ? Theme.BodyFont : Font;
+
             PictureBox iconBox = new PictureBox();
             iconBox.Image = GetIcon(icon);
             iconBox.SizeMode = PictureBoxSizeMode.AutoSize;
@@ -54,7 +64,7 @@ namespace AowEmailWrapper.Controls
             //Size the message area to its text so long provider advice is never cut off
             string messageText = BuildMessage(ex);
             int messageWidth = ClientSize.Width - 80;
-            int textHeight = TextRenderer.MeasureText(messageText, Font, new Size(messageWidth, int.MaxValue), TextFormatFlags.WordBreak).Height;
+            int textHeight = TextRenderer.MeasureText(messageText, measureFont, new Size(messageWidth, int.MaxValue), TextFormatFlags.WordBreak).Height;
             int labelHeight = Math.Min(400, Math.Max(48, textHeight + 8));
             _collapsedHeight = Pad + labelHeight + Pad + ButtonHeight + Pad;
             _expandedHeight = _collapsedHeight + DetailsHeight;
@@ -91,7 +101,7 @@ namespace AowEmailWrapper.Controls
                 Button button = new Button();
                 button.Text = buttons[i];
                 button.Tag = i;
-                button.Size = new Size(Math.Max(90, TextRenderer.MeasureText(buttons[i], Font).Width + 24), ButtonHeight);
+                button.Size = new Size(Math.Max(90, TextRenderer.MeasureText(buttons[i], Theme.Enabled ? Theme.ButtonFont(ButtonHeight) : Font).Width + 24), ButtonHeight);
                 x -= button.Size.Width;
                 button.Location = new Point(x, _collapsedHeight - Pad - ButtonHeight);
                 x -= 8;

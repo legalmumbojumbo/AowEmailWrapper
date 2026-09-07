@@ -1,4 +1,5 @@
 using System;
+using AowEmailWrapper.Helpers;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -14,6 +15,12 @@ namespace AowEmailWrapper.Controls
     /// </summary>
     public class LabelDialog : Form
     {
+        protected override void OnLoad(EventArgs e)
+        {
+            base.OnLoad(e);
+            Theme.Apply(this);
+        }
+
         private const string NoLabelKey = "radioNoLabel";
         private const string OtherKey = "radioOtherLabel";
         private const string OkKey = "buttonOK";
@@ -109,10 +116,10 @@ namespace AowEmailWrapper.Controls
             int width = 360;
             int y = Pad;
 
-            RadioButton none = AddChoice(Translator.Translate(NoLabelKey), string.Empty, ref y, width);
+            RadioButton none = AddChoice(Translator.Translate(NoLabelKey), string.Empty, ref y);
             foreach (KeyValuePair<string, string> option in options)
             {
-                AddChoice(option.Key, option.Value, ref y, width);
+                AddChoice(option.Key, option.Value, ref y);
             }
 
             _other = new RadioButton();
@@ -184,7 +191,7 @@ namespace AowEmailWrapper.Controls
             }
         }
 
-        private RadioButton AddChoice(string text, string value, ref int y, int width)
+        private RadioButton AddChoice(string text, string value, ref int y)
         {
             RadioButton choice = new RadioButton();
             choice.Text = text;

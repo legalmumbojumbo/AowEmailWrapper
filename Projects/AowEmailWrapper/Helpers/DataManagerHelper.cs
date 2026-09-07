@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.IO;
+﻿using System.IO;
 using AowEmailWrapper.ConfigFramework;
 using AowEmailWrapper.Pollers.MessageStore;
 using AowEmailWrapper.Localization.Framework;
@@ -14,40 +10,16 @@ namespace AowEmailWrapper.Helpers
         private const string CONFIG_FILE_NAME = "config.xml";
         private const string ACTIVITY_FILE_NAME = "activity.xml";
         private const string LOCALIZATION_FILE_NAME = "Localization.xml";
-        private const string ACCOUNT_TEMPLATES_FILE_NAME = "TemplateAccounts.xml";
         private const string MessageStoreFileTemplate = "{0}@{1}.xml";
         private const string TurnLogFilenameTemplate = "{0}.log";
-
-        #region Account Templates
-        /*
-        public static AccountConfigValuesList LoadAccountTemplates()
-        {
-            AccountConfigValuesList returnVal = null;
-
-            string templatesFilePath = Path.Combine(Path.GetDirectoryName(System.Windows.Forms.Application.ExecutablePath), ACCOUNT_TEMPLATES_FILE_NAME);
-
-            returnVal = FileHelper.LoadXmlFile<AccountConfigValuesList>(templatesFilePath);
-
-            if (returnVal == null)
-            {
-                returnVal = new AccountConfigValuesList();
-            }
-
-            return returnVal;
-        }
-        */
-        #endregion
 
         #region Localization
 
         public static Languages LoadLanguages()
         {
-            Languages returnVal = null;
-
             string localizationFilePath = Path.Combine(Path.GetDirectoryName(System.Windows.Forms.Application.ExecutablePath), LOCALIZATION_FILE_NAME);
 
-            returnVal = FileHelper.LoadXmlFile<Languages>(localizationFilePath);
-
+            Languages returnVal = FileHelper.LoadXmlFile<Languages>(localizationFilePath);
             if (returnVal == null)
             {
                 returnVal = new Languages();
@@ -62,18 +34,17 @@ namespace AowEmailWrapper.Helpers
 
         public static Config LoadConfig()
         {
-            bool isNew = false;
+            bool isNew;
             return LoadConfig(out isNew);
         }
 
         public static Config LoadConfig(out bool isNewConfig)
         {
-            Config returnVal = null;
             isNewConfig = false;
 
             string configFilePath = Path.Combine(AppDataHelper.Config.FullName, CONFIG_FILE_NAME);
 
-            returnVal = FileHelper.LoadXmlFile<Config>(configFilePath);
+            Config returnVal = FileHelper.LoadXmlFile<Config>(configFilePath);
 
             if (returnVal == null)
             {
@@ -132,12 +103,9 @@ namespace AowEmailWrapper.Helpers
 
         public static ActivityList LoadActivityLog()
         {
-            ActivityList returnVal = null;
-
             string activityFilePath = Path.Combine(AppDataHelper.ActivityLog.FullName, ACTIVITY_FILE_NAME);
 
-            returnVal = FileHelper.LoadXmlFile<ActivityList>(activityFilePath);
-
+            ActivityList returnVal = FileHelper.LoadXmlFile<ActivityList>(activityFilePath);
             if (returnVal == null) returnVal = new ActivityList();
 
             return returnVal;

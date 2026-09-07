@@ -40,6 +40,7 @@
             this.fbSentSound = new AowEmailWrapper.Controls.FormBlockCheckBox();
             this.fbEmailSound = new AowEmailWrapper.Controls.FormBlockCheckBox();
             this.fbLocalization = new AowEmailWrapper.Controls.FormBlockCombo();
+            this.fbTheme = new AowEmailWrapper.Controls.FormBlockCombo();
             this.groupBoxPreferences.SuspendLayout();
             this.groupBoxEmailSelection.SuspendLayout();
             this.panelMessage.SuspendLayout();
@@ -54,13 +55,14 @@
             this.groupBoxPreferences.Controls.Add(this.fbAutostart);
             this.groupBoxPreferences.Controls.Add(this.fbSentSound);
             this.groupBoxPreferences.Controls.Add(this.fbEmailSound);
+            this.groupBoxPreferences.Controls.Add(this.fbTheme);
             this.groupBoxPreferences.Controls.Add(this.fbLocalization);
             this.groupBoxPreferences.Dock = System.Windows.Forms.DockStyle.Top;
             this.groupBoxPreferences.Location = new System.Drawing.Point(0, 0);
             this.groupBoxPreferences.Margin = new System.Windows.Forms.Padding(2);
             this.groupBoxPreferences.Name = "groupBoxPreferences";
             this.groupBoxPreferences.Padding = new System.Windows.Forms.Padding(2, 2, 2, 5);
-            this.groupBoxPreferences.Size = new System.Drawing.Size(423, 164);
+            this.groupBoxPreferences.Size = new System.Drawing.Size(423, 188);
             this.groupBoxPreferences.TabIndex = 0;
             this.groupBoxPreferences.TabStop = false;
             this.groupBoxPreferences.Text = "Preferences";
@@ -197,6 +199,19 @@
             this.fbLocalization.TabIndex = 19;
             this.fbLocalization.Tag = "";
             // 
+            // fbTheme
+            // 
+            this.fbTheme.Dock = System.Windows.Forms.DockStyle.Top;
+            this.fbTheme.LabelName = "Theme:";
+            this.fbTheme.Location = new System.Drawing.Point(2, 39);
+            this.fbTheme.Margin = new System.Windows.Forms.Padding(2);
+            this.fbTheme.MinimumSize = new System.Drawing.Size(0, 24);
+            this.fbTheme.Name = "fbTheme";
+            this.fbTheme.SelectedIndex = -1;
+            this.fbTheme.SelectedValue = "";
+            this.fbTheme.Size = new System.Drawing.Size(419, 24);
+            this.fbTheme.TabIndex = 20;
+            // 
             // PreferencesConfig
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -205,7 +220,7 @@
             this.Controls.Add(this.groupBoxPreferences);
             this.Margin = new System.Windows.Forms.Padding(2);
             this.Name = "PreferencesConfig";
-            this.Size = new System.Drawing.Size(423, 272);
+            this.Size = new System.Drawing.Size(423, 296);
             this.groupBoxPreferences.ResumeLayout(false);
             this.groupBoxEmailSelection.ResumeLayout(false);
             this.panelMessage.ResumeLayout(false);
@@ -222,6 +237,7 @@
         private System.Windows.Forms.Label labelMessage;
         private FormBlockCombo fbSaveFolder;
         private FormBlockCombo fbLocalization;
+        private FormBlockCombo fbTheme;
         private FormBlockCheckBox fbAutostart;
         private FormBlockCheckBox fbAutoInstallUpdates;
         private FormBlockCheckBox fbSentSound;

@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Globalization;
+﻿using System.Globalization;
 using System.Xml.Serialization;
-using AowEmailWrapper.Localization;
 
 namespace AowEmailWrapper.ConfigFramework
 {
@@ -85,6 +80,16 @@ namespace AowEmailWrapper.ConfigFramework
         {
             get { return _autoInstallUpdates; }
             set { _autoInstallUpdates = value; }
+        }
+
+        private string _theme = Helpers.Theme.DefaultName;
+
+        /// <summary>Name of the look: Theme.ClassicName or Theme.AgeOfWondersName.</summary>
+        [XmlAttribute("theme")]
+        public string Theme
+        {
+            get { return _theme; }
+            set { _theme = string.IsNullOrEmpty(value) ? Helpers.Theme.DefaultName : value; }
         }
 
         public PreferencesConfigValues()

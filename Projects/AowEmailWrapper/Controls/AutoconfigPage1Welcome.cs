@@ -1,16 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
-using System.Data;
-using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 using AowEmailWrapper.Helpers;
-using AowEmailWrapper.ConfigFramework;
 using AowEmailWrapper.Localization;
-using AowEmailWrapper.Classes;
-using Mozilla.Autoconfig;
 
 namespace AowEmailWrapper.Controls
 {
@@ -22,7 +13,6 @@ namespace AowEmailWrapper.Controls
             Success
         }
 
-        private const string ServerPreferenceNoPreferenceKey = "serverPreferenceNoPreference";
 
         public KeyEventHandler TextKeyDown;
         public EventHandler Next;

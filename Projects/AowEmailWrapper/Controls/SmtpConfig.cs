@@ -1,12 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
-using System.Data;
-using System.Linq;
-using System.Text;
 using System.Windows.Forms;
-using System.Xml;
 using AowEmailWrapper.ConfigFramework;
 using AowEmailWrapper.Helpers;
 using AowEmailWrapper.Localization;
@@ -83,7 +76,7 @@ namespace AowEmailWrapper.Controls
 
             _config.SmtpServer = fbSmtpServer.TextValue;
 
-            int port = 25;
+            int port;
             if (int.TryParse(fbPort.TextValue, out port))
             {
                 _config.Port = port;

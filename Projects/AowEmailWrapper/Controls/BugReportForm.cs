@@ -15,6 +15,12 @@ namespace AowEmailWrapper.Controls
     /// </summary>
     public class BugReportForm : Form
     {
+        protected override void OnLoad(EventArgs e)
+        {
+            base.OnLoad(e);
+            Theme.Apply(this);
+        }
+
         private const string TitleKey = "msgBugReportTitle";
         private const string IntroKey = "msgBugReportIntro";
         private const string IntroNoAccountKey = "msgBugReportIntroNoAccount";

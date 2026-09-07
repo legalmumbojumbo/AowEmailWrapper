@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Drawing;
-using System.Data;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
@@ -323,7 +321,7 @@ namespace AowEmailWrapper.Controls
         private int GetAgeInDays(string theTicks)
         {
             int returnVal = 0;
-            long ticks = 0;
+            long ticks;
             if (long.TryParse(theTicks, out ticks))
             {
                 DateTime timeStamp = new DateTime(ticks);

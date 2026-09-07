@@ -1,10 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
-using System.Data;
-using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 using AowEmailWrapper.ConfigFramework;
 using AowEmailWrapper.Helpers;
@@ -114,7 +108,7 @@ namespace AowEmailWrapper.Controls
 
             _config.Server = fbServer.TextValue;
 
-            int port = 110;
+            int port;
             if (int.TryParse(fbPort.TextValue, out port))
             {
                 _config.Port = port;
@@ -124,7 +118,7 @@ namespace AowEmailWrapper.Controls
             _config.Username = fbUserName.TextValue;
             _config.PasswordTrue = fbPassword.TextValue;
 
-            int poll = 10;
+            int poll;
             if (int.TryParse(fbPollingSetup.SelectedValue, out poll))
             {
                 _config.PollInterval = poll;

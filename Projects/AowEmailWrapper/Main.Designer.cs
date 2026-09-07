@@ -38,7 +38,7 @@
             this.panelLocalMessageStore = new System.Windows.Forms.Panel();
             this.cmdMessageStore = new System.Windows.Forms.Button();
             this.panelMain = new System.Windows.Forms.Panel();
-            this.tabControlMain = new System.Windows.Forms.TabControl();
+            this.tabControlMain = new AowEmailWrapper.Controls.ThemedTabControl();
             this.tabAccounts = new System.Windows.Forms.TabPage();
             this.accountsConfig = new AowEmailWrapper.Controls.AccountsConfig();
             this.tabActivity = new System.Windows.Forms.TabPage();
@@ -302,7 +302,7 @@
             this.preferencesConfig.Margin = new System.Windows.Forms.Padding(2);
             this.preferencesConfig.Name = "preferencesConfig";
             this.preferencesConfig.Padding = new System.Windows.Forms.Padding(5);
-            this.preferencesConfig.Size = new System.Drawing.Size(514, 313);
+            this.preferencesConfig.Size = new System.Drawing.Size(514, 337);
             this.preferencesConfig.TabIndex = 0;
             // 
             // tabAbout
@@ -1057,22 +1057,18 @@
         private System.Windows.Forms.ImageList imageListIcons;
         private System.Windows.Forms.Panel panelBottom;
         private System.Windows.Forms.Panel panelMain;
-        private System.Windows.Forms.TabControl tabControlMain;
+        private AowEmailWrapper.Controls.ThemedTabControl tabControlMain;
         private System.Windows.Forms.TabPage tabPreferences;
         private System.Windows.Forms.TabPage tabGames;
         private AowEmailWrapper.Controls.GamesConfig gamesConfig;
         private AowEmailWrapper.Controls.PreferencesConfig preferencesConfig;
         private System.Windows.Forms.TabPage tabAbout;
-        private System.Windows.Forms.Button button1;
         private System.Windows.Forms.TabPage tabAccounts;
         private AowEmailWrapper.Controls.AccountsConfig accountsConfig;
         private System.Windows.Forms.TabPage tabActivity;
         private AowEmailWrapper.Controls.ActivityListView activityListView;
         private System.Windows.Forms.Panel panelAbout;
         private System.Windows.Forms.Label lblNotice;
-        private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.Label label4;
-        private System.Windows.Forms.Label label5;
         private System.Windows.Forms.Panel panelLocalMessageStore;
         private System.Windows.Forms.Button cmdSave;
         private System.Windows.Forms.Button cmdMessageStore;

@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using System.IO;
 using System.Xml;
 using System.Xml.Serialization;
-using System.Xml.Schema;
 
 namespace AowEmailWrapper.Helpers
 {
@@ -56,11 +53,6 @@ namespace AowEmailWrapper.Helpers
 
             finally
             {
-                _serializer = null;
-                _reader = null;
-                _memory = null;
-                _attribute = null;
-                _xmlDoc = null;
             }
         }
 

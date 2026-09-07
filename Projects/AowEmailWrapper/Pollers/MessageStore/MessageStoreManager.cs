@@ -1,13 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.IO;
-using System.Diagnostics;
-using System.Windows.Forms;
-using AowEmailWrapper.Games;
 using AowEmailWrapper.Helpers;
-using System.Xml;
 
 namespace AowEmailWrapper.Pollers.MessageStore
 {

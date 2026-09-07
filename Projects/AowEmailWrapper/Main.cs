@@ -1,13 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Configuration;
 using System.Data;
 using System.Drawing;
 using System.Linq;
-using System.Text;
 using System.Windows.Forms;
-using System.Net;
 using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
@@ -218,6 +215,10 @@ namespace AowEmailWrapper
             ImageListLoader.Load(imageListIcons, "Main");
 
             Translator.TranslateForm(this);
+            Theme.Select(_wrapperConfig != null && _wrapperConfig.PreferencesConfig != null ? _wrapperConfig.PreferencesConfig.Theme : Theme.DefaultName, this);
+            //Deferred: the switch changes the theme dropdown's own FlatStyle, which recreates its handle, and that
+            //must not happen while the dropdown's selection message is still being processed (access violation)
+            preferencesConfig.ThemeChanged += (sender, e) => BeginInvoke(new Action(() => Theme.Select(preferencesConfig.Config.Theme, this)));
 
             //The wrapped text in these boxes is only as tall as the tab is wide, so size the boxes from it
             tableDedication.SizeChanged += (sender, e) => FitGroupToContents(groupDedication);
@@ -748,7 +749,6 @@ namespace AowEmailWrapper
                     myPlayer.SoundLocation = file;
                     myPlayer.Play();
                     myPlayer.Dispose();
-                    myPlayer = null;
                 }
             }
         }
@@ -829,9 +829,8 @@ namespace AowEmailWrapper
 
         private void SetIcon(IconState theState)
         {
-            Icon theIcon = null;
-            string status = null;
-
+            Icon theIcon;
+            string status;
             switch (theState)
             {
                 case IconState.Normal:
@@ -2263,8 +2262,7 @@ namespace AowEmailWrapper
 
         private Activity UpdateActivitySent(MimePart theAttachment, string accountName)
         {
-            Activity theActivity = null;
-            theActivity = _activityLog.GetLastActivityByFileName(theAttachment.FileName);
+            Activity theActivity = _activityLog.GetLastActivityByFileName(theAttachment.FileName);
 
             if (theActivity != null)
             {
@@ -2312,8 +2310,7 @@ namespace AowEmailWrapper
 
         private void UpdateActivitySendError(MimePart theAttachment)
         {
-            Activity theActivity = null;
-            theActivity = _activityLog.GetLastActivityByFileName(theAttachment.FileName);
+            Activity theActivity = _activityLog.GetLastActivityByFileName(theAttachment.FileName);
 
             if (theActivity != null)
             {
