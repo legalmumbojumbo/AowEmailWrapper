@@ -237,6 +237,30 @@ namespace AowEmailWrapper.Helpers
             return returnVal;
         }
 
+        /// <summary>
+        /// Keeps only the servers that use SSL or STARTTLS. Discovered settings can come from an
+        /// unauthenticated source (a DNS lookup, a guess), so a plain server is never accepted:
+        /// the worst a tampered answer can then cause is a failed connection, not a leaked password.
+        /// Returns true when an incoming and an outgoing server remain.
+        /// </summary>
+        public static bool RemoveUnencryptedServers(EmailProvider provider)
+        {
+            if (provider == null)
+            {
+                return false;
+            }
+
+            provider.IncomingServers = (provider.IncomingServers ?? new List<IncomingServer>()).Where(server => IsEncrypted(server.SocketType)).ToList();
+            provider.OutgoingServers = (provider.OutgoingServers ?? new List<OutgoingServer>()).Where(server => IsEncrypted(server.SocketType)).ToList();
+
+            return provider.IncomingServers.Count > 0 && provider.OutgoingServers.Count > 0;
+        }
+
+        public static bool IsEncrypted(SocketType socketType)
+        {
+            return socketType == SocketType.SSL || socketType == SocketType.STARTTLS;
+        }
+
         public static void TestAllEmailServers(EmailProvider provider, int timeOutMs)
         {
             List<TimeOutServerTest> incomingServerTests = new List<TimeOutServerTest>();

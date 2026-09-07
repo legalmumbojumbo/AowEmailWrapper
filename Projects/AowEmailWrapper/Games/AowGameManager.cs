@@ -129,6 +129,7 @@ namespace AowEmailWrapper.Games
         private static List<AowGame> Merge(List<AowGame> detected, GamesConfigValues config)
         {
             List<AowGame> games = detected.Where(game => game.IsInstalled || game.IsManual).ToList();
+            HashSet<string> remembered = new HashSet<string>();
 
             if (config != null)
             {
@@ -139,6 +140,7 @@ namespace AowEmailWrapper.Games
                     {
                         game.Label = entry.Label;
                         game.IsDefault = entry.IsDefault;
+                        remembered.Add(game.Id);
                     }
                 }
 
@@ -151,6 +153,18 @@ namespace AowEmailWrapper.Games
                         missing.Label = entry.Label;
                         games.Add(missing);
                     }
+                }
+            }
+
+            //A copy seen for the first time that carries one mod is labelled with it, unless another copy already
+            //has that label; a copy the player has settled on (remembered, labelled or not) is left as it is
+            foreach (AowGame game in games.Where(game => game.IsInstalled && !remembered.Contains(game.Id) && string.IsNullOrEmpty(game.Label) && game.DetectedMods.Count == 1))
+            {
+                string label = game.DetectedMods[0].Name;
+                if (!games.Any(other => other != game && other.GameType == game.GameType && AowGame.SameLabel(other.Label, label)))
+                {
+                    game.Label = label;
+                    Trace.TraceInformation("Copy {0} labelled '{1}' from the mod found in it ({2})", game.Folder, label, game.DetectedMods[0].Evidence);
                 }
             }
 
@@ -358,6 +372,11 @@ namespace AowEmailWrapper.Games
 
         public void StoreDownloadFile(ASGFileInfo theAsgFile, EmailSaveFolder saveFolder, string accountName, string modLabel)
         {
+            StoreDownloadFile(theAsgFile, saveFolder, accountName, modLabel, null);
+        }
+
+        public void StoreDownloadFile(ASGFileInfo theAsgFile, EmailSaveFolder saveFolder, string accountName, string modLabel, string sender)
+        {
             AowGame theGame = theAsgFile.IsValid ? ResolveIncoming(theAsgFile.GameType, modLabel, theAsgFile.FileNameTrue) : null;
 
             if (theGame != null)
@@ -371,13 +390,15 @@ namespace AowEmailWrapper.Games
                 {
                     AccountName = accountName,
                     Install = theGame,
-                    ModLabel = modLabel
+                    ModLabel = modLabel,
+                    Sender = sender,
+                    Players = ASGFileInfo.JoinAddresses(theAsgFile.PlayerEmails)
                 });
             }
             else
             {
                 theAsgFile.SaveToFolder(_checkEmailFolder);
-                RaiseOnGameSaved(new AowGameSavedEventArgs(AowGameType.Unknown, theAsgFile.FileName) { AccountName = accountName, ModLabel = modLabel });
+                RaiseOnGameSaved(new AowGameSavedEventArgs(AowGameType.Unknown, theAsgFile.FileName) { AccountName = accountName, ModLabel = modLabel, Sender = sender, Players = ASGFileInfo.JoinAddresses(theAsgFile.PlayerEmails) });
             }
         }
 
@@ -523,12 +544,11 @@ namespace AowEmailWrapper.Games
         {
             if (theAttachment != null && theGame != null)
             {
-                string fileName = theAttachment.FileName;
+                //The attachment name is sender supplied, so it must stay a plain file inside EmailOut
+                string destPath = ASGFileInfo.GetPathInside(theGame.EmailOut.FullName, theAttachment.FileName);
 
-                if (!string.IsNullOrEmpty(fileName))
+                if (destPath != null)
                 {
-                    string destPath = Path.Combine(theGame.EmailOut.FullName, fileName);
-
                     if (File.Exists(destPath))
                     {
                         File.Delete(destPath);

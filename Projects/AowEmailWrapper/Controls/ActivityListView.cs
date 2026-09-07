@@ -31,6 +31,13 @@ namespace AowEmailWrapper.Controls
         private const string Menu_MarkSent_Tag = "menuItemMarkSent";
         private const string Menu_Resend_Tag = "menuItemResend";
         private const string Menu_MoveTo_Tag = "menuItemMoveTo";
+        private const string NewSenderKey = "activityNewSender";
+        private const string NewSenderFallback = "new sender";
+        private const string Menu_WhereIs_Tag = "menuItemWhereIs";
+        private const string WhereIsFallback = "Where is the turn?";
+        private const string HeldByKey = "activityHeldBy";
+        private const string HeldByFallback = "held by {0}";
+        private ToolStripMenuItem _whereIsMenuItem;
 
         #endregion
 
@@ -42,6 +49,7 @@ namespace AowEmailWrapper.Controls
         public ActivityListViewEventHandler OnDeleteClick;
         public EventHandler OnListChanged;
         public ActivityMoveEventHandler OnMoveTo;
+        public ActivityListViewEventHandler OnWhereIs;
 
         /// <summary>Used to name the copy a game lives in and to offer the other copies under Move to.</summary>
         public AowGameManager GameManager { get; set; }
@@ -109,11 +117,11 @@ namespace AowEmailWrapper.Controls
                     SetItemColour(item, activity, age);
                     
                     item.Text = activity.FileName;
-                    item.ToolTipText = item.Text;
+                    item.ToolTipText = ToolTipFor(activity);
                     item.SubItems.Add(new ListViewItem.ListViewSubItem(item, activity.MapTitle));
                     item.SubItems.Add(new ListViewItem.ListViewSubItem(item, activity.TurnNumber));
                     item.SubItems.Add(new ListViewItem.ListViewSubItem(item, (age > 0) ? age.ToString() : string.Empty));
-                    item.SubItems.Add(new ListViewItem.ListViewSubItem(item, activity.Status.Equals(ActivityState.None) ? string.Empty : Translator.TranslateEnum(activity.Status)));
+                    item.SubItems.Add(new ListViewItem.ListViewSubItem(item, StatusLabel(activity)));
                     item.SubItems.Add(new ListViewItem.ListViewSubItem(item, CopyLabel(activity)));
                     item.SubItems.Add(new ListViewItem.ListViewSubItem(item, activity.DateTicks));
 
@@ -152,6 +160,51 @@ namespace AowEmailWrapper.Controls
             }
 
             listView.EndUpdate();
+        }
+
+        /// <summary>
+        /// The status text, with a "new sender" tag on a received turn from an address not seen before,
+        /// or the player whose wrapper says it holds a sent turn.
+        /// </summary>
+        private static string StatusLabel(Activity activity)
+        {
+            string label = activity.Status.Equals(ActivityState.None) ? string.Empty : Translator.TranslateEnum(activity.Status);
+            if (activity.NewSender && activity.Status == ActivityState.Received)
+            {
+                string tag = Translator.Translate(NewSenderKey);
+                label = string.Format("{0} ({1})", label, string.IsNullOrEmpty(tag) ? NewSenderFallback : tag);
+            }
+            else if (activity.Status == ActivityState.Sent && !string.IsNullOrEmpty(activity.Holder))
+            {
+                string held = Translator.Translate(HeldByKey, activity.Holder);
+                label = string.Format("{0} ({1})", label, string.IsNullOrEmpty(held) ? string.Format(HeldByFallback, activity.Holder) : held);
+            }
+            return label;
+        }
+
+        private static string ToolTipFor(Activity activity)
+        {
+            StringBuilder tip = new StringBuilder(activity.FileName);
+            if (!string.IsNullOrEmpty(activity.Sender))
+            {
+                tip.Append(Environment.NewLine).Append("From: ").Append(activity.Sender);
+            }
+            if (!string.IsNullOrEmpty(activity.Recipients))
+            {
+                tip.Append(Environment.NewLine).Append("To: ").Append(activity.Recipients.Replace(";", ", "));
+            }
+            if (!string.IsNullOrEmpty(activity.Players))
+            {
+                tip.Append(Environment.NewLine).Append("Players: ").Append(activity.Players.Replace(";", ", "));
+            }
+            if (!string.IsNullOrEmpty(activity.Whereabouts))
+            {
+                foreach (string line in activity.Whereabouts.Split(new[] { TurnQuery.WhereaboutsSeparator }, StringSplitOptions.RemoveEmptyEntries))
+                {
+                    tip.Append(Environment.NewLine).Append(line);
+                }
+            }
+            return tip.ToString();
         }
 
         /// <summary>The label of the copy a game lives in, or the label it arrived with when the copy is unknown.</summary>
@@ -242,6 +295,11 @@ namespace AowEmailWrapper.Controls
             { 
                 case ActivityState.Received:
                     listItem.BackColor = SystemColors.Info;
+                    if (activity.NewSender)
+                    {
+                        listItem.ForeColor = Color.DarkRed;
+                        listItem.Font = new Font(listItem.Font ?? SystemFonts.DefaultFont, FontStyle.Bold);
+                    }
                     break;
                 case ActivityState.Sent:
                     if (age >= 14 && age < 28)
@@ -300,8 +358,14 @@ namespace AowEmailWrapper.Controls
             ToolStripMenuItem markSent = new ToolStripMenuItem();
             _resendMenuItem = new ToolStripMenuItem();
             _moveToMenuItem = new ToolStripMenuItem();
+            _whereIsMenuItem = new ToolStripMenuItem();
 
-            _contextMenu.Items.AddRange(new ToolStripMenuItem[] { _resendMenuItem, _moveToMenuItem, markEnded, markSent, remove });
+            _contextMenu.Items.AddRange(new ToolStripMenuItem[] { _resendMenuItem, _moveToMenuItem, _whereIsMenuItem, markEnded, markSent, remove });
+
+            string whereIs = Translator.Translate(Menu_WhereIs_Tag);
+            _whereIsMenuItem.Text = string.IsNullOrEmpty(whereIs) ? WhereIsFallback : whereIs;
+            _whereIsMenuItem.Tag = Menu_WhereIs_Tag;
+            _whereIsMenuItem.Click += menuItemClickEvent;
 
             _contextMenu.Opening += new System.ComponentModel.CancelEventHandler(ContextMenu_Popup);
 
@@ -360,6 +424,12 @@ namespace AowEmailWrapper.Controls
                             OnResendClick(this, selected);
                         }
                         break;
+                    case Menu_WhereIs_Tag:
+                        if (OnWhereIs != null)
+                        {
+                            OnWhereIs(this, selected);
+                        }
+                        break;
                 }
             }
         }
@@ -383,6 +453,9 @@ namespace AowEmailWrapper.Controls
             }
 
             _resendMenuItem.Enabled = resend;
+
+            //Only a turn that has left this player can be somewhere else
+            _whereIsMenuItem.Enabled = enabled && GetSelectedActivities().All(activity => activity.Status.Equals(ActivityState.Sent) && TurnQuery.PlayersToAsk(activity, null).Count > 0);
 
             PopulateMoveTo();
         }

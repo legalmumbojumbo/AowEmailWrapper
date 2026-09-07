@@ -21,6 +21,8 @@ namespace AowEmailWrapper.Controls
         private const string OtherAccountTranslationKey = "accountOther";
         private const string OtherAccountType = "Other";
         private const string OAuthOnlyKey = "msgOAuthOnly";
+        private const string UnencryptedOnlyKey = "msgAutoconfigUnencryptedOnly";
+        private const string UnencryptedOnlyFallback = "Settings were found for this address, but they would send your password without encryption, so the Wrapper will not use them. Please enter the server settings manually.";
 
         private int _stage = 0;
         private string _emailAddress;
@@ -304,6 +306,7 @@ namespace AowEmailWrapper.Controls
                 RequestType requestType = ConfigHelper.ParseEnumString<RequestType>(obj as string);
 
                 MechanismResponse response = IspDbHandler.GetAutoconfig(_emailAddress, requestType);
+                bool unencryptedOnly = false;
 
                 if (response.IsGuess)
                 {
@@ -316,6 +319,14 @@ namespace AowEmailWrapper.Controls
                     {
                         response = new MechanismResponse() { ResponseType = MechanismResponseType.NotFound };
                     }
+                }
+
+                if (response.IsSuccess && response.ClientConfig != null &&
+                    !AutoconfigurationHelper.RemoveUnencryptedServers(response.ClientConfig.EmailProvider))
+                {
+                    //Whatever was found would send the password in the clear: treat it as not found
+                    unencryptedOnly = true;
+                    response = new MechanismResponse() { ResponseType = MechanismResponseType.NotFound };
                 }
 
                 this.Invoke(
@@ -332,6 +343,11 @@ namespace AowEmailWrapper.Controls
                     else
                     {
                         contentPage2.Failed();
+                        if (unencryptedOnly)
+                        {
+                            string message = Translator.Translate(UnencryptedOnlyKey);
+                            contentPage2.SetResultMessage(string.IsNullOrEmpty(message) ? UnencryptedOnlyFallback : message);
+                        }
                     }
                     cmdNext.Enabled = true;
                     cmdNext.Focus();

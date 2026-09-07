@@ -293,6 +293,46 @@ namespace AowEmailWrapper.Games
             return found;
         }
 
+        /// <summary>
+        /// The version Apps and Features records for whatever is installed in the folder under a name
+        /// containing the given text (an Inno Setup installer such as AoWx writes one), or null.
+        /// </summary>
+        public static string InstalledVersion(string folder, string displayNameContains)
+        {
+            try
+            {
+                foreach (RegistryKey uninstall in OpenAll(UninstallRegPath))
+                {
+                    using (uninstall)
+                    {
+                        foreach (string name in uninstall.GetSubKeyNames())
+                        {
+                            using (RegistryKey entry = uninstall.OpenSubKey(name))
+                            {
+                                if (entry == null)
+                                {
+                                    continue;
+                                }
+                                string displayName = entry.GetValue(DisplayNameValueName) as string;
+                                string location = entry.GetValue(InstallLocationValueName) as string;
+                                if (!string.IsNullOrEmpty(displayName) && !string.IsNullOrEmpty(location) &&
+                                    displayName.IndexOf(displayNameContains, StringComparison.OrdinalIgnoreCase) >= 0 &&
+                                    AowGame.SameFolder(location, folder))
+                                {
+                                    return entry.GetValue("DisplayVersion") as string;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Trace.TraceWarning("Could not read the installed version for {0}: {1}", folder, ex.Message);
+            }
+            return null;
+        }
+
         private static IEnumerable<Candidate> UninstallCandidates()
         {
             List<Candidate> found = new List<Candidate>();

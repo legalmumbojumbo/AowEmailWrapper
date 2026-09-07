@@ -46,6 +46,12 @@ namespace AowEmailWrapper.Games
         /// <summary>Mod label carried by the email, if any.</summary>
         public string ModLabel { get; set; }
 
+        /// <summary>Email address the turn was sent from, empty when it did not come by email.</summary>
+        public string Sender { get; set; }
+
+        /// <summary>Every player's address from the save, separated by ';'.</summary>
+        public string Players { get; set; }
+
         public string TurnNumber
         {
             get { return _turnNo; }

@@ -41,6 +41,9 @@ namespace AowEmailWrapper.Controls
 
         public EventHandler Config_Changed;
 
+        /// <summary>Raised when a rescan has finished, with the list updated; the result is applied and saved by the main form.</summary>
+        public EventHandler Rescanned;
+
         /// <summary>Supplies the detected copies; the tab works on its own copy of the list until settings are saved.</summary>
         public AowGameManager GameManager { get; set; }
 
@@ -74,6 +77,7 @@ namespace AowEmailWrapper.Controls
             listViewGames.Columns.Add(new ColumnHeader { Text = "Folder", Tag = "Fill" });
             listViewGames.Columns.Add(new ColumnHeader { Text = "Default", Tag = "HeaderSize" });
             listViewGames.Columns.Add(new ColumnHeader { Text = "Found by", Tag = "ContentHeaderMax" });
+            listViewGames.Columns.Add(new ColumnHeader { Text = "Mod", Tag = "ContentHeaderMax" });
             listViewGames.SelectedIndexChanged += (sender, e) => UpdateButtons();
             //Sized on control resize only: reacting to the list's own client size changes loops when a scroll bar appears
             Resize += (sender, e) => FitColumns();
@@ -168,7 +172,10 @@ namespace AowEmailWrapper.Controls
                 item.SubItems.Add(game.Folder);
                 item.SubItems.Add(game.IsDefault ? DefaultMark : string.Empty);
                 item.SubItems.Add(game.IsInstalled ? Translator.TranslateEnum(game.Source) : Translator.Translate(MissingKey));
-                item.ToolTipText = game.Folder;
+                item.SubItems.Add(game.DetectedModNames);
+                item.ToolTipText = game.DetectedMods.Count == 0
+                    ? game.Folder
+                    : string.Concat(game.Folder, Environment.NewLine, string.Join(Environment.NewLine, game.DetectedMods.Select(mod => mod.Name + ": " + mod.Evidence)));
                 item.Tag = game;
                 if (!game.IsInstalled)
                 {
@@ -331,7 +338,11 @@ namespace AowEmailWrapper.Controls
                 AowGameManager fresh = new AowGameManager(GameManager != null ? GameManager.CheckEmailFolder : null, detected, known);
                 _games = fresh.Games.Select(Clone).ToList();
                 Populate();
-                RaiseChanged();
+                //The player asked for the scan, so its result is kept at once rather than waiting for Save Settings
+                if (Rescanned != null)
+                {
+                    Rescanned(this, EventArgs.Empty);
+                }
             }
             catch (Exception ex)
             {

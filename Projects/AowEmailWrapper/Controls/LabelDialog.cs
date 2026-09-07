@@ -51,6 +51,14 @@ namespace AowEmailWrapper.Controls
             {
                 options.AddRange(presets);
             }
+            //What was found in the folder comes first
+            foreach (ModInfo mod in game.DetectedMods.Reverse())
+            {
+                if (!options.Any(option => AowGame.SameLabel(option, mod.Name)))
+                {
+                    options.Insert(0, mod.Name);
+                }
+            }
             if (!string.IsNullOrWhiteSpace(game.Label))
             {
                 options.Add(game.Label.Trim());

@@ -85,6 +85,12 @@ namespace AowEmailWrapper.Controls
             labelResultMessage.Text = Translator.Translate(AutoconfigPage2SuccessKey);
         }
 
+        /// <summary>Replaces the outcome text, for a failure that has a more specific explanation.</summary>
+        public void SetResultMessage(string message)
+        {
+            labelResultMessage.Text = message;
+        }
+
         public void Failed()
         {
             progressBar.Visible = false;

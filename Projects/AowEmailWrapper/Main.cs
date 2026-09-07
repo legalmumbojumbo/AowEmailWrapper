@@ -59,6 +59,16 @@ namespace AowEmailWrapper
         private const string WrapperPollAuthFailedKey = "msgWrapperPollAuthFailed";
         private const string WrapperPollFailedKey = "msgWrapperPollFailed";
         private const string WrapperGamesWaitingKey = "msgWrapperGamesWaiting";
+        private const string WrapperNewSenderKey = "msgWrapperNewSender";
+        private const string WrapperTurnsRecoveredKey = "msgWrapperTurnsRecovered";
+        private const string WrapperTurnsRecoveredFallback = "Found {0} unplayed turn(s) in your mailbox and added them to the activity log.";
+        private const string WrapperWhereIsAskedKey = "msgWrapperWhereIsAsked";
+        private const string WrapperWhereIsAskedFallback = "Asked {0} player(s) where '{1}' is. Answers arrive with the next mail checks.";
+        private const string WrapperWhereIsNobodyKey = "msgWrapperWhereIsNobody";
+        private const string WrapperWhereIsNobodyFallback = "No other players are known for '{0}'.";
+        private const string WrapperWhereIsTitleKey = "msgWrapperWhereIsTitle";
+        private const string WrapperWhereIsTitleFallback = "Where is the turn?";
+        private const string WrapperNewSenderFallback = "'{0}' came from {1}, who has not sent you a turn before. Only open turns from people you are playing with.";
         private const string WrapperResendToKey = "msgWrapperResendTo";
         private const string WrapperUpdateAvailableKey = "msgWrapperUpdateAvailable";
         private const string WrapperUpdateBalloonKey = "msgWrapperUpdateBalloon";
@@ -94,6 +104,8 @@ namespace AowEmailWrapper
 
         private Icon _baseIcon = null;
         private SimpleServer _theServer;
+        private readonly HashSet<string> _announcedNewSenders = new HashSet<string>();
+        private readonly HashSet<string> _answeredQueries = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
         private readonly Dictionary<string, BasePoller> _pollers = new Dictionary<string, BasePoller>();
         private static AowGameManager _gameManager;
         private readonly Dictionary<string, SmtpSender> _senders = new Dictionary<string, SmtpSender>();
@@ -220,6 +232,7 @@ namespace AowEmailWrapper
             _gameManager = new AowGameManager(AppDataHelper.CheckEmail.FullName, _wrapperConfig.GamesConfig);
             _gameManager.InstallHint = ActivityInstallHint;
             gamesConfig.GameManager = _gameManager;
+            gamesConfig.Rescanned += new EventHandler(GamesRescanned);
             activityListView.GameManager = _gameManager;
             if (_gameManager.NeedsDeepScan)
             {
@@ -686,6 +699,7 @@ namespace AowEmailWrapper
             activityListView.OnMarkAsEnded += new ActivityListViewEventHandler(ActivityListViewGamesMarkedAsEnded);
             activityListView.OnResendClick += new ActivityListViewEventHandler(ActivityListViewResend);
             activityListView.OnMoveTo += new ActivityMoveEventHandler(ActivityListViewMoveTo);
+            activityListView.OnWhereIs += new ActivityListViewEventHandler(ActivityListViewWhereIs);
         }
 
         private void ShutDown(object sender, EventArgs e)
@@ -766,7 +780,15 @@ namespace AowEmailWrapper
                     if (showBaloon)
                     {
                         this.Activate();
-                        notifyIcon.ShowBalloonTip(5000, Translator.Translate(this.Name), Translator.Translate(WrapperGamesWaitingKey, fileCount.ToString()), ToolTipIcon.Info);
+                        Activity stranger = NextUnannouncedNewSender();
+                        if (stranger != null)
+                        {
+                            notifyIcon.ShowBalloonTip(15000, Translator.Translate(this.Name), NewSenderMessage(stranger), ToolTipIcon.Warning);
+                        }
+                        else
+                        {
+                            notifyIcon.ShowBalloonTip(5000, Translator.Translate(this.Name), Translator.Translate(WrapperGamesWaitingKey, fileCount.ToString()), ToolTipIcon.Info);
+                        }
                     }
                 }
 
@@ -1072,6 +1094,11 @@ namespace AowEmailWrapper
             poller.AccountName = account.Name;
             poller.OAuthProvider = account.OAuthProvider;
             poller.OnEmailEvent += new PollerEmailEventHandler(PollerEmailEvent);
+            poller.ImportHistoryOnNextScan = _activityLog != null && !_activityLog.HistoryImported;
+            poller.OwnAddresses = OwnAddresses();
+            poller.OnHistoryImported += new PollerHistoryEventHandler(PollerHistoryImported);
+            poller.OnTurnsRecovered += new PollerRecoveredEventHandler(PollerTurnsRecovered);
+            poller.OnWrapperMessage += new PollerWrapperMessageEventHandler(PollerWrapperMessage);
             return poller;
         }
 
@@ -1201,6 +1228,203 @@ namespace AowEmailWrapper
             }
 
             return sender;
+        }
+
+        #endregion
+
+        /// <summary>Every address the player's accounts send or receive as.</summary>
+        private List<string> OwnAddresses()
+        {
+            List<string> addresses = new List<string>();
+            if (_wrapperConfig != null && _wrapperConfig.AccountsList != null && _wrapperConfig.AccountsList.Accounts != null)
+            {
+                foreach (AccountConfigValues account in _wrapperConfig.AccountsList.Accounts)
+                {
+                    if (account.SmtpConfig != null && !string.IsNullOrEmpty(account.SmtpConfig.EmailAddress))
+                    {
+                        addresses.Add(account.SmtpConfig.EmailAddress);
+                    }
+                    if (account.PollingConfig != null && !string.IsNullOrEmpty(account.PollingConfig.Username) && account.PollingConfig.Username.Contains("@"))
+                    {
+                        addresses.Add(account.PollingConfig.Username);
+                    }
+                }
+            }
+            return addresses;
+        }
+
+        /// <summary>
+        /// Addresses found in a mailbox become contacts, so the first turn from an existing opponent is
+        /// not marked as new, and unplayed turns for games this install has no record of are chosen for
+        /// download. Runs on the UI thread but returns before the poller continues, since the contacts
+        /// must be in place before the recovered turns go through the new-sender check.
+        /// </summary>
+        private void PollerHistoryImported(BasePoller poller, MailboxHistory history)
+        {
+            if (this.InvokeRequired)
+            {
+                this.Invoke(new PollerHistoryEventHandler(PollerHistoryImported), poller, history);
+                return;
+            }
+
+            int added = _activityLog.AddContacts(history.Addresses);
+
+            //A game the activity log knows about was handled on this install; the rest were left behind elsewhere
+            history.ToRecover = history.Unplayed.Where(turn => _activityLog.GetLastActivityByFileName(turn.FileName) == null).ToList();
+
+            _activityLog.HistoryImported = true;
+            DataManagerHelper.SaveActivityLog(_activityLog);
+            Trace.TraceInformation("Mailbox history from {0}: {1} addresses ({2} new), {3} unplayed turn(s), {4} to recover",
+                poller.AccountName, history.Addresses.Count, added, history.Unplayed.Count, history.ToRecover.Count);
+        }
+
+        private void PollerTurnsRecovered(BasePoller poller, int count)
+        {
+            if (this.InvokeRequired)
+            {
+                this.BeginInvoke(new PollerRecoveredEventHandler(PollerTurnsRecovered), poller, count);
+                return;
+            }
+
+            if (count > 0)
+            {
+                string text = Translator.Translate(WrapperTurnsRecoveredKey, count.ToString());
+                notifyIcon.ShowBalloonTip(15000, Translator.Translate(this.Name), string.IsNullOrEmpty(text) ? string.Format(WrapperTurnsRecoveredFallback, count) : text, ToolTipIcon.Info);
+            }
+
+            RaiseEvent(_activityLogRefresh, this, new EventArgs());
+            CheckNotifyIconState();
+        }
+
+        #region Where is the turn
+
+        /// <summary>A query or reply from another player's wrapper, already removed from the mailbox by the poller.</summary>
+        private void PollerWrapperMessage(BasePoller poller, MimeMessage message)
+        {
+            if (this.InvokeRequired)
+            {
+                this.BeginInvoke(new PollerWrapperMessageEventHandler(PollerWrapperMessage), poller, message);
+                return;
+            }
+
+            try
+            {
+                TurnQueryRequest query = TurnQuery.ParseQuery(message);
+                if (query != null)
+                {
+                    AnswerQuery(poller, query);
+                    return;
+                }
+
+                TurnState state = TurnQuery.ParseReply(message);
+                if (state != null)
+                {
+                    RecordReply(state);
+                }
+            }
+            catch (Exception ex)
+            {
+                Trace.TraceError("Wrapper message not handled: {0}", ex);
+            }
+        }
+
+        private void AnswerQuery(BasePoller poller, TurnQueryRequest query)
+        {
+            if (!TurnQuery.MayAnswer(query, _activityLog, OwnAddresses()))
+            {
+                Trace.TraceInformation("Query about '{0}' from {1} not answered: not a known player of that game here", query.Game, query.From);
+                return;
+            }
+
+            //One answer per question, however many mailboxes the question landed in
+            if (!_answeredQueries.Add(query.From + "/" + query.Game + "/" + query.QueryId))
+            {
+                return;
+            }
+
+            AccountConfigValues account = _wrapperConfig.AccountsList.GetAccountByName(poller.AccountName) ?? _wrapperConfig.AccountsList.PrimaryAccount;
+            if (!WrapperMailer.CanSend(account))
+            {
+                Trace.TraceWarning("Query about '{0}' from {1} not answered: account {2} cannot send", query.Game, query.From, poller.AccountName);
+                return;
+            }
+
+            Activity activity = _activityLog.GetLastActivityByFileName(query.Game);
+            TurnState state = TurnQuery.StateOf(activity, query.Game, query.QueryId);
+            MimeMessage reply = TurnQuery.BuildReply(query, WrapperMailer.SenderAddress(account), state);
+
+            Trace.TraceInformation("Answering {0} about '{1}': {2}", query.From, query.Game, TurnQuery.Describe(state, query.Game));
+            SendWrapperMessage(account, reply);
+        }
+
+        private void RecordReply(TurnState state)
+        {
+            Activity activity = _activityLog.GetLastActivityByFileName(state.Game);
+            if (activity == null)
+            {
+                Trace.TraceInformation("Answer about '{0}' from {1} ignored: no such game here", state.Game, state.Responder);
+                return;
+            }
+
+            TurnQuery.RecordWhereabouts(activity, state);
+            DataManagerHelper.SaveActivityLog(_activityLog);
+            activityListView.Refresh();
+
+            notifyIcon.ShowBalloonTip(15000, WhereIsTitle(), TurnQuery.Describe(state, activity.FileName), state.Holds ? ToolTipIcon.Warning : ToolTipIcon.Info);
+        }
+
+        /// <summary>"Where is the turn?" on the activity list: every other player of the game is asked by email.</summary>
+        private void ActivityListViewWhereIs(object sender, List<Activity> activities)
+        {
+            foreach (Activity activity in activities)
+            {
+                List<string> players = TurnQuery.PlayersToAsk(activity, OwnAddresses());
+                if (players.Count == 0)
+                {
+                    string none = Translator.Translate(WrapperWhereIsNobodyKey, activity.FileName);
+                    notifyIcon.ShowBalloonTip(10000, WhereIsTitle(), string.IsNullOrEmpty(none) ? string.Format(WrapperWhereIsNobodyFallback, activity.FileName) : none, ToolTipIcon.Info);
+                    continue;
+                }
+
+                AccountConfigValues account = _wrapperConfig.AccountsList.GetAccountByName(activity.AccountName) ?? _wrapperConfig.AccountsList.PrimaryAccount;
+                if (!WrapperMailer.CanSend(account))
+                {
+                    Trace.TraceWarning("Cannot ask where '{0}' is: no account can send", activity.FileName);
+                    continue;
+                }
+
+                string from = WrapperMailer.SenderAddress(account);
+                string queryId = TurnQuery.NewQueryId();
+                foreach (string player in players)
+                {
+                    SendWrapperMessage(account, TurnQuery.BuildQuery(from, player, activity.FileName, queryId));
+                }
+
+                Trace.TraceInformation("Asked {0} player(s) where '{1}' is", players.Count, activity.FileName);
+                string asked = Translator.Translate(WrapperWhereIsAskedKey, players.Count.ToString(), activity.FileName);
+                notifyIcon.ShowBalloonTip(10000, WhereIsTitle(), string.IsNullOrEmpty(asked) ? string.Format(WrapperWhereIsAskedFallback, players.Count, activity.FileName) : asked, ToolTipIcon.Info);
+            }
+        }
+
+        private string WhereIsTitle()
+        {
+            string title = Translator.Translate(WrapperWhereIsTitleKey);
+            return string.IsNullOrEmpty(title) ? WrapperWhereIsTitleFallback : title;
+        }
+
+        private static void SendWrapperMessage(AccountConfigValues account, MimeMessage message)
+        {
+            Task.Run(() =>
+            {
+                try
+                {
+                    WrapperMailer.Send(account, message);
+                }
+                catch (Exception ex)
+                {
+                    Trace.TraceWarning("Wrapper message to {0} not sent: {1}", MailHelper.GetFirstToAddress(message), ex.Message);
+                }
+            });
         }
 
         #endregion
@@ -1432,6 +1656,13 @@ namespace AowEmailWrapper
                 {
                     Activity theActivity = UpdateActivitySent(theAttachment, smtpSender != null ? smtpSender.AccountName : null);
                     RecordOutgoingInstall(theResponse.GameEmail, theActivity);
+                    if (theActivity != null)
+                    {
+                        //Whoever the player sends turns to is someone they are playing with
+                        theActivity.Recipients = MailHelper.GetRecipientAddresses(theResponse.GameEmail);
+                        _activityLog.AddContacts(new[] { theActivity.Recipients });
+                        DataManagerHelper.SaveActivityLog(_activityLog);
+                    }
 
                     if (_wrapperConfig.PreferencesConfig != null && _wrapperConfig.PreferencesConfig.CopyToEmailOut)
                     {
@@ -1627,6 +1858,9 @@ namespace AowEmailWrapper
         {
             ResendHelper.Delete(e.FileName); //Avoids the user resending the previous turn by mistake
 
+            //Decided before the previous turn of this game is dropped, since that may be the record of this sender
+            bool knownSender = IsKnownSender(e.Sender);
+
             Activity lastActivity = _activityLog.GetLastActivityByFileName(e.FileName);
 
             if (lastActivity != null)
@@ -1635,7 +1869,69 @@ namespace AowEmailWrapper
             }
 
             Activity newActivity = new Activity(e);
+            newActivity.NewSender = !knownSender;
             _activityLog.Activities.Add(newActivity);
+            _activityLog.AddContact(e.Sender);
+            _activityLog.AddContacts(new[] { newActivity.Players });
+
+            if (newActivity.NewSender)
+            {
+                Trace.TraceWarning("Turn {0} came from {1}, an address that has not sent or received a turn before", e.FileName, e.Sender);
+            }
+        }
+
+        /// <summary>
+        /// A sender is known when a turn has come from or gone to that address before, or when it is
+        /// one of the player's own accounts.
+        /// </summary>
+        private bool IsKnownSender(string sender)
+        {
+            if (string.IsNullOrWhiteSpace(sender))
+            {
+                return false;
+            }
+
+            if (_activityLog != null && _activityLog.IsKnownAddress(sender))
+            {
+                return true;
+            }
+
+            if (_wrapperConfig != null && _wrapperConfig.AccountsList != null && _wrapperConfig.AccountsList.Accounts != null)
+            {
+                foreach (AccountConfigValues account in _wrapperConfig.AccountsList.Accounts)
+                {
+                    if (account.SmtpConfig != null && string.Equals(account.SmtpConfig.EmailAddress, sender, StringComparison.OrdinalIgnoreCase))
+                    {
+                        return true;
+                    }
+                    if (account.PollingConfig != null && string.Equals(account.PollingConfig.Username, sender, StringComparison.OrdinalIgnoreCase))
+                    {
+                        return true;
+                    }
+                }
+            }
+
+            return false;
+        }
+
+        /// <summary>The first received turn from a new sender that has not been announced in this session, if any.</summary>
+        private Activity NextUnannouncedNewSender()
+        {
+            foreach (Activity activity in _activityLog.Activities)
+            {
+                if (activity.NewSender && activity.Status == ActivityState.Received && _announcedNewSenders.Add(activity.DateTicks ?? string.Empty))
+                {
+                    return activity;
+                }
+            }
+            return null;
+        }
+
+        private static string NewSenderMessage(Activity activity)
+        {
+            string sender = string.IsNullOrEmpty(activity.Sender) ? "?" : activity.Sender;
+            string text = Translator.Translate(WrapperNewSenderKey, activity.FileName, sender);
+            return string.IsNullOrEmpty(text) ? string.Format(WrapperNewSenderFallback, activity.FileName, sender) : text;
         }
 
         /// <summary>
@@ -1672,6 +1968,28 @@ namespace AowEmailWrapper
             }
             CreateContextMenu();
             CheckNotifyIconState();
+        }
+
+        /// <summary>
+        /// What a rescan found is applied and saved at once. The player asked for the scan, so its
+        /// result should not wait for Save Settings the way a hand edit does. Edits pending on the
+        /// other tabs are untouched: only the games section of the saved settings changes.
+        /// </summary>
+        private void GamesRescanned(object sender, EventArgs e)
+        {
+            GamesConfigValues found = gamesConfig.Config;
+            if (found == null)
+            {
+                return;
+            }
+
+            _gameManager.Reload(found);
+            _wrapperConfig.GamesConfig = _gameManager.ToConfig();
+            gamesConfig.Config = _wrapperConfig.GamesConfig;
+            DataManagerHelper.SaveConfig(_wrapperConfig);
+            CreateContextMenu();
+            CheckNotifyIconState();
+            Trace.TraceInformation("Rescan applied and saved: {0} copies", _wrapperConfig.GamesConfig.Installs.Count);
         }
 
         /// <summary>
@@ -1817,6 +2135,16 @@ namespace AowEmailWrapper
             {
                 activityListView.SmallImageList = imageListIcons;
                 _activityLog = DataManagerHelper.LoadActivityLog();
+
+                if (!_activityLog.HistoryImported)
+                {
+                    //Turns waiting to be resent name the people the player is playing with
+                    int added = _activityLog.AddContacts(ContactHistory.FromResendFiles());
+                    if (added > 0)
+                    {
+                        Trace.TraceInformation("Past opponents from the resend folder: {0} addresses", added);
+                    }
+                }
                 activityListView.ActivityLog = _activityLog;
             }
             catch (Exception ex)
@@ -1945,13 +2273,20 @@ namespace AowEmailWrapper
                 {
                     theActivity.AccountName = accountName;
                 }
-                if (theActivity.GameType.Equals(AowGameType.Unknown))
+                using (ASGFileInfo theASG = new ASGFileInfo(theAttachment))
                 {
-                    using (ASGFileInfo theASG = new ASGFileInfo(theAttachment))
+                    if (theActivity.GameType.Equals(AowGameType.Unknown))
                     {
                         theActivity.GameType = theASG.GameType;
                     }
+                    if (theASG.PlayerEmails.Count > 0)
+                    {
+                        theActivity.Players = ASGFileInfo.JoinAddresses(theASG.PlayerEmails);
+                    }
                 }
+                //The turn has moved on; what other wrappers said before no longer applies
+                theActivity.Whereabouts = null;
+                theActivity.Holder = null;
             }
             else
             {
@@ -1964,6 +2299,7 @@ namespace AowEmailWrapper
                         theASG.MapTitle,
                         theASG.TurnNumber.ToString());
                     theActivity.AccountName = accountName;
+                    theActivity.Players = ASGFileInfo.JoinAddresses(theASG.PlayerEmails);
                 }
 
                 _activityLog.Activities.Add(theActivity);

@@ -27,10 +27,26 @@ namespace Mozilla.Autoconfig
         //"https://autoconfig-live.mozillamessaging.com/autoconfig/v1.1/{0}";
 
         private const string LocalDomainKey = "Mozilla.Autoconfig.LocalDomainTemplate";
-        private const string LocalDomainTemplateDefault = "http://autoconfig.{0}/mail/config-v1.1.xml";
+        private const string LocalDomainTemplateDefault = "https://autoconfig.{0}/mail/config-v1.1.xml";
 
         private const string LocalWellKnownKey = "Mozilla.Autoconfig.LocalWellKnownTemplate";
-        private const string LocalWellKnownTemplateDefault = "http://{0}/.well-known/autoconfig/mail/config-v1.1.xml";
+        private const string LocalWellKnownTemplateDefault = "https://{0}/.well-known/autoconfig/mail/config-v1.1.xml";
+
+        /// <summary>
+        /// Only a file shipped with the Wrapper or an https address with a valid certificate may
+        /// supply mail server settings. Anything fetched over plain http could be rewritten on the
+        /// way, and would then name a server that the user's password gets sent to.
+        /// </summary>
+        public static bool IsTrustedSource(string url)
+        {
+            Uri uri;
+            if (string.IsNullOrEmpty(url) || !Uri.TryCreate(url, UriKind.Absolute, out uri))
+            {
+                return false;
+            }
+
+            return uri.Scheme == Uri.UriSchemeHttps || uri.Scheme == Uri.UriSchemeFile;
+        }
 
         /// <summary>
         /// Gets the autoconfig.
@@ -40,9 +56,6 @@ namespace Mozilla.Autoconfig
         /// <returns></returns>
         public static MechanismResponse GetAutoconfig(string emailAddress, RequestType requestType)
         {
-            //Ignore SSL certificate errors
-            ServicePointManager.ServerCertificateValidationCallback += (sender, certificate, chain, sslPolicyErrors) => true;
-
             MechanismResponse returnVal = new MechanismResponse();
 
             if (!string.IsNullOrEmpty(emailAddress))
@@ -55,8 +68,6 @@ namespace Mozilla.Autoconfig
                     returnVal = GetAutoconfigByDomain(domain, requestType);
                 }
             }
-
-            ServicePointManager.ServerCertificateValidationCallback = null;
 
             return returnVal;
         }
