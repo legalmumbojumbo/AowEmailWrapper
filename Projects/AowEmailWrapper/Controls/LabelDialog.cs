@@ -25,7 +25,7 @@ namespace AowEmailWrapper.Controls
         //Mods the community plays; the labels of other copies on this PC are offered as well
         private static readonly Dictionary<AowGameType, string[]> Presets = new Dictionary<AowGameType, string[]>
         {
-            { AowGameType.Aow1, new[] { "Vanilla", "AoWx", "Ziggurat" } },
+            { AowGameType.Aow1, new[] { ModDetector.Vanilla, ModDetector.Evolved, ModDetector.AowX, ModDetector.Ziggurat, ModDetector.DarkLord } },
             { AowGameType.Aow2, new[] { "Vanilla" } },
             { AowGameType.AowSm, new[] { "Vanilla" } },
             { AowGameType.AowMpe, new[] { "Vanilla" } },
@@ -51,14 +51,9 @@ namespace AowEmailWrapper.Controls
             {
                 options.AddRange(presets);
             }
-            //What was found in the folder comes first
-            foreach (ModInfo mod in game.DetectedMods.Reverse())
-            {
-                if (!options.Any(option => AowGame.SameLabel(option, mod.Name)))
-                {
-                    options.Insert(0, mod.Name);
-                }
-            }
+            //What the folder's contents call for comes first
+            options.RemoveAll(option => AowGame.SameLabel(option, game.SuggestedLabel));
+            options.Insert(0, game.SuggestedLabel);
             if (!string.IsNullOrWhiteSpace(game.Label))
             {
                 options.Add(game.Label.Trim());

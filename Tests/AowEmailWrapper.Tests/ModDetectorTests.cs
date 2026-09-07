@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using AowEmailWrapper.ConfigFramework;
 using AowEmailWrapper.Games;
 using Xunit;
 
@@ -28,13 +29,37 @@ namespace AowEmailWrapper.Tests
         }
 
         [Fact]
-        public void A_stock_copy_has_no_mods()
+        public void A_stock_copy_has_no_mods_and_is_labelled_as_the_stock_game()
         {
-            string folder = GameFolder("stock", resStrVersion: "Version: Evolved %s");
+            string folder = GameFolder("stock", resStrVersion: "Version: %s");
 
             Assert.Empty(ModDetector.Detect(folder));
             Assert.Empty(ModDetector.Detect(Path.Combine(_root, "missing")));
             Assert.Empty(ModDetector.Detect(null));
+            Assert.Equal("Vanilla 1.36", ModDetector.LabelFor(ModDetector.Detect(folder), AowGameType.Aow1));
+            Assert.Equal("Vanilla", ModDetector.LabelFor(null, AowGameType.AowSm));
+        }
+
+        [Fact]
+        public void Evolved_is_recognised_from_its_version_string_when_nothing_else_is_found()
+        {
+            string folder = GameFolder("evolved", resStrVersion: "Version: Evolved %s");
+
+            ModInfo mod = Assert.Single(ModDetector.Detect(folder));
+            Assert.Equal(ModDetector.Evolved, mod.Name);
+            Assert.Equal("Evolved", ModDetector.LabelFor(ModDetector.Detect(folder), AowGameType.Aow1));
+        }
+
+        [Theory]
+        [InlineData("Ziggurat;Dark Lord", "Dark Lord")]
+        [InlineData("Ziggurat;AoWx", "AoWx")]
+        [InlineData("Ziggurat", "Ziggurat")]
+        [InlineData("Evolved", "Evolved")]
+        [InlineData("", "Vanilla 1.36")]
+        public void The_most_specific_mod_decides_the_label(string found, string expected)
+        {
+            List<ModInfo> mods = found.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries).Select(name => new ModInfo { Name = name }).ToList();
+            Assert.Equal(expected, ModDetector.LabelFor(mods, AowGameType.Aow1));
         }
 
         [Fact]
@@ -89,7 +114,7 @@ namespace AowEmailWrapper.Tests
         [Fact]
         public void A_stock_executable_is_not_AoWx()
         {
-            string folder = GameFolder("stockexe", resStrVersion: "Version: Evolved %s");
+            string folder = GameFolder("stockexe", resStrVersion: "Version: %s");
             WriteExe(Path.Combine(folder, "AoW.exe"), "Copyright (C) 1999,2000 Triumph Studios");
 
             Assert.Empty(ModDetector.Detect(folder));
@@ -124,12 +149,13 @@ namespace AowEmailWrapper.Tests
         }
 
         [Fact]
-        public void A_newly_found_modded_copy_is_labelled_and_a_second_one_is_not()
+        public void Every_unlabelled_copy_is_labelled_by_its_contents_once_per_label()
         {
             string first = GameFolder("label1", resStrVersion: "Version: Ziggurat %s");
             string second = GameFolder("label2", resStrVersion: "Version: Ziggurat %s");
-            string stock = GameFolder("label3", resStrVersion: "Version: Evolved %s");
-            foreach (string folder in new[] { first, second, stock })
+            string stock = GameFolder("label3", resStrVersion: "Version: %s");
+            string evolved = GameFolder("label4", resStrVersion: "Version: Evolved %s");
+            foreach (string folder in new[] { first, second, stock, evolved })
             {
                 WriteExe(Path.Combine(folder, "AoW.exe"), "Copyright (C) 1999,2000 Triumph Studios");
             }
@@ -139,12 +165,35 @@ namespace AowEmailWrapper.Tests
                 new AowGame(AowGameType.Aow1, first, InstallSource.Folder),
                 new AowGame(AowGameType.Aow1, second, InstallSource.Folder),
                 new AowGame(AowGameType.Aow1, stock, InstallSource.Folder),
+                new AowGame(AowGameType.Aow1, evolved, InstallSource.Folder),
             }, null);
 
             List<AowGame> installs = manager.GetInstalls(AowGameType.Aow1);
             Assert.Equal("Ziggurat", installs.Single(game => game.IsFolder(first)).Label);
-            Assert.Equal(string.Empty, installs.Single(game => game.IsFolder(second)).Label);
-            Assert.Equal(string.Empty, installs.Single(game => game.IsFolder(stock)).Label);
+            Assert.Equal("Vanilla 1.36", installs.Single(game => game.IsFolder(stock)).Label);
+            Assert.Equal("Evolved", installs.Single(game => game.IsFolder(evolved)).Label);
+
+            //The second Ziggurat copy cannot share the label, but still shows what it is
+            AowGame duplicate = installs.Single(game => game.IsFolder(second));
+            Assert.Equal(string.Empty, duplicate.Label);
+            Assert.Equal("Ziggurat", duplicate.DisplayLabel);
+        }
+
+        [Fact]
+        public void A_label_the_player_set_is_kept_over_the_suggestion()
+        {
+            string folder = GameFolder("kept", resStrVersion: "Version: Ziggurat %s");
+            WriteExe(Path.Combine(folder, "AoW.exe"), "Copyright (C) 1999,2000 Triumph Studios");
+            AowGame game = new AowGame(AowGameType.Aow1, folder, InstallSource.Folder);
+
+            GamesConfigValues config = new GamesConfigValues();
+            config.Installs.Add(new GameInstallConfigValues(game) { Label = "Zig Test" });
+
+            AowGameManager manager = new AowGameManager(_root, new[] { game }, config);
+            AowGame merged = manager.GetInstalls(AowGameType.Aow1).Single();
+            Assert.Equal("Zig Test", merged.Label);
+            Assert.Equal("Zig Test", merged.DisplayLabel);
+            Assert.Equal("Ziggurat", merged.SuggestedLabel);
         }
 
         [Fact]
@@ -167,7 +216,9 @@ namespace AowEmailWrapper.Tests
             }
             if (Directory.Exists(stockCopy))
             {
-                Assert.Empty(ModDetector.Detect(stockCopy));
+                //The Steam release is built on the Evolved community patch
+                ModInfo mod = Assert.Single(ModDetector.Detect(stockCopy));
+                Assert.Equal(ModDetector.Evolved, mod.Name);
             }
 
             //A real AoWx install made with the Inno Setup installer: branded AoWx.exe beside a small AoW.exe launcher

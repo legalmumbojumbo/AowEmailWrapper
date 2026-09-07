@@ -177,6 +177,18 @@ namespace AowEmailWrapper.Games
             get { return string.Join(", ", DetectedMods.Select(mod => mod.ToString())); }
         }
 
+        /// <summary>The label the mods found in the folder call for, "Vanilla 1.36" when there are none.</summary>
+        public string SuggestedLabel
+        {
+            get { return ModDetector.LabelFor(DetectedMods, _gameType); }
+        }
+
+        /// <summary>The label, or what it would be from the folder's contents while none is set.</summary>
+        public string DisplayLabel
+        {
+            get { return string.IsNullOrEmpty(_label) ? SuggestedLabel : _label; }
+        }
+
         private DirectoryInfo ModSaveFolder
         {
             get

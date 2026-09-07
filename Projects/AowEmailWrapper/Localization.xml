@@ -180,11 +180,10 @@
 		<lookup key="msgWrapperUpdateInstalling" value="Installing {0}. The Wrapper will be back in a moment."/>
 		<lookup key="tabGames" value="Games"/>
 		<lookup key="panelGameslistViewGames0" value="Game"/>
-		<lookup key="panelGameslistViewGames1" value="Label"/>
+		<lookup key="panelGameslistViewGames1" value="Mod"/>
 		<lookup key="panelGameslistViewGames2" value="Folder"/>
 		<lookup key="panelGameslistViewGames3" value="Default"/>
 		<lookup key="panelGameslistViewGames4" value="Found by"/>
-		<lookup key="panelGameslistViewGames5" value="Mod"/>
 		<lookup key="buttonAddFolder" value="Add folder..."/>
 		<lookup key="buttonSetLabel" value="Set label..."/>
 		<lookup key="buttonSetDefaultInstall" value="Set as default"/>
@@ -428,11 +427,10 @@
 		<lookup key="msgWrapperUpdateInstalling" value="Installation de {0}. Le Wrapper sera de retour dans un instant."/>
 		<lookup key="tabGames" value="Jeux"/>
 		<lookup key="panelGameslistViewGames0" value="Jeu"/>
-		<lookup key="panelGameslistViewGames1" value="Étiquette"/>
+		<lookup key="panelGameslistViewGames1" value="Mod"/>
 		<lookup key="panelGameslistViewGames2" value="Dossier"/>
 		<lookup key="panelGameslistViewGames3" value="Par défaut"/>
 		<lookup key="panelGameslistViewGames4" value="Trouvé par"/>
-		<lookup key="panelGameslistViewGames5" value="Mod"/>
 		<lookup key="buttonAddFolder" value="Ajouter un dossier..."/>
 		<lookup key="buttonSetLabel" value="Définir l'étiquette..."/>
 		<lookup key="buttonSetDefaultInstall" value="Définir par défaut"/>
@@ -669,11 +667,10 @@
 		<lookup key="msgWrapperUpdateInstalling" value="{0} wird installiert. Der Wrapper ist gleich wieder da."/>
 		<lookup key="tabGames" value="Spiele"/>
 		<lookup key="panelGameslistViewGames0" value="Spiel"/>
-		<lookup key="panelGameslistViewGames1" value="Bezeichnung"/>
+		<lookup key="panelGameslistViewGames1" value="Mod"/>
 		<lookup key="panelGameslistViewGames2" value="Ordner"/>
 		<lookup key="panelGameslistViewGames3" value="Standard"/>
 		<lookup key="panelGameslistViewGames4" value="Gefunden über"/>
-		<lookup key="panelGameslistViewGames5" value="Mod"/>
 		<lookup key="buttonAddFolder" value="Ordner hinzufügen..."/>
 		<lookup key="buttonSetLabel" value="Bezeichnung festlegen..."/>
 		<lookup key="buttonSetDefaultInstall" value="Als Standard festlegen"/>
@@ -910,11 +907,10 @@
 		<lookup key="msgWrapperUpdateInstalling" value="Instalando {0}. El Wrapper volverá en un momento."/>
 		<lookup key="tabGames" value="Juegos"/>
 		<lookup key="panelGameslistViewGames0" value="Juego"/>
-		<lookup key="panelGameslistViewGames1" value="Etiqueta"/>
+		<lookup key="panelGameslistViewGames1" value="Mod"/>
 		<lookup key="panelGameslistViewGames2" value="Carpeta"/>
 		<lookup key="panelGameslistViewGames3" value="Predeterminada"/>
 		<lookup key="panelGameslistViewGames4" value="Encontrado por"/>
-		<lookup key="panelGameslistViewGames5" value="Mod"/>
 		<lookup key="buttonAddFolder" value="Añadir carpeta..."/>
 		<lookup key="buttonSetLabel" value="Definir etiqueta..."/>
 		<lookup key="buttonSetDefaultInstall" value="Establecer como predeterminada"/>
@@ -1151,11 +1147,10 @@
 		<lookup key="msgWrapperUpdateInstalling" value="{0} wordt geïnstalleerd. De Wrapper is zo terug."/>
 		<lookup key="tabGames" value="Spellen"/>
 		<lookup key="panelGameslistViewGames0" value="Spel"/>
-		<lookup key="panelGameslistViewGames1" value="Label"/>
+		<lookup key="panelGameslistViewGames1" value="Mod"/>
 		<lookup key="panelGameslistViewGames2" value="Map"/>
 		<lookup key="panelGameslistViewGames3" value="Standaard"/>
 		<lookup key="panelGameslistViewGames4" value="Gevonden via"/>
-		<lookup key="panelGameslistViewGames5" value="Mod"/>
 		<lookup key="buttonAddFolder" value="Map toevoegen..."/>
 		<lookup key="buttonSetLabel" value="Label instellen..."/>
 		<lookup key="buttonSetDefaultInstall" value="Als standaard instellen"/>
@@ -1390,11 +1385,10 @@
 		<lookup key="msgWrapperUpdateInstalling" value="Installerer {0}. Wrapperen er tilbage om et øjeblik."/>
 		<lookup key="tabGames" value="Spil"/>
 		<lookup key="panelGameslistViewGames0" value="Spil"/>
-		<lookup key="panelGameslistViewGames1" value="Mærkat"/>
+		<lookup key="panelGameslistViewGames1" value="Mod"/>
 		<lookup key="panelGameslistViewGames2" value="Mappe"/>
 		<lookup key="panelGameslistViewGames3" value="Standard"/>
 		<lookup key="panelGameslistViewGames4" value="Fundet via"/>
-		<lookup key="panelGameslistViewGames5" value="Mod"/>
 		<lookup key="buttonAddFolder" value="Tilføj mappe..."/>
 		<lookup key="buttonSetLabel" value="Angiv mærkat..."/>
 		<lookup key="buttonSetDefaultInstall" value="Sæt som standard"/>
@@ -1630,11 +1624,10 @@
 		<lookup key="msgWrapperUpdateInstalling" value="Installerar {0}. Wrappern är strax tillbaka."/>
 		<lookup key="tabGames" value="Spel"/>
 		<lookup key="panelGameslistViewGames0" value="Spel"/>
-		<lookup key="panelGameslistViewGames1" value="Etikett"/>
+		<lookup key="panelGameslistViewGames1" value="Mod"/>
 		<lookup key="panelGameslistViewGames2" value="Mapp"/>
 		<lookup key="panelGameslistViewGames3" value="Standard"/>
 		<lookup key="panelGameslistViewGames4" value="Hittad via"/>
-		<lookup key="panelGameslistViewGames5" value="Mod"/>
 		<lookup key="buttonAddFolder" value="Lägg till mapp..."/>
 		<lookup key="buttonSetLabel" value="Ange etikett..."/>
 		<lookup key="buttonSetDefaultInstall" value="Ange som standard"/>
@@ -1878,11 +1871,10 @@
 		<lookup key="msgWrapperUpdateInstalling" value="Instalowanie {0}. Wrapper wróci za chwilę."/>
 		<lookup key="tabGames" value="Gry"/>
 		<lookup key="panelGameslistViewGames0" value="Gra"/>
-		<lookup key="panelGameslistViewGames1" value="Etykieta"/>
+		<lookup key="panelGameslistViewGames1" value="Mod"/>
 		<lookup key="panelGameslistViewGames2" value="Folder"/>
 		<lookup key="panelGameslistViewGames3" value="Domyślna"/>
 		<lookup key="panelGameslistViewGames4" value="Znaleziono przez"/>
-		<lookup key="panelGameslistViewGames5" value="Mod"/>
 		<lookup key="buttonAddFolder" value="Dodaj folder..."/>
 		<lookup key="buttonSetLabel" value="Ustaw etykietę..."/>
 		<lookup key="buttonSetDefaultInstall" value="Ustaw jako domyślną"/>
@@ -2120,11 +2112,10 @@
 		<lookup key="msgWrapperUpdateInstalling" value="Asennetaan {0}. Wrapper palaa hetken kuluttua."/>
 		<lookup key="tabGames" value="Pelit"/>
 		<lookup key="panelGameslistViewGames0" value="Peli"/>
-		<lookup key="panelGameslistViewGames1" value="Tunniste"/>
+		<lookup key="panelGameslistViewGames1" value="Mod"/>
 		<lookup key="panelGameslistViewGames2" value="Kansio"/>
 		<lookup key="panelGameslistViewGames3" value="Oletus"/>
 		<lookup key="panelGameslistViewGames4" value="Löydetty"/>
-		<lookup key="panelGameslistViewGames5" value="Mod"/>
 		<lookup key="buttonAddFolder" value="Lisää kansio..."/>
 		<lookup key="buttonSetLabel" value="Aseta tunniste..."/>
 		<lookup key="buttonSetDefaultInstall" value="Aseta oletukseksi"/>
@@ -2364,11 +2355,10 @@
 		<lookup key="msgWrapperUpdateInstalling" value="Se instalează {0}. Wrapper-ul revine imediat."/>
 		<lookup key="tabGames" value="Jocuri"/>
 		<lookup key="panelGameslistViewGames0" value="Joc"/>
-		<lookup key="panelGameslistViewGames1" value="Etichetă"/>
+		<lookup key="panelGameslistViewGames1" value="Mod"/>
 		<lookup key="panelGameslistViewGames2" value="Dosar"/>
 		<lookup key="panelGameslistViewGames3" value="Implicit"/>
 		<lookup key="panelGameslistViewGames4" value="Găsit prin"/>
-		<lookup key="panelGameslistViewGames5" value="Mod"/>
 		<lookup key="buttonAddFolder" value="Adaugă dosar..."/>
 		<lookup key="buttonSetLabel" value="Setează eticheta..."/>
 		<lookup key="buttonSetDefaultInstall" value="Setează ca implicit"/>
@@ -2606,11 +2596,10 @@
 		<lookup key="msgWrapperUpdateInstalling" value="Устанавливается {0}. Wrapper скоро вернётся."/>
 		<lookup key="tabGames" value="Игры"/>
 		<lookup key="panelGameslistViewGames0" value="Игра"/>
-		<lookup key="panelGameslistViewGames1" value="Метка"/>
+		<lookup key="panelGameslistViewGames1" value="Мод"/>
 		<lookup key="panelGameslistViewGames2" value="Папка"/>
 		<lookup key="panelGameslistViewGames3" value="По умолчанию"/>
 		<lookup key="panelGameslistViewGames4" value="Найдено через"/>
-		<lookup key="panelGameslistViewGames5" value="Мод"/>
 		<lookup key="buttonAddFolder" value="Добавить папку..."/>
 		<lookup key="buttonSetLabel" value="Задать метку..."/>
 		<lookup key="buttonSetDefaultInstall" value="Сделать основной"/>

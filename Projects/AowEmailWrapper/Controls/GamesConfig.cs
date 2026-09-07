@@ -73,11 +73,10 @@ namespace AowEmailWrapper.Controls
             listViewGames.ShowItemToolTips = true;
             listViewGames.HeaderStyle = ColumnHeaderStyle.Nonclickable;
             listViewGames.Columns.Add(new ColumnHeader { Text = "Game", Tag = "ContentHeaderMax" });
-            listViewGames.Columns.Add(new ColumnHeader { Text = "Label", Tag = "ContentHeaderMax" });
+            listViewGames.Columns.Add(new ColumnHeader { Text = "Mod", Tag = "ContentHeaderMax" });
             listViewGames.Columns.Add(new ColumnHeader { Text = "Folder", Tag = "Fill" });
             listViewGames.Columns.Add(new ColumnHeader { Text = "Default", Tag = "HeaderSize" });
             listViewGames.Columns.Add(new ColumnHeader { Text = "Found by", Tag = "ContentHeaderMax" });
-            listViewGames.Columns.Add(new ColumnHeader { Text = "Mod", Tag = "ContentHeaderMax" });
             listViewGames.SelectedIndexChanged += (sender, e) => UpdateButtons();
             //Sized on control resize only: reacting to the list's own client size changes loops when a scroll bar appears
             Resize += (sender, e) => FitColumns();
@@ -168,18 +167,27 @@ namespace AowEmailWrapper.Controls
             foreach (AowGame game in _games.OrderBy(game => game.GameType).ThenBy(game => game.IsDefault ? 0 : 1).ThenBy(game => game.Folder))
             {
                 ListViewItem item = new ListViewItem(AowGame.DisplayNameFor(game.GameType));
-                item.SubItems.Add(game.Label);
+                item.UseItemStyleForSubItems = false;
+                ListViewItem.ListViewSubItem label = item.SubItems.Add(game.DisplayLabel);
+                if (string.IsNullOrEmpty(game.Label))
+                {
+                    //Not a label yet: another copy already has this one, so turns cannot be routed by it
+                    label.ForeColor = SystemColors.GrayText;
+                }
                 item.SubItems.Add(game.Folder);
                 item.SubItems.Add(game.IsDefault ? DefaultMark : string.Empty);
                 item.SubItems.Add(game.IsInstalled ? Translator.TranslateEnum(game.Source) : Translator.Translate(MissingKey));
-                item.SubItems.Add(game.DetectedModNames);
                 item.ToolTipText = game.DetectedMods.Count == 0
-                    ? game.Folder
-                    : string.Concat(game.Folder, Environment.NewLine, string.Join(Environment.NewLine, game.DetectedMods.Select(mod => mod.Name + ": " + mod.Evidence)));
+                    ? string.Concat(game.Folder, Environment.NewLine, "No mod found: taken to be the stock game")
+                    : string.Concat(game.Folder, Environment.NewLine, string.Join(Environment.NewLine, game.DetectedMods.Select(mod => mod.ToString() + ": " + mod.Evidence)));
                 item.Tag = game;
                 if (!game.IsInstalled)
                 {
                     item.ForeColor = SystemColors.GrayText;
+                    foreach (ListViewItem.ListViewSubItem subItem in item.SubItems)
+                    {
+                        subItem.ForeColor = SystemColors.GrayText;
+                    }
                 }
                 if (selected != null && selected.Id == game.Id)
                 {
