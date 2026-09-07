@@ -54,3 +54,14 @@ jobs:
           COMMIT: ${{ github.sha }}
           RUN_NUMBER: ${{ github.run_number }}
         run: ./Installer/publish-release.ps1
+
+      # A v<version> tag (matching <Version> in the project) becomes the versioned release, with the
+      # CHANGELOG.md section for that version as its notes. See "Releasing a version" in the README.
+      - name: Publish versioned release
+        if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+          COMMIT: ${{ github.sha }}
+          TAG: ${{ github.ref_name }}
+        run: ./Installer/publish-version.ps1
