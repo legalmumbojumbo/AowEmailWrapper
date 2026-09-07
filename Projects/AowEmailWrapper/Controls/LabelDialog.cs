@@ -25,7 +25,7 @@ namespace AowEmailWrapper.Controls
         //Mods the community plays; the labels of other copies on this PC are offered as well
         private static readonly Dictionary<AowGameType, string[]> Presets = new Dictionary<AowGameType, string[]>
         {
-            { AowGameType.Aow1, new[] { ModDetector.Vanilla, ModDetector.Evolved, ModDetector.AowX, ModDetector.Ziggurat, ModDetector.DarkLord } },
+            { AowGameType.Aow1, new[] { "Vanilla", "AoWx", "Ziggurat" } },
             { AowGameType.Aow2, new[] { "Vanilla" } },
             { AowGameType.AowSm, new[] { "Vanilla" } },
             { AowGameType.AowMpe, new[] { "Vanilla" } },
@@ -34,7 +34,6 @@ namespace AowEmailWrapper.Controls
         private readonly List<RadioButton> _choices = new List<RadioButton>();
         private readonly RadioButton _other;
         private readonly TextBox _otherText;
-        private readonly IDictionary<string, string> _taken;
         private string _result;
 
         /// <summary>
@@ -44,33 +43,60 @@ namespace AowEmailWrapper.Controls
         /// </summary>
         public static string Show(IWin32Window owner, AowGame game, IDictionary<string, string> taken)
         {
-            taken = taken ?? new Dictionary<string, string>();
-            List<string> options = new List<string>();
-            string[] presets;
-            if (Presets.TryGetValue(game.GameType, out presets))
-            {
-                options.AddRange(presets);
-            }
-            //What the folder's contents call for comes first
-            options.RemoveAll(option => AowGame.SameLabel(option, game.SuggestedLabel));
-            options.Insert(0, game.SuggestedLabel);
-            if (!string.IsNullOrWhiteSpace(game.Label))
-            {
-                options.Add(game.Label.Trim());
-            }
-            options = options.Where(option => !taken.Keys.Any(used => AowGame.SameLabel(used, option)))
-                             .GroupBy(AowGame.NormalizeLabel).Select(group => group.First()).ToList();
-
-            using (LabelDialog dialog = new LabelDialog(game.DisplayName, game.Label, options, taken))
+            using (LabelDialog dialog = new LabelDialog(game.DisplayName, game.Label, BuildOptions(game, taken)))
             {
                 dialog.ShowDialog(owner);
                 return dialog._result;
             }
         }
 
-        private LabelDialog(string title, string current, List<string> options, IDictionary<string, string> taken)
+        /// <summary>
+        /// The choices to offer, text to label: what the folder's contents call for first, then the
+        /// presets and the current label. A label another copy holds is still offered, marked with
+        /// that copy's folder, and choosing it moves the label to this copy.
+        /// </summary>
+        public static List<KeyValuePair<string, string>> BuildOptions(AowGame game, IDictionary<string, string> taken)
         {
-            _taken = taken;
+            taken = taken ?? new Dictionary<string, string>();
+            List<string> labels = new List<string>();
+            string[] presets;
+            if (Presets.TryGetValue(game.GameType, out presets))
+            {
+                labels.AddRange(presets);
+            }
+            labels.RemoveAll(option => AowGame.SameLabel(option, game.SuggestedLabel));
+            labels.Insert(0, game.SuggestedLabel);
+            if (!string.IsNullOrWhiteSpace(game.Label))
+            {
+                labels.Add(game.Label.Trim());
+            }
+
+            List<KeyValuePair<string, string>> options = new List<KeyValuePair<string, string>>();
+            foreach (string label in labels.GroupBy(AowGame.NormalizeLabel).Select(group => group.First()))
+            {
+                string holder = taken.Where(pair => AowGame.SameLabel(pair.Key, label)).Select(pair => pair.Value).FirstOrDefault();
+                string text = holder == null ? label : string.Format("{0} ({1})", label, HeldBy(FolderName(holder)));
+                options.Add(new KeyValuePair<string, string>(text, label));
+            }
+            return options;
+        }
+
+        /// <summary>"now on Age of Wonders zig", with an English fallback when no language table is loaded.</summary>
+        private static string HeldBy(string folderName)
+        {
+            string text = Translator.Translate(HeldByKey, folderName);
+            return string.IsNullOrEmpty(text) ? string.Format("now on {0}", folderName) : text;
+        }
+
+        private static string FolderName(string folder)
+        {
+            string trimmed = (folder ?? string.Empty).TrimEnd('\\', '/');
+            int cut = trimmed.LastIndexOfAny(new[] { '\\', '/' });
+            return cut >= 0 ? trimmed.Substring(cut + 1) : trimmed;
+        }
+
+        private LabelDialog(string title, string current, List<KeyValuePair<string, string>> options)
+        {
             Text = title;
             FormBorderStyle = FormBorderStyle.FixedDialog;
             StartPosition = FormStartPosition.CenterParent;
@@ -82,9 +108,9 @@ namespace AowEmailWrapper.Controls
             int y = Pad;
 
             RadioButton none = AddChoice(Translator.Translate(NoLabelKey), string.Empty, ref y, width);
-            foreach (string option in options)
+            foreach (KeyValuePair<string, string> option in options)
             {
-                AddChoice(option, option, ref y, width);
+                AddChoice(option.Key, option.Value, ref y, width);
             }
 
             _other = new RadioButton();
@@ -157,32 +183,18 @@ namespace AowEmailWrapper.Controls
             return choice;
         }
 
-        /// <summary>Reads the choice; false (with a message) when the label belongs to another copy.</summary>
+        /// <summary>Reads the choice. A label another copy holds is accepted: the caller moves it.</summary>
         private bool Accept()
         {
-            string label;
             if (_other.Checked)
             {
-                label = _otherText.Text.Trim();
+                _result = _otherText.Text.Trim();
             }
             else
             {
                 RadioButton chosen = _choices.FirstOrDefault(choice => choice.Checked);
-                label = chosen != null ? (string)chosen.Tag : string.Empty;
+                _result = chosen != null ? (string)chosen.Tag : string.Empty;
             }
-
-            if (!string.IsNullOrEmpty(label))
-            {
-                string usedBy = _taken.Where(pair => AowGame.SameLabel(pair.Key, label)).Select(pair => pair.Value).FirstOrDefault();
-                if (usedBy != null)
-                {
-                    MessageBox.Show(this, Translator.Translate(InUseKey, label, usedBy), Text, MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    _result = null;
-                    return false;
-                }
-            }
-
-            _result = label;
             return true;
         }
     }

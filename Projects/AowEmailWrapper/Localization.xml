@@ -184,6 +184,8 @@
 		<lookup key="panelGameslistViewGames2" value="Folder"/>
 		<lookup key="panelGameslistViewGames3" value="Default"/>
 		<lookup key="buttonAddFolder" value="Add folder..."/>
+		<lookup key="buttonOpenFolder" value="Open folder"/>
+		<lookup key="msgLabelHeldBy" value="now on {0}"/>
 		<lookup key="buttonSetLabel" value="Set label..."/>
 		<lookup key="buttonSetDefaultInstall" value="Set as default"/>
 		<lookup key="buttonRemoveInstall" value="Remove"/>
@@ -430,6 +432,8 @@
 		<lookup key="panelGameslistViewGames2" value="Dossier"/>
 		<lookup key="panelGameslistViewGames3" value="Par défaut"/>
 		<lookup key="buttonAddFolder" value="Ajouter un dossier..."/>
+		<lookup key="buttonOpenFolder" value="Open folder"/>
+		<lookup key="msgLabelHeldBy" value="now on {0}"/>
 		<lookup key="buttonSetLabel" value="Définir l'étiquette..."/>
 		<lookup key="buttonSetDefaultInstall" value="Définir par défaut"/>
 		<lookup key="buttonRemoveInstall" value="Retirer"/>
@@ -669,6 +673,8 @@
 		<lookup key="panelGameslistViewGames2" value="Ordner"/>
 		<lookup key="panelGameslistViewGames3" value="Standard"/>
 		<lookup key="buttonAddFolder" value="Ordner hinzufügen..."/>
+		<lookup key="buttonOpenFolder" value="Open folder"/>
+		<lookup key="msgLabelHeldBy" value="now on {0}"/>
 		<lookup key="buttonSetLabel" value="Bezeichnung festlegen..."/>
 		<lookup key="buttonSetDefaultInstall" value="Als Standard festlegen"/>
 		<lookup key="buttonRemoveInstall" value="Entfernen"/>
@@ -908,6 +914,8 @@
 		<lookup key="panelGameslistViewGames2" value="Carpeta"/>
 		<lookup key="panelGameslistViewGames3" value="Predeterminada"/>
 		<lookup key="buttonAddFolder" value="Añadir carpeta..."/>
+		<lookup key="buttonOpenFolder" value="Open folder"/>
+		<lookup key="msgLabelHeldBy" value="now on {0}"/>
 		<lookup key="buttonSetLabel" value="Definir etiqueta..."/>
 		<lookup key="buttonSetDefaultInstall" value="Establecer como predeterminada"/>
 		<lookup key="buttonRemoveInstall" value="Quitar"/>
@@ -1147,6 +1155,8 @@
 		<lookup key="panelGameslistViewGames2" value="Map"/>
 		<lookup key="panelGameslistViewGames3" value="Standaard"/>
 		<lookup key="buttonAddFolder" value="Map toevoegen..."/>
+		<lookup key="buttonOpenFolder" value="Open folder"/>
+		<lookup key="msgLabelHeldBy" value="now on {0}"/>
 		<lookup key="buttonSetLabel" value="Label instellen..."/>
 		<lookup key="buttonSetDefaultInstall" value="Als standaard instellen"/>
 		<lookup key="buttonRemoveInstall" value="Verwijderen"/>
@@ -1384,6 +1394,8 @@
 		<lookup key="panelGameslistViewGames2" value="Mappe"/>
 		<lookup key="panelGameslistViewGames3" value="Standard"/>
 		<lookup key="buttonAddFolder" value="Tilføj mappe..."/>
+		<lookup key="buttonOpenFolder" value="Open folder"/>
+		<lookup key="msgLabelHeldBy" value="now on {0}"/>
 		<lookup key="buttonSetLabel" value="Angiv mærkat..."/>
 		<lookup key="buttonSetDefaultInstall" value="Sæt som standard"/>
 		<lookup key="buttonRemoveInstall" value="Fjern"/>
@@ -1622,6 +1634,8 @@
 		<lookup key="panelGameslistViewGames2" value="Mapp"/>
 		<lookup key="panelGameslistViewGames3" value="Standard"/>
 		<lookup key="buttonAddFolder" value="Lägg till mapp..."/>
+		<lookup key="buttonOpenFolder" value="Open folder"/>
+		<lookup key="msgLabelHeldBy" value="now on {0}"/>
 		<lookup key="buttonSetLabel" value="Ange etikett..."/>
 		<lookup key="buttonSetDefaultInstall" value="Ange som standard"/>
 		<lookup key="buttonRemoveInstall" value="Ta bort"/>
@@ -1868,6 +1882,8 @@
 		<lookup key="panelGameslistViewGames2" value="Folder"/>
 		<lookup key="panelGameslistViewGames3" value="Domyślna"/>
 		<lookup key="buttonAddFolder" value="Dodaj folder..."/>
+		<lookup key="buttonOpenFolder" value="Open folder"/>
+		<lookup key="msgLabelHeldBy" value="now on {0}"/>
 		<lookup key="buttonSetLabel" value="Ustaw etykietę..."/>
 		<lookup key="buttonSetDefaultInstall" value="Ustaw jako domyślną"/>
 		<lookup key="buttonRemoveInstall" value="Usuń"/>
@@ -2108,6 +2124,8 @@
 		<lookup key="panelGameslistViewGames2" value="Kansio"/>
 		<lookup key="panelGameslistViewGames3" value="Oletus"/>
 		<lookup key="buttonAddFolder" value="Lisää kansio..."/>
+		<lookup key="buttonOpenFolder" value="Open folder"/>
+		<lookup key="msgLabelHeldBy" value="now on {0}"/>
 		<lookup key="buttonSetLabel" value="Aseta tunniste..."/>
 		<lookup key="buttonSetDefaultInstall" value="Aseta oletukseksi"/>
 		<lookup key="buttonRemoveInstall" value="Poista"/>
@@ -2350,6 +2368,8 @@
 		<lookup key="panelGameslistViewGames2" value="Dosar"/>
 		<lookup key="panelGameslistViewGames3" value="Implicit"/>
 		<lookup key="buttonAddFolder" value="Adaugă dosar..."/>
+		<lookup key="buttonOpenFolder" value="Open folder"/>
+		<lookup key="msgLabelHeldBy" value="now on {0}"/>
 		<lookup key="buttonSetLabel" value="Setează eticheta..."/>
 		<lookup key="buttonSetDefaultInstall" value="Setează ca implicit"/>
 		<lookup key="buttonRemoveInstall" value="Elimină"/>
@@ -2590,6 +2610,8 @@
 		<lookup key="panelGameslistViewGames2" value="Папка"/>
 		<lookup key="panelGameslistViewGames3" value="По умолчанию"/>
 		<lookup key="buttonAddFolder" value="Добавить папку..."/>
+		<lookup key="buttonOpenFolder" value="Открыть папку"/>
+		<lookup key="msgLabelHeldBy" value="сейчас у {0}"/>
 		<lookup key="buttonSetLabel" value="Задать метку..."/>
 		<lookup key="buttonSetDefaultInstall" value="Сделать основной"/>
 		<lookup key="buttonRemoveInstall" value="Удалить"/>

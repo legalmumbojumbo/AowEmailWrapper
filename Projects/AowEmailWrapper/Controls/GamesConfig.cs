@@ -20,6 +20,7 @@ namespace AowEmailWrapper.Controls
     {
         private const string NoGameInFolderKey = "msgAddFolderNoGame";
         private const string MissingKey = "msgInstallMissing";
+        private const int FolderColumn = 2;
         private const string ScanningKey = "buttonRescanning";
         private const string DefaultMark = "✓";
         private const int ButtonPanelWidth = 113;
@@ -30,6 +31,7 @@ namespace AowEmailWrapper.Controls
         private readonly Panel panelButtons;
         private readonly Button buttonAddFolder;
         private readonly Button buttonSetLabel;
+        private readonly Button buttonOpenFolder;
         private readonly Button buttonSetDefaultInstall;
         private readonly Button buttonRemoveInstall;
         private readonly Button buttonRescan;
@@ -79,7 +81,7 @@ namespace AowEmailWrapper.Controls
             listViewGames.SelectedIndexChanged += (sender, e) => UpdateButtons();
             //Sized on control resize only: reacting to the list's own client size changes loops when a scroll bar appears
             Resize += (sender, e) => FitColumns();
-            listViewGames.DoubleClick += (sender, e) => SetLabel();
+            listViewGames.MouseDoubleClick += ListViewGames_MouseDoubleClick;
 
             panelButtons = new Panel();
             panelButtons.Dock = DockStyle.Right;
@@ -91,6 +93,7 @@ namespace AowEmailWrapper.Controls
             buttonRemoveInstall = AddButton("buttonRemoveInstall", "Remove", (sender, e) => RemoveSelected());
             buttonSetDefaultInstall = AddButton("buttonSetDefaultInstall", "Set as default", (sender, e) => SetDefault());
             buttonSetLabel = AddButton("buttonSetLabel", "Set label...", (sender, e) => SetLabel());
+            buttonOpenFolder = AddButton("buttonOpenFolder", "Open folder", (sender, e) => OpenFolder());
             buttonAddFolder = AddButton("buttonAddFolder", "Add folder...", (sender, e) => AddFolder());
 
             panelGames.Controls.Add(listViewGames);
@@ -230,6 +233,7 @@ namespace AowEmailWrapper.Controls
         {
             AowGame selected = Selected;
             buttonSetLabel.Enabled = selected != null;
+            buttonOpenFolder.Enabled = selected != null && System.IO.Directory.Exists(selected.Folder);
             buttonSetDefaultInstall.Enabled = selected != null && selected.IsInstalled && !selected.IsDefault;
             buttonRemoveInstall.Enabled = selected != null && selected.IsManual;
         }
@@ -258,9 +262,57 @@ namespace AowEmailWrapper.Controls
             string label = LabelDialog.Show(this, game, taken);
             if (label != null)
             {
-                game.Label = label;
+                MoveLabel(_games, game, label);
                 Populate();
                 RaiseChanged();
+            }
+        }
+
+        /// <summary>
+        /// Gives the copy the label, taking it off any other copy of the same game that held it, so a
+        /// label still points at exactly one copy. The copy that lost it shows what its folder holds.
+        /// </summary>
+        public static void MoveLabel(IEnumerable<AowGame> games, AowGame target, string label)
+        {
+            if (!string.IsNullOrEmpty(label))
+            {
+                foreach (AowGame other in games.Where(other => other != target && other.GameType == target.GameType && AowGame.SameLabel(other.Label, label)))
+                {
+                    other.Label = string.Empty;
+                }
+            }
+            target.Label = label ?? string.Empty;
+        }
+
+        /// <summary>Double-clicking the folder opens it in Explorer; anywhere else on the row edits the label.</summary>
+        private void ListViewGames_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            ListViewHitTestInfo hit = listViewGames.HitTest(e.Location);
+            if (hit.Item != null && hit.SubItem != null && hit.Item.SubItems.IndexOf(hit.SubItem) == FolderColumn)
+            {
+                OpenFolder();
+            }
+            else
+            {
+                SetLabel();
+            }
+        }
+
+        private void OpenFolder()
+        {
+            AowGame game = Selected;
+            if (game == null || !System.IO.Directory.Exists(game.Folder))
+            {
+                return;
+            }
+
+            try
+            {
+                System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo(game.Folder) { UseShellExecute = true });
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Trace.TraceWarning("Could not open {0}: {1}", game.Folder, ex.Message);
             }
         }
 
