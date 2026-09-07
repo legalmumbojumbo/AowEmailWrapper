@@ -129,7 +129,6 @@ namespace AowEmailWrapper.Games
         private static List<AowGame> Merge(List<AowGame> detected, GamesConfigValues config)
         {
             List<AowGame> games = detected.Where(game => game.IsInstalled || game.IsManual).ToList();
-            HashSet<string> remembered = new HashSet<string>();
 
             if (config != null)
             {
@@ -140,7 +139,6 @@ namespace AowEmailWrapper.Games
                     {
                         game.Label = entry.Label;
                         game.IsDefault = entry.IsDefault;
-                        remembered.Add(game.Id);
                     }
                 }
 
@@ -156,15 +154,16 @@ namespace AowEmailWrapper.Games
                 }
             }
 
-            //A copy seen for the first time that carries one mod is labelled with it, unless another copy already
-            //has that label; a copy the player has settled on (remembered, labelled or not) is left as it is
-            foreach (AowGame game in games.Where(game => game.IsInstalled && !remembered.Contains(game.Id) && string.IsNullOrEmpty(game.Label) && game.DetectedMods.Count == 1))
+            //A copy without a label gets the one its contents call for (the mod found in it, or the stock game),
+            //unless another copy of that game already carries it: a label routes turns to exactly one copy
+            foreach (AowGame game in games.Where(game => game.IsInstalled && string.IsNullOrEmpty(game.Label)))
             {
-                string label = game.DetectedMods[0].Name;
+                string label = game.SuggestedLabel;
                 if (!games.Any(other => other != game && other.GameType == game.GameType && AowGame.SameLabel(other.Label, label)))
                 {
                     game.Label = label;
-                    Trace.TraceInformation("Copy {0} labelled '{1}' from the mod found in it ({2})", game.Folder, label, game.DetectedMods[0].Evidence);
+                    Trace.TraceInformation("Copy {0} labelled '{1}' ({2})", game.Folder, label,
+                        game.DetectedMods.Count > 0 ? string.Join("; ", game.DetectedMods.Select(mod => mod.Evidence)) : "nothing found in it");
                 }
             }
 

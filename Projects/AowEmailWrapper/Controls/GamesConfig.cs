@@ -30,6 +30,7 @@ namespace AowEmailWrapper.Controls
         private readonly Panel panelButtons;
         private readonly Button buttonAddFolder;
         private readonly Button buttonSetLabel;
+        private readonly Button buttonOpenFolder;
         private readonly Button buttonSetDefaultInstall;
         private readonly Button buttonRemoveInstall;
         private readonly Button buttonRescan;
@@ -73,15 +74,14 @@ namespace AowEmailWrapper.Controls
             listViewGames.ShowItemToolTips = true;
             listViewGames.HeaderStyle = ColumnHeaderStyle.Nonclickable;
             listViewGames.Columns.Add(new ColumnHeader { Text = "Game", Tag = "ContentHeaderMax" });
-            listViewGames.Columns.Add(new ColumnHeader { Text = "Label", Tag = "ContentHeaderMax" });
+            listViewGames.Columns.Add(new ColumnHeader { Text = "Mod", Tag = "ContentHeaderMax" });
             listViewGames.Columns.Add(new ColumnHeader { Text = "Folder", Tag = "Fill" });
             listViewGames.Columns.Add(new ColumnHeader { Text = "Default", Tag = "HeaderSize" });
-            listViewGames.Columns.Add(new ColumnHeader { Text = "Found by", Tag = "ContentHeaderMax" });
-            listViewGames.Columns.Add(new ColumnHeader { Text = "Mod", Tag = "ContentHeaderMax" });
             listViewGames.SelectedIndexChanged += (sender, e) => UpdateButtons();
             //Sized on control resize only: reacting to the list's own client size changes loops when a scroll bar appears
             Resize += (sender, e) => FitColumns();
-            listViewGames.DoubleClick += (sender, e) => SetLabel();
+            listViewGames.MouseDoubleClick += ListViewGames_MouseDoubleClick;
+            listViewGames.ContextMenuStrip = BuildContextMenu();
 
             panelButtons = new Panel();
             panelButtons.Dock = DockStyle.Right;
@@ -93,6 +93,7 @@ namespace AowEmailWrapper.Controls
             buttonRemoveInstall = AddButton("buttonRemoveInstall", "Remove", (sender, e) => RemoveSelected());
             buttonSetDefaultInstall = AddButton("buttonSetDefaultInstall", "Set as default", (sender, e) => SetDefault());
             buttonSetLabel = AddButton("buttonSetLabel", "Set label...", (sender, e) => SetLabel());
+            buttonOpenFolder = AddButton("buttonOpenFolder", "Open folder", (sender, e) => OpenFolder());
             buttonAddFolder = AddButton("buttonAddFolder", "Add folder...", (sender, e) => AddFolder());
 
             panelGames.Controls.Add(listViewGames);
@@ -102,6 +103,16 @@ namespace AowEmailWrapper.Controls
             Controls.Add(lblGamesHelp);
 
             UpdateButtons();
+        }
+
+        /// <summary>The folder, how the copy was found (or that it is missing), and the evidence behind its mod.</summary>
+        private static string ToolTipFor(AowGame game)
+        {
+            string found = game.IsInstalled ? Translator.TranslateEnum(game.Source) : Translator.Translate(MissingKey);
+            string mods = game.DetectedMods.Count == 0
+                ? "No mod found: taken to be the stock game"
+                : string.Join(Environment.NewLine, game.DetectedMods.Select(mod => mod.ToString() + ": " + mod.Evidence));
+            return string.Concat(game.Folder, Environment.NewLine, found, Environment.NewLine, mods);
         }
 
         /// <summary>The list as config entries; setting it re-reads the detected copies from the game manager.</summary>
@@ -168,18 +179,24 @@ namespace AowEmailWrapper.Controls
             foreach (AowGame game in _games.OrderBy(game => game.GameType).ThenBy(game => game.IsDefault ? 0 : 1).ThenBy(game => game.Folder))
             {
                 ListViewItem item = new ListViewItem(AowGame.DisplayNameFor(game.GameType));
-                item.SubItems.Add(game.Label);
+                item.UseItemStyleForSubItems = false;
+                ListViewItem.ListViewSubItem label = item.SubItems.Add(game.DisplayLabel);
+                if (string.IsNullOrEmpty(game.Label))
+                {
+                    //Not a label yet: another copy already has this one, so turns cannot be routed by it
+                    label.ForeColor = SystemColors.GrayText;
+                }
                 item.SubItems.Add(game.Folder);
                 item.SubItems.Add(game.IsDefault ? DefaultMark : string.Empty);
-                item.SubItems.Add(game.IsInstalled ? Translator.TranslateEnum(game.Source) : Translator.Translate(MissingKey));
-                item.SubItems.Add(game.DetectedModNames);
-                item.ToolTipText = game.DetectedMods.Count == 0
-                    ? game.Folder
-                    : string.Concat(game.Folder, Environment.NewLine, string.Join(Environment.NewLine, game.DetectedMods.Select(mod => mod.Name + ": " + mod.Evidence)));
+                item.ToolTipText = ToolTipFor(game);
                 item.Tag = game;
                 if (!game.IsInstalled)
                 {
                     item.ForeColor = SystemColors.GrayText;
+                    foreach (ListViewItem.ListViewSubItem subItem in item.SubItems)
+                    {
+                        subItem.ForeColor = SystemColors.GrayText;
+                    }
                 }
                 if (selected != null && selected.Id == game.Id)
                 {
@@ -216,6 +233,7 @@ namespace AowEmailWrapper.Controls
         {
             AowGame selected = Selected;
             buttonSetLabel.Enabled = selected != null;
+            buttonOpenFolder.Enabled = selected != null && System.IO.Directory.Exists(selected.Folder);
             buttonSetDefaultInstall.Enabled = selected != null && selected.IsInstalled && !selected.IsDefault;
             buttonRemoveInstall.Enabled = selected != null && selected.IsManual;
         }
@@ -244,9 +262,85 @@ namespace AowEmailWrapper.Controls
             string label = LabelDialog.Show(this, game, taken);
             if (label != null)
             {
-                game.Label = label;
+                MoveLabel(_games, game, label);
                 Populate();
                 RaiseChanged();
+            }
+        }
+
+        /// <summary>
+        /// Gives the copy the label, taking it off any other copy of the same game that held it, so a
+        /// label still points at exactly one copy. The copy that lost it shows what its folder holds.
+        /// </summary>
+        public static void MoveLabel(IEnumerable<AowGame> games, AowGame target, string label)
+        {
+            if (!string.IsNullOrEmpty(label))
+            {
+                foreach (AowGame other in games.Where(other => other != target && other.GameType == target.GameType && AowGame.SameLabel(other.Label, label)))
+                {
+                    other.Label = string.Empty;
+                }
+            }
+            target.Label = label ?? string.Empty;
+        }
+
+        /// <summary>Double-clicking a copy opens its folder in Explorer; the actions are on the right-click menu.</summary>
+        private void ListViewGames_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            if (listViewGames.HitTest(e.Location).Item != null)
+            {
+                OpenFolder();
+            }
+        }
+
+        private ToolStripMenuItem _menuSetLabel;
+        private ToolStripMenuItem _menuOpenFolder;
+        private ToolStripMenuItem _menuSetDefault;
+        private ToolStripMenuItem _menuRemove;
+
+        private ContextMenuStrip BuildContextMenu()
+        {
+            ContextMenuStrip menu = new ContextMenuStrip();
+            _menuSetLabel = AddMenuItem(menu, "buttonSetLabel", "Set label...", (sender, e) => SetLabel());
+            _menuOpenFolder = AddMenuItem(menu, "buttonOpenFolder", "Open folder", (sender, e) => OpenFolder());
+            _menuSetDefault = AddMenuItem(menu, "buttonSetDefaultInstall", "Set as default", (sender, e) => SetDefault());
+            _menuRemove = AddMenuItem(menu, "buttonRemoveInstall", "Remove", (sender, e) => RemoveSelected());
+            menu.Opening += (sender, e) =>
+            {
+                AowGame selected = Selected;
+                e.Cancel = selected == null;
+                _menuSetLabel.Enabled = buttonSetLabel.Enabled;
+                _menuOpenFolder.Enabled = buttonOpenFolder.Enabled;
+                _menuSetDefault.Enabled = buttonSetDefaultInstall.Enabled;
+                _menuRemove.Enabled = buttonRemoveInstall.Enabled;
+            };
+            return menu;
+        }
+
+        private static ToolStripMenuItem AddMenuItem(ContextMenuStrip menu, string key, string fallback, EventHandler onClick)
+        {
+            string text = Translator.Translate(key);
+            ToolStripMenuItem item = new ToolStripMenuItem(string.IsNullOrEmpty(text) ? fallback : text);
+            item.Click += onClick;
+            menu.Items.Add(item);
+            return item;
+        }
+
+        private void OpenFolder()
+        {
+            AowGame game = Selected;
+            if (game == null || !System.IO.Directory.Exists(game.Folder))
+            {
+                return;
+            }
+
+            try
+            {
+                System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo(game.Folder) { UseShellExecute = true });
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Trace.TraceWarning("Could not open {0}: {1}", game.Folder, ex.Message);
             }
         }
 
