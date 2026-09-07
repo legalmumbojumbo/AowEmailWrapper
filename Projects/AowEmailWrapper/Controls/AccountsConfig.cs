@@ -1,12 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.Drawing;
-using System.Data;
-using System.Linq;
 using System.Text;
 using System.Windows.Forms;
-using System.Xml.Serialization;
 using AowEmailWrapper.ConfigFramework;
 using AowEmailWrapper.Localization;
 using AowEmailWrapper.Classes;
@@ -36,7 +31,6 @@ namespace AowEmailWrapper.Controls
         private const string Menu_Activate_Tag = "menuItemActivate";
         private const string Menu_Deactivate_Key = "menuItemDeactivate";
         private const string AccountStatusTemplate = "{0} ({1})";
-        private const string AccountTwinStatusTemplate = "{0} ({1} {2})";
         private const string Menu_Add_Tag = "menuItemAdd";
         private const string Menu_Remove_Tag = "menuItemRemove";
         private const string Menu_Rename_Tag = "menuItemRename";
@@ -275,7 +269,7 @@ namespace AowEmailWrapper.Controls
             }
         }
 
-        private void Move(int delta)
+        private void MoveAccount(int delta)
         {
             AccountConfigValues account = _accountsList == null ? null : _accountsList.GetAccountByName(GetSelectedItem());
             if (account == null)
@@ -445,11 +439,6 @@ namespace AowEmailWrapper.Controls
             }
         }
 
-        private void Raise_Account_Activated(string theAccountName)
-        {
-            Raise_Account_Activated(_accountsList.GetAccountByName(theAccountName));
-        }
-
         private void Raise_Account_Activated(AccountConfigValues theAccount)
         {
             Raise_Account_Activated(theAccount, false);
@@ -486,9 +475,8 @@ namespace AowEmailWrapper.Controls
                     //That name does exist, make a new name
 
                     int num = 0;
-                    bool success = false;
-                    string proposedName = null;
-
+                    bool success;
+                    string proposedName;
                     do
                     {
                         num++;
@@ -590,18 +578,6 @@ namespace AowEmailWrapper.Controls
             return theTag;
         }
 
-        private int GetSlectedIndex()
-        {
-            int selected = -1;
-
-            if (listViewAccounts.SelectedIndices.Count.Equals(1))
-            {
-                selected = listViewAccounts.SelectedIndices[0];
-            }
-
-            return selected;
-        }
-
         private void Populate()
         {
             if (_accountsList != null &&
@@ -671,25 +647,6 @@ namespace AowEmailWrapper.Controls
             }
         }
 
-        private bool CheckDomains(string input, string[] domains)
-        {
-            bool returnVal = false;
-
-            if (!string.IsNullOrEmpty(input))
-            {
-                foreach (string s in domains)
-                {
-                    if (input.ToLower().Contains(s))
-                    {
-                        returnVal = true;
-                        break;
-                    }
-                }
-            }
-
-            return returnVal;
-        }
-
         #endregion
 
         #region Context Menu
@@ -742,10 +699,10 @@ namespace AowEmailWrapper.Controls
                     Rename();
                     break;
                 case Menu_MoveUp_Tag:
-                    Move(-1);
+                    MoveAccount(-1);
                     break;
                 case Menu_MoveDown_Tag:
-                    Move(1);
+                    MoveAccount(1);
                     break;
             }
         }

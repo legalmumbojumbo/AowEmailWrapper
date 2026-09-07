@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Text;
 
 namespace AowEmailWrapper.ASG
 {
-	public class OffsetMap
+    public class OffsetMap
 	{
 		#region Construction
 

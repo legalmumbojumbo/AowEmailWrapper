@@ -1,11 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
 using System.Windows.Forms;
+using AowEmailWrapper.Helpers;
 using Mozilla.Autoconfig;
 using AowEmailWrapper.Localization;
 
@@ -16,6 +11,7 @@ namespace AowEmailWrapper.Controls
         public ServerChoiceForm()
         {
             InitializeComponent();
+            Theme.Apply(this);
 
             serverChoiceControl.Cancelled += new EventHandler(serverChoiceControl_Cancelled);
             serverChoiceControl.ConfigChosen += new EventHandler(serverChoiceControl_ConfigChosen);

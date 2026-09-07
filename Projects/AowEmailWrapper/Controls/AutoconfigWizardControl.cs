@@ -1,10 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.Drawing;
-using System.Data;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Windows.Forms;
 using Mozilla.Autoconfig;
@@ -19,7 +14,6 @@ namespace AowEmailWrapper.Controls
         private delegate void CallBackEvent(object sender, MechanismResponse response, Action<MechanismResponse> action);
 
         private const string OtherAccountTranslationKey = "accountOther";
-        private const string OtherAccountType = "Other";
         private const string OAuthOnlyKey = "msgOAuthOnly";
         private const string UnencryptedOnlyKey = "msgAutoconfigUnencryptedOnly";
         private const string UnencryptedOnlyFallback = "Settings were found for this address, but they would send your password without encryption, so the Wrapper will not use them. Please enter the server settings manually.";

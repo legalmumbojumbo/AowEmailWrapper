@@ -4,7 +4,6 @@ using System.IO;
 using System.Linq;
 using System.Xml.Serialization;
 using AowEmailWrapper.ConfigFramework;
-using AowEmailWrapper.Games;
 using AowEmailWrapper.Helpers;
 using MailKit;
 using MailKit.Net.Imap;

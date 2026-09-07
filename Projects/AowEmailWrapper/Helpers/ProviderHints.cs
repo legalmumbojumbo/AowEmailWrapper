@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace AowEmailWrapper.Helpers
+﻿namespace AowEmailWrapper.Helpers
 {
     /// <summary>
     /// Sign-in advice for a mail provider: a localisation key for the message and an optional page to open.

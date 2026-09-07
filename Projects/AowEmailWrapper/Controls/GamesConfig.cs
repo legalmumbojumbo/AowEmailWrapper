@@ -28,7 +28,6 @@ namespace AowEmailWrapper.Controls
         private readonly Panel panelGames;
         private readonly ListView listViewGames;
         private readonly Panel panelButtons;
-        private readonly Button buttonAddFolder;
         private readonly Button buttonSetLabel;
         private readonly Button buttonOpenFolder;
         private readonly Button buttonSetDefaultInstall;
@@ -94,7 +93,7 @@ namespace AowEmailWrapper.Controls
             buttonSetDefaultInstall = AddButton("buttonSetDefaultInstall", "Set as default", (sender, e) => SetDefault());
             buttonSetLabel = AddButton("buttonSetLabel", "Set label...", (sender, e) => SetLabel());
             buttonOpenFolder = AddButton("buttonOpenFolder", "Open folder", (sender, e) => OpenFolder());
-            buttonAddFolder = AddButton("buttonAddFolder", "Add folder...", (sender, e) => AddFolder());
+            AddButton("buttonAddFolder", "Add folder...", (sender, e) => AddFolder());
 
             panelGames.Controls.Add(listViewGames);
             panelGames.Controls.Add(panelButtons);

@@ -51,7 +51,7 @@
             this.panelAdd = new System.Windows.Forms.Panel();
             this.buttonAdd = new System.Windows.Forms.Button();
             this.panelBottomHalf = new System.Windows.Forms.Panel();
-            this.tabControlAccountEditor = new System.Windows.Forms.TabControl();
+            this.tabControlAccountEditor = new AowEmailWrapper.Controls.ThemedTabControl();
             this.tabIncoming = new System.Windows.Forms.TabPage();
             this.pollingConfig = new AowEmailWrapper.Controls.PollingConfig();
             this.tabOutgoing = new System.Windows.Forms.TabPage();
@@ -370,7 +370,7 @@
         private System.Windows.Forms.Panel panelAdd;
         private System.Windows.Forms.Button buttonAdd;
         private System.Windows.Forms.Panel panelBottomHalf;
-        private System.Windows.Forms.TabControl tabControlAccountEditor;
+        private AowEmailWrapper.Controls.ThemedTabControl tabControlAccountEditor;
         private System.Windows.Forms.TabPage tabIncoming;
         private PollingConfig pollingConfig;
         private System.Windows.Forms.TabPage tabOutgoing;

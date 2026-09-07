@@ -1,15 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.IO;
+﻿using System.IO;
 
 using ComponentAce.Compression.Libs.zlib;
 using AowEmailWrapper.Helpers;
 
 namespace AowEmailWrapper.ASG
 {
-	public class DataCompressor
+    public class DataCompressor
 	{
 		/// <summary>
 		/// Largest inflated size accepted. Compressed data can expand a thousandfold, so without

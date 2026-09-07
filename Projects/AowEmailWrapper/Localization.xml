@@ -39,6 +39,9 @@
 		<lookup key="fbSentSound" value="Email Sent sound:"/>
 		<lookup key="fbEmailSound" value="Email Downloaded sound:"/>
 		<lookup key="fbLocalization" value="Language:"/>
+		<lookup key="fbTheme" value="Theme:"/>
+		<lookup key="themeClassic" value="Classic Windows"/>
+		<lookup key="themeAgeOfWonders" value="Age of Wonders"/>
 		<lookup key="fbCopyToEmailOut" value="Copy to EmailOut after sending:"/>
 		<lookup key="fbGameWrapperDataPort" value="Game to Wrapper data port:"/>
 		<lookup key="tabActivity" value="Activity Log"/>
@@ -297,6 +300,9 @@
 		<lookup key="fbSentSound" value="Son pour mail envoyé:"/>
 		<lookup key="fbEmailSound" value="Son pour mail reçu:"/>
 		<lookup key="fbLocalization" value="Langue:"/>
+		<lookup key="fbTheme" value="Thème :"/>
+		<lookup key="themeClassic" value="Windows classique"/>
+		<lookup key="themeAgeOfWonders" value="Age of Wonders"/>
 		<lookup key="fbCopyToEmailOut" value="Sauvegarder vers EmailOut après envoi:"/>
 		<lookup key="fbGameWrapperDataPort" value="Jeu de Wrapper port de données:"/>
 		<lookup key="tabActivity" value="Historique"/>
@@ -539,6 +545,9 @@
 		<lookup key="fbSentSound" value="Sound für E-Mail gesendet:"/>
 		<lookup key="fbEmailSound" value="Sound für E-Mail heruntergeladen:"/>
 		<lookup key="fbLocalization" value="Sprache:"/>
+		<lookup key="fbTheme" value="Design:"/>
+		<lookup key="themeClassic" value="Klassisches Windows"/>
+		<lookup key="themeAgeOfWonders" value="Age of Wonders"/>
 		<lookup key="fbCopyToEmailOut" value="Beim Senden auch zu EmailOut kopieren:"/>
 		<lookup key="fbGameWrapperDataPort" value="Spiel um Wrapper datenport:"/>
 		<lookup key="tabActivity" value="Aktivitätsreport"/>
@@ -782,6 +791,9 @@
 		<lookup key="fbSentSound" value="Sonido de Email enviado:"/>
 		<lookup key="fbEmailSound" value="Sonido de Email descargado:"/>
 		<lookup key="fbLocalization" value="Idioma:"/>
+		<lookup key="fbTheme" value="Tema:"/>
+		<lookup key="themeClassic" value="Windows clásico"/>
+		<lookup key="themeAgeOfWonders" value="Age of Wonders"/>
 		<lookup key="fbCopyToEmailOut" value="Copiar a EmailOut luego de enviado:"/>
 		<lookup key="fbGameWrapperDataPort" value="Puerto de datos del Juego al Wrapper:"/>
 		<lookup key="tabActivity" value="Registro de Actividades"/>
@@ -1024,6 +1036,9 @@
 		<lookup key="fbSentSound" value="E-mail verzonden geluid:"/>
 		<lookup key="fbEmailSound" value="E-mail gedownload geluid:"/>
 		<lookup key="fbLocalization" value="Taal:"/>
+		<lookup key="fbTheme" value="Thema:"/>
+		<lookup key="themeClassic" value="Klassiek Windows"/>
+		<lookup key="themeAgeOfWonders" value="Age of Wonders"/>
 		<lookup key="fbCopyToEmailOut" value="Copieer naar Emailout folder na verzenden:"/>
 		<lookup key="fbGameWrapperDataPort" value="Spel om Wrapper data poort:"/>
 		<lookup key="tabActivity" value="Activiteiten log"/>
@@ -1263,6 +1278,9 @@
 		<lookup key="fbSentSound" value="Lyd ved Emailafsendelse:"/>
 		<lookup key="fbEmailSound" value="Lyd ved hentet Email:"/>
 		<lookup key="fbLocalization" value="Sprog:"/>
+		<lookup key="fbTheme" value="Tema:"/>
+		<lookup key="themeClassic" value="Klassisk Windows"/>
+		<lookup key="themeAgeOfWonders" value="Age of Wonders"/>
 		<lookup key="fbCopyToEmailOut" value="Kopier til EmailOut efter afsendelse:"/>
 		<lookup key="fbGameWrapperDataPort" value="Spil til Wrapper dataport:"/>
 		<lookup key="tabActivity" value="Aktivitetsliste"/>
@@ -1504,6 +1522,9 @@
 		<lookup key="fbSentSound" value="Email Skickat ljud:"/>
 		<lookup key="fbEmailSound" value="Email Nerladdat ljud:"/>
 		<lookup key="fbLocalization" value="Språk:"/>
+		<lookup key="fbTheme" value="Tema:"/>
+		<lookup key="themeClassic" value="Klassiskt Windows"/>
+		<lookup key="themeAgeOfWonders" value="Age of Wonders"/>
 		<lookup key="fbCopyToEmailOut" value="Kopia till EmailOut efter skickat:"/>
 		<lookup key="fbGameWrapperDataPort" value="Spel till Wrapperns data port:"/>
 		<lookup key="tabActivity" value="Aktivitetslogg"/>
@@ -1753,6 +1774,9 @@
 		<lookup key="fbSentSound" value="Dźwięk wysłanego emaila:"/>
 		<lookup key="fbEmailSound" value="Dźwięk pobranego emaila:"/>
 		<lookup key="fbLocalization" value="Język:"/>
+		<lookup key="fbTheme" value="Motyw:"/>
+		<lookup key="themeClassic" value="Klasyczny Windows"/>
+		<lookup key="themeAgeOfWonders" value="Age of Wonders"/>
 		<lookup key="fbCopyToEmailOut" value="Kopiuj do EmailOut po wysłaniu:"/>
 		<lookup key="fbGameWrapperDataPort" value="Port danych przesyłanych z gry do Wrappera:"/>
 		<lookup key="tabActivity" value="Dziennik Aktywności"/>
@@ -1996,6 +2020,9 @@
 		<lookup key="fbSentSound" value="Sähköposti lähetetty -ääni:"/>
 		<lookup key="fbEmailSound" value="Sähköposti ladattu -ääni:"/>
 		<lookup key="fbLocalization" value="Kieli:"/>
+		<lookup key="fbTheme" value="Teema:"/>
+		<lookup key="themeClassic" value="Perinteinen Windows"/>
+		<lookup key="themeAgeOfWonders" value="Age of Wonders"/>
 		<lookup key="fbCopyToEmailOut" value="Kopioi Lähetetyt-kansioon viestin lähetyksen jälkeen:"/>
 		<lookup key="fbGameWrapperDataPort" value="Pelin Wrapper Data portti:"/>
 		<lookup key="tabActivity" value="Pelit käynnissä"/>
@@ -2241,6 +2268,9 @@
 		<lookup key="fbSentSound" value="Sunet Trimitere Email:"/>
 		<lookup key="fbEmailSound" value="Sunet Descărcare Email:"/>
 		<lookup key="fbLocalization" value="Limbă:"/>
+		<lookup key="fbTheme" value="Temă:"/>
+		<lookup key="themeClassic" value="Windows clasic"/>
+		<lookup key="themeAgeOfWonders" value="Age of Wonders"/>
 		<lookup key="fbCopyToEmailOut" value="Păstrează o copie în EmailOut după trimitere:"/>
 		<lookup key="fbGameWrapperDataPort" value="Port comunicare dintre joc şi Wrapper:"/>
 		<lookup key="tabActivity" value="Log de Activitate"/>
@@ -2484,6 +2514,9 @@
 		<lookup key="fbSentSound" value="Звук при отправке письма:"/>
 		<lookup key="fbEmailSound" value="Звук при получении письма:"/>
 		<lookup key="fbLocalization" value="Язык:"/>
+		<lookup key="fbTheme" value="Тема:"/>
+		<lookup key="themeClassic" value="Классический Windows"/>
+		<lookup key="themeAgeOfWonders" value="Age of Wonders"/>
 		<lookup key="fbCopyToEmailOut" value="Копировать сейв в EmailOut после отправки:"/>
 		<lookup key="fbGameWrapperDataPort" value="Порт сообщения игры и Wrapper'а:"/>
 		<lookup key="tabActivity" value="Список событий"/>

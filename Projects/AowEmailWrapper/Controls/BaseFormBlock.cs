@@ -1,10 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.Drawing;
-using System.Data;
-using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 
 namespace AowEmailWrapper.Controls
@@ -56,16 +51,5 @@ namespace AowEmailWrapper.Controls
             this.MinimumSize = new Size(int.MinValue, 24);
         }
 
-        private void InitializeComponent()
-        {
-            this.SuspendLayout();
-            // 
-            // BaseFormBlock
-            // 
-            this.Name = "BaseFormBlock";
-            this.Size = new System.Drawing.Size(383, 46);
-            this.ResumeLayout(false);
-
-        }
     }
 }

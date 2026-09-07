@@ -190,7 +190,7 @@ namespace AowEmailWrapper.Pollers
                         Trace.TraceInformation("IMAP connected to {0}, IDLE {1}", _host, canIdle ? "supported" : "not supported, polling on the timer");
 
                         _scanRequest.Reset();
-                        Scan(imap, inbox);
+                        Scan(inbox);
                         _consecutiveFailures = 0;
                         delay = ReconnectDelaySeconds;
 
@@ -215,7 +215,7 @@ namespace AowEmailWrapper.Pollers
                                 if (_scanRequest.IsSet)
                                 {
                                     _scanRequest.Reset();
-                                    Scan(imap, inbox);
+                                    Scan(inbox);
                                     continue;
                                 }
 
@@ -324,7 +324,7 @@ namespace AowEmailWrapper.Pollers
         }
 
         /// <summary>A scan on the watcher's open connection. Errors propagate so the loop reconnects.</summary>
-        private void Scan(ImapClient imap, IMailFolder inbox)
+        private void Scan(IMailFolder inbox)
         {
             bool emailDownloaded = false;
             bool completed = false;
