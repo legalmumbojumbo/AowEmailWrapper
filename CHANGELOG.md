@@ -3,12 +3,15 @@
 Each versioned release is described here. The section for a version is also the text of its GitHub
 release; CI publishes it when a `v<version>` tag is pushed (see "Releasing a version" in the README).
 
-## Unreleased
+## 2.0.3
 
 - Games tab: *Remove* works on every copy. A copy the scan found is ignored from then on instead of
   coming back on the next start; *Add folder...* on that folder brings it back.
 - Games tab: the Default column sits next to Mod, and the Folder column is last and wide enough for its
   longest path, so the list scrolls sideways instead of cutting paths short.
+
+Run `AowEmailWrapper-2.0.3-setup.exe` on Windows 10 or later, or let an installed Wrapper fetch it through
+*Check for updates* on the Settings tab. Accounts and settings carry over.
 
 ## 2.0.2
 
