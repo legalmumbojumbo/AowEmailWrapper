@@ -76,8 +76,9 @@ namespace AowEmailWrapper.Controls
             listViewGames.HeaderStyle = ColumnHeaderStyle.Nonclickable;
             listViewGames.Columns.Add(new ColumnHeader { Text = "Game", Tag = "ContentHeaderMax" });
             listViewGames.Columns.Add(new ColumnHeader { Text = "Mod", Tag = "ContentHeaderMax" });
-            listViewGames.Columns.Add(new ColumnHeader { Text = "Folder", Tag = "Fill" });
             listViewGames.Columns.Add(new ColumnHeader { Text = "Default", Tag = "HeaderSize" });
+            //The folder is last and sized to its longest path, so the list scrolls sideways rather than cutting paths short
+            listViewGames.Columns.Add(new ColumnHeader { Text = "Folder", Tag = "ContentHeaderMax" });
             listViewGames.SelectedIndexChanged += (sender, e) => UpdateButtons();
             //Sized on control resize only: reacting to the list's own client size changes loops when a scroll bar appears
             Resize += (sender, e) => FitColumns();
@@ -194,8 +195,8 @@ namespace AowEmailWrapper.Controls
                     //Not a label yet: another copy already has this one, so turns cannot be routed by it
                     label.ForeColor = SystemColors.GrayText;
                 }
-                item.SubItems.Add(game.Folder);
                 item.SubItems.Add(game.IsDefault ? DefaultMark : string.Empty);
+                item.SubItems.Add(game.Folder);
                 item.ToolTipText = ToolTipFor(game);
                 item.Tag = game;
                 if (!game.IsInstalled)

@@ -7,6 +7,8 @@ release; CI publishes it when a `v<version>` tag is pushed (see "Releasing a ver
 
 - Games tab: *Remove* works on every copy. A copy the scan found is ignored from then on instead of
   coming back on the next start; *Add folder...* on that folder brings it back.
+- Games tab: the Default column sits next to Mod, and the Folder column is last and wide enough for its
+  longest path, so the list scrolls sideways instead of cutting paths short.
 
 ## 2.0.2
 

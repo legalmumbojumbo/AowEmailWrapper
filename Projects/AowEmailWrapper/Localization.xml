@@ -184,8 +184,8 @@
 		<lookup key="tabGames" value="Games"/>
 		<lookup key="panelGameslistViewGames0" value="Game"/>
 		<lookup key="panelGameslistViewGames1" value="Mod"/>
-		<lookup key="panelGameslistViewGames2" value="Folder"/>
-		<lookup key="panelGameslistViewGames3" value="Default"/>
+		<lookup key="panelGameslistViewGames2" value="Default"/>
+		<lookup key="panelGameslistViewGames3" value="Folder"/>
 		<lookup key="buttonAddFolder" value="Add folder..."/>
 		<lookup key="buttonOpenFolder" value="Open folder"/>
 		<lookup key="msgLabelHeldBy" value="used by {0}"/>
@@ -437,8 +437,8 @@
 		<lookup key="tabGames" value="Jeux"/>
 		<lookup key="panelGameslistViewGames0" value="Jeu"/>
 		<lookup key="panelGameslistViewGames1" value="Mod"/>
-		<lookup key="panelGameslistViewGames2" value="Dossier"/>
-		<lookup key="panelGameslistViewGames3" value="Par défaut"/>
+		<lookup key="panelGameslistViewGames2" value="Par défaut"/>
+		<lookup key="panelGameslistViewGames3" value="Dossier"/>
 		<lookup key="buttonAddFolder" value="Ajouter un dossier..."/>
 		<lookup key="buttonOpenFolder" value="Open folder"/>
 		<lookup key="msgLabelHeldBy" value="used by {0}"/>
@@ -683,8 +683,8 @@
 		<lookup key="tabGames" value="Spiele"/>
 		<lookup key="panelGameslistViewGames0" value="Spiel"/>
 		<lookup key="panelGameslistViewGames1" value="Mod"/>
-		<lookup key="panelGameslistViewGames2" value="Ordner"/>
-		<lookup key="panelGameslistViewGames3" value="Standard"/>
+		<lookup key="panelGameslistViewGames2" value="Standard"/>
+		<lookup key="panelGameslistViewGames3" value="Ordner"/>
 		<lookup key="buttonAddFolder" value="Ordner hinzufügen..."/>
 		<lookup key="buttonOpenFolder" value="Open folder"/>
 		<lookup key="msgLabelHeldBy" value="used by {0}"/>
@@ -929,8 +929,8 @@
 		<lookup key="tabGames" value="Juegos"/>
 		<lookup key="panelGameslistViewGames0" value="Juego"/>
 		<lookup key="panelGameslistViewGames1" value="Mod"/>
-		<lookup key="panelGameslistViewGames2" value="Carpeta"/>
-		<lookup key="panelGameslistViewGames3" value="Predeterminada"/>
+		<lookup key="panelGameslistViewGames2" value="Predeterminada"/>
+		<lookup key="panelGameslistViewGames3" value="Carpeta"/>
 		<lookup key="buttonAddFolder" value="Añadir carpeta..."/>
 		<lookup key="buttonOpenFolder" value="Open folder"/>
 		<lookup key="msgLabelHeldBy" value="used by {0}"/>
@@ -1175,8 +1175,8 @@
 		<lookup key="tabGames" value="Spellen"/>
 		<lookup key="panelGameslistViewGames0" value="Spel"/>
 		<lookup key="panelGameslistViewGames1" value="Mod"/>
-		<lookup key="panelGameslistViewGames2" value="Map"/>
-		<lookup key="panelGameslistViewGames3" value="Standaard"/>
+		<lookup key="panelGameslistViewGames2" value="Standaard"/>
+		<lookup key="panelGameslistViewGames3" value="Map"/>
 		<lookup key="buttonAddFolder" value="Map toevoegen..."/>
 		<lookup key="buttonOpenFolder" value="Open folder"/>
 		<lookup key="msgLabelHeldBy" value="used by {0}"/>
@@ -1419,8 +1419,8 @@
 		<lookup key="tabGames" value="Spil"/>
 		<lookup key="panelGameslistViewGames0" value="Spil"/>
 		<lookup key="panelGameslistViewGames1" value="Mod"/>
-		<lookup key="panelGameslistViewGames2" value="Mappe"/>
-		<lookup key="panelGameslistViewGames3" value="Standard"/>
+		<lookup key="panelGameslistViewGames2" value="Standard"/>
+		<lookup key="panelGameslistViewGames3" value="Mappe"/>
 		<lookup key="buttonAddFolder" value="Tilføj mappe..."/>
 		<lookup key="buttonOpenFolder" value="Open folder"/>
 		<lookup key="msgLabelHeldBy" value="used by {0}"/>
@@ -1664,8 +1664,8 @@
 		<lookup key="tabGames" value="Spel"/>
 		<lookup key="panelGameslistViewGames0" value="Spel"/>
 		<lookup key="panelGameslistViewGames1" value="Mod"/>
-		<lookup key="panelGameslistViewGames2" value="Mapp"/>
-		<lookup key="panelGameslistViewGames3" value="Standard"/>
+		<lookup key="panelGameslistViewGames2" value="Standard"/>
+		<lookup key="panelGameslistViewGames3" value="Mapp"/>
 		<lookup key="buttonAddFolder" value="Lägg till mapp..."/>
 		<lookup key="buttonOpenFolder" value="Open folder"/>
 		<lookup key="msgLabelHeldBy" value="used by {0}"/>
@@ -1917,8 +1917,8 @@
 		<lookup key="tabGames" value="Gry"/>
 		<lookup key="panelGameslistViewGames0" value="Gra"/>
 		<lookup key="panelGameslistViewGames1" value="Mod"/>
-		<lookup key="panelGameslistViewGames2" value="Folder"/>
-		<lookup key="panelGameslistViewGames3" value="Domyślna"/>
+		<lookup key="panelGameslistViewGames2" value="Domyślna"/>
+		<lookup key="panelGameslistViewGames3" value="Folder"/>
 		<lookup key="buttonAddFolder" value="Dodaj folder..."/>
 		<lookup key="buttonOpenFolder" value="Open folder"/>
 		<lookup key="msgLabelHeldBy" value="used by {0}"/>
@@ -2164,8 +2164,8 @@
 		<lookup key="tabGames" value="Pelit"/>
 		<lookup key="panelGameslistViewGames0" value="Peli"/>
 		<lookup key="panelGameslistViewGames1" value="Mod"/>
-		<lookup key="panelGameslistViewGames2" value="Kansio"/>
-		<lookup key="panelGameslistViewGames3" value="Oletus"/>
+		<lookup key="panelGameslistViewGames2" value="Oletus"/>
+		<lookup key="panelGameslistViewGames3" value="Kansio"/>
 		<lookup key="buttonAddFolder" value="Lisää kansio..."/>
 		<lookup key="buttonOpenFolder" value="Open folder"/>
 		<lookup key="msgLabelHeldBy" value="used by {0}"/>
@@ -2413,8 +2413,8 @@
 		<lookup key="tabGames" value="Jocuri"/>
 		<lookup key="panelGameslistViewGames0" value="Joc"/>
 		<lookup key="panelGameslistViewGames1" value="Mod"/>
-		<lookup key="panelGameslistViewGames2" value="Dosar"/>
-		<lookup key="panelGameslistViewGames3" value="Implicit"/>
+		<lookup key="panelGameslistViewGames2" value="Implicit"/>
+		<lookup key="panelGameslistViewGames3" value="Dosar"/>
 		<lookup key="buttonAddFolder" value="Adaugă dosar..."/>
 		<lookup key="buttonOpenFolder" value="Open folder"/>
 		<lookup key="msgLabelHeldBy" value="used by {0}"/>
@@ -2660,8 +2660,8 @@
 		<lookup key="tabGames" value="Игры"/>
 		<lookup key="panelGameslistViewGames0" value="Игра"/>
 		<lookup key="panelGameslistViewGames1" value="Мод"/>
-		<lookup key="panelGameslistViewGames2" value="Папка"/>
-		<lookup key="panelGameslistViewGames3" value="По умолчанию"/>
+		<lookup key="panelGameslistViewGames2" value="По умолчанию"/>
+		<lookup key="panelGameslistViewGames3" value="Папка"/>
 		<lookup key="buttonAddFolder" value="Добавить папку..."/>
 		<lookup key="buttonOpenFolder" value="Открыть папку"/>
 		<lookup key="msgLabelHeldBy" value="используется {0}"/>
