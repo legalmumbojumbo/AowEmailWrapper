@@ -3,6 +3,13 @@
 Each versioned release is described here. The section for a version is also the text of its GitHub
 release; CI publishes it when a `v<version>` tag is pushed (see "Releasing a version" in the README).
 
+## Unreleased
+
+- Classic Windows is the default theme again; the Age of Wonders theme is a choice on the Settings tab.
+- Age of Wonders theme: no flicker when hovering over tabs, pages paint in one go instead of control by
+  control, and the window is composited so switching tabs does not show the page building up.
+- Account and activity lists no longer cut off bold rows; columns are measured with the row font.
+
 ## 2.0.1
 
 ### New

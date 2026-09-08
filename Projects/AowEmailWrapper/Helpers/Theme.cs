@@ -19,7 +19,7 @@ namespace AowEmailWrapper.Helpers
     {
         public const string ClassicName = "Classic";
         public const string AgeOfWondersName = "AgeOfWonders";
-        public const string DefaultName = AgeOfWondersName;
+        public const string DefaultName = ClassicName;
 
         public static readonly Color Leather = Color.FromArgb(54, 33, 20);
         public static readonly Color LeatherLight = Color.FromArgb(92, 58, 34);
@@ -394,12 +394,38 @@ namespace AowEmailWrapper.Helpers
             if (form.IsHandleCreated)
             {
                 SetDarkTitleBar(form.Handle, _enabled);
+                SetComposited(form.Handle, _enabled);
             }
             else
             {
-                form.HandleCreated += (sender, e) => SetDarkTitleBar(form.Handle, _enabled);
+                form.HandleCreated += (sender, e) => { SetDarkTitleBar(form.Handle, _enabled); SetComposited(form.Handle, _enabled); };
             }
         }
+
+        /// <summary>
+        /// With the themed look every control is painted into one off-screen surface and shown together
+        /// (WS_EX_COMPOSITED), so switching tabs no longer shows the page building up control by control.
+        /// Classic keeps the ordinary window style.
+        /// </summary>
+        private static void SetComposited(IntPtr handle, bool on)
+        {
+            long style = GetWindowLongPtr(handle, GwlExStyle).ToInt64();
+            long wanted = on ? (style | WsExComposited) : (style & ~WsExComposited);
+            if (wanted != style)
+            {
+                SetWindowLongPtr(handle, GwlExStyle, new IntPtr(wanted));
+                SetWindowPos(handle, IntPtr.Zero, 0, 0, 0, 0, SwpNoMove | SwpNoSize | SwpNoZOrder | SwpNoActivate | SwpFrameChanged);
+            }
+        }
+
+        private const int GwlExStyle = -20;
+        private const long WsExComposited = 0x02000000;
+
+        [DllImport("user32.dll", EntryPoint = "GetWindowLongPtrW")]
+        private static extern IntPtr GetWindowLongPtr(IntPtr hWnd, int index);
+
+        [DllImport("user32.dll", EntryPoint = "SetWindowLongPtrW")]
+        private static extern IntPtr SetWindowLongPtr(IntPtr hWnd, int index, IntPtr value);
 
         private static void SetDarkTitleBar(IntPtr handle, bool dark)
         {
