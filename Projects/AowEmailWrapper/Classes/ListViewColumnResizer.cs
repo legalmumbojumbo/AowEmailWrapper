@@ -46,7 +46,7 @@ namespace AowEmailWrapper.Classes
                         switch (theStyle)
                         {
                             case ColumnHeaderResizeStyle.ColumnContent:
-                                AutoResizeColumn(column, ColumnHeaderAutoResizeStyle.ColumnContent);
+                                column.Width = ContentWidth(theListView, column);
                                 totalColumnWidth += column.Width;
                                 break;
                             case ColumnHeaderResizeStyle.HeaderSize:
@@ -56,8 +56,7 @@ namespace AowEmailWrapper.Classes
                             case ColumnHeaderResizeStyle.ContentHeaderMax:
                                 AutoResizeColumn(column, ColumnHeaderAutoResizeStyle.HeaderSize);
                                 int headerSize = column.Width;
-                                AutoResizeColumn(column, ColumnHeaderAutoResizeStyle.ColumnContent);
-                                int columnContentSize = column.Width;
+                                int columnContentSize = ContentWidth(theListView, column);
 
                                 column.Width = (headerSize > columnContentSize) ? headerSize : columnContentSize;
                                 totalColumnWidth += column.Width;
@@ -88,6 +87,27 @@ namespace AowEmailWrapper.Classes
             }
         }
         
+        /// <summary>
+        /// The width the column needs for its rows, measured with each row's own font. The ListView's own
+        /// content autosize measures with the control font, which is narrower than the bold rows the
+        /// accounts and activity lists use, so it came out a few pixels short and the text was cut.
+        /// </summary>
+        private static int ContentWidth(ListView theListView, ColumnHeader column)
+        {
+            const int CellPadding = 12;
+            int iconWidth = column.Index == 0 && theListView.SmallImageList != null ? theListView.SmallImageList.ImageSize.Width + 4 : 0;
+            int widest = 0;
+            foreach (ListViewItem item in theListView.Items)
+            {
+                if (column.Index >= item.SubItems.Count) continue;
+                ListViewItem.ListViewSubItem cell = item.SubItems[column.Index];
+                System.Drawing.Font font = item.UseItemStyleForSubItems ? item.Font : cell.Font;
+                int width = TextRenderer.MeasureText(cell.Text, font, System.Drawing.Size.Empty, TextFormatFlags.NoPrefix | TextFormatFlags.SingleLine).Width;
+                if (width > widest) widest = width;
+            }
+            return widest + iconWidth + CellPadding;
+        }
+
         private static void AutoResizeColumn(ColumnHeader theColumn, ColumnHeaderAutoResizeStyle style)
         {
             try

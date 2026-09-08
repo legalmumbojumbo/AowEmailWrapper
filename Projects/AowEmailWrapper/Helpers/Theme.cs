@@ -222,9 +222,7 @@ namespace AowEmailWrapper.Helpers
             else if (control is TabPage page)
             {
                 page.UseVisualStyleBackColor = false;
-                page.BackColor = Parchment;
-                page.BackgroundImage = ParchmentTexture;
-                page.BackgroundImageLayout = ImageLayout.Tile;
+                Opaque(page, ParchmentTexture, Parchment);
                 page.ForeColor = Ink;
             }
             else if (control is Button button)
@@ -257,7 +255,7 @@ namespace AowEmailWrapper.Helpers
             }
             else if (control is GroupBox group)
             {
-                group.BackColor = Color.Transparent;
+                Opaque(group, ParchmentTexture, Parchment);
                 group.ForeColor = Crimson;
                 GroupBoxHooks hooks;
                 if (!_groupBoxHooks.TryGetValue(group, out hooks))
@@ -296,26 +294,49 @@ namespace AowEmailWrapper.Helpers
                 bool isTip = original.BackColor == SystemColors.Info;
                 if (isBottomBar)
                 {
-                    panel.BackColor = Leather;
-                    panel.BackgroundImage = LeatherTexture;
-                    panel.BackgroundImageLayout = ImageLayout.Tile;
+                    Opaque(panel, LeatherTexture, Leather);
                 }
                 else if (isTip)
                 {
-                    panel.BackColor = ParchmentDark;
+                    Opaque(panel, null, ParchmentDark);
                 }
                 else
                 {
-                    panel.BackColor = Color.Transparent;
-                    panel.BackgroundImage = null;
+                    Opaque(panel, ParchmentTexture, Parchment);
                 }
                 panel.ForeColor = Ink;
             }
             else if (control is UserControl || control is TableLayoutPanel || control is FlowLayoutPanel || control is SplitContainer)
             {
-                control.BackColor = Color.Transparent;
+                Opaque(control, ParchmentTexture, Parchment);
                 control.ForeColor = Ink;
             }
+        }
+
+        /// <summary>
+        /// Containers paint their own texture rather than showing through to their parent. A transparent
+        /// container makes every one of its children repaint the whole chain of parents above it, which is
+        /// what made a page take so long to draw; an opaque one is painted once, double-buffered.
+        /// </summary>
+        private static void Opaque(Control control, Image texture, Color colour)
+        {
+            control.BackColor = colour;
+            control.BackgroundImage = texture;
+            control.BackgroundImageLayout = ImageLayout.Tile;
+            SetDoubleBuffered(control, true);
+        }
+
+        private static readonly System.Reflection.PropertyInfo DoubleBufferedProperty =
+            typeof(Control).GetProperty("DoubleBuffered", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic);
+
+        private static void SetDoubleBuffered(Control control, bool value)
+        {
+            if (DoubleBufferedProperty != null) DoubleBufferedProperty.SetValue(control, value, null);
+        }
+
+        private static bool GetDoubleBuffered(Control control)
+        {
+            return DoubleBufferedProperty != null && (bool)DoubleBufferedProperty.GetValue(control, null);
         }
 
         /// <summary>
@@ -481,6 +502,7 @@ namespace AowEmailWrapper.Helpers
                 s._font = control.Font;
                 s._backgroundImage = control.BackgroundImage;
                 s._backgroundImageLayout = control.BackgroundImageLayout;
+                s._doubleBuffered = GetDoubleBuffered(control);
                 if (control is Button b) { s._flatStyle = b.FlatStyle; s._useVisualStyleBackColor = b.UseVisualStyleBackColor; }
                 if (control is ComboBox c) { s._flatStyle = c.FlatStyle; }
                 if (control is TabPage p) { s._useVisualStyleBackColor = p.UseVisualStyleBackColor; s._borderStyle = p.BorderStyle; s._hasBorderStyle = true; }
@@ -492,6 +514,7 @@ namespace AowEmailWrapper.Helpers
             }
 
             private int _height;
+            private bool _doubleBuffered;
 
             public void Restore(Control control)
             {
@@ -500,6 +523,7 @@ namespace AowEmailWrapper.Helpers
                 control.Font = _font;
                 control.BackgroundImage = _backgroundImage;
                 control.BackgroundImageLayout = _backgroundImageLayout;
+                if (GetDoubleBuffered(control) != _doubleBuffered) SetDoubleBuffered(control, _doubleBuffered);
                 if (control is ThemedTabControl tabs) { tabs.Themed = false; }
                 if (control is Button b)
                 {
