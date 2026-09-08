@@ -95,17 +95,27 @@ namespace AowEmailWrapper.Classes
         private static int ContentWidth(ListView theListView, ColumnHeader column)
         {
             const int CellPadding = 12;
-            int iconWidth = column.Index == 0 && theListView.SmallImageList != null ? theListView.SmallImageList.ImageSize.Width + 4 : 0;
-            int widest = 0;
-            foreach (ListViewItem item in theListView.Items)
+            try
             {
-                if (column.Index >= item.SubItems.Count) continue;
-                ListViewItem.ListViewSubItem cell = item.SubItems[column.Index];
-                System.Drawing.Font font = item.UseItemStyleForSubItems ? item.Font : cell.Font;
-                int width = TextRenderer.MeasureText(cell.Text, font, System.Drawing.Size.Empty, TextFormatFlags.NoPrefix | TextFormatFlags.SingleLine).Width;
-                if (width > widest) widest = width;
+                int iconWidth = column.Index == 0 && theListView.SmallImageList != null ? theListView.SmallImageList.ImageSize.Width + 4 : 0;
+                int widest = 0;
+                foreach (ListViewItem item in theListView.Items)
+                {
+                    if (item == null || column.Index >= item.SubItems.Count) continue;
+                    ListViewItem.ListViewSubItem cell = item.SubItems[column.Index];
+                    if (cell == null || string.IsNullOrEmpty(cell.Text)) continue;
+                    System.Drawing.Font font = (item.UseItemStyleForSubItems ? item.Font : cell.Font) ?? theListView.Font;
+                    int width = TextRenderer.MeasureText(cell.Text, font, System.Drawing.Size.Empty, TextFormatFlags.NoPrefix | TextFormatFlags.SingleLine).Width;
+                    if (width > widest) widest = width;
+                }
+                return widest + iconWidth + CellPadding;
             }
-            return widest + iconWidth + CellPadding;
+            catch (Exception)
+            {
+                // Rows can be mid-construction when a resize arrives; fall back to the ListView's own measure.
+                AutoResizeColumn(column, ColumnHeaderAutoResizeStyle.ColumnContent);
+                return column.Width;
+            }
         }
 
         private static void AutoResizeColumn(ColumnHeader theColumn, ColumnHeaderAutoResizeStyle style)
