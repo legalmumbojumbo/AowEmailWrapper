@@ -3,12 +3,16 @@
 Each versioned release is described here. The section for a version is also the text of its GitHub
 release; CI publishes it when a `v<version>` tag is pushed (see "Releasing a version" in the README).
 
-## Unreleased
+## 2.0.2
 
-- Classic Windows is the default theme again; the Age of Wonders theme is a choice on the Settings tab.
+- Classic Windows is the default theme; the Age of Wonders theme is a choice on the Settings tab. A theme
+  you already chose is kept.
 - Age of Wonders theme: no flicker when hovering over tabs, pages paint in one go instead of control by
-  control, and the window is composited so switching tabs does not show the page building up.
+  control, and the window is composited so switching tabs shows the finished page.
 - Account and activity lists no longer cut off bold rows; columns are measured with the row font.
+
+Run `AowEmailWrapper-2.0.2-setup.exe` on Windows 10 or later, or let an installed Wrapper fetch it through
+*Check for updates* on the Settings tab. Accounts and settings carry over.
 
 ## 2.0.1
 
