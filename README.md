@@ -26,7 +26,7 @@ providers:
   and reports the exact server response when it fails.
 - IMAP accounts use IMAP IDLE: the server announces new mail immediately instead of the wrapper
   polling every ten minutes, and only messages that actually carry a save game are downloaded.
-- The *Theme* setting on the Settings tab switches between the Age of Wonders skin (parchment, leather and gold, the default) and the plain Windows look; the change applies immediately.
+- The *Theme* setting on the Settings tab switches between the plain Windows look (the default) and the Age of Wonders skin (parchment, leather and gold); the change applies immediately.
 - Errors are logged to `%APPDATA%\AowEmailWrapper\Logs\wrapper.log` (*Open log folder* on the Settings tab).
 - *Report a bug* on the Settings tab emails a description and the log to the maintainer through the
   player's own account (address in `App.config`, key `BugReport.Email`).

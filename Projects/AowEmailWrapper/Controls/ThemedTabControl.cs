@@ -1,5 +1,6 @@
 using System;
 using System.Drawing;
+using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using AowEmailWrapper.Helpers;
 
@@ -32,17 +33,58 @@ namespace AowEmailWrapper.Controls
 
         protected override void WndProc(ref Message m)
         {
-            base.WndProc(ref m);
-            if (m.Msg == WmPaint && _themed && IsHandleCreated && TabCount > 0)
+            if (_themed && IsHandleCreated && TabCount > 0)
             {
-                // The native control has just painted the strip and the page border in system colours;
-                // paint the leather, the gold frame and the tabs over them.
-                using (Graphics g = Graphics.FromHwnd(Handle))
+                if (m.Msg == WmEraseBkgnd)
                 {
-                    PaintThemedFrame(g);
+                    // Nothing to erase: the paint below covers the whole strip.
+                    m.Result = new IntPtr(1);
+                    return;
+                }
+                if (m.Msg == WmPaint)
+                {
+                    // Paint the strip, tabs and frame ourselves into a buffer and hand it to the screen in one
+                    // go. Letting the native control paint first (its hover highlight included) and covering
+                    // it afterwards is what made the tabs flicker under the mouse.
+                    PaintStruct ps;
+                    IntPtr hdc = BeginPaint(Handle, out ps);
+                    try
+                    {
+                        using (BufferedGraphics buffer = BufferedGraphicsManager.Current.Allocate(hdc, ClientRectangle))
+                        {
+                            PaintThemedFrame(buffer.Graphics);
+                            buffer.Render(hdc);
+                        }
+                    }
+                    finally
+                    {
+                        EndPaint(Handle, ref ps);
+                    }
+                    m.Result = IntPtr.Zero;
+                    return;
                 }
             }
+            base.WndProc(ref m);
         }
+
+        private const int WmEraseBkgnd = 0x0014;
+
+        [StructLayout(LayoutKind.Sequential)]
+        private struct PaintStruct
+        {
+            public IntPtr hdc;
+            public bool fErase;
+            public int left, top, right, bottom;
+            public bool fRestore;
+            public bool fIncUpdate;
+            [MarshalAs(UnmanagedType.ByValArray, SizeConst = 32)] public byte[] rgbReserved;
+        }
+
+        [DllImport("user32.dll")]
+        private static extern IntPtr BeginPaint(IntPtr hWnd, out PaintStruct lpPaint);
+
+        [DllImport("user32.dll")]
+        private static extern bool EndPaint(IntPtr hWnd, ref PaintStruct lpPaint);
 
         private void PaintThemedFrame(Graphics g)
         {

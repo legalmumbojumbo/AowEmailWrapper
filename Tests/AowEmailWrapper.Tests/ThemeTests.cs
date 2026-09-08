@@ -32,13 +32,13 @@ namespace AowEmailWrapper.Tests
         }
 
         [Fact]
-        public void TheDefaultLookIsAgeOfWonders()
+        public void TheDefaultLookIsClassic()
         {
-            Assert.True(Theme.IsAgeOfWonders(null));
-            Assert.True(Theme.IsAgeOfWonders(""));
+            Assert.False(Theme.IsAgeOfWonders(null));
+            Assert.False(Theme.IsAgeOfWonders(""));
             Assert.True(Theme.IsAgeOfWonders("ageofwonders"));
             Assert.False(Theme.IsAgeOfWonders(Theme.ClassicName));
-            Assert.Equal(Theme.AgeOfWondersName, new PreferencesConfigValues().Theme);
+            Assert.Equal(Theme.ClassicName, new PreferencesConfigValues().Theme);
         }
 
         [Fact]
