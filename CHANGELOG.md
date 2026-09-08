@@ -3,6 +3,11 @@
 Each versioned release is described here. The section for a version is also the text of its GitHub
 release; CI publishes it when a `v<version>` tag is pushed (see "Releasing a version" in the README).
 
+## Unreleased
+
+- Games tab: *Remove* works on every copy. A copy the scan found is ignored from then on instead of
+  coming back on the next start; *Add folder...* on that folder brings it back.
+
 ## 2.0.2
 
 - Classic Windows is the default theme; the Age of Wonders theme is a choice on the Settings tab. A theme

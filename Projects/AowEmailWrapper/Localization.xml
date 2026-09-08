@@ -193,6 +193,7 @@
 		<lookup key="buttonSetLabel" value="Set label..."/>
 		<lookup key="buttonSetDefaultInstall" value="Set as default"/>
 		<lookup key="buttonRemoveInstall" value="Remove"/>
+		<lookup key="msgIgnoreInstall" value="This copy was found automatically. Remove it from the list and ignore {0} from now on? Add folder... brings it back."/>
 		<lookup key="buttonRescan" value="Rescan"/>
 		<lookup key="buttonRescanning" value="Scanning..."/>
 		<lookup key="lblGamesHelp" value="Give each copy of a game a short label such as Vanilla, AoWx or Ziggurat. The label travels with the turns you send, so everyone in a game must use the same label. The default copy receives turns that carry no label."/>
@@ -445,6 +446,7 @@
 		<lookup key="buttonSetLabel" value="Définir l'étiquette..."/>
 		<lookup key="buttonSetDefaultInstall" value="Définir par défaut"/>
 		<lookup key="buttonRemoveInstall" value="Retirer"/>
+		<lookup key="msgIgnoreInstall" value="Cette copie a été trouvée automatiquement. La retirer de la liste et ignorer {0} désormais ? Ajouter un dossier... la fait revenir."/>
 		<lookup key="buttonRescan" value="Rechercher à nouveau"/>
 		<lookup key="buttonRescanning" value="Recherche..."/>
 		<lookup key="lblGamesHelp" value="Donnez à chaque copie d'un jeu une courte étiquette, par exemple Vanilla, AoWx ou Ziggurat. L'étiquette accompagne les tours que vous envoyez : tous les joueurs d'une partie doivent utiliser la même. La copie par défaut reçoit les tours sans étiquette."/>
@@ -690,6 +692,7 @@
 		<lookup key="buttonSetLabel" value="Bezeichnung festlegen..."/>
 		<lookup key="buttonSetDefaultInstall" value="Als Standard festlegen"/>
 		<lookup key="buttonRemoveInstall" value="Entfernen"/>
+		<lookup key="msgIgnoreInstall" value="Diese Kopie wurde automatisch gefunden. Aus der Liste entfernen und {0} ab jetzt ignorieren? Ordner hinzufügen... holt sie zurück."/>
 		<lookup key="buttonRescan" value="Erneut suchen"/>
 		<lookup key="buttonRescanning" value="Suche läuft..."/>
 		<lookup key="lblGamesHelp" value="Geben Sie jeder Kopie eines Spiels eine kurze Bezeichnung wie Vanilla, AoWx oder Ziggurat. Die Bezeichnung reist mit den gesendeten Zügen mit, daher müssen alle Spieler einer Partie dieselbe verwenden. Die Standardkopie erhält Züge ohne Bezeichnung."/>
@@ -935,6 +938,7 @@
 		<lookup key="buttonSetLabel" value="Definir etiqueta..."/>
 		<lookup key="buttonSetDefaultInstall" value="Establecer como predeterminada"/>
 		<lookup key="buttonRemoveInstall" value="Quitar"/>
+		<lookup key="msgIgnoreInstall" value="Esta copia se encontró automáticamente. ¿Quitarla de la lista e ignorar {0} a partir de ahora? Añadir carpeta... la recupera."/>
 		<lookup key="buttonRescan" value="Volver a buscar"/>
 		<lookup key="buttonRescanning" value="Buscando..."/>
 		<lookup key="lblGamesHelp" value="Dé a cada copia de un juego una etiqueta corta, como Vanilla, AoWx o Ziggurat. La etiqueta viaja con los turnos que envía, así que todos los jugadores de una partida deben usar la misma. La copia predeterminada recibe los turnos sin etiqueta."/>
@@ -1180,6 +1184,7 @@
 		<lookup key="buttonSetLabel" value="Label instellen..."/>
 		<lookup key="buttonSetDefaultInstall" value="Als standaard instellen"/>
 		<lookup key="buttonRemoveInstall" value="Verwijderen"/>
+		<lookup key="msgIgnoreInstall" value="Deze kopie is automatisch gevonden. Uit de lijst verwijderen en {0} voortaan negeren? Map toevoegen... haalt hem terug."/>
 		<lookup key="buttonRescan" value="Opnieuw zoeken"/>
 		<lookup key="buttonRescanning" value="Bezig met zoeken..."/>
 		<lookup key="lblGamesHelp" value="Geef elke kopie van een spel een kort label, zoals Vanilla, AoWx of Ziggurat. Het label reist mee met de beurten die u verstuurt, dus iedereen in een partij moet hetzelfde label gebruiken. De standaardkopie ontvangt beurten zonder label."/>
@@ -1423,6 +1428,7 @@
 		<lookup key="buttonSetLabel" value="Angiv mærkat..."/>
 		<lookup key="buttonSetDefaultInstall" value="Sæt som standard"/>
 		<lookup key="buttonRemoveInstall" value="Fjern"/>
+		<lookup key="msgIgnoreInstall" value="Denne kopi blev fundet automatisk. Fjern den fra listen og ignorer {0} fremover? Tilføj mappe... henter den tilbage."/>
 		<lookup key="buttonRescan" value="Søg igen"/>
 		<lookup key="buttonRescanning" value="Søger..."/>
 		<lookup key="lblGamesHelp" value="Giv hver kopi af et spil en kort mærkat som Vanilla, AoWx eller Ziggurat. Mærkaten følger med de ture du sender, så alle i et spil skal bruge den samme. Standardkopien modtager ture uden mærkat."/>
@@ -1667,6 +1673,7 @@
 		<lookup key="buttonSetLabel" value="Ange etikett..."/>
 		<lookup key="buttonSetDefaultInstall" value="Ange som standard"/>
 		<lookup key="buttonRemoveInstall" value="Ta bort"/>
+		<lookup key="msgIgnoreInstall" value="Den här kopian hittades automatiskt. Ta bort den från listan och ignorera {0} från och med nu? Lägg till mapp... tar tillbaka den."/>
 		<lookup key="buttonRescan" value="Sök igen"/>
 		<lookup key="buttonRescanning" value="Söker..."/>
 		<lookup key="lblGamesHelp" value="Ge varje kopia av ett spel en kort etikett, till exempel Vanilla, AoWx eller Ziggurat. Etiketten följer med de drag du skickar, så alla i ett parti måste använda samma etikett. Standardkopian tar emot drag utan etikett."/>
@@ -1919,6 +1926,7 @@
 		<lookup key="buttonSetLabel" value="Ustaw etykietę..."/>
 		<lookup key="buttonSetDefaultInstall" value="Ustaw jako domyślną"/>
 		<lookup key="buttonRemoveInstall" value="Usuń"/>
+		<lookup key="msgIgnoreInstall" value="Ta kopia została znaleziona automatycznie. Usunąć ją z listy i odtąd ignorować {0}? Dodaj folder... przywraca ją."/>
 		<lookup key="buttonRescan" value="Szukaj ponownie"/>
 		<lookup key="buttonRescanning" value="Szukanie..."/>
 		<lookup key="lblGamesHelp" value="Nadaj każdej kopii gry krótką etykietę, np. Vanilla, AoWx lub Ziggurat. Etykieta podróżuje z wysyłanymi turami, więc wszyscy gracze w rozgrywce muszą używać tej samej. Kopia domyślna odbiera tury bez etykiety."/>
@@ -2165,6 +2173,7 @@
 		<lookup key="buttonSetLabel" value="Aseta tunniste..."/>
 		<lookup key="buttonSetDefaultInstall" value="Aseta oletukseksi"/>
 		<lookup key="buttonRemoveInstall" value="Poista"/>
+		<lookup key="msgIgnoreInstall" value="Tämä kopio löytyi automaattisesti. Poistetaanko se luettelosta ja ohitetaanko {0} tästä lähtien? Lisää kansio... tuo sen takaisin."/>
 		<lookup key="buttonRescan" value="Etsi uudelleen"/>
 		<lookup key="buttonRescanning" value="Etsitään..."/>
 		<lookup key="lblGamesHelp" value="Anna jokaiselle pelin kopiolle lyhyt tunniste, kuten Vanilla, AoWx tai Ziggurat. Tunniste kulkee lähettämiesi vuorojen mukana, joten kaikkien saman pelin pelaajien on käytettävä samaa tunnistetta. Oletuskopio vastaanottaa tunnisteettomat vuorot."/>
@@ -2413,6 +2422,7 @@
 		<lookup key="buttonSetLabel" value="Setează eticheta..."/>
 		<lookup key="buttonSetDefaultInstall" value="Setează ca implicit"/>
 		<lookup key="buttonRemoveInstall" value="Elimină"/>
+		<lookup key="msgIgnoreInstall" value="Această copie a fost găsită automat. O eliminați din listă și ignorați {0} de acum înainte? Adăugare dosar... o aduce înapoi."/>
 		<lookup key="buttonRescan" value="Caută din nou"/>
 		<lookup key="buttonRescanning" value="Se caută..."/>
 		<lookup key="lblGamesHelp" value="Dați fiecărei copii a unui joc o etichetă scurtă, de exemplu Vanilla, AoWx sau Ziggurat. Eticheta călătorește cu turele trimise, așa că toți jucătorii dintr-o partidă trebuie să folosească aceeași etichetă. Copia implicită primește turele fără etichetă."/>
@@ -2659,6 +2669,7 @@
 		<lookup key="buttonSetLabel" value="Задать метку..."/>
 		<lookup key="buttonSetDefaultInstall" value="Сделать основной"/>
 		<lookup key="buttonRemoveInstall" value="Удалить"/>
+		<lookup key="msgIgnoreInstall" value="Эта копия найдена автоматически. Убрать её из списка и впредь игнорировать {0}? «Добавить папку...» вернёт её."/>
 		<lookup key="buttonRescan" value="Искать снова"/>
 		<lookup key="buttonRescanning" value="Поиск..."/>
 		<lookup key="lblGamesHelp" value="Дайте каждой копии игры короткую метку, например Vanilla, AoWx или Ziggurat. Метка передаётся вместе с отправляемыми ходами, поэтому все участники партии должны использовать одну и ту же метку. Копия по умолчанию получает ходы без метки."/>

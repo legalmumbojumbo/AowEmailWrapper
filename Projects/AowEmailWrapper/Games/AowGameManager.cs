@@ -54,6 +54,7 @@ namespace AowEmailWrapper.Games
         public AowGameManager(string checkEmailFolder, IEnumerable<AowGame> installs, GamesConfigValues config)
         {
             _checkEmailFolder = checkEmailFolder;
+            _ignored = IgnoredOf(config);
             _games = Merge(installs.ToList(), config);
         }
 
@@ -97,6 +98,7 @@ namespace AowEmailWrapper.Games
         {
             Stopwatch timer = Stopwatch.StartNew();
             List<AowGame> detected = GameDetector.Detect(config != null ? config.Installs : null, deepScan);
+            _ignored = IgnoredOf(config);
             _games = Merge(detected, config);
             Trace.TraceInformation("Game detection ({0}) took {1} ms and found {2} copies", deepScan ? "deep scan" : "known folders", timer.ElapsedMilliseconds, _games.Count);
 
@@ -109,6 +111,7 @@ namespace AowEmailWrapper.Games
         /// <summary>Takes the result of a detection run made elsewhere (a background deep scan) and merges it with the config.</summary>
         public void Apply(List<AowGame> detected, GamesConfigValues config)
         {
+            _ignored = IgnoredOf(config);
             _games = Merge(detected, config);
             NeedsDeepScan = false;
             Trace.TraceInformation("Deep scan result applied: {0} copies", _games.Count);
@@ -118,6 +121,10 @@ namespace AowEmailWrapper.Games
         public GamesConfigValues ToConfig()
         {
             GamesConfigValues config = new GamesConfigValues();
+            foreach (IgnoredInstallConfigValues ignored in _ignored)
+            {
+                config.Ignored.Add(new IgnoredInstallConfigValues { GameType = ignored.GameType, Folder = ignored.Folder });
+            }
             foreach (AowGame game in _games)
             {
                 config.Installs.Add(new GameInstallConfigValues(game));
@@ -125,9 +132,22 @@ namespace AowEmailWrapper.Games
             return config;
         }
 
+        private List<IgnoredInstallConfigValues> _ignored = new List<IgnoredInstallConfigValues>();
+
+        /// <summary>Copies the player removed from the Games tab; detection leaves them out.</summary>
+        public IEnumerable<IgnoredInstallConfigValues> IgnoredInstalls
+        {
+            get { return _ignored; }
+        }
+
+        private static List<IgnoredInstallConfigValues> IgnoredOf(GamesConfigValues config)
+        {
+            return config == null ? new List<IgnoredInstallConfigValues>() : config.Clone().Ignored;
+        }
+
         private static List<AowGame> Merge(List<AowGame> detected, GamesConfigValues config)
         {
-            List<AowGame> games = detected.Where(game => game.IsInstalled || game.IsManual).ToList();
+            List<AowGame> games = detected.Where(game => (game.IsInstalled || game.IsManual) && (config == null || !config.IsIgnored(game))).ToList();
 
             if (config != null)
             {
