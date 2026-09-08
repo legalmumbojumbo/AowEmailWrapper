@@ -137,3 +137,12 @@ only copy holding an earlier turn, else the default; its label is written to the
 same fallbacks. The activity log records the copy per game and the Activity Log's *Move to* fixes a
 first turn that landed wrongly. All copies of one game share the registry email settings, so the
 Wrapper writes them once per game.
+
+Releasing a version
+-------------------
+
+Every commit on master is published as a pre-release build that the Wrapper offers through *Check for updates*. To cut a numbered release:
+
+1. Set `<Version>` in `Projects/AowEmailWrapper/AowEmailWrapper.csproj` (the installer takes its file name from it).
+2. Describe the release under a `## <version>` heading in `CHANGELOG.md`; that section becomes the GitHub release notes.
+3. Merge to master, then tag the merge commit `v<version>` and push the tag. CI builds the installer, checks that the tag matches the version, and publishes the release with `Installer/publish-version.ps1`.

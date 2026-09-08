@@ -161,13 +161,14 @@ namespace AowEmailWrapper.Tests
             BuildInfo build = UpdateHelper.CurrentBuild;
 
             Assert.NotNull(build.Version);
-            Assert.Equal(new Version(2, 0, 0), UpdateHelper.Normalize(build.Version));
+            Version assemblyVersion = typeof(UpdateHelper).Assembly.GetName().Version;
+            Assert.Equal(UpdateHelper.Normalize(assemblyVersion), UpdateHelper.Normalize(build.Version));
 
             if (!string.IsNullOrEmpty(build.Commit))
             {
                 Assert.Matches(new Regex("^[0-9a-f]{40}$"), build.Commit);
                 Assert.True(build.CommitDate.HasValue, "a build with a commit should also carry the commit date");
-                Assert.Equal(build.Describe(), string.Format("2.0.0 ({0})", build.Commit.Substring(0, 7)));
+                Assert.Equal(build.Describe(), string.Format("{0} ({1})", assemblyVersion.ToString(3), build.Commit.Substring(0, 7)));
             }
         }
 
