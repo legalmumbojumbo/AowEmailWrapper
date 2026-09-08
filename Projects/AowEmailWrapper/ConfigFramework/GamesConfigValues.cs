@@ -48,6 +48,22 @@ namespace AowEmailWrapper.ConfigFramework
         }
     }
 
+    /// <summary>A copy detection found that the player removed from the Games tab; detection skips it until the folder is added again.</summary>
+    [XmlRoot("ignore")]
+    public class IgnoredInstallConfigValues
+    {
+        [XmlAttribute("game_type")]
+        public AowGameType GameType { get; set; }
+
+        [XmlAttribute("folder")]
+        public string Folder { get; set; }
+
+        public bool Matches(AowGame game)
+        {
+            return game != null && game.GameType == GameType && game.IsFolder(Folder);
+        }
+    }
+
     [XmlRoot("games")]
     public class GamesConfigValues
     {
@@ -70,9 +86,42 @@ namespace AowEmailWrapper.ConfigFramework
             return _installs.FirstOrDefault(install => install.Matches(game));
         }
 
+        private List<IgnoredInstallConfigValues> _ignored = new List<IgnoredInstallConfigValues>();
+
+        /// <summary>Detected copies the player removed; they stay out of the list until their folder is added again.</summary>
+        [XmlElement("ignore")]
+        public List<IgnoredInstallConfigValues> Ignored
+        {
+            get { return _ignored; }
+            set { _ignored = value ?? new List<IgnoredInstallConfigValues>(); }
+        }
+
+        public bool IsIgnored(AowGame game)
+        {
+            return _ignored.Any(ignored => ignored.Matches(game));
+        }
+
+        public void Ignore(AowGame game)
+        {
+            if (game != null && !IsIgnored(game))
+            {
+                _ignored.Add(new IgnoredInstallConfigValues { GameType = game.GameType, Folder = game.Folder });
+            }
+        }
+
+        /// <summary>Forgets every ignore entry for a folder, so adding the folder by hand brings its copies back.</summary>
+        public void Unignore(string folder)
+        {
+            _ignored.RemoveAll(ignored => AowGame.SameFolder(ignored.Folder, folder));
+        }
+
         public GamesConfigValues Clone()
         {
             GamesConfigValues clone = new GamesConfigValues();
+            foreach (IgnoredInstallConfigValues ignored in _ignored)
+            {
+                clone.Ignored.Add(new IgnoredInstallConfigValues { GameType = ignored.GameType, Folder = ignored.Folder });
+            }
             foreach (GameInstallConfigValues install in _installs)
             {
                 clone.Installs.Add(new GameInstallConfigValues

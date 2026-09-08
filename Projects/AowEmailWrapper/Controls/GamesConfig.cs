@@ -32,6 +32,8 @@ namespace AowEmailWrapper.Controls
         private readonly Button buttonOpenFolder;
         private readonly Button buttonSetDefaultInstall;
         private readonly Button buttonRemoveInstall;
+        private GamesConfigValues _ignored = new GamesConfigValues();
+        private const string IgnoreInstallKey = "msgIgnoreInstall";
         private readonly Button buttonRescan;
         private readonly Label lblGamesHelp;
 
@@ -74,8 +76,9 @@ namespace AowEmailWrapper.Controls
             listViewGames.HeaderStyle = ColumnHeaderStyle.Nonclickable;
             listViewGames.Columns.Add(new ColumnHeader { Text = "Game", Tag = "ContentHeaderMax" });
             listViewGames.Columns.Add(new ColumnHeader { Text = "Mod", Tag = "ContentHeaderMax" });
-            listViewGames.Columns.Add(new ColumnHeader { Text = "Folder", Tag = "Fill" });
             listViewGames.Columns.Add(new ColumnHeader { Text = "Default", Tag = "HeaderSize" });
+            //The folder is last and sized to its longest path, so the list scrolls sideways rather than cutting paths short
+            listViewGames.Columns.Add(new ColumnHeader { Text = "Folder", Tag = "ContentHeaderMax" });
             listViewGames.SelectedIndexChanged += (sender, e) => UpdateButtons();
             //Sized on control resize only: reacting to the list's own client size changes loops when a scroll bar appears
             Resize += (sender, e) => FitColumns();
@@ -124,6 +127,7 @@ namespace AowEmailWrapper.Controls
                 {
                     config.Installs.Add(new GameInstallConfigValues(game));
                 }
+                config.Ignored = _ignored.Clone().Ignored;
                 return config;
             }
             set
@@ -132,6 +136,12 @@ namespace AowEmailWrapper.Controls
                     ? GameManager.Games
                     : new AowGameManager(null, value).Games;
                 _games = source.Select(Clone).ToList();
+                _ignored = value != null ? value.Clone() : new GamesConfigValues();
+                _ignored.Installs.Clear();
+                if (GameManager != null)
+                {
+                    _ignored.Ignored = GameManager.IgnoredInstalls.Select(ignored => new IgnoredInstallConfigValues { GameType = ignored.GameType, Folder = ignored.Folder }).ToList();
+                }
                 Populate();
             }
         }
@@ -185,8 +195,8 @@ namespace AowEmailWrapper.Controls
                     //Not a label yet: another copy already has this one, so turns cannot be routed by it
                     label.ForeColor = SystemColors.GrayText;
                 }
-                item.SubItems.Add(game.Folder);
                 item.SubItems.Add(game.IsDefault ? DefaultMark : string.Empty);
+                item.SubItems.Add(game.Folder);
                 item.ToolTipText = ToolTipFor(game);
                 item.Tag = game;
                 if (!game.IsInstalled)
@@ -234,7 +244,7 @@ namespace AowEmailWrapper.Controls
             buttonSetLabel.Enabled = selected != null;
             buttonOpenFolder.Enabled = selected != null && System.IO.Directory.Exists(selected.Folder);
             buttonSetDefaultInstall.Enabled = selected != null && selected.IsInstalled && !selected.IsDefault;
-            buttonRemoveInstall.Enabled = selected != null && selected.IsManual;
+            buttonRemoveInstall.Enabled = selected != null;
         }
 
         private void RaiseChanged()
@@ -363,9 +373,20 @@ namespace AowEmailWrapper.Controls
         private void RemoveSelected()
         {
             AowGame game = Selected;
-            if (game == null || !game.IsManual)
+            if (game == null)
             {
                 return;
+            }
+
+            if (!game.IsManual)
+            {
+                //Detection would find this copy again on the next start, so it is remembered as one to leave out
+                DialogResult answer = MessageBox.Show(this, Translator.Translate(IgnoreInstallKey, game.Folder), Translator.Translate("Main"), MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                if (answer != DialogResult.Yes)
+                {
+                    return;
+                }
+                _ignored.Ignore(game);
             }
 
             _games.Remove(game);
@@ -385,6 +406,7 @@ namespace AowEmailWrapper.Controls
                 }
 
                 List<AowGame> found = GameDetector.ScanFolder(dialog.SelectedPath, InstallSource.Manual);
+                _ignored.Unignore(dialog.SelectedPath);
                 if (found.Count == 0)
                 {
                     MessageBox.Show(this, Translator.Translate(NoGameInFolderKey, dialog.SelectedPath), Translator.Translate("Main"), MessageBoxButtons.OK, MessageBoxIcon.Information);
