@@ -62,6 +62,7 @@ namespace AowEmailWrapper.Games
         private const string SMTPServerKeyName = "SMTP Server";
 
         public const string Aow1ExeName = "AoW.exe";
+        public const string Aow1ZExeName = "AoWz.com";
         public const string Aow2ExeName = "AoW2.exe";
         public const string AowSmExeName = "AoWSM.exe";
         public const string AowMpeExeName = "AoW - MP Evolution.exe";
@@ -261,7 +262,7 @@ namespace AowEmailWrapper.Games
         {
             _gameType = theGameType;
             _source = source;
-            _exeFile = ExeFor(theGameType);
+            _exeFile = ExeInFolder(theGameType, folder);
             _gameName = GameNameFor(theGameType);
 
             _root = new DirectoryInfo(folder);
@@ -292,6 +293,18 @@ namespace AowEmailWrapper.Games
             }
         }
 
+        /// <summary>The executable to use for this copy, preferring the standard name when present.</summary>
+        private static string ExeInFolder(AowGameType type, string folder)
+        {
+            string standard = ExeFor(type);
+            if (type == AowGameType.Aow1 && !File.Exists(Path.Combine(folder, standard)) &&
+                File.Exists(Path.Combine(folder, Aow1ZExeName)))
+            {
+                return Aow1ZExeName;
+            }
+            return standard;
+        }
+
         public static string GameNameFor(AowGameType type)
         {
             switch (type)
@@ -319,7 +332,7 @@ namespace AowEmailWrapper.Games
             {
                 foreach (AowGameType type in AllTypes)
                 {
-                    if (File.Exists(Path.Combine(folder, ExeFor(type))))
+                    if (File.Exists(Path.Combine(folder, ExeInFolder(type, folder))))
                     {
                         types.Add(type);
                     }

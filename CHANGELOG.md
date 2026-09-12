@@ -3,6 +3,16 @@
 Each versioned release is described here. The section for a version is also the text of its GitHub
 release; CI publishes it when a `v<version>` tag is pushed (see "Releasing a version" in the README).
 
+## 2.0.4
+
+- Game detection and *Add folder...* now accept Age of Wonders 1 copies containing `AoWz.com`.
+  These copies remain available after restarting the Wrapper. When both `AoW.exe` and `AoWz.com`
+  are present, `AoW.exe` remains the preferred executable.
+- Updated the manual and all folder-picker messages to include `AoWz.com`.
+
+Run `AowEmailWrapper-2.0.4-setup.exe` on Windows 10 or later, or let an installed Wrapper fetch it through
+*Check for updates* on the Settings tab. Accounts and settings carry over.
+
 ## 2.0.3
 
 - Games tab: *Remove* works on every copy. A copy the scan found is ignored from then on instead of

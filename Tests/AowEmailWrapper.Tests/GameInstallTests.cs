@@ -84,6 +84,48 @@ namespace AowEmailWrapper.Tests
         }
 
         [Fact]
+        public void ScanFolder_AcceptsAowzAndRestoresTheManualCopyFromConfig()
+        {
+            string folder = MakeGame("AoW Z", "AoWz.com");
+            AowGame game = Assert.Single(GameDetector.ScanFolder(folder, InstallSource.Manual));
+            Assert.Equal(AowGameType.Aow1, game.GameType);
+            Assert.True(game.IsInstalled);
+            Assert.True(game.IsManual);
+            Assert.Equal(Path.Combine(folder, "AoWz.com"), game.ExePath);
+
+            game.Label = "My copy";
+            AowGameManager manager = new AowGameManager(_checkEmail, new[] { game }, null);
+            GamesConfigValues saved = manager.ToConfig();
+            AowGameManager restored = new AowGameManager(_checkEmail, new AowGame[0], saved);
+            AowGame copy = Assert.Single(restored.Games);
+            Assert.True(copy.IsInstalled);
+            Assert.True(copy.IsManual);
+            Assert.Equal("My copy", copy.Label);
+            Assert.Equal(game.ExePath, copy.ExePath);
+        }
+
+        [Fact]
+        public void ScanTree_FindsAowzCopiesIncludingMixedCaseNames()
+        {
+            string folder = MakeGame(Path.Combine("Copies", "Nested"), "aOwZ.CoM");
+            AowGame game = Assert.Single(GameDetector.ScanTree(Path.Combine(_root, "Copies")));
+            Assert.Equal(folder, game.Folder);
+            Assert.Equal(AowGameType.Aow1, game.GameType);
+            Assert.True(game.IsInstalled);
+            Assert.True(File.Exists(game.ExePath));
+        }
+
+        [Fact]
+        public void ScanFolder_PrefersStandardExeWithoutDuplicatingAowzCopy()
+        {
+            string folder = MakeGame("Both executables", "AoW.exe", "AoWz.com");
+            AowGame game = Assert.Single(GameDetector.ScanFolder(folder, InstallSource.Folder));
+            Assert.Equal(AowGameType.Aow1, game.GameType);
+            Assert.Equal("AoW.exe", game.ExeFile);
+            Assert.True(game.IsInstalled);
+        }
+
+        [Fact]
         public void Merge_AppliesLabelsPicksOneDefaultPerTypeAndKeepsMissingManualFolders()
         {
             GamesConfigValues config = Labels(_zig, _vanilla);

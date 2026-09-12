@@ -201,7 +201,7 @@
 		<lookup key="radioNoLabel" value="No label"/>
 		<lookup key="radioOtherLabel" value="Other:"/>
 		<lookup key="msgLabelInUse" value="The label {0} is already used by the copy in {1}. Each label can point at only one copy of a game."/>
-		<lookup key="msgAddFolderNoGame" value="No Age of Wonders game was found in {0}. The folder must contain AoW.exe, AoW2.exe or AoWSM.exe."/>
+		<lookup key="msgAddFolderNoGame" value="No Age of Wonders game was found in {0}. The folder must contain AoW.exe, AoWz.com, AoW2.exe or AoWSM.exe."/>
 		<lookup key="msgInstallMissing" value="Missing"/>
 		<lookup key="menuItemMoveTo" value="Move to"/>
 		<lookup key="enumRegistry" value="Registry"/>
@@ -454,7 +454,7 @@
 		<lookup key="radioNoLabel" value="Aucune étiquette"/>
 		<lookup key="radioOtherLabel" value="Autre :"/>
 		<lookup key="msgLabelInUse" value="L'étiquette {0} est déjà utilisée par la copie dans {1}. Chaque étiquette ne peut désigner qu'une seule copie d'un jeu."/>
-		<lookup key="msgAddFolderNoGame" value="Aucun jeu Age of Wonders trouvé dans {0}. Le dossier doit contenir AoW.exe, AoW2.exe ou AoWSM.exe."/>
+		<lookup key="msgAddFolderNoGame" value="Aucun jeu Age of Wonders trouvé dans {0}. Le dossier doit contenir AoW.exe, AoWz.com, AoW2.exe ou AoWSM.exe."/>
 		<lookup key="msgInstallMissing" value="Introuvable"/>
 		<lookup key="menuItemMoveTo" value="Déplacer vers"/>
 		<lookup key="enumRegistry" value="Registre"/>
@@ -700,7 +700,7 @@
 		<lookup key="radioNoLabel" value="Keine Bezeichnung"/>
 		<lookup key="radioOtherLabel" value="Andere:"/>
 		<lookup key="msgLabelInUse" value="Die Bezeichnung {0} wird bereits von der Kopie in {1} verwendet. Jede Bezeichnung kann nur auf eine Kopie eines Spiels zeigen."/>
-		<lookup key="msgAddFolderNoGame" value="In {0} wurde kein Age of Wonders Spiel gefunden. Der Ordner muss AoW.exe, AoW2.exe oder AoWSM.exe enthalten."/>
+		<lookup key="msgAddFolderNoGame" value="In {0} wurde kein Age of Wonders Spiel gefunden. Der Ordner muss AoW.exe, AoWz.com, AoW2.exe oder AoWSM.exe enthalten."/>
 		<lookup key="msgInstallMissing" value="Fehlt"/>
 		<lookup key="menuItemMoveTo" value="Verschieben nach"/>
 		<lookup key="enumRegistry" value="Registrierung"/>
@@ -946,7 +946,7 @@
 		<lookup key="radioNoLabel" value="Sin etiqueta"/>
 		<lookup key="radioOtherLabel" value="Otra:"/>
 		<lookup key="msgLabelInUse" value="La etiqueta {0} ya la usa la copia en {1}. Cada etiqueta solo puede señalar una copia de un juego."/>
-		<lookup key="msgAddFolderNoGame" value="No se encontró ningún juego Age of Wonders en {0}. La carpeta debe contener AoW.exe, AoW2.exe o AoWSM.exe."/>
+		<lookup key="msgAddFolderNoGame" value="No se encontró ningún juego Age of Wonders en {0}. La carpeta debe contener AoW.exe, AoWz.com, AoW2.exe o AoWSM.exe."/>
 		<lookup key="msgInstallMissing" value="Falta"/>
 		<lookup key="menuItemMoveTo" value="Mover a"/>
 		<lookup key="enumRegistry" value="Registro"/>
@@ -1192,7 +1192,7 @@
 		<lookup key="radioNoLabel" value="Geen label"/>
 		<lookup key="radioOtherLabel" value="Anders:"/>
 		<lookup key="msgLabelInUse" value="Het label {0} wordt al gebruikt door de kopie in {1}. Elk label kan maar naar één kopie van een spel verwijzen."/>
-		<lookup key="msgAddFolderNoGame" value="Geen Age of Wonders spel gevonden in {0}. De map moet AoW.exe, AoW2.exe of AoWSM.exe bevatten."/>
+		<lookup key="msgAddFolderNoGame" value="Geen Age of Wonders spel gevonden in {0}. De map moet AoW.exe, AoWz.com, AoW2.exe of AoWSM.exe bevatten."/>
 		<lookup key="msgInstallMissing" value="Ontbreekt"/>
 		<lookup key="menuItemMoveTo" value="Verplaatsen naar"/>
 		<lookup key="enumRegistry" value="Register"/>
@@ -1436,7 +1436,7 @@
 		<lookup key="radioNoLabel" value="Ingen mærkat"/>
 		<lookup key="radioOtherLabel" value="Anden:"/>
 		<lookup key="msgLabelInUse" value="Mærkaten {0} bruges allerede af kopien i {1}. Hver mærkat kan kun pege på én kopi af et spil."/>
-		<lookup key="msgAddFolderNoGame" value="Der blev ikke fundet noget Age of Wonders spil i {0}. Mappen skal indeholde AoW.exe, AoW2.exe eller AoWSM.exe."/>
+		<lookup key="msgAddFolderNoGame" value="Der blev ikke fundet noget Age of Wonders spil i {0}. Mappen skal indeholde AoW.exe, AoWz.com, AoW2.exe eller AoWSM.exe."/>
 		<lookup key="msgInstallMissing" value="Mangler"/>
 		<lookup key="menuItemMoveTo" value="Flyt til"/>
 		<lookup key="enumRegistry" value="Registreringsdatabase"/>
@@ -1681,7 +1681,7 @@
 		<lookup key="radioNoLabel" value="Ingen etikett"/>
 		<lookup key="radioOtherLabel" value="Annan:"/>
 		<lookup key="msgLabelInUse" value="Etiketten {0} används redan av kopian i {1}. Varje etikett kan bara peka på en kopia av ett spel."/>
-		<lookup key="msgAddFolderNoGame" value="Inget Age of Wonders spel hittades i {0}. Mappen måste innehålla AoW.exe, AoW2.exe eller AoWSM.exe."/>
+		<lookup key="msgAddFolderNoGame" value="Inget Age of Wonders spel hittades i {0}. Mappen måste innehålla AoW.exe, AoWz.com, AoW2.exe eller AoWSM.exe."/>
 		<lookup key="msgInstallMissing" value="Saknas"/>
 		<lookup key="menuItemMoveTo" value="Flytta till"/>
 		<lookup key="enumRegistry" value="Registret"/>
@@ -1934,7 +1934,7 @@
 		<lookup key="radioNoLabel" value="Bez etykiety"/>
 		<lookup key="radioOtherLabel" value="Inna:"/>
 		<lookup key="msgLabelInUse" value="Etykieta {0} jest już używana przez kopię w {1}. Każda etykieta może wskazywać tylko jedną kopię gry."/>
-		<lookup key="msgAddFolderNoGame" value="W {0} nie znaleziono gry Age of Wonders. Folder musi zawierać AoW.exe, AoW2.exe lub AoWSM.exe."/>
+		<lookup key="msgAddFolderNoGame" value="W {0} nie znaleziono gry Age of Wonders. Folder musi zawierać AoW.exe, AoWz.com, AoW2.exe lub AoWSM.exe."/>
 		<lookup key="msgInstallMissing" value="Brak"/>
 		<lookup key="menuItemMoveTo" value="Przenieś do"/>
 		<lookup key="enumRegistry" value="Rejestr"/>
@@ -2181,7 +2181,7 @@
 		<lookup key="radioNoLabel" value="Ei tunnistetta"/>
 		<lookup key="radioOtherLabel" value="Muu:"/>
 		<lookup key="msgLabelInUse" value="Tunniste {0} on jo käytössä kopiolla kansiossa {1}. Kukin tunniste voi osoittaa vain yhteen pelin kopioon."/>
-		<lookup key="msgAddFolderNoGame" value="Kansiosta {0} ei löytynyt Age of Wonders -peliä. Kansiossa on oltava AoW.exe, AoW2.exe tai AoWSM.exe."/>
+		<lookup key="msgAddFolderNoGame" value="Kansiosta {0} ei löytynyt Age of Wonders -peliä. Kansiossa on oltava AoW.exe, AoWz.com, AoW2.exe tai AoWSM.exe."/>
 		<lookup key="msgInstallMissing" value="Puuttuu"/>
 		<lookup key="menuItemMoveTo" value="Siirrä kohteeseen"/>
 		<lookup key="enumRegistry" value="Rekisteri"/>
@@ -2430,7 +2430,7 @@
 		<lookup key="radioNoLabel" value="Fără etichetă"/>
 		<lookup key="radioOtherLabel" value="Alta:"/>
 		<lookup key="msgLabelInUse" value="Eticheta {0} este deja folosită de copia din {1}. Fiecare etichetă poate indica o singură copie a unui joc."/>
-		<lookup key="msgAddFolderNoGame" value="Nu s-a găsit niciun joc Age of Wonders în {0}. Dosarul trebuie să conțină AoW.exe, AoW2.exe sau AoWSM.exe."/>
+		<lookup key="msgAddFolderNoGame" value="Nu s-a găsit niciun joc Age of Wonders în {0}. Dosarul trebuie să conțină AoW.exe, AoWz.com, AoW2.exe sau AoWSM.exe."/>
 		<lookup key="msgInstallMissing" value="Lipsește"/>
 		<lookup key="menuItemMoveTo" value="Mută în"/>
 		<lookup key="enumRegistry" value="Registru"/>
@@ -2677,7 +2677,7 @@
 		<lookup key="radioNoLabel" value="Без метки"/>
 		<lookup key="radioOtherLabel" value="Другая:"/>
 		<lookup key="msgLabelInUse" value="Метка {0} уже используется копией в {1}. Каждая метка может указывать только на одну копию игры."/>
-		<lookup key="msgAddFolderNoGame" value="В {0} не найдена игра Age of Wonders. В папке должен быть AoW.exe, AoW2.exe или AoWSM.exe."/>
+		<lookup key="msgAddFolderNoGame" value="В {0} не найдена игра Age of Wonders. В папке должен быть AoW.exe, AoWz.com, AoW2.exe или AoWSM.exe."/>
 		<lookup key="msgInstallMissing" value="Отсутствует"/>
 		<lookup key="menuItemMoveTo" value="Переместить в"/>
 		<lookup key="enumRegistry" value="Реестр"/>
