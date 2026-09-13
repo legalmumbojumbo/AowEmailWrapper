@@ -62,7 +62,7 @@ namespace AowEmailWrapper.Games
         private const string SMTPServerKeyName = "SMTP Server";
 
         public const string Aow1ExeName = "AoW.exe";
-        public const string Aow1ZExeName = "AoWz.com";
+        public const string Aow1ZExeName = "AoWz.exe";
         public const string Aow2ExeName = "AoW2.exe";
         public const string AowSmExeName = "AoWSM.exe";
         public const string AowMpeExeName = "AoW - MP Evolution.exe";

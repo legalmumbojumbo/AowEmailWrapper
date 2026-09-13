@@ -3,6 +3,16 @@
 Each versioned release is described here. The section for a version is also the text of its GitHub
 release; CI publishes it when a `v<version>` tag is pushed (see "Releasing a version" in the README).
 
+## 2.0.5
+
+- Corrected the alternate Age of Wonders 1 executable name to `AoWz.exe`. Automatic scans and
+  *Add folder...* now recognize copies containing that file; the erroneous `AoWz.com` name from
+  version 2.0.4 is no longer accepted. `AoW.exe` remains preferred when both executables are present.
+- Corrected the manual and all folder-picker messages to show `AoWz.exe`.
+
+Run `AowEmailWrapper-2.0.5-setup.exe` on Windows 10 or later, or let an installed Wrapper fetch it through
+*Check for updates* on the Settings tab. Accounts and settings carry over.
+
 ## 2.0.4
 
 - Game detection and *Add folder...* now accept Age of Wonders 1 copies containing `AoWz.com`.
