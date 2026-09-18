@@ -18,8 +18,62 @@ namespace AowEmailWrapper.Classes
     {
         private const char SplitChar = ';';
         private const int MinimumFillWidth = 60;
+        private const string HiddenTag = "Fixed;0";
+        private const string UserWidthTemplate = "Fixed;{0}";
+
+        [ThreadStatic]
+        private static int _applying;
+
+        /// <summary>
+        /// Lets the player drag column edges. A column the player has sized keeps that width through later
+        /// automatic resizes (it becomes a Fixed column), the fill column takes up whatever is left, and a
+        /// hidden column stays hidden.
+        /// </summary>
+        public static void AllowUserResizing(ListView theListView)
+        {
+            theListView.ColumnWidthChanging += (sender, e) =>
+            {
+                if (IsHidden(theListView.Columns[e.ColumnIndex]))
+                {
+                    e.Cancel = true;
+                    e.NewWidth = 0;
+                }
+            };
+            theListView.ColumnWidthChanged += (sender, e) =>
+            {
+                if (_applying > 0 || e.ColumnIndex >= theListView.Columns.Count)
+                {
+                    return;
+                }
+                ColumnHeader column = theListView.Columns[e.ColumnIndex];
+                if (IsHidden(column))
+                {
+                    return;
+                }
+                column.Tag = string.Format(UserWidthTemplate, column.Width);
+                ResizeColumns(theListView);
+            };
+        }
+
+        private static bool IsHidden(ColumnHeader column)
+        {
+            return column.Tag != null && HiddenTag.Equals(column.Tag.ToString(), StringComparison.OrdinalIgnoreCase);
+        }
 
         public static void ResizeColumns(ListView theListView)
+        {
+            _applying++;
+            try
+            {
+                ResizeColumnsCore(theListView);
+            }
+            finally
+            {
+                _applying--;
+            }
+        }
+
+        private static void ResizeColumnsCore(ListView theListView)
         {
             if (theListView.Columns.Count > 0 &&
                 theListView.Items.Count > 0)

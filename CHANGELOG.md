@@ -11,6 +11,8 @@ release; CI publishes it when a `v<version>` tag is pushed (see "Releasing a ver
   game folder picks up both.
 - The Wrapper writes its email settings under Ziggurat's own registry name (`Age of Wonders Z`), which
   `AoWz.exe` reads; before, a Ziggurat copy never saw them and could not send turns through the Wrapper.
+- The columns of the Activity Log, Accounts and Games lists can be dragged to any width. A width you set
+  is kept while the Wrapper runs; the other columns keep sizing themselves.
 
 ## 2.0.5
 

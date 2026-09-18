@@ -99,7 +99,7 @@ namespace AowEmailWrapper.Controls
             CreateContextMenu();
             listViewAccounts.SelectedIndexChanged += new EventHandler(listViewAccounts_SelectedIndexChanged);
             listViewAccounts.ClientSizeChanged += new EventHandler(listViewAccounts_Resize);
-            listViewAccounts.ColumnWidthChanging += new ColumnWidthChangingEventHandler(listViewAccounts_ColumnWidthChanging);
+            ListViewColumnResizer.AllowUserResizing(listViewAccounts);
 
             EventHandler raiseConfigChange = new EventHandler(Raise_Config_Changed);
             pollingConfig.Config_Changed += raiseConfigChange;
@@ -383,12 +383,6 @@ namespace AowEmailWrapper.Controls
             listViewAccounts.BeginUpdate();
             ListViewColumnResizer.ResizeColumns(listViewAccounts);
             listViewAccounts.EndUpdate();
-        }
-
-        private void listViewAccounts_ColumnWidthChanging(object sender, ColumnWidthChangingEventArgs e)
-        {
-            e.Cancel = true;
-            e.NewWidth = listViewAccounts.Columns[e.ColumnIndex].Width;
         }
 
         #endregion

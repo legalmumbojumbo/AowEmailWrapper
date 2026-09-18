@@ -82,7 +82,7 @@ namespace AowEmailWrapper.Controls
             _lvwColumnSorter.Order = SortOrder.Descending;
             listView.ListViewItemSorter = _lvwColumnSorter;
             listView.ClientSizeChanged += new EventHandler(ActivityListView_Resize);
-            listView.ColumnWidthChanging += new ColumnWidthChangingEventHandler(listView_ColumnWidthChanging);
+            ListViewColumnResizer.AllowUserResizing(listView);
             CreateContextMenu();
         }
 
@@ -217,12 +217,6 @@ namespace AowEmailWrapper.Controls
                 }
             }
             return activity.ModLabel ?? string.Empty;
-        }
-
-        private void listView_ColumnWidthChanging(object sender, ColumnWidthChangingEventArgs e)
-        {
-            e.Cancel = true;
-            e.NewWidth = listView.Columns[e.ColumnIndex].Width;
         }
 
         private void RaiseListChanged()
