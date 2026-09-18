@@ -95,6 +95,11 @@ namespace AowEmailWrapper.Games
         {
             List<AowGame> installs = new List<AowGame>();
             AddFolder(installs, folder, source);
+            //The Ziggurat installer builds the mod into a subfolder of the game; a player who points at the game folder means both
+            if (!string.IsNullOrWhiteSpace(folder))
+            {
+                AddFolder(installs, Path.Combine(folder.Trim().Trim('"'), ModDetector.ZigguratSubfolder), source);
+            }
             return installs;
         }
 
@@ -170,7 +175,7 @@ namespace AowEmailWrapper.Games
         {
             List<Candidate> found = new List<Candidate>();
 
-            foreach (string gameName in new[] { AowGame.Aow1GameName, AowGame.Aow2GameName, AowGame.AowSmGameName })
+            foreach (string gameName in new[] { AowGame.Aow1GameName, AowGame.Aow1ZGameName, AowGame.Aow2GameName, AowGame.AowSmGameName })
             {
                 string path = string.Format(TriumphRegPathTemplate, gameName);
 

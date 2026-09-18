@@ -3,6 +3,15 @@
 Each versioned release is described here. The section for a version is also the text of its GitHub
 release; CI publishes it when a `v<version>` tag is pushed (see "Releasing a version" in the README).
 
+## Unreleased
+
+- Ziggurat installed by its 2026 installer is recognised: the `Ziggurat` subfolder of the game is listed as
+  its own copy, labelled Ziggurat, and the game folder it sits in stays Vanilla even when it carries
+  Ziggurat's text tables. The copy is found from the mod's own registry key, and *Add folder...* on the
+  game folder picks up both.
+- The Wrapper writes its email settings under Ziggurat's own registry name (`Age of Wonders Z`), which
+  `AoWz.exe` reads; before, a Ziggurat copy never saw them and could not send turns through the Wrapper.
+
 ## 2.0.5
 
 - Corrected the alternate Age of Wonders 1 executable name to `AoWz.exe`. Automatic scans and

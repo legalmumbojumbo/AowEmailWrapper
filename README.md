@@ -129,6 +129,10 @@ registry during detection. The Games tab lists the result, lets the player add f
 label each copy and choose a default per game; that is stored in the `<games>` element of
 config.xml and merged with detection on every start.
 
+Ziggurat's installer builds the mod into a `Ziggurat\` subfolder of the game with its own `AoWz.exe`; that
+subfolder is a copy in its own right, found through the mod's `Age of Wonders Z` registry key, and the
+Wrapper writes the email settings under that name too, since the mod's engine reads its own key.
+
 Mods live in separate copies of a game folder and their save files are indistinguishable, so the
 copy's label is what tells them apart. When a turn is sent, `AowGameManager.ResolveOutgoing` picks
 the copy whose game is running, else the copy the game was last seen in (activity log), else the
