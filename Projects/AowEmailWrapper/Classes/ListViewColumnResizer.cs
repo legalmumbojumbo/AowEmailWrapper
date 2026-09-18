@@ -20,6 +20,8 @@ namespace AowEmailWrapper.Classes
         private const int MinimumFillWidth = 60;
         private const string HiddenTag = "Fixed;0";
         private const string UserWidthTemplate = "Fixed;{0}";
+        /// <summary>A dragged column never gets narrower than this, so it cannot vanish and become unreachable.</summary>
+        private const int MinimumUserWidth = 24;
 
         [ThreadStatic]
         private static int _applying;
@@ -38,6 +40,11 @@ namespace AowEmailWrapper.Classes
                     e.Cancel = true;
                     e.NewWidth = 0;
                 }
+                else if (e.NewWidth < MinimumUserWidth)
+                {
+                    e.Cancel = true;
+                    e.NewWidth = MinimumUserWidth;
+                }
             };
             theListView.ColumnWidthChanged += (sender, e) =>
             {
@@ -50,7 +57,8 @@ namespace AowEmailWrapper.Classes
                 {
                     return;
                 }
-                column.Tag = string.Format(UserWidthTemplate, column.Width);
+                int width = Math.Max(MinimumUserWidth, column.Width);
+                column.Tag = string.Format(UserWidthTemplate, width);
                 ResizeColumns(theListView);
             };
         }
