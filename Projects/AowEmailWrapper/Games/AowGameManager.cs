@@ -174,8 +174,11 @@ namespace AowEmailWrapper.Games
             }
 
             //A copy without a label gets the one its contents call for (the mod found in it, or the stock game),
-            //unless another copy of that game already carries it: a label routes turns to exactly one copy
-            foreach (AowGame game in games.Where(game => game.IsInstalled && string.IsNullOrEmpty(game.Label)))
+            //unless another copy of that game already carries it: a label routes turns to exactly one copy.
+            //A copy started through the mod's own executable is the mod's home and takes its label first: the
+            //game folder Ziggurat was installed into may carry Ziggurat text tables, but it is the vanilla game.
+            foreach (AowGame game in games.Where(game => game.IsInstalled && string.IsNullOrEmpty(game.Label))
+                                          .OrderBy(game => game.RunsModExecutable ? 0 : 1).ToList())
             {
                 string label = game.SuggestedLabel;
                 if (!games.Any(other => other != game && other.GameType == game.GameType && AowGame.SameLabel(other.Label, label)))

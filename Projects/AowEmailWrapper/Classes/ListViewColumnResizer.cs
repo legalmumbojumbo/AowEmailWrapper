@@ -18,13 +18,89 @@ namespace AowEmailWrapper.Classes
     {
         private const char SplitChar = ';';
         private const int MinimumFillWidth = 60;
+        private const string HiddenTag = "Fixed;0";
+        private const string UserWidthTemplate = "Fixed;{0}";
+        private const string FillFloorTemplate = "Fill;{0}";
+        /// <summary>A dragged column never gets narrower than this, so it cannot vanish and become unreachable.</summary>
+        private const int MinimumUserWidth = 24;
+
+        [ThreadStatic]
+        private static int _applying;
+
+        /// <summary>
+        /// Lets the player drag column edges. A column the player has sized keeps that width through later
+        /// automatic resizes (it becomes a Fixed column), the fill column takes up whatever is left, and a
+        /// hidden column stays hidden.
+        /// </summary>
+        public static void AllowUserResizing(ListView theListView)
+        {
+            theListView.ColumnWidthChanging += (sender, e) =>
+            {
+                if (_applying > 0)
+                {
+                    return;
+                }
+                if (IsHidden(theListView.Columns[e.ColumnIndex]))
+                {
+                    e.Cancel = true;
+                    e.NewWidth = 0;
+                }
+                else if (e.NewWidth < MinimumUserWidth)
+                {
+                    e.Cancel = true;
+                    e.NewWidth = MinimumUserWidth;
+                }
+            };
+            theListView.ColumnWidthChanged += (sender, e) =>
+            {
+                if (_applying > 0 || e.ColumnIndex >= theListView.Columns.Count)
+                {
+                    return;
+                }
+                ColumnHeader column = theListView.Columns[e.ColumnIndex];
+                if (IsHidden(column))
+                {
+                    return;
+                }
+                //The header may still be tracking the drag, so nothing else is resized here: the width is only
+                //remembered, the list scrolls sideways when the columns no longer fit, and the fill column keeps
+                //at least its present width at the next automatic resize instead of being squeezed
+                column.Tag = string.Format(UserWidthTemplate, Math.Max(MinimumUserWidth, column.Width));
+                foreach (ColumnHeader other in theListView.Columns)
+                {
+                    if (other != column && other.Tag != null && other.Tag.ToString().StartsWith("Fill", StringComparison.OrdinalIgnoreCase))
+                    {
+                        other.Tag = string.Format(FillFloorTemplate, other.Width);
+                    }
+                }
+            };
+        }
+
+        private static bool IsHidden(ColumnHeader column)
+        {
+            return column.Tag != null && HiddenTag.Equals(column.Tag.ToString(), StringComparison.OrdinalIgnoreCase);
+        }
 
         public static void ResizeColumns(ListView theListView)
+        {
+            _applying++;
+            try
+            {
+                ResizeColumnsCore(theListView);
+            }
+            finally
+            {
+                _applying--;
+            }
+        }
+
+        private static void ResizeColumnsCore(ListView theListView)
         {
             if (theListView.Columns.Count > 0 &&
                 theListView.Items.Count > 0)
             {
                 ColumnHeader fillColumn = null;
+                int fillFloor = MinimumFillWidth;
                 int totalColumnWidth = 0;
 
                 foreach (ColumnHeader column in theListView.Columns)
@@ -63,6 +139,11 @@ namespace AowEmailWrapper.Classes
                                 break;
                             case ColumnHeaderResizeStyle.Fill:
                                 fillColumn = column;
+                                int floor;
+                                if (int.TryParse(value, out floor))
+                                {
+                                    fillFloor = Math.Max(MinimumFillWidth, floor);
+                                }
                                 break;
                             case ColumnHeaderResizeStyle.Fixed:
                                 int width = 0;
@@ -82,7 +163,8 @@ namespace AowEmailWrapper.Classes
                 if (fillColumn != null)
                 {
                     //Never below a readable minimum: a negative width means "auto size" to the ListView and starts a resize loop
-                    fillColumn.Width = Math.Max(MinimumFillWidth, theListView.ClientSize.Width - totalColumnWidth);
+                    //Below its floor the list scrolls sideways instead of squeezing the fill column
+                    fillColumn.Width = Math.Max(fillFloor, theListView.ClientSize.Width - totalColumnWidth);
                 }
             }
         }

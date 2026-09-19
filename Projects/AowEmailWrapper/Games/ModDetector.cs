@@ -24,9 +24,10 @@ namespace AowEmailWrapper.Games
     /// <summary>
     /// Recognises the Age of Wonders 1 mods the community plays from what they leave in the game
     /// folder. Each rule was checked against the mods' own installers and against real copies:
-    ///  - Ziggurat replaces the game's text tables, and its Dict\ResStr.txt version line reads
-    ///    "Version: Ziggurat %s" in every release seen (stock reads "Version: Evolved %s"); releases
-    ///    from 2026 also ship a README.txt whose first line names the mod and a "Release" date.
+    ///  - Ziggurat's installer (2026) builds the mod into a Ziggurat subfolder of the game with its own
+    ///    AoWz.exe, text tables and README.txt (first line names the mod, then a "Release" date); the
+    ///    executable is the marker. Older in-place installs replaced the game's text tables, so a
+    ///    Dict\ResStr.txt version line reading "Version: Ziggurat %s" counts too.
     ///  - AoWx patches the executable, replacing the Triumph copyright string with
     ///    "Age of Wonders X mod by IniochReborn" and moving saves into an X subfolder; its installer
     ///    (Inno Setup) registers "Age of Wonders X" in Apps and Features with the version.
@@ -51,6 +52,8 @@ namespace AowEmailWrapper.Games
 
         /// <summary>AoWx keeps campaign and save files under this subfolder of the game folder.</summary>
         public const string AowXSubfolder = "X";
+        /// <summary>The Ziggurat installer builds the mod into this subfolder of the game folder.</summary>
+        public const string ZigguratSubfolder = "Ziggurat";
 
         private const string DictFolder = "Dict";
         private const string ResourceStringsFile = "ResStr.txt";
@@ -110,13 +113,16 @@ namespace AowEmailWrapper.Games
 
         private static ModInfo DetectZiggurat(string folder)
         {
+            bool ownExecutable = File.Exists(Path.Combine(folder, AowGame.Aow1ZExeName));
             string resources = Path.Combine(folder, DictFolder, ResourceStringsFile);
-            if (!File.Exists(resources) || !ContainsText(resources, ZigguratVersionMarker))
+            bool textTables = File.Exists(resources) && ContainsText(resources, ZigguratVersionMarker);
+            if (!ownExecutable && !textTables)
             {
                 return null;
             }
 
-            ModInfo mod = new ModInfo { Name = Ziggurat, Evidence = Path.Combine(DictFolder, ResourceStringsFile) + " says " + ZigguratVersionMarker };
+            string evidence = ownExecutable ? AowGame.Aow1ZExeName : Path.Combine(DictFolder, ResourceStringsFile) + " says " + ZigguratVersionMarker;
+            ModInfo mod = new ModInfo { Name = Ziggurat, Evidence = evidence };
 
             string readme = Path.Combine(folder, ZigguratReadme);
             if (File.Exists(readme))

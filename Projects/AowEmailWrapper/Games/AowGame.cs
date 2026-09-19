@@ -63,6 +63,8 @@ namespace AowEmailWrapper.Games
 
         public const string Aow1ExeName = "AoW.exe";
         public const string Aow1ZExeName = "AoWz.exe";
+        /// <summary>The registry name the Ziggurat build of Age of Wonders 1 reads; its installer creates the key and AoWz.exe reads Email under it.</summary>
+        public const string Aow1ZGameName = "Age of Wonders Z";
         public const string Aow2ExeName = "AoW2.exe";
         public const string AowSmExeName = "AoWSM.exe";
         public const string AowMpeExeName = "AoW - MP Evolution.exe";
@@ -208,12 +210,18 @@ namespace AowEmailWrapper.Games
             get { return _exeFile; }
         }
 
+        /// <summary>True for a copy started through a mod's own executable (AoWz.exe), which reads its own registry key.</summary>
+        public bool RunsModExecutable
+        {
+            get { return string.Equals(_exeFile, Aow1ZExeName, StringComparison.OrdinalIgnoreCase); }
+        }
+
         public string ExePath
         {
             get { return Path.Combine(_root.FullName, _exeFile); }
         }
 
-        /// <summary>The registry name the game uses; MP Evolution shares Shadow Magic's.</summary>
+        /// <summary>The registry name the game uses; MP Evolution shares Shadow Magic's, a Ziggurat copy has its own.</summary>
         public string GameName
         {
             get { return _gameName; }
@@ -263,7 +271,7 @@ namespace AowEmailWrapper.Games
             _gameType = theGameType;
             _source = source;
             _exeFile = ExeInFolder(theGameType, folder);
-            _gameName = GameNameFor(theGameType);
+            _gameName = RunsModExecutable ? Aow1ZGameName : GameNameFor(theGameType);
 
             _root = new DirectoryInfo(folder);
             _isInstalled = _root.Exists && File.Exists(Path.Combine(_root.FullName, _exeFile));
