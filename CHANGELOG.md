@@ -3,7 +3,7 @@
 Each versioned release is described here. The section for a version is also the text of its GitHub
 release; CI publishes it when a `v<version>` tag is pushed (see "Releasing a version" in the README).
 
-## Unreleased
+## 2.0.6
 
 - Ziggurat installed by its 2026 installer is recognised: the `Ziggurat` subfolder of the game is listed as
   its own copy, labelled Ziggurat, and the game folder it sits in stays Vanilla even when it carries
@@ -13,6 +13,9 @@ release; CI publishes it when a `v<version>` tag is pushed (see "Releasing a ver
   `AoWz.exe` reads; before, a Ziggurat copy never saw them and could not send turns through the Wrapper.
 - The columns of the Activity Log, Accounts and Games lists can be dragged to any width. A width you set
   is kept while the Wrapper runs; the other columns keep sizing themselves.
+
+Run `AowEmailWrapper-2.0.6-setup.exe` on Windows 10 or later, or let an installed Wrapper fetch it through
+*Check for updates* on the Settings tab. Accounts and settings carry over.
 
 ## 2.0.5
 
