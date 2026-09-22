@@ -3,6 +3,16 @@
 Each versioned release is described here. The section for a version is also the text of its GitHub
 release; CI publishes it when a `v<version>` tag is pushed (see "Releasing a version" in the README).
 
+## 2.0.7
+
+- *Show* on the tray menu, and a double-click on the tray icon, bring the window back on Windows 11.
+  Before, the window was recreated at the off-screen spot where Windows parks minimized windows, at the
+  size of a minimized window, so nothing appeared and the Wrapper seemed stuck in the tray. A window that
+  lies outside every screen is now moved to the middle of the primary screen.
+
+Run `AowEmailWrapper-2.0.7-setup.exe` on Windows 10 or later, or let an installed Wrapper fetch it through
+*Check for updates* on the Settings tab. Accounts and settings carry over.
+
 ## 2.0.6
 
 - Ziggurat installed by its 2026 installer is recognised: the `Ziggurat` subfolder of the game is listed as

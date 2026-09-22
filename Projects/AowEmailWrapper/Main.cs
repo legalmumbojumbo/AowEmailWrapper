@@ -133,6 +133,10 @@ namespace AowEmailWrapper
         private bool _isNewConfig = false;
         private bool _configNeedsSave = false;
         private bool _configChangeTracking = false;
+        //Set while the window is brought back from the tray: its native state passes through minimized on the way
+        private bool _restoringFromTray = false;
+        //The size the window was designed with, for a window that has to be put back on a screen
+        private Size _normalSize;
         private int _showingExceptionCount = 0;
 
         private ContextMenuStrip _contextMenu;
@@ -212,6 +216,7 @@ namespace AowEmailWrapper
             LoadTranslations();
 
             InitializeComponent();
+            _normalSize = this.Size;
             ImageListLoader.Load(imageListIcons, "Main");
 
             Translator.TranslateForm(this);
@@ -521,7 +526,10 @@ namespace AowEmailWrapper
         protected override void OnResize(EventArgs e)
         {
             base.OnResize(e);
-            Minimized();
+            if (!_restoringFromTray)
+            {
+                Minimized();
+            }
         }
 
         private void notifyIcon_MouseDoubleClick(object sender, MouseEventArgs e)
@@ -897,7 +905,7 @@ namespace AowEmailWrapper
         {
             this.SuspendLayout();
 
-            if (this.WindowState == FormWindowState.Minimized)
+            if (this.WindowState == FormWindowState.Minimized || !this.Visible)
             {
                 if (_activityLog != null && 
                     _activityLog.Activities != null && 
@@ -905,13 +913,65 @@ namespace AowEmailWrapper
                 {
                     tabControlMain.SelectedTab = tabControlMain.TabPages["tabActivity"];
                 }
-                this.WindowState = FormWindowState.Normal;
-                this.ShowInTaskbar = true;
-                this.Visible = true;
+                RestoreFromTray();
             }
             
             this.Activate();
             this.ResumeLayout();
+        }
+
+        /// <summary>
+        /// Brings the window back from the tray. The order matters: while the window is hidden its native
+        /// state is still minimized, and on Windows 11 WinForms no longer remembers the bounds a form had
+        /// before it was minimized. Turning ShowInTaskbar on recreates the window handle, and doing that in
+        /// the minimized state put the new window at the off-screen spot where Windows parks minimized
+        /// windows, at the size of a minimized window, so Show produced nothing to see. Showing the window
+        /// and letting Windows restore it first uses the placement Windows itself keeps; the taskbar button
+        /// comes back only once the window is at its normal bounds.
+        /// </summary>
+        private void RestoreFromTray()
+        {
+            _restoringFromTray = true;
+            try
+            {
+                //Still minimized and without a taskbar button, so nothing shows yet
+                this.Visible = true;
+                //Windows restores the size and position it kept for the window
+                this.WindowState = FormWindowState.Normal;
+            }
+            finally
+            {
+                _restoringFromTray = false;
+            }
+
+            this.ShowInTaskbar = true;
+            EnsureOnScreen();
+        }
+
+        /// <summary>
+        /// A window that lies outside every screen (an unplugged monitor, or a restore that went wrong)
+        /// is moved to the middle of the primary screen at its designed size.
+        /// </summary>
+        private void EnsureOnScreen()
+        {
+            Rectangle bounds = this.Bounds;
+            if (Screen.AllScreens.Any(screen => screen.WorkingArea.IntersectsWith(bounds)))
+            {
+                return;
+            }
+
+            Screen primary = Screen.PrimaryScreen ?? Screen.AllScreens.FirstOrDefault();
+            if (primary == null)
+            {
+                return;
+            }
+
+            Rectangle area = primary.WorkingArea;
+            this.Bounds = new Rectangle(
+                area.Left + Math.Max(0, (area.Width - _normalSize.Width) / 2),
+                area.Top + Math.Max(0, (area.Height - _normalSize.Height) / 2),
+                _normalSize.Width,
+                _normalSize.Height);
         }
 
         private void OpenDocument(string fileName)
