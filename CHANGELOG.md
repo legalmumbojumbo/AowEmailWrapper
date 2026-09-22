@@ -12,8 +12,9 @@ release; CI publishes it when a `v<version>` tag is pushed (see "Releasing a ver
 - Games tab: several copies can be selected at once with Shift or Ctrl and removed together, with one
   question covering every copy the scan found. Ctrl+A selects them all and the Delete key removes the
   selection.
-- The *Report a bug* window is laid out for the screen's scaling and the theme's font, so on a display set
-  to 125% or more its text is no longer cut off. It can also be made larger for a long description.
+- The *Report a bug*, *Set label*, update download, error and rename windows are laid out for the
+  screen's scaling and the theme's font, so on a display set to 125% or more their text is no longer
+  cut off. *Report a bug* can also be made larger for a long description.
 
 Run `AowEmailWrapper-2.0.7-setup.exe` on Windows 10 or later, or let an installed Wrapper fetch it through
 *Check for updates* on the Settings tab. Accounts and settings carry over.

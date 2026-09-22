@@ -65,13 +65,11 @@ namespace AowEmailWrapper.Controls
 
             //The layout is written in 96 dpi units while the text is drawn at the screen's dpi, so every
             //box is scaled to the screen and every text height is measured rather than assumed
-            float dpi = DeviceDpi / 96f;
-            Func<int, int> scaled = value => (int)Math.Round(value * dpi);
+            Func<int, int> scaled = value => DpiHelper.Scale(value);
             int pad = scaled(Pad);
             int width = scaled(DialogWidth);
             int textWidth = width - pad * 2;
-            //The theme swaps the text font in OnLoad, so measure with the font the text will actually use
-            Font measureFont = Theme.Enabled ? Theme.BodyFont : Font;
+            Font measureFont = DpiHelper.MeasureFont(this);
 
             int y = pad;
 
@@ -82,7 +80,6 @@ namespace AowEmailWrapper.Controls
                 : Translator.Translate(IntroNoAccountKey);
             int introHeight = TextRenderer.MeasureText(intro.Text, measureFont, new Size(textWidth, int.MaxValue), TextFormatFlags.WordBreak | TextFormatFlags.NoPrefix).Height;
             intro.Size = new Size(textWidth, introHeight + scaled(4));
-            intro.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             Controls.Add(intro);
             y = intro.Bottom + scaled(4);
 
@@ -93,8 +90,6 @@ namespace AowEmailWrapper.Controls
             _description.Location = new Point(pad, y);
             _description.Size = new Size(textWidth, scaled(170));
             _description.MaxLength = 20000;
-            //The description is the part that grows when the dialog is made larger
-            _description.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             Controls.Add(_description);
             y = _description.Bottom + scaled(10);
 
@@ -110,9 +105,10 @@ namespace AowEmailWrapper.Controls
             _attachLog.Height = TextRenderer.MeasureText(_attachLog.Text, measureFont, textArea, TextFormatFlags.WordBreak).Height + scaled(6);
             _attachLog.TextAlign = ContentAlignment.TopLeft;
             _attachLog.CheckAlign = ContentAlignment.TopLeft;
-            _attachLog.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             Controls.Add(_attachLog);
-            if (_attachLog.Visible)
+            //Not _attachLog.Visible: a control answers false to that while its form is still unshown,
+            //which put the buttons on the checkbox's row, under it, and ended the dialog there
+            if (account != null)
             {
                 y = _attachLog.Bottom + scaled(10);
             }
@@ -124,14 +120,12 @@ namespace AowEmailWrapper.Controls
             _status.AutoEllipsis = true;
             _status.Location = new Point(pad, y + scaled(5));
             _status.Size = new Size(textWidth - buttonWidth * 2 - scaled(24), scaled(20));
-            _status.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             Controls.Add(_status);
 
             _send = new Button();
             _send.Text = Translator.Translate(SendKey);
             _send.Size = new Size(buttonWidth, buttonHeight);
             _send.Location = new Point(width - pad - buttonWidth * 2 - scaled(8), y);
-            _send.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
             _send.Click += Send_Click;
             Controls.Add(_send);
 
@@ -139,7 +133,6 @@ namespace AowEmailWrapper.Controls
             _cancel.Text = Translator.Translate(CancelKey);
             _cancel.Size = _send.Size;
             _cancel.Location = new Point(width - pad - buttonWidth, y);
-            _cancel.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
             _cancel.DialogResult = DialogResult.Cancel;
             Controls.Add(_cancel);
 
@@ -148,6 +141,16 @@ namespace AowEmailWrapper.Controls
             ClientSize = new Size(width, y + buttonHeight + pad);
             //It can be made larger for a long description, never smaller than the text needs
             MinimumSize = Size;
+
+            //Anchored only now that the dialog has its size: anchors set earlier would have stretched
+            //the controls by the difference from the form's default size. The description takes the
+            //extra room when the dialog is enlarged; the rest keeps to the edges.
+            intro.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            _description.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            _attachLog.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            _status.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            _send.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+            _cancel.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
 
             FormClosing += BugReportForm_FormClosing;
         }

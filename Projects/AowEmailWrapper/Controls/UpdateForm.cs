@@ -53,29 +53,34 @@ namespace AowEmailWrapper.Controls
             MaximizeBox = false;
             MinimizeBox = false;
             ShowInTaskbar = false;
-            ClientSize = new Size(420, 120);
+
+            //Laid out in 96 dpi units and scaled to the screen; the label is as tall as the theme's font needs
+            int pad = DpiHelper.Scale(Pad);
+            int width = DpiHelper.Scale(420);
+            Font measureFont = DpiHelper.MeasureFont(this);
 
             _label = new Label();
             _label.AutoEllipsis = true;
-            _label.Location = new Point(Pad, Pad);
-            _label.Size = new Size(ClientSize.Width - Pad * 2, 20);
+            _label.Location = new Point(pad, pad);
+            _label.Size = new Size(width - pad * 2, measureFont.Height + DpiHelper.Scale(4));
             _label.Text = Translator.Translate(DownloadingKey, update.AssetName ?? update.Describe());
             Controls.Add(_label);
 
             _progress = new ProgressBar();
-            _progress.Location = new Point(Pad, _label.Bottom + 8);
-            _progress.Size = new Size(ClientSize.Width - Pad * 2, 22);
+            _progress.Location = new Point(pad, _label.Bottom + DpiHelper.Scale(8));
+            _progress.Size = new Size(width - pad * 2, DpiHelper.Scale(22));
             _progress.Style = update.Size > 0 ? ProgressBarStyle.Continuous : ProgressBarStyle.Marquee;
             _progress.Maximum = 1000;
             Controls.Add(_progress);
 
             _cancelButton = new Button();
             _cancelButton.Text = Translator.Translate(CancelKey);
-            _cancelButton.Size = new Size(90, 26);
-            _cancelButton.Location = new Point(ClientSize.Width - Pad - _cancelButton.Width, _progress.Bottom + 12);
+            _cancelButton.Size = DpiHelper.Scale(90, 26);
+            _cancelButton.Location = new Point(width - pad - _cancelButton.Width, _progress.Bottom + DpiHelper.Scale(12));
             _cancelButton.Click += (sender, e) => _cancel.Cancel();
             Controls.Add(_cancelButton);
             CancelButton = _cancelButton;
+            ClientSize = new Size(width, _cancelButton.Bottom + pad);
 
             Shown += UpdateForm_Shown;
             FormClosing += UpdateForm_FormClosing;

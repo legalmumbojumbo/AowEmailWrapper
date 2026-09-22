@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Drawing;
 using System.Windows.Forms;
+using AowEmailWrapper.Helpers;
 using AowEmailWrapper.Localization;
 
 namespace AowEmailWrapper.Classes
@@ -51,10 +52,12 @@ namespace AowEmailWrapper.Classes
                 buttonOk.DialogResult = DialogResult.OK;
                 buttonCancel.DialogResult = DialogResult.Cancel;
 
-                label.SetBounds(9, 20, 372, 13);
-                textBox.SetBounds(12, 36, 372, 20);
-                buttonOk.SetBounds(228, 72, 75, 23);
-                buttonCancel.SetBounds(309, 72, 75, 23);
+                //Laid out in 96 dpi units and scaled to the screen
+                Func<int, int> scaled = value => DpiHelper.Scale(value);
+                label.SetBounds(scaled(9), scaled(20), scaled(372), scaled(13));
+                textBox.SetBounds(scaled(12), scaled(36), scaled(372), scaled(20));
+                buttonOk.SetBounds(scaled(228), scaled(72), scaled(75), scaled(23));
+                buttonCancel.SetBounds(scaled(309), scaled(72), scaled(75), scaled(23));
 
                 label.AutoSize = true;
                 textBox.Anchor = textBox.Anchor | AnchorStyles.Right;
@@ -62,9 +65,9 @@ namespace AowEmailWrapper.Classes
                 buttonCancel.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
 
                 form.ShowInTaskbar = false;
-                form.ClientSize = new Size(396, 107);
+                form.ClientSize = new Size(scaled(396), scaled(107));
                 form.Controls.AddRange(new Control[] { label, textBox, buttonOk, buttonCancel });
-                form.ClientSize = new Size(Math.Max(300, label.Right + 10), form.ClientSize.Height);
+                form.ClientSize = new Size(Math.Max(scaled(300), label.Right + scaled(10)), form.ClientSize.Height);
                 form.FormBorderStyle = FormBorderStyle.FixedDialog;
                 form.StartPosition = FormStartPosition.CenterParent;
                 form.MinimizeBox = false;
