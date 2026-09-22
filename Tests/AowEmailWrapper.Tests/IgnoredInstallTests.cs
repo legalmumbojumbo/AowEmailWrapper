@@ -75,6 +75,28 @@ namespace AowEmailWrapper.Tests
         }
 
         [Fact]
+        public void The_games_tab_list_counts_at_once_when_the_manager_accepts_it()
+        {
+            AowGame kept = new AowGame(AowGameType.Aow1, GameFolder("kept"), InstallSource.Folder);
+            AowGame removed = new AowGame(AowGameType.Aow1, GameFolder("removed"), InstallSource.Folder);
+            AowGameManager manager = new AowGameManager(_root, new[] { kept, removed }, new GamesConfigValues());
+            Assert.Equal(2, manager.GetInstalls(AowGameType.Aow1).Count);
+
+            //What the Games tab holds after Remove on the second copy: the list without it, and it ignored
+            List<AowGame> tab = new List<AowGame> { kept };
+            GamesConfigValues config = new GamesConfigValues();
+            config.Installs.Add(new GameInstallConfigValues(kept));
+            config.Ignore(removed);
+
+            manager.Accept(tab, config);
+
+            AowGame only = Assert.Single(manager.GetInstalls(AowGameType.Aow1));
+            Assert.True(only.IsFolder(kept.Folder));
+            Assert.True(only.IsDefault);
+            Assert.True(manager.ToConfig().IsIgnored(removed));
+        }
+
+        [Fact]
         public void Adding_the_folder_by_hand_forgets_the_ignore()
         {
             string folder = GameFolder("back");

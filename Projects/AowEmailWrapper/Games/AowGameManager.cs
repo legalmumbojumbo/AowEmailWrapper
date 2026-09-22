@@ -117,6 +117,18 @@ namespace AowEmailWrapper.Games
             Trace.TraceInformation("Deep scan result applied: {0} copies", _games.Count);
         }
 
+        /// <summary>
+        /// Takes the Games tab's list as the player left it, so a copy removed or added there, a label
+        /// or the default counts at once for everything that asks the manager: Move to on the Activity
+        /// Log, the tray menu and the routing of turns. No detection runs; the tab's list is the truth.
+        /// </summary>
+        public void Accept(IEnumerable<AowGame> games, GamesConfigValues config)
+        {
+            _ignored = IgnoredOf(config);
+            _games = Merge(games.ToList(), config);
+            Trace.TraceInformation("Games tab applied: {0} copies", _games.Count);
+        }
+
         /// <summary>The current installs as config entries, so labels and defaults survive a restart.</summary>
         public GamesConfigValues ToConfig()
         {

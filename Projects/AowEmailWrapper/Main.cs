@@ -186,17 +186,16 @@ namespace AowEmailWrapper
                 _configChangeTracking = value;
                 EventHandler configNeedsSave = new EventHandler(OnConfigNeedsSave);
 
+                //Not the Games tab: its changes are applied and saved at once (GamesChanged)
                 if (_configChangeTracking)
                 {
                     accountsConfig.Config_Changed += configNeedsSave;
                     preferencesConfig.Config_Changed += configNeedsSave;
-                    gamesConfig.Config_Changed += configNeedsSave;
                 }
                 else
                 {
                     accountsConfig.Config_Changed -= configNeedsSave;
                     preferencesConfig.Config_Changed -= configNeedsSave;
-                    gamesConfig.Config_Changed -= configNeedsSave;
                 }
             }
         }
@@ -239,6 +238,7 @@ namespace AowEmailWrapper
             _gameManager.InstallHint = ActivityInstallHint;
             gamesConfig.GameManager = _gameManager;
             gamesConfig.Rescanned += new EventHandler(GamesRescanned);
+            gamesConfig.Config_Changed += new EventHandler(GamesChanged);
             activityListView.GameManager = _gameManager;
             if (_gameManager.NeedsDeepScan)
             {
@@ -2049,6 +2049,29 @@ namespace AowEmailWrapper
             CreateContextMenu();
             CheckNotifyIconState();
             Trace.TraceInformation("Rescan applied and saved: {0} copies", _wrapperConfig.GamesConfig.Installs.Count);
+        }
+
+        /// <summary>
+        /// A change on the Games tab (a copy removed or added by hand, a label, the default) counts at
+        /// once and is saved, as a rescan is. Move to on the Activity Log, the tray menu and the routing
+        /// of turns all read the game manager, and while the tab waited for Save Settings they kept
+        /// offering copies the player had just removed.
+        /// </summary>
+        private void GamesChanged(object sender, EventArgs e)
+        {
+            GamesConfigValues changed = gamesConfig.Config;
+            if (changed == null)
+            {
+                return;
+            }
+
+            _gameManager.Accept(gamesConfig.Games, changed);
+            _wrapperConfig.GamesConfig = _gameManager.ToConfig();
+            gamesConfig.Config = _wrapperConfig.GamesConfig;
+            DataManagerHelper.SaveConfig(_wrapperConfig);
+            CreateContextMenu();
+            CheckNotifyIconState();
+            Trace.TraceInformation("Games tab change applied and saved: {0} copies", _wrapperConfig.GamesConfig.Installs.Count);
         }
 
         /// <summary>

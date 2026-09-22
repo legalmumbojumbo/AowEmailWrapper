@@ -183,6 +183,12 @@ namespace AowEmailWrapper.Controls
             get { return listViewGames.SelectedItems.Count == 1 ? listViewGames.SelectedItems[0].Tag as AowGame : null; }
         }
 
+        /// <summary>The list as the player left it, as copies, for the game manager to take over at once.</summary>
+        public List<AowGame> Games
+        {
+            get { return _games.Select(Clone).ToList(); }
+        }
+
         /// <summary>Every highlighted copy, in list order.</summary>
         private List<AowGame> SelectedGames
         {
