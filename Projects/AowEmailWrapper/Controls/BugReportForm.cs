@@ -57,74 +57,100 @@ namespace AowEmailWrapper.Controls
             _account = account;
 
             Text = Translator.Translate(TitleKey);
-            FormBorderStyle = FormBorderStyle.FixedDialog;
+            FormBorderStyle = FormBorderStyle.Sizable;
             StartPosition = FormStartPosition.CenterParent;
             MaximizeBox = false;
             MinimizeBox = false;
             ShowInTaskbar = false;
 
-            int y = Pad;
+            //The layout is written in 96 dpi units while the text is drawn at the screen's dpi, so every
+            //box is scaled to the screen and every text height is measured rather than assumed
+            Func<int, int> scaled = value => DpiHelper.Scale(value);
+            int pad = scaled(Pad);
+            int width = scaled(DialogWidth);
+            int textWidth = width - pad * 2;
+            Font measureFont = DpiHelper.MeasureFont(this);
+
+            int y = pad;
 
             Label intro = new Label();
-            intro.Location = new Point(Pad, y);
-            intro.Size = new Size(DialogWidth - Pad * 2, 64);
+            intro.Location = new Point(pad, y);
             intro.Text = account != null
                 ? Translator.Translate(IntroKey, BugReportHelper.SenderAddress(account))
                 : Translator.Translate(IntroNoAccountKey);
+            int introHeight = TextRenderer.MeasureText(intro.Text, measureFont, new Size(textWidth, int.MaxValue), TextFormatFlags.WordBreak | TextFormatFlags.NoPrefix).Height;
+            intro.Size = new Size(textWidth, introHeight + scaled(4));
             Controls.Add(intro);
-            y = intro.Bottom + 4;
+            y = intro.Bottom + scaled(4);
 
             _description = new TextBox();
             _description.Multiline = true;
             _description.AcceptsReturn = true;
             _description.ScrollBars = ScrollBars.Vertical;
-            _description.Location = new Point(Pad, y);
-            _description.Size = new Size(DialogWidth - Pad * 2, 170);
+            _description.Location = new Point(pad, y);
+            _description.Size = new Size(textWidth, scaled(170));
             _description.MaxLength = 20000;
             Controls.Add(_description);
-            y = _description.Bottom + 10;
+            y = _description.Bottom + scaled(10);
 
             //A fixed width so long translations wrap instead of running off the dialog
             _attachLog = new CheckBox();
             _attachLog.Checked = true;
-            _attachLog.Location = new Point(Pad, y);
+            _attachLog.Location = new Point(pad, y);
             _attachLog.Text = Translator.Translate(AttachLogKey);
             _attachLog.Visible = account != null;
-            _attachLog.Width = DialogWidth - Pad * 2;
+            _attachLog.Width = textWidth;
             //ButtonBase's preferred size ignores wrapping, so measure the wrapped text beside the check glyph
-            Size textArea = new Size(_attachLog.Width - CheckGlyphWidth, int.MaxValue);
-            _attachLog.Height = TextRenderer.MeasureText(_attachLog.Text, _attachLog.Font, textArea, TextFormatFlags.WordBreak).Height + 6;
+            Size textArea = new Size(_attachLog.Width - scaled(CheckGlyphWidth), int.MaxValue);
+            _attachLog.Height = TextRenderer.MeasureText(_attachLog.Text, measureFont, textArea, TextFormatFlags.WordBreak).Height + scaled(6);
             _attachLog.TextAlign = ContentAlignment.TopLeft;
             _attachLog.CheckAlign = ContentAlignment.TopLeft;
             Controls.Add(_attachLog);
-            if (_attachLog.Visible)
+            //Not _attachLog.Visible: a control answers false to that while its form is still unshown,
+            //which put the buttons on the checkbox's row, under it, and ended the dialog there
+            if (account != null)
             {
-                y = _attachLog.Bottom + 10;
+                y = _attachLog.Bottom + scaled(10);
             }
+
+            int buttonWidth = scaled(84);
+            int buttonHeight = scaled(26);
 
             _status = new Label();
             _status.AutoEllipsis = true;
-            _status.Location = new Point(Pad, y + 5);
-            _status.Size = new Size(DialogWidth - Pad * 2 - 200, 20);
+            _status.Location = new Point(pad, y + scaled(5));
+            _status.Size = new Size(textWidth - buttonWidth * 2 - scaled(24), scaled(20));
             Controls.Add(_status);
 
             _send = new Button();
             _send.Text = Translator.Translate(SendKey);
-            _send.Size = new Size(84, 26);
-            _send.Location = new Point(DialogWidth - Pad - _send.Width * 2 - 8, y);
+            _send.Size = new Size(buttonWidth, buttonHeight);
+            _send.Location = new Point(width - pad - buttonWidth * 2 - scaled(8), y);
             _send.Click += Send_Click;
             Controls.Add(_send);
 
             _cancel = new Button();
             _cancel.Text = Translator.Translate(CancelKey);
             _cancel.Size = _send.Size;
-            _cancel.Location = new Point(DialogWidth - Pad - _cancel.Width, y);
+            _cancel.Location = new Point(width - pad - buttonWidth, y);
             _cancel.DialogResult = DialogResult.Cancel;
             Controls.Add(_cancel);
 
             //No AcceptButton: Enter adds a line to the description
             CancelButton = _cancel;
-            ClientSize = new Size(DialogWidth, y + _send.Height + Pad);
+            ClientSize = new Size(width, y + buttonHeight + pad);
+            //It can be made larger for a long description, never smaller than the text needs
+            MinimumSize = Size;
+
+            //Anchored only now that the dialog has its size: anchors set earlier would have stretched
+            //the controls by the difference from the form's default size. The description takes the
+            //extra room when the dialog is enlarged; the rest keeps to the edges.
+            intro.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            _description.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            _attachLog.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            _status.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            _send.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+            _cancel.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
 
             FormClosing += BugReportForm_FormClosing;
         }

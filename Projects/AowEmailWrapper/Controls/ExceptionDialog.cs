@@ -50,29 +50,32 @@ namespace AowEmailWrapper.Controls
             MaximizeBox = false;
             MinimizeBox = false;
             ShowInTaskbar = false;
-            ClientSize = new Size(520, 200);
 
-            //The theme swaps the text font in OnLoad, so measure with the font the text will actually use
-            Font measureFont = Theme.Enabled ? Theme.BodyFont : Font;
+            //Laid out in 96 dpi units and scaled to the screen; the message is measured in the theme's font
+            int pad = DpiHelper.Scale(Pad);
+            int buttonHeight = DpiHelper.Scale(ButtonHeight);
+            int width = DpiHelper.Scale(520);
+            Font measureFont = DpiHelper.MeasureFont(this);
 
             PictureBox iconBox = new PictureBox();
             iconBox.Image = GetIcon(icon);
             iconBox.SizeMode = PictureBoxSizeMode.AutoSize;
-            iconBox.Location = new Point(16, 16);
+            iconBox.Location = new Point(pad, pad);
             Controls.Add(iconBox);
 
             //Size the message area to its text so long provider advice is never cut off
             string messageText = BuildMessage(ex);
-            int messageWidth = ClientSize.Width - 80;
+            int messageLeft = DpiHelper.Scale(64);
+            int messageWidth = width - messageLeft - pad;
             int textHeight = TextRenderer.MeasureText(messageText, measureFont, new Size(messageWidth, int.MaxValue), TextFormatFlags.WordBreak).Height;
-            int labelHeight = Math.Min(400, Math.Max(48, textHeight + 8));
-            _collapsedHeight = Pad + labelHeight + Pad + ButtonHeight + Pad;
-            _expandedHeight = _collapsedHeight + DetailsHeight;
-            ClientSize = new Size(ClientSize.Width, _collapsedHeight);
+            int labelHeight = Math.Min(DpiHelper.Scale(400), Math.Max(DpiHelper.Scale(48), textHeight + DpiHelper.Scale(8)));
+            _collapsedHeight = pad + labelHeight + pad + buttonHeight + pad;
+            _expandedHeight = _collapsedHeight + DpiHelper.Scale(DetailsHeight);
+            ClientSize = new Size(width, _collapsedHeight);
 
             Label message = new Label();
             message.Text = messageText;
-            message.Location = new Point(64, Pad);
+            message.Location = new Point(messageLeft, pad);
             message.Size = new Size(messageWidth, labelHeight);
             Controls.Add(message);
 
@@ -83,28 +86,29 @@ namespace AowEmailWrapper.Controls
             _details.WordWrap = false;
             _details.Font = new Font(FontFamily.GenericMonospace, 8.25f);
             _details.Text = ex == null ? string.Empty : ex.ToString();
-            _details.Location = new Point(Pad, _collapsedHeight);
-            _details.Size = new Size(ClientSize.Width - 2 * Pad, DetailsHeight - Pad);
+            _details.Location = new Point(pad, _collapsedHeight);
+            _details.Size = new Size(width - 2 * pad, DpiHelper.Scale(DetailsHeight) - pad);
             _details.Visible = false;
             Controls.Add(_details);
 
             _detailsButton = new Button();
             _detailsButton.Text = "Details >>";
-            _detailsButton.Size = new Size(90, ButtonHeight);
-            _detailsButton.Location = new Point(Pad, _collapsedHeight - Pad - ButtonHeight);
+            _detailsButton.Size = new Size(DpiHelper.Scale(90), buttonHeight);
+            _detailsButton.Location = new Point(pad, _collapsedHeight - pad - buttonHeight);
             _detailsButton.Click += new EventHandler(DetailsButton_Click);
             Controls.Add(_detailsButton);
 
-            int x = ClientSize.Width - 16;
+            int x = width - pad;
             for (int i = buttons.Length - 1; i >= 0; i--)
             {
                 Button button = new Button();
                 button.Text = buttons[i];
                 button.Tag = i;
-                button.Size = new Size(Math.Max(90, TextRenderer.MeasureText(buttons[i], Theme.Enabled ? Theme.ButtonFont(ButtonHeight) : Font).Width + 24), ButtonHeight);
+                Font buttonFont = Theme.Enabled ? Theme.ButtonFont(buttonHeight) : Font;
+                button.Size = new Size(Math.Max(DpiHelper.Scale(90), TextRenderer.MeasureText(buttons[i], buttonFont).Width + DpiHelper.Scale(24)), buttonHeight);
                 x -= button.Size.Width;
-                button.Location = new Point(x, _collapsedHeight - Pad - ButtonHeight);
-                x -= 8;
+                button.Location = new Point(x, _collapsedHeight - pad - buttonHeight);
+                x -= DpiHelper.Scale(8);
                 button.Click += new EventHandler(Button_Click);
                 Controls.Add(button);
 

@@ -53,11 +53,12 @@ namespace AowEmailWrapper
                         System.Threading.Thread.Sleep(pauseMilliseconds);
                     }
                 }
+                //Before any window is created, the splash included, as SetHighDpiMode requires
+                Application.SetHighDpiMode(HighDpiMode.SystemAware);
                 if (args.Length.Equals(0))
                 {
                     Splash.ShowSplashScreen();
                 }
-                Application.SetHighDpiMode(HighDpiMode.SystemAware);
                 LogHelper.Start();
                 Application.EnableVisualStyles();
                 Application.SetCompatibleTextRenderingDefault(false);

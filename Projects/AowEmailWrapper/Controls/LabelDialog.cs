@@ -113,8 +113,12 @@ namespace AowEmailWrapper.Controls
             MinimizeBox = false;
             ShowInTaskbar = false;
 
-            int width = 360;
-            int y = Pad;
+            //Laid out in 96 dpi units and scaled to the screen; text heights are measured in the theme's font
+            int pad = DpiHelper.Scale(Pad);
+            int rowHeight = DpiHelper.Scale(RowHeight);
+            int width = DpiHelper.Scale(360);
+            Font measureFont = DpiHelper.MeasureFont(this);
+            int y = pad;
 
             RadioButton none = AddChoice(Translator.Translate(NoLabelKey), string.Empty, ref y);
             foreach (KeyValuePair<string, string> option in options)
@@ -125,17 +129,20 @@ namespace AowEmailWrapper.Controls
             _other = new RadioButton();
             _other.Text = Translator.Translate(OtherKey);
             _other.AutoSize = true;
-            _other.Location = new Point(Pad, y + 3);
+            _other.Location = new Point(pad, y + DpiHelper.Scale(3));
             Controls.Add(_other);
 
+            //The text box starts after the "Other" caption, however wide the translation and the font make it
+            int otherWidth = TextRenderer.MeasureText(_other.Text, measureFont).Width + DpiHelper.Scale(28);
+            int textLeft = pad + Math.Max(DpiHelper.Scale(90), otherWidth);
             _otherText = new TextBox();
-            _otherText.Location = new Point(Pad + 90, y + 1);
-            _otherText.Width = width - Pad - 90 - Pad;
+            _otherText.Location = new Point(textLeft, y + DpiHelper.Scale(1));
+            _otherText.Width = width - textLeft - pad;
             _otherText.MaxLength = 40;
             _otherText.TextChanged += (sender, e) => { if (_otherText.Text.Length > 0) _other.Checked = true; };
             _otherText.Enter += (sender, e) => _other.Checked = true;
             Controls.Add(_otherText);
-            y += RowHeight + Pad;
+            y += rowHeight + pad;
 
             if (options.Any(option => option.Key != option.Value))
             {
@@ -143,17 +150,18 @@ namespace AowEmailWrapper.Controls
                 string hintText = Translator.Translate(MoveHintKey);
                 hint.Text = string.IsNullOrEmpty(hintText) ? MoveHintFallback : hintText;
                 hint.AutoSize = false;
-                hint.Location = new Point(Pad, y);
-                hint.Size = new Size(width - Pad * 2, RowHeight);
+                hint.Location = new Point(pad, y);
+                int hintHeight = TextRenderer.MeasureText(hint.Text, measureFont, new Size(width - pad * 2, int.MaxValue), TextFormatFlags.WordBreak | TextFormatFlags.NoPrefix).Height;
+                hint.Size = new Size(width - pad * 2, Math.Max(rowHeight, hintHeight + DpiHelper.Scale(4)));
                 hint.ForeColor = SystemColors.GrayText;
                 Controls.Add(hint);
-                y += RowHeight + Pad / 2;
+                y += hint.Height + pad / 2;
             }
 
             Button ok = new Button();
             ok.Text = Translator.Translate(OkKey);
-            ok.Size = new Size(84, 26);
-            ok.Location = new Point(width - Pad - ok.Width * 2 - 8, y);
+            ok.Size = DpiHelper.Scale(84, 26);
+            ok.Location = new Point(width - pad - ok.Width * 2 - DpiHelper.Scale(8), y);
             ok.Click += (sender, e) =>
             {
                 if (Accept())
@@ -166,13 +174,13 @@ namespace AowEmailWrapper.Controls
             Button cancel = new Button();
             cancel.Text = Translator.Translate(CancelKey);
             cancel.Size = ok.Size;
-            cancel.Location = new Point(width - Pad - cancel.Width, y);
+            cancel.Location = new Point(width - pad - cancel.Width, y);
             cancel.DialogResult = DialogResult.Cancel;
             Controls.Add(cancel);
 
             AcceptButton = ok;
             CancelButton = cancel;
-            ClientSize = new Size(width, y + ok.Height + Pad);
+            ClientSize = new Size(width, y + ok.Height + pad);
 
             //Pre-select the current label
             RadioButton match = _choices.FirstOrDefault(choice => AowGame.SameLabel((string)choice.Tag, current) && !string.IsNullOrEmpty(current));
@@ -197,11 +205,11 @@ namespace AowEmailWrapper.Controls
             choice.Text = text;
             choice.Tag = value;
             choice.AutoSize = true;
-            choice.Location = new Point(Pad, y);
+            choice.Location = new Point(DpiHelper.Scale(Pad), y);
             choice.DoubleClick += (sender, e) => { if (Accept()) DialogResult = DialogResult.OK; };
             Controls.Add(choice);
             _choices.Add(choice);
-            y += RowHeight;
+            y += DpiHelper.Scale(RowHeight);
             return choice;
         }
 

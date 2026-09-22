@@ -34,6 +34,7 @@ namespace AowEmailWrapper.Controls
         private readonly Button buttonRemoveInstall;
         private GamesConfigValues _ignored = new GamesConfigValues();
         private const string IgnoreInstallKey = "msgIgnoreInstall";
+        private const string IgnoreInstallsKey = "msgIgnoreInstalls";
         private readonly Button buttonRescan;
         private readonly Label lblGamesHelp;
 
@@ -70,7 +71,8 @@ namespace AowEmailWrapper.Controls
             listViewGames.Dock = DockStyle.Fill;
             listViewGames.View = View.Details;
             listViewGames.FullRowSelect = true;
-            listViewGames.MultiSelect = false;
+            //Shift and Ctrl extend the selection so several copies can be removed together
+            listViewGames.MultiSelect = true;
             listViewGames.HideSelection = false;
             listViewGames.ShowItemToolTips = true;
             listViewGames.HeaderStyle = ColumnHeaderStyle.Nonclickable;
@@ -84,6 +86,7 @@ namespace AowEmailWrapper.Controls
             //Sized on control resize only: reacting to the list's own client size changes loops when a scroll bar appears
             Resize += (sender, e) => FitColumns();
             listViewGames.MouseDoubleClick += ListViewGames_MouseDoubleClick;
+            listViewGames.KeyDown += ListViewGames_KeyDown;
             listViewGames.ContextMenuStrip = BuildContextMenu();
 
             panelButtons = new Panel();
@@ -174,14 +177,27 @@ namespace AowEmailWrapper.Controls
             return copy;
         }
 
+        /// <summary>The one highlighted copy, for the actions that only make sense one copy at a time.</summary>
         private AowGame Selected
         {
             get { return listViewGames.SelectedItems.Count == 1 ? listViewGames.SelectedItems[0].Tag as AowGame : null; }
         }
 
+        /// <summary>The list as the player left it, as copies, for the game manager to take over at once.</summary>
+        public List<AowGame> Games
+        {
+            get { return _games.Select(Clone).ToList(); }
+        }
+
+        /// <summary>Every highlighted copy, in list order.</summary>
+        private List<AowGame> SelectedGames
+        {
+            get { return listViewGames.SelectedItems.Cast<ListViewItem>().Select(item => item.Tag as AowGame).Where(game => game != null).ToList(); }
+        }
+
         private void Populate()
         {
-            AowGame selected = Selected;
+            HashSet<string> selected = new HashSet<string>(SelectedGames.Select(game => game.Id));
 
             listViewGames.BeginUpdate();
             listViewGames.Items.Clear();
@@ -208,7 +224,7 @@ namespace AowEmailWrapper.Controls
                         subItem.ForeColor = SystemColors.GrayText;
                     }
                 }
-                if (selected != null && selected.Id == game.Id)
+                if (selected.Contains(game.Id))
                 {
                     item.Selected = true;
                 }
@@ -245,7 +261,7 @@ namespace AowEmailWrapper.Controls
             buttonSetLabel.Enabled = selected != null;
             buttonOpenFolder.Enabled = selected != null && System.IO.Directory.Exists(selected.Folder);
             buttonSetDefaultInstall.Enabled = selected != null && selected.IsInstalled && !selected.IsDefault;
-            buttonRemoveInstall.Enabled = selected != null;
+            buttonRemoveInstall.Enabled = listViewGames.SelectedItems.Count > 0;
         }
 
         private void RaiseChanged()
@@ -294,6 +310,24 @@ namespace AowEmailWrapper.Controls
             target.Label = label ?? string.Empty;
         }
 
+        /// <summary>Ctrl+A highlights every copy and Delete removes the highlighted ones, as in Explorer.</summary>
+        private void ListViewGames_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Control && e.KeyCode == Keys.A)
+            {
+                foreach (ListViewItem item in listViewGames.Items)
+                {
+                    item.Selected = true;
+                }
+                e.Handled = true;
+            }
+            else if (e.KeyCode == Keys.Delete && buttonRemoveInstall.Enabled)
+            {
+                RemoveSelected();
+                e.Handled = true;
+            }
+        }
+
         /// <summary>Double-clicking a copy opens its folder in Explorer; the actions are on the right-click menu.</summary>
         private void ListViewGames_MouseDoubleClick(object sender, MouseEventArgs e)
         {
@@ -317,8 +351,7 @@ namespace AowEmailWrapper.Controls
             _menuRemove = AddMenuItem(menu, "buttonRemoveInstall", "Remove", (sender, e) => RemoveSelected());
             menu.Opening += (sender, e) =>
             {
-                AowGame selected = Selected;
-                e.Cancel = selected == null;
+                e.Cancel = listViewGames.SelectedItems.Count == 0;
                 _menuSetLabel.Enabled = buttonSetLabel.Enabled;
                 _menuOpenFolder.Enabled = buttonOpenFolder.Enabled;
                 _menuSetDefault.Enabled = buttonSetDefaultInstall.Enabled;
@@ -373,27 +406,46 @@ namespace AowEmailWrapper.Controls
 
         private void RemoveSelected()
         {
-            AowGame game = Selected;
-            if (game == null)
+            List<AowGame> games = SelectedGames;
+            if (games.Count == 0)
             {
                 return;
             }
 
-            if (!game.IsManual)
+            //Detection would find these copies again on the next start, so they are remembered as ones to leave out
+            List<AowGame> detected = games.Where(game => !game.IsManual).ToList();
+            if (detected.Count > 0)
             {
-                //Detection would find this copy again on the next start, so it is remembered as one to leave out
-                DialogResult answer = MessageBox.Show(this, Translator.Translate(IgnoreInstallKey, game.Folder), Translator.Translate("Main"), MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                string question = detected.Count == 1
+                    ? Translator.Translate(IgnoreInstallKey, detected[0].Folder)
+                    : string.Concat(Translator.Translate(IgnoreInstallsKey), Environment.NewLine, Environment.NewLine, string.Join(Environment.NewLine, detected.Select(game => game.Folder)));
+                DialogResult answer = MessageBox.Show(this, question, Translator.Translate("Main"), MessageBoxButtons.YesNo, MessageBoxIcon.Question);
                 if (answer != DialogResult.Yes)
                 {
                     return;
                 }
-                _ignored.Ignore(game);
             }
 
-            _games.Remove(game);
+            RemoveGames(_games, _ignored, games);
             EnsureDefaults();
             Populate();
             RaiseChanged();
+        }
+
+        /// <summary>
+        /// Takes the copies off the list. A folder added by hand is simply forgotten; a copy the scan
+        /// found is also remembered as one to leave out, so it stays away on the next start or rescan.
+        /// </summary>
+        public static void RemoveGames(List<AowGame> games, GamesConfigValues ignored, IEnumerable<AowGame> remove)
+        {
+            foreach (AowGame game in remove.ToList())
+            {
+                if (!game.IsManual)
+                {
+                    ignored.Ignore(game);
+                }
+                games.Remove(game);
+            }
         }
 
         private void AddFolder()
