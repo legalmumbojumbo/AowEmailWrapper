@@ -1,8 +1,10 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Xml.Serialization;
 using AowEmailWrapper.ConfigFramework;
+using AowEmailWrapper.Controls;
 using AowEmailWrapper.Games;
 using Xunit;
 
@@ -54,6 +56,22 @@ namespace AowEmailWrapper.Tests
             Assert.True(only.IsDefault);
             Assert.Single(manager.IgnoredInstalls);
             Assert.True(manager.ToConfig().IsIgnored(removedGame));
+        }
+
+        [Fact]
+        public void Removing_several_copies_at_once_forgets_manual_ones_and_ignores_detected_ones()
+        {
+            AowGame manual = new AowGame(AowGameType.Aow1, GameFolder("manual"), InstallSource.Manual);
+            AowGame detected = new AowGame(AowGameType.Aow1, GameFolder("detected"), InstallSource.Folder);
+            AowGame kept = new AowGame(AowGameType.Aow1, GameFolder("kept"), InstallSource.Folder);
+            List<AowGame> games = new List<AowGame> { manual, detected, kept };
+            GamesConfigValues ignored = new GamesConfigValues();
+
+            GamesConfig.RemoveGames(games, ignored, new[] { manual, detected });
+
+            Assert.Same(kept, Assert.Single(games));
+            Assert.True(ignored.IsIgnored(detected));
+            Assert.False(ignored.IsIgnored(manual));
         }
 
         [Fact]

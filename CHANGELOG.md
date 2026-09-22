@@ -9,6 +9,9 @@ release; CI publishes it when a `v<version>` tag is pushed (see "Releasing a ver
   Before, the window was recreated at the off-screen spot where Windows parks minimized windows, at the
   size of a minimized window, so nothing appeared and the Wrapper seemed stuck in the tray. A window that
   lies outside every screen is now moved to the middle of the primary screen.
+- Games tab: several copies can be selected at once with Shift or Ctrl and removed together, with one
+  question covering every copy the scan found. Ctrl+A selects them all and the Delete key removes the
+  selection.
 
 Run `AowEmailWrapper-2.0.7-setup.exe` on Windows 10 or later, or let an installed Wrapper fetch it through
 *Check for updates* on the Settings tab. Accounts and settings carry over.
