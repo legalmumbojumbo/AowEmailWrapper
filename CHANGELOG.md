@@ -3,6 +3,15 @@
 Each versioned release is described here. The section for a version is also the text of its GitHub
 release; CI publishes it when a `v<version>` tag is pushed (see "Releasing a version" in the README).
 
+## 2.0.8
+
+- The games on the tray menu start again. Since version 2.0 the click failed with "The system cannot
+  find the file specified", silently, and every later click was ignored. A start that fails now says
+  so and the next click tries again.
+
+Run `AowEmailWrapper-2.0.8-setup.exe` on Windows 10 or later, or let an installed Wrapper fetch it through
+*Check for updates* on the Settings tab. Accounts and settings carry over.
+
 ## 2.0.7
 
 - *Show* on the tray menu, and a double-click on the tray icon, bring the window back on Windows 11.
