@@ -6,8 +6,9 @@ release; CI publishes it when a `v<version>` tag is pushed (see "Releasing a ver
 ## 2.0.8
 
 - The games on the tray menu start again. Since version 2.0 the click failed with "The system cannot
-  find the file specified", silently, and every later click was ignored. A start that fails now says
-  so and the next click tries again.
+  find the file specified", silently, every later click was ignored, and the tray menu itself could
+  stop opening until the Wrapper was restarted. A start that fails now says so and the next click
+  tries again, and no failure of a tray menu action can leave the menu in that state.
 
 Run `AowEmailWrapper-2.0.8-setup.exe` on Windows 10 or later, or let an installed Wrapper fetch it through
 *Check for updates* on the Settings tab. Accounts and settings carry over.

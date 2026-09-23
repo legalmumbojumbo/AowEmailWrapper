@@ -2521,29 +2521,40 @@ namespace AowEmailWrapper
 
         private void menuItem_Click(object sender, EventArgs e)
         {
-            string tag = ((ToolStripItem)sender).Tag.ToString();
-
-            if (tag.StartsWith(GameMenuTagPrefix, StringComparison.Ordinal))
+            //Nothing may escape a tray menu click: an exception thrown out of it interrupts the menu's
+            //own click handling, after which the menu no longer opens until the Wrapper is restarted
+            try
             {
-                AowGame theGame = _gameManager.GetGameById(tag.Substring(GameMenuTagPrefix.Length));
-                if (theGame != null)
+                string tag = ((ToolStripItem)sender).Tag.ToString();
+
+                if (tag.StartsWith(GameMenuTagPrefix, StringComparison.Ordinal))
                 {
-                    StartGame(theGame);
+                    AowGame theGame = _gameManager.GetGameById(tag.Substring(GameMenuTagPrefix.Length));
+                    if (theGame != null)
+                    {
+                        StartGame(theGame);
+                    }
+                    return;
                 }
-                return;
-            }
 
-            switch (tag)
+                switch (tag)
+                {
+                    case Menu_Show_Tag:
+                        Maximize();
+                        break;
+                    case Menu_Poll_Tag:
+                        PollAll();
+                        break;
+                    case Menu_Exit_Tag:
+                        RaiseEvent(_shutDownEvent, sender, new EventArgs());
+                        break;
+                }
+            }
+            catch (Exception ex)
             {
-                case Menu_Show_Tag:
-                    Maximize();
-                    break;
-                case Menu_Poll_Tag:
-                    PollAll();
-                    break;
-                case Menu_Exit_Tag:
-                    RaiseEvent(_shutDownEvent, sender, new EventArgs());
-                    break;
+                Trace.TraceError("Tray menu action failed: {0}", ex);
+                string title = Translator.Translate(this.Name);
+                BeginInvoke(new Action(() => MessageBox.Show(Visible ? this : null, ex.Message, title, MessageBoxButtons.OK, MessageBoxIcon.Error)));
             }
         }
 
