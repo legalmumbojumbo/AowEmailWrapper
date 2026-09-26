@@ -787,9 +787,10 @@ namespace AowEmailWrapper
                 {
                     theState = IconState.EmailWaiting;
 
+                    //No Activate here: when a turn arrives the player may be in a game, and the balloon
+                    //(a toast on Windows 10 and 11) is the announcement
                     if (showBaloon)
                     {
-                        this.Activate();
                         Activity stranger = NextUnannouncedNewSender();
                         if (stranger != null)
                         {
@@ -1565,7 +1566,9 @@ namespace AowEmailWrapper
                             //The connection should be good
                             RetrySendFailures();
                         }
-                        CheckNotifyIconState();
+                        //A turn that has just arrived is announced as well as shown by the icon: Windows hides the
+                        //tray icon of a newly installed program in the overflow, where the envelope is out of sight
+                        CheckNotifyIconState(e.EmailRecieved);
                         break;
                 }
             }

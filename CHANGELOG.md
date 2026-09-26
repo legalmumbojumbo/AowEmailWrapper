@@ -9,6 +9,10 @@ release; CI publishes it when a `v<version>` tag is pushed (see "Releasing a ver
   find the file specified", silently, every later click was ignored, and the tray menu itself could
   stop opening until the Wrapper was restarted. A start that fails now says so and the next click
   tries again, and no failure of a tray menu action can leave the menu in that state.
+- A turn that arrives is announced with a notification saying how many games are waiting, not only by
+  the tray icon turning into an envelope. Windows hides the icon of a newly installed program behind
+  the taskbar's arrow, and version 2.0 counts as new even where version 1 ran, so the envelope was often
+  out of sight; the manual and quick start say how to keep the icon in view.
 
 Run `AowEmailWrapper-2.0.8-setup.exe` on Windows 10 or later, or let an installed Wrapper fetch it through
 *Check for updates* on the Settings tab. Accounts and settings carry over.
