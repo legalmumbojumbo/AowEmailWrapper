@@ -16,6 +16,20 @@ namespace AowEmailWrapper.ConfigFramework
         [XmlAttribute("address")]
         public string Address { get; set; }
 
+        /// <summary>
+        /// The player whose turn brought the name, for a name learned from another player rather than typed on
+        /// this PC; empty for the player's own.
+        /// </summary>
+        [XmlAttribute("shared_by")]
+        public string SharedBy { get; set; }
+
+        /// <summary>True for a name learned from another player's turn.</summary>
+        [XmlIgnore]
+        public bool IsShared
+        {
+            get { return !string.IsNullOrWhiteSpace(SharedBy); }
+        }
+
         public PlayerAlias()
         { }
 
@@ -51,6 +65,13 @@ namespace AowEmailWrapper.ConfigFramework
             }
             string wanted = address.Trim();
             return _aliases.FirstOrDefault(alias => alias != null && string.Equals((alias.Address ?? string.Empty).Trim(), wanted, StringComparison.OrdinalIgnoreCase));
+        }
+
+        /// <summary>The entry for the address when the player named it on this PC, not when it was learned from a turn.</summary>
+        public PlayerAlias FindOwn(string address)
+        {
+            PlayerAlias alias = Find(address);
+            return alias != null && !alias.IsShared ? alias : null;
         }
 
         /// <summary>The name for the address, or null when it has none.</summary>
@@ -89,6 +110,22 @@ namespace AowEmailWrapper.ConfigFramework
             _aliases.Add(new PlayerAlias(name.Trim(), address.Trim()));
         }
 
+        /// <summary>
+        /// Takes a name another player's turn brought, for an address that has no name yet: a name already here,
+        /// the player's own or one learned earlier, is never replaced. True when the name was taken.
+        /// </summary>
+        public bool Learn(string name, string address, string sharedBy)
+        {
+            if (string.IsNullOrWhiteSpace(name) || name.Trim().Length > PlayerAlias.MaxNameLength ||
+                string.IsNullOrWhiteSpace(address) || string.IsNullOrWhiteSpace(sharedBy) || Find(address) != null)
+            {
+                return false;
+            }
+
+            _aliases.Add(new PlayerAlias(name.Trim(), address.Trim()) { SharedBy = sharedBy.Trim() });
+            return true;
+        }
+
         public bool Remove(string address)
         {
             PlayerAlias alias = Find(address);
@@ -97,7 +134,7 @@ namespace AowEmailWrapper.ConfigFramework
 
         public AliasList Clone()
         {
-            return new AliasList { Aliases = _aliases.Where(alias => alias != null).Select(alias => new PlayerAlias(alias.Name, alias.Address)).ToList() };
+            return new AliasList { Aliases = _aliases.Where(alias => alias != null).Select(alias => new PlayerAlias(alias.Name, alias.Address) { SharedBy = alias.SharedBy }).ToList() };
         }
     }
 }

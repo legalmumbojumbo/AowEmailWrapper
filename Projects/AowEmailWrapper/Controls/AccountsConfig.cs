@@ -19,6 +19,8 @@ namespace AowEmailWrapper.Controls
         private AccountConfigValuesList _accountsList;
         //private AccountConfigValuesList _accountsTemplates;
         public EventHandler Config_Changed;
+        /// <summary>Raised with the name the player gave while setting up an account.</summary>
+        public EventHandler<string> PlayerName_Chosen;
         public AccountActivatedEventHandler Account_Activated;
         private const string AccountsTextKey = "tabAccounts";
         private const string AccountPromptTextKey = "msgAccountPrompt";
@@ -478,6 +480,10 @@ namespace AowEmailWrapper.Controls
                 if (createForm.ShowDialog(this).Equals(DialogResult.OK))
                 {
                     theNewAccount = createForm.ChosenTemplate;
+                    if (theNewAccount != null && !string.IsNullOrEmpty(createForm.PlayerName) && PlayerName_Chosen != null)
+                    {
+                        PlayerName_Chosen(this, createForm.PlayerName);
+                    }
                 }
             }
 

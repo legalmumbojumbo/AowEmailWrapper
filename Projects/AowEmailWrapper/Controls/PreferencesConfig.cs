@@ -16,6 +16,8 @@ namespace AowEmailWrapper.Controls
         private const string ThemeClassicKey = "themeClassic";
         private const string ThemeAgeOfWondersKey = "themeAgeOfWonders";
         private const string ThemeAgeOfWondersWhiteKey = "themeAgeOfWondersWhite";
+        /// <summary>The note on the name sent with turns, shared with the account wizard's.</summary>
+        private const string PlayerNameHintKey = "lblPlayerNameHint";
         private PreferencesConfigValues _config;
         private bool _populating;
 
@@ -52,6 +54,20 @@ namespace AowEmailWrapper.Controls
             fbTheme.InnerComboBox.SelectedIndexChanged += raiseConfigChange;
             fbTheme.InnerComboBox.SelectedIndexChanged += (sender, e) => { if (!_populating) ThemeChanged?.Invoke(this, e); };
             fbGameWrapperDataPort.InnerTextBox.TextChanged += raiseConfigChange;
+            fbPlayerName.InnerTextBox.MaxLength = PlayerAlias.MaxNameLength;
+            string playerNameHint = Translator.Translate(PlayerNameHintKey);
+            fbPlayerName.InnerTextBox.PlaceholderText = playerNameHint;
+            new ToolTip().SetToolTip(fbPlayerName.InnerTextBox, playerNameHint);
+            fbPlayerName.InnerTextBox.TextChanged += raiseConfigChange;
+        }
+
+        /// <summary>Fills in the name sent with the player's turns, unless they have given one already.</summary>
+        public void OfferPlayerName(string name)
+        {
+            if (string.IsNullOrWhiteSpace(fbPlayerName.TextValue) && !string.IsNullOrWhiteSpace(name))
+            {
+                fbPlayerName.TextValue = name.Trim();
+            }
         }
 
         public string Prefix
@@ -85,6 +101,7 @@ namespace AowEmailWrapper.Controls
             _config.CopyToEmailOut = fbCopyToEmailOut.Checked;
             _config.Theme = !string.IsNullOrEmpty(fbTheme.SelectedValue) ? fbTheme.SelectedValue : Theme.DefaultName;
             _config.LanguageCode = !string.IsNullOrEmpty(fbLocalization.SelectedValue) ? fbLocalization.SelectedValue : Translator.CurrentLanguageCode;
+            _config.PlayerName = string.IsNullOrWhiteSpace(fbPlayerName.TextValue) ? null : fbPlayerName.TextValue.Trim();
 
             int testValue;
             if (int.TryParse(fbGameWrapperDataPort.TextValue, out testValue))
@@ -111,6 +128,7 @@ namespace AowEmailWrapper.Controls
                 fbCopyToEmailOut.Checked = _config.CopyToEmailOut;
                 fbLocalization.SelectedValue = _config.LanguageCode;
                 fbTheme.SelectedValue = Theme.Normalize(_config.Theme);
+                fbPlayerName.TextValue = _config.PlayerName ?? string.Empty;
                 fbGameWrapperDataPort.TextValue = _config.GameWrapperDataPort.ToString();
                 UpdateSaveFolderTip();
             }

@@ -34,6 +34,11 @@ namespace AowEmailWrapper.Controls
             base.OnClosed(e);
         }
 
+        public string PlayerName
+        {
+            get { return (autoconfigWizardControl != null) ? autoconfigWizardControl.PlayerName : null; }
+        }
+
         public AccountConfigValues ChosenTemplate
         {
             get { return (autoconfigWizardControl != null) ? autoconfigWizardControl.ChosenTemplate : null; }

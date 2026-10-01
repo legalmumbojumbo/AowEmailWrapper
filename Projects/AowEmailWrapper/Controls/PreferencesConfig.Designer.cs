@@ -41,6 +41,7 @@
             this.fbEmailSound = new AowEmailWrapper.Controls.FormBlockCheckBox();
             this.fbLocalization = new AowEmailWrapper.Controls.FormBlockCombo();
             this.fbTheme = new AowEmailWrapper.Controls.FormBlockCombo();
+            this.fbPlayerName = new AowEmailWrapper.Controls.FormBlockText();
             this.groupBoxPreferences.SuspendLayout();
             this.groupBoxEmailSelection.SuspendLayout();
             this.panelMessage.SuspendLayout();
@@ -55,6 +56,7 @@
             this.groupBoxPreferences.Controls.Add(this.fbAutostart);
             this.groupBoxPreferences.Controls.Add(this.fbSentSound);
             this.groupBoxPreferences.Controls.Add(this.fbEmailSound);
+            this.groupBoxPreferences.Controls.Add(this.fbPlayerName);
             this.groupBoxPreferences.Controls.Add(this.fbTheme);
             this.groupBoxPreferences.Controls.Add(this.fbLocalization);
             this.groupBoxPreferences.Dock = System.Windows.Forms.DockStyle.Top;
@@ -199,6 +201,19 @@
             this.fbLocalization.TabIndex = 19;
             this.fbLocalization.Tag = "";
             // 
+            // fbPlayerName
+            // 
+            this.fbPlayerName.Dock = System.Windows.Forms.DockStyle.Top;
+            this.fbPlayerName.IsPassword = false;
+            this.fbPlayerName.LabelName = "Name sent with your turns:";
+            this.fbPlayerName.Location = new System.Drawing.Point(2, 63);
+            this.fbPlayerName.Margin = new System.Windows.Forms.Padding(2);
+            this.fbPlayerName.MinimumSize = new System.Drawing.Size(0, 24);
+            this.fbPlayerName.Name = "fbPlayerName";
+            this.fbPlayerName.Size = new System.Drawing.Size(419, 24);
+            this.fbPlayerName.TabIndex = 21;
+            this.fbPlayerName.TextValue = "";
+            // 
             // fbTheme
             // 
             this.fbTheme.Dock = System.Windows.Forms.DockStyle.Top;
@@ -238,6 +253,7 @@
         private FormBlockCombo fbSaveFolder;
         private FormBlockCombo fbLocalization;
         private FormBlockCombo fbTheme;
+        private FormBlockText fbPlayerName;
         private FormBlockCheckBox fbAutostart;
         private FormBlockCheckBox fbAutoInstallUpdates;
         private FormBlockCheckBox fbSentSound;

@@ -39,6 +39,9 @@ namespace AowEmailWrapper.Controls
             fbPassword.InnerTextBox.KeyDown += textBoxKeyDown;
 
             fbEmailAddress.InnerTextBox.TextChanged += new EventHandler(emailAddress_TextChanged);
+            fbPlayerName.InnerTextBox.MaxLength = ConfigFramework.PlayerAlias.MaxNameLength;
+            //The note under the name lines up with its text box, whatever width the label column takes
+            fbPlayerName.Layout += (sender, e) => lblPlayerNameHint.Padding = new Padding(fbPlayerName.Left + fbPlayerName.InnerTextBox.Left, 0, 0, 0);
             fbEmailAddress.InnerTextBox.TextChanged += new EventHandler(input_TextChanged);
             fbPassword.InnerTextBox.TextChanged += new EventHandler(input_TextChanged);
             linkPasswordHint.LinkClicked += new LinkLabelLinkClickedEventHandler(linkPasswordHint_LinkClicked);
@@ -72,6 +75,12 @@ namespace AowEmailWrapper.Controls
             {
                 Next(this, e);
             }
+        }
+
+        /// <summary>The name the player goes by, optional; it goes to Settings for their turns to carry.</summary>
+        public string PlayerName
+        {
+            get { return string.IsNullOrWhiteSpace(fbPlayerName.TextValue) ? null : fbPlayerName.TextValue.Trim(); }
         }
 
         public string EmailAddress

@@ -40,9 +40,9 @@ namespace AowEmailWrapper.Controls
             lblAliasesHelp = new Label();
             lblAliasesHelp.Name = "lblAliasesHelp";
             lblAliasesHelp.Dock = DockStyle.Bottom;
-            lblAliasesHelp.Height = 78;
+            lblAliasesHelp.Height = 116;
             lblAliasesHelp.Padding = new Padding(0, 8, 0, 0);
-            lblAliasesHelp.Text = "Give the players you play with the names you know them by. The Activity Log and the Wrapper's messages show the name instead of the email address, and a turn from an address on this list is not marked as coming from a new sender. The list stays on this PC.";
+            lblAliasesHelp.Text = "Give the players you play with the names you know them by. The Activity Log and the Wrapper's messages show the name instead of the email address, and a turn from an address on this list is not marked as coming from a new sender. Your turns carry the names of that game's players, and names a player you know sends with a turn are added here, marked with who shared them; they never replace a name already on the list.";
 
             panelAliases = new Panel();
             panelAliases.Name = "panelAliases";
@@ -58,6 +58,7 @@ namespace AowEmailWrapper.Controls
             listViewAliases.HeaderStyle = ColumnHeaderStyle.Nonclickable;
             listViewAliases.Columns.Add(new ColumnHeader { Text = "Name", Tag = "ContentHeaderMax" });
             listViewAliases.Columns.Add(new ColumnHeader { Text = "Email address", Tag = "Fill" });
+            listViewAliases.Columns.Add(new ColumnHeader { Text = "Shared by", Tag = "ContentHeaderMax" });
             ListViewColumnResizer.AllowUserResizing(listViewAliases);
             listViewAliases.SelectedIndexChanged += (sender, e) => UpdateButtons();
             //Sized on control resize only: reacting to the list's own client size changes loops when a scroll bar appears
@@ -133,6 +134,8 @@ namespace AowEmailWrapper.Controls
             {
                 ListViewItem item = new ListViewItem(alias.Name);
                 item.SubItems.Add(alias.Address);
+                //Blank for the player's own names; editing a shared name makes it the player's own
+                item.SubItems.Add(alias.IsShared ? _aliases.NameFor(alias.SharedBy) ?? alias.SharedBy : string.Empty);
                 item.Tag = alias;
                 if (select != null && string.Equals(alias.Address, select, StringComparison.OrdinalIgnoreCase))
                 {

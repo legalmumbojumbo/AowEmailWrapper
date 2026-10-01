@@ -6,6 +6,10 @@ using System.Net.Sockets;
 using System.Net;
 using System.Threading;
 using System.Windows.Forms;
+using AowEmailWrapper.ConfigFramework;
+using AowEmailWrapper.Helpers;
+using MailKit.Net.Smtp;
+using MailKit.Security;
 using MimeKit;
 using Xunit;
 
@@ -281,11 +285,87 @@ namespace AowEmailWrapper.SmokeTests
             }
         }
 
-        private static MimeMessage TurnEmail(string fileName)
+        [Fact]
+        public void Names_on_a_known_players_turn_are_learned_and_a_strangers_are_not()
+        {
+            using (FakePop3Server mail = new FakePop3Server())
+            using (AppUnderTest app = new AppUnderTest())
+            {
+                app.AddPop3Account(mail.Port);
+                //The opponent has played with the player before; the stranger has not
+                ActivityList log = new ActivityList();
+                log.Contacts.Add("opponent@example.com");
+                string logFolder = Path.Combine(app.AppData, "AowEmailWrapper", "ActivityLog");
+                Directory.CreateDirectory(logFolder);
+                FileHelper.SaveXmlFile(Path.Combine(logFolder, "activity.xml"), log);
+                app.Start();
+                AppUnderTest.Until(() => mail.Sessions >= 1, TimeSpan.FromSeconds(60), "the Wrapper did not check the mailbox:" + Environment.NewLine + mail.Log + Environment.NewLine + app.ReadLog());
+
+                MimeMessage fromStranger = TurnEmail("Stranger.asg", "stranger@evil.example");
+                MailHelper.SetSharedNames(fromStranger, new[] { new PlayerAlias("Bob", "stranger@evil.example") });
+                MimeMessage fromOpponent = TurnEmail("Names test.asg");
+                MailHelper.SetSharedNames(fromOpponent, new[]
+                {
+                    new PlayerAlias("Olga the Orc", "opponent@example.com"),
+                    new PlayerAlias("Not my name", "player@example.com"),
+                    new PlayerAlias("Zed", "zed@example.net"),
+                });
+                mail.Add(fromStranger);
+                mail.Add(fromOpponent);
+                app.ChooseFromTrayMenu("Poll now");
+
+                AppUnderTest.Until(() => app.ReadActivityLog().Contains("Names test.asg") && app.ReadActivityLog().Contains("Stranger.asg"),
+                    TimeSpan.FromSeconds(30), "the turns were not recorded:" + Environment.NewLine + app.ReadLog());
+                string aliasFile = Path.Combine(app.AppData, "AowEmailWrapper", "Config", "aliases.xml");
+                AppUnderTest.Until(() => File.Exists(aliasFile), TimeSpan.FromSeconds(10), "no names were learned:" + Environment.NewLine + app.ReadLog());
+
+                AliasList aliases = FileHelper.LoadXmlFile<AliasList>(aliasFile);
+                PlayerAlias olga = Assert.Single(aliases.Aliases);
+                Assert.Equal("Olga the Orc", olga.Name);
+                Assert.Equal("opponent@example.com", olga.Address);
+                Assert.Equal("opponent@example.com", olga.SharedBy);
+                Assert.Contains("Names on turn Stranger.asg ignored", app.ReadLog());
+            }
+        }
+
+        [Fact]
+        public void A_sent_turn_carries_the_players_name_and_the_names_of_the_other_players()
+        {
+            using (FakePop3Server mail = new FakePop3Server())
+            using (FakeSmtpServer outgoing = new FakeSmtpServer())
+            using (AppUnderTest app = new AppUnderTest())
+            {
+                app.AddPop3Account(mail.Port);
+                app.Config.AccountsList.Accounts[0].SmtpConfig.Port = outgoing.Port;
+                app.Config.PreferencesConfig.PlayerName = "Eugene the Elf";
+                AliasList aliases = new AliasList();
+                aliases.Set("Olga the Orc", "opponent@example.com", null);
+                aliases.Set("Somebody else", "elsewhere@example.net", null);
+                string configFolder = Path.Combine(app.AppData, "AowEmailWrapper", "Config");
+                Directory.CreateDirectory(configFolder);
+                FileHelper.SaveXmlFile(Path.Combine(configFolder, "aliases.xml"), aliases);
+                app.Start();
+
+                //Handed to the Wrapper as the game hands it a turn to send
+                MimeMessage turn = TurnEmail("Outgoing names.asg", "player@example.com", "opponent@example.com");
+                using (SmtpClient game = new SmtpClient())
+                {
+                    game.Connect("127.0.0.1", app.Config.PreferencesConfig.GameWrapperDataPort, SecureSocketOptions.None);
+                    game.Send(turn);
+                    game.Disconnect(true);
+                }
+
+                AppUnderTest.Until(() => outgoing.Messages.Count > 0, TimeSpan.FromSeconds(30), () => "the turn was not sent on:" + Environment.NewLine + outgoing.Log + Environment.NewLine + app.ReadLog());
+                List<string> names = MailHelper.GetSharedNames(outgoing.Messages[0]).Select(alias => alias.Name + " <" + alias.Address + ">").ToList();
+                Assert.Equal(new[] { "Eugene the Elf <player@example.com>", "Olga the Orc <opponent@example.com>" }, names);
+            }
+        }
+
+        private static MimeMessage TurnEmail(string fileName, string from = "opponent@example.com", string to = "player@example.com")
         {
             MimeMessage message = new MimeMessage();
-            message.From.Add(new MailboxAddress("Opponent", "opponent@example.com"));
-            message.To.Add(new MailboxAddress("Player", "player@example.com"));
+            message.From.Add(new MailboxAddress(string.Empty, from));
+            message.To.Add(new MailboxAddress(string.Empty, to));
             message.Subject = "AoW email game (Smoke test)";
             BodyBuilder body = new BodyBuilder { TextBody = "Age of Wonders email game" };
             //Not a save the parser recognises, so it is kept in the check folder rather than a game's

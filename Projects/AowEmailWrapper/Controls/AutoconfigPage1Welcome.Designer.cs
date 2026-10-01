@@ -34,6 +34,8 @@
             this.groupBoxAccount = new System.Windows.Forms.GroupBox();
             this.fbPassword = new AowEmailWrapper.Controls.FormBlockText();
             this.fbEmailAddress = new AowEmailWrapper.Controls.FormBlockText();
+            this.fbPlayerName = new AowEmailWrapper.Controls.FormBlockText();
+            this.lblPlayerNameHint = new System.Windows.Forms.Label();
             this.linkPasswordHint = new System.Windows.Forms.LinkLabel();
             this.buttonSignInMicrosoft = new System.Windows.Forms.Button();
             this.groupBoxAccount.SuspendLayout();
@@ -59,6 +61,8 @@
             // 
             // groupBoxAccount
             // 
+            this.groupBoxAccount.Controls.Add(this.lblPlayerNameHint);
+            this.groupBoxAccount.Controls.Add(this.fbPlayerName);
             this.groupBoxAccount.Controls.Add(this.buttonSignInMicrosoft);
             this.groupBoxAccount.Controls.Add(this.fbPassword);
             this.groupBoxAccount.Controls.Add(this.fbEmailAddress);
@@ -66,7 +70,7 @@
             this.groupBoxAccount.Location = new System.Drawing.Point(0, 120);
             this.groupBoxAccount.Name = "groupBoxAccount";
             this.groupBoxAccount.Padding = new System.Windows.Forms.Padding(3, 0, 3, 3);
-            this.groupBoxAccount.Size = new System.Drawing.Size(431, 74);
+            this.groupBoxAccount.Size = new System.Drawing.Size(431, 132);
             this.groupBoxAccount.TabIndex = 13;
             this.groupBoxAccount.TabStop = false;
             this.groupBoxAccount.Text = "Your account";
@@ -98,6 +102,29 @@
             this.fbEmailAddress.TabIndex = 0;
             this.fbEmailAddress.TextValue = "";
             this.fbEmailAddress.ValidationRegEx = resources.GetString("fbEmailAddress.ValidationRegEx");
+            // 
+            // fbPlayerName
+            // 
+            this.fbPlayerName.Dock = System.Windows.Forms.DockStyle.Top;
+            this.fbPlayerName.IsPassword = false;
+            this.fbPlayerName.LabelName = "Name sent with your turns:";
+            this.fbPlayerName.Location = new System.Drawing.Point(3, 61);
+            this.fbPlayerName.Margin = new System.Windows.Forms.Padding(2);
+            this.fbPlayerName.MinimumSize = new System.Drawing.Size(0, 24);
+            this.fbPlayerName.Name = "fbPlayerName";
+            this.fbPlayerName.Size = new System.Drawing.Size(425, 24);
+            this.fbPlayerName.TabIndex = 3;
+            this.fbPlayerName.TextValue = "";
+            // 
+            // lblPlayerNameHint
+            // 
+            this.lblPlayerNameHint.Dock = System.Windows.Forms.DockStyle.Top;
+            this.lblPlayerNameHint.ForeColor = System.Drawing.SystemColors.GrayText;
+            this.lblPlayerNameHint.Location = new System.Drawing.Point(3, 85);
+            this.lblPlayerNameHint.Name = "lblPlayerNameHint";
+            this.lblPlayerNameHint.Size = new System.Drawing.Size(425, 34);
+            this.lblPlayerNameHint.TabIndex = 4;
+            this.lblPlayerNameHint.Text = "Optional. The other players see this name instead of your email address.";
             // 
             // AutoconfigPage1Welcome
             // 
@@ -144,5 +171,7 @@
         private System.Windows.Forms.GroupBox groupBoxAccount;
         private FormBlockText fbPassword;
         private FormBlockText fbEmailAddress;
+        private FormBlockText fbPlayerName;
+        private System.Windows.Forms.Label lblPlayerNameHint;
     }
 }
