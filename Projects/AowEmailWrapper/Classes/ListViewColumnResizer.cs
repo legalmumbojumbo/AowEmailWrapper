@@ -71,8 +71,8 @@ namespace AowEmailWrapper.Classes
 
         /// <summary>
         /// Lets the player drag column edges. A column the player has sized keeps that width through later
-        /// automatic resizes (it becomes a Fixed column) and the fill column gives or takes the difference as the
-        /// edge moves. The fill column itself and a hidden column cannot be dragged. Double-clicking a column's
+        /// automatic resizes (it becomes a Fixed column) and the fill column gives or takes the difference once the
+        /// edge is let go. The fill column itself and a hidden column cannot be dragged. Double-clicking a column's
         /// edge gives the column back to automatic sizing.
         /// </summary>
         public static void AllowUserResizing(ListView theListView)
@@ -119,7 +119,12 @@ namespace AowEmailWrapper.Classes
 
                 column.Tag = string.Format(CultureInfo.InvariantCulture, UserWidthTemplate, Math.Max(MinimumUserWidth, column.Width));
                 state.Applied[column] = column.Width;
-                FitFillToTheRightOf(theListView, column.Index);
+                //While an edge is dragged nothing else is resized: setting another column's width puts the header back
+                //to the list's widths under the pointer, so the edge jumps back and forth. The drag's end lays it all out
+                if (state.Tracking < 0)
+                {
+                    FitFillToTheRightOf(theListView, column.Index);
+                }
             };
             HeaderWatcher.Attach(theListView, state);
         }
@@ -245,6 +250,18 @@ namespace AowEmailWrapper.Classes
 
         public static void ResizeColumns(ListView theListView)
         {
+            ListState tracking;
+            if (_states.TryGetValue(theListView, out tracking) && tracking.Tracking >= 0)
+            {
+                if ((Control.MouseButtons & MouseButtons.Left) != 0)
+                {
+                    //A column edge is being dragged: resizing any column now puts the header back under the pointer (a
+                    //scroll bar coming or going during the drag resizes the list). The drag's end lays everything out
+                    return;
+                }
+                //A drag that ended without the header saying so, such as one cancelled when the window lost focus
+                tracking.Tracking = -1;
+            }
             _applying++;
             try
             {
@@ -348,8 +365,8 @@ namespace AowEmailWrapper.Classes
         }
 
         /// <summary>
-        /// While an edge is dragged, a fill column to the right of it can change without moving that edge from under
-        /// the pointer, so it gives or takes the room at once; one to the left is fitted when the drag is over.
+        /// A fill column to the right of a column whose width was set gives or takes the room at once; one to the left
+        /// is fitted at the next full resize.
         /// </summary>
         private static void FitFillToTheRightOf(ListView theListView, int index)
         {
@@ -466,14 +483,13 @@ namespace AowEmailWrapper.Classes
 
         /// <summary>
         /// Watches the list's header for what the ListView does not report while a column edge is dragged: the start
-        /// (refused for the fill column and hidden columns, which are not the player's to size), each step (the fill
-        /// column follows when it lies to the right), the end (everything is laid out again), and a double-click on an
+        /// (refused for the fill column and hidden columns, which are not the player's to size), the end (everything
+        /// is laid out again; nothing is resized during the drag itself), and a double-click on an
         /// edge (the column goes back to automatic sizing, where the list itself would fix it at its text's width).
         /// </summary>
         private sealed class HeaderWatcher : NativeWindow
         {
             private const int WM_NOTIFY = 0x004E;
-            private const int HDN_ITEMCHANGEDW = -321;
             private const int HDN_DIVIDERDBLCLICKW = -325;
             private const int HDN_BEGINTRACKW = -326;
             private const int HDN_ENDTRACKW = -327;
@@ -537,13 +553,6 @@ namespace AowEmailWrapper.Classes
                         }
                         _state.Tracking = item;
                         base.WndProc(ref m);
-                        return;
-                    case HDN_ITEMCHANGEDW:
-                        base.WndProc(ref m);
-                        if (_state.Tracking >= 0 && _applying == 0)
-                        {
-                            FitFillToTheRightOf(_list, _state.Tracking);
-                        }
                         return;
                     case HDN_ENDTRACKW:
                         base.WndProc(ref m);
