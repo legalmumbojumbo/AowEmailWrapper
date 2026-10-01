@@ -8,11 +8,22 @@ release; CI publishes it when a `v<version>` tag is pushed (see "Releasing a ver
 - New *Aliases* tab: your own list of the people you play with, each email address with the name you know
   them by. The Activity Log and the Wrapper's messages show the name instead of the address. A turn from an
   address on the list is not marked as coming from a new sender.
+- The main window can be resized and maximised, opens half as wide again as before, and remembers its
+  size. The settings forms keep to their usual width; the lists take the whole window.
 - AoWx copies and their turns show AoWx's own grey dragon on the tray menu and in the Activity Log, as
   Ziggurat's do with its purple one.
 
 ### Fixed
 
+- Dragging column edges in the lists behaves. Widening a column no longer makes the list scroll sideways and
+  narrowing one no longer leaves a gap: the last column gives and takes the room as you drag. Dragging the
+  File Name column no longer stops it filling the list, and a width dragged on it is no longer lost at the
+  next start. A long Status no longer squeezes File Name down to a sliver
+  or pushes the last columns off the side: at any window size every column stays on screen, with long text
+  shortened and shown whole in the row's tooltip. Double-click a column's edge to
+  hand it back to automatic sizing.
+- In the Age of Wonders look, column headings are no longer cut short ("T…" for Turn): the columns were sized
+  for the list's own font, not the wider serif the headings are drawn in.
 - The tray menu shows an envelope next to a game again when a turn for it has arrived. Since version 2.0
   the envelope was drawn just past the menu's right edge, out of sight.
 

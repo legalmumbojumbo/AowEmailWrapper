@@ -221,6 +221,12 @@ namespace AowEmailWrapper.Controls
         private static string ToolTipFor(Activity activity)
         {
             StringBuilder tip = new StringBuilder(activity.FileName);
+            //A narrow window shortens the map and status columns, so the tooltip carries them whole
+            if (!string.IsNullOrEmpty(activity.MapTitle))
+            {
+                tip.Append(Environment.NewLine).Append("Map: ").Append(activity.MapTitle);
+            }
+            tip.Append(Environment.NewLine).Append("Status: ").Append(StatusLabel(activity));
             if (!string.IsNullOrEmpty(activity.Sender))
             {
                 tip.Append(Environment.NewLine).Append("From: ").Append(AliasHelper.DisplayListWithAddresses(activity.Sender));
