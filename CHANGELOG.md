@@ -12,6 +12,9 @@ release; CI publishes it when a `v<version>` tag is pushed (see "Releasing a ver
   size. The settings forms keep to their usual width; the lists take the whole window.
 - AoWx copies and their turns show AoWx's own grey dragon on the tray menu and in the Activity Log, as
   Ziggurat's do with its purple one.
+- The Age of Wonders look puts its text on dark brown in white instead of gold: buttons, tabs, list headings,
+  the title bar and the tray menu. Disabled buttons and menu items are a muted grey, and the arrow to a
+  submenu, which hardly showed, is white too.
 
 ### Fixed
 
