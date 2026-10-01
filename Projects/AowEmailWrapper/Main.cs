@@ -154,8 +154,21 @@ namespace AowEmailWrapper
         private bool _startInTray = false;
         //Set while the window is brought back from the tray: its native state passes through minimized on the way
         private bool _restoringFromTray = false;
-        //The size the window was designed with, for a window that has to be put back on a screen
+        //The size the window was designed with, which is also the least it may be
         private Size _normalSize;
+        //The size the window opens at: the player's last, or wider than designed
+        private Size _preferredSize;
+        //In 96 dpi pixels: the widest the settings forms grow
+        private const int FormContentMaxWidth = 640;
+
+        /// <summary>
+        /// The most a settings form may take, as a MaximumSize: only the width is limited. A height of 0 would not mean
+        /// "no limit" here; it shrinks a control that is docked to the top to nothing.
+        /// </summary>
+        internal static Size FormContentMaxSize
+        {
+            get { return new Size(DpiHelper.Scale(FormContentMaxWidth), short.MaxValue); }
+        }
         //Where the player last had the window at a usable size, kept by the Wrapper itself: some versions of
         //Windows and WinForms lose it when hiding to the tray recreates the window handle
         private Rectangle _lastGoodBounds = Rectangle.Empty;
@@ -241,6 +254,16 @@ namespace AowEmailWrapper
             _windowThreadId = Environment.CurrentManagedThreadId;
             _windowContext = SynchronizationContext.Current ?? new WindowsFormsSynchronizationContext();
             _normalSize = this.Size;
+            //Designed in 2011 for small screens: everything still fits at that size, so it is the least the window may
+            //be, and it opens wider unless the player has given it a size of their own
+            MinimumSize = _normalSize;
+            _preferredSize = PreferredWindowSize();
+            Size = _preferredSize;
+            StartPosition = FormStartPosition.CenterScreen;
+            //Forms read best at about the width they were designed for: in a wide window they keep to it, and the
+            //lists take the whole width
+            preferencesConfig.MaximumSize = FormContentMaxSize;
+            groupBoxSupport.MaximumSize = FormContentMaxSize;
             ImageListLoader.Load(imageListIcons, "Main");
 
             Translator.TranslateForm(this);
@@ -537,6 +560,8 @@ namespace AowEmailWrapper
         /// <summary>Every notification goes through here, so a click can be matched to the one it was on.</summary>
         private void ShowBalloon(int timeout, string title, string text, ToolTipIcon icon)
         {
+            //Players named on the Aliases tab appear by name in every message
+            text = AliasHelper.InText(text);
             _lastBalloonText = text;
             notifyIcon.ShowBalloonTip(timeout, title, text, icon);
         }
@@ -624,7 +649,7 @@ namespace AowEmailWrapper
             }
         }
 
-        /// <summary>Where the player last had the window, or the middle of the primary screen at its designed size.</summary>
+        /// <summary>Where the player last had the window, or the middle of the primary screen at the size it opens at.</summary>
         private Rectangle UsableTarget()
         {
             if (!_lastGoodBounds.IsEmpty && IsUsable(_lastGoodBounds))
@@ -632,12 +657,60 @@ namespace AowEmailWrapper
                 return _lastGoodBounds;
             }
             Screen primary = Screen.PrimaryScreen ?? Screen.AllScreens.FirstOrDefault();
-            Rectangle area = primary != null ? primary.WorkingArea : new Rectangle(0, 0, _normalSize.Width, _normalSize.Height);
+            Rectangle area = primary != null ? primary.WorkingArea : new Rectangle(0, 0, _preferredSize.Width, _preferredSize.Height);
             return new Rectangle(
-                area.Left + Math.Max(0, (area.Width - _normalSize.Width) / 2),
-                area.Top + Math.Max(0, (area.Height - _normalSize.Height) / 2),
-                _normalSize.Width,
-                _normalSize.Height);
+                area.Left + Math.Max(0, (area.Width - _preferredSize.Width) / 2),
+                area.Top + Math.Max(0, (area.Height - _preferredSize.Height) / 2),
+                _preferredSize.Width,
+                _preferredSize.Height);
+        }
+
+        /// <summary>
+        /// The size the window opens at: the one the player last gave it, or half as wide again as designed and a
+        /// little taller. Never smaller than designed, and no bigger than the primary screen's working area allows.
+        /// </summary>
+        private Size PreferredWindowSize()
+        {
+            Size wanted = new Size(_normalSize.Width * 3 / 2, _normalSize.Height * 11 / 10);
+            Size saved = ParseWindowSize(_wrapperConfig != null && _wrapperConfig.PreferencesConfig != null ? _wrapperConfig.PreferencesConfig.WindowSize : null);
+            if (!saved.IsEmpty)
+            {
+                wanted = new Size(DpiHelper.Scale(saved.Width), DpiHelper.Scale(saved.Height));
+            }
+
+            Screen primary = Screen.PrimaryScreen ?? Screen.AllScreens.FirstOrDefault();
+            if (primary != null)
+            {
+                wanted = new Size(Math.Min(wanted.Width, primary.WorkingArea.Width), Math.Min(wanted.Height, primary.WorkingArea.Height));
+            }
+            return new Size(Math.Max(_normalSize.Width, wanted.Width), Math.Max(_normalSize.Height, wanted.Height));
+        }
+
+        /// <summary>"width,height" at 96 dpi from the preferences; empty when missing or not a size.</summary>
+        internal static Size ParseWindowSize(string saved)
+        {
+            string[] parts = (saved ?? string.Empty).Split(',');
+            int width, height;
+            if (parts.Length == 2 &&
+                int.TryParse(parts[0], System.Globalization.NumberStyles.None, System.Globalization.CultureInfo.InvariantCulture, out width) &&
+                int.TryParse(parts[1], System.Globalization.NumberStyles.None, System.Globalization.CultureInfo.InvariantCulture, out height) &&
+                width >= 200 && height >= 200 && width <= 10000 && height <= 10000)
+            {
+                return new Size(width, height);
+            }
+            return Size.Empty;
+        }
+
+        /// <summary>The window's size as the player left it, at its normal (not maximized) size, for the preferences.</summary>
+        private string CurrentWindowSize()
+        {
+            Size size = WindowState == FormWindowState.Normal && Visible ? Size : (!_lastGoodBounds.IsEmpty ? _lastGoodBounds.Size : Size.Empty);
+            if (size.IsEmpty || size.Width < _normalSize.Width || size.Height < _normalSize.Height)
+            {
+                return null;
+            }
+            int dpi = Math.Max(1, DpiHelper.ScreenDpi);
+            return string.Format(System.Globalization.CultureInfo.InvariantCulture, "{0},{1}", size.Width * 96 / dpi, size.Height * 96 / dpi);
         }
 
         /// <summary>At least half the designed size and on some screen.</summary>
@@ -730,10 +803,14 @@ namespace AowEmailWrapper
         {
             string activity = activityListView.ColumnWidths;
             string accounts = accountsConfig.ColumnWidths;
+            //The window's size is kept the same way; a window that was never shown keeps the size saved before
+            string window = CurrentWindowSize() ?? preferences.WindowSize;
             bool changed = !string.Equals(activity, preferences.ActivityColumnWidths, StringComparison.Ordinal) ||
-                !string.Equals(accounts, preferences.AccountsColumnWidths, StringComparison.Ordinal);
+                !string.Equals(accounts, preferences.AccountsColumnWidths, StringComparison.Ordinal) ||
+                !string.Equals(window, preferences.WindowSize, StringComparison.Ordinal);
             preferences.ActivityColumnWidths = activity;
             preferences.AccountsColumnWidths = accounts;
+            preferences.WindowSize = window;
             return changed;
         }
 
@@ -2425,14 +2502,19 @@ namespace AowEmailWrapper
         }
 
         /// <summary>
-        /// A sender is known when a turn has come from or gone to that address before, or when it is
-        /// one of the player's own accounts.
+        /// A sender is known when a turn has come from or gone to that address before, when the player
+        /// has named it on the Aliases tab, or when it is one of the player's own accounts.
         /// </summary>
         private bool IsKnownSender(string sender)
         {
             if (string.IsNullOrWhiteSpace(sender))
             {
                 return false;
+            }
+
+            if (AliasHelper.Current.Find(sender) != null)
+            {
+                return true;
             }
 
             if (_activityLog != null && _activityLog.IsKnownAddress(sender))
@@ -2703,6 +2785,12 @@ namespace AowEmailWrapper
                 activityListView.SmallImageList = imageListIcons;
                 _activityLog = DataManagerHelper.LoadActivityLog();
 
+                //Before the list is shown, so it shows the names
+                AliasHelper.Current = DataManagerHelper.LoadAliases();
+                aliasesConfig.Aliases = AliasHelper.Current;
+                aliasesConfig.KnownAddresses = KnownPlayerAddresses;
+                aliasesConfig.AliasesChanged += new EventHandler(AliasesChanged);
+
                 if (!_activityLog.HistoryImported)
                 {
                     //Turns waiting to be resent name the people the player is playing with
@@ -2720,6 +2808,42 @@ namespace AowEmailWrapper
                 Trace.Flush();
                 ShowException(ex);
             }
+        }
+
+        /// <summary>The Aliases tab changed the list: it is saved and the names show at once.</summary>
+        private void AliasesChanged(object sender, EventArgs e)
+        {
+            try
+            {
+                AliasHelper.Current = aliasesConfig.Aliases;
+                DataManagerHelper.SaveAliases(AliasHelper.Current);
+                activityListView.Refresh();
+            }
+            catch (Exception ex)
+            {
+                Trace.TraceError(ex.ToString());
+                Trace.Flush();
+                ShowException(ex);
+            }
+        }
+
+        /// <summary>Every other player's address the activity log knows, offered while an alias is typed in.</summary>
+        private IEnumerable<string> KnownPlayerAddresses()
+        {
+            if (_activityLog == null)
+            {
+                return Enumerable.Empty<string>();
+            }
+
+            List<string> own = OwnAddresses();
+            return _activityLog.Contacts
+                .Concat(_activityLog.Activities.SelectMany(activity => new[] { activity.Sender, activity.Recipients, activity.Players }))
+                .SelectMany(list => (list ?? string.Empty).Split(ActivityList.AddressSeparator))
+                .Select(address => address.Trim())
+                .Where(address => address.Contains("@") && !own.Any(mine => string.Equals(mine, address, StringComparison.OrdinalIgnoreCase)))
+                .Distinct(StringComparer.OrdinalIgnoreCase)
+                .OrderBy(address => address, StringComparer.OrdinalIgnoreCase)
+                .ToList();
         }
 
         private void ActivityListViewDoubleClicked(object sender, List<Activity> list)

@@ -8,6 +8,7 @@ using System.Windows.Forms;
 using AowEmailWrapper.ConfigFramework;
 using AowEmailWrapper.Games;
 using AowEmailWrapper.Classes;
+using AowEmailWrapper.Helpers;
 using AowEmailWrapper.Localization;
 
 namespace AowEmailWrapper.Controls
@@ -204,13 +205,15 @@ namespace AowEmailWrapper.Controls
             }
             else if (activity.Status == ActivityState.Sent && !string.IsNullOrEmpty(activity.Holder))
             {
-                string held = Translator.Translate(HeldByKey, activity.Holder);
-                label = string.Format("{0} ({1})", label, string.IsNullOrEmpty(held) ? string.Format(HeldByFallback, activity.Holder) : held);
+                string holder = AliasHelper.Display(activity.Holder);
+                string held = Translator.Translate(HeldByKey, holder);
+                label = string.Format("{0} ({1})", label, string.IsNullOrEmpty(held) ? string.Format(HeldByFallback, holder) : held);
             }
             else if (activity.Status == ActivityState.Sent && !string.IsNullOrEmpty(activity.LikelyHolder))
             {
-                string probably = Translator.Translate(ProbablyWithKey, activity.LikelyHolder);
-                label = string.Format("{0} ({1})", label, string.IsNullOrEmpty(probably) ? string.Format(ProbablyWithFallback, activity.LikelyHolder) : probably);
+                string likely = AliasHelper.Display(activity.LikelyHolder);
+                string probably = Translator.Translate(ProbablyWithKey, likely);
+                label = string.Format("{0} ({1})", label, string.IsNullOrEmpty(probably) ? string.Format(ProbablyWithFallback, likely) : probably);
             }
             return label;
         }
@@ -218,23 +221,29 @@ namespace AowEmailWrapper.Controls
         private static string ToolTipFor(Activity activity)
         {
             StringBuilder tip = new StringBuilder(activity.FileName);
+            //A narrow window shortens the map and status columns, so the tooltip carries them whole
+            if (!string.IsNullOrEmpty(activity.MapTitle))
+            {
+                tip.Append(Environment.NewLine).Append("Map: ").Append(activity.MapTitle);
+            }
+            tip.Append(Environment.NewLine).Append("Status: ").Append(StatusLabel(activity));
             if (!string.IsNullOrEmpty(activity.Sender))
             {
-                tip.Append(Environment.NewLine).Append("From: ").Append(activity.Sender);
+                tip.Append(Environment.NewLine).Append("From: ").Append(AliasHelper.DisplayListWithAddresses(activity.Sender));
             }
             if (!string.IsNullOrEmpty(activity.Recipients))
             {
-                tip.Append(Environment.NewLine).Append("To: ").Append(activity.Recipients.Replace(";", ", "));
+                tip.Append(Environment.NewLine).Append("To: ").Append(AliasHelper.DisplayListWithAddresses(activity.Recipients));
             }
             if (!string.IsNullOrEmpty(activity.Players))
             {
-                tip.Append(Environment.NewLine).Append("Players: ").Append(activity.Players.Replace(";", ", "));
+                tip.Append(Environment.NewLine).Append("Players: ").Append(AliasHelper.DisplayListWithAddresses(activity.Players));
             }
             if (!string.IsNullOrEmpty(activity.Whereabouts))
             {
                 foreach (string line in activity.Whereabouts.Split(new[] { TurnQuery.WhereaboutsSeparator }, StringSplitOptions.RemoveEmptyEntries))
                 {
-                    tip.Append(Environment.NewLine).Append(line);
+                    tip.Append(Environment.NewLine).Append(AliasHelper.InText(line));
                 }
             }
             return tip.ToString();
