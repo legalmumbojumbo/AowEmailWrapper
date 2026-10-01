@@ -120,6 +120,53 @@ namespace AowEmailWrapper.Tests
         }
 
         [Fact]
+        public void HoweverNarrowTheListEveryColumnStaysOnScreen()
+        {
+            //Narrower than the squeezed widths allow: the text columns give way further, and so do the fixed column
+            //and the fill column, rather than the last columns being pushed off the side
+            string longStatus = "Sent (probably with somebody.with.a.very.long.address@example.com)";
+            using (Form form = new Form())
+            {
+                ListView list = BuildFillLastList(form, 300, longStatus);
+                Assert.Equal(list.ClientSize.Width, Total(list));
+                Assert.All(list.Columns.Cast<ColumnHeader>().Take(4), column => Assert.True(column.Width >= 24, column.Text + " is " + column.Width));
+                Assert.True(list.Columns[1].Width < 130, "the fixed column gives way once the text columns can give no more");
+            }
+        }
+
+        [Fact]
+        public void ADraggedColumnGivesWayLastAndGetsItsWidthBack()
+        {
+            string longStatus = "Sent (probably with somebody.with.a.very.long.address@example.com)";
+            using (Form form = new Form())
+            {
+                ListView list = BuildFillLastList(form, 1600, longStatus);
+                list.Columns[1].Width = 300;
+                Assert.Equal("Fixed;300", list.Columns[1].Tag);
+
+                list.Width = 520;
+                ListViewColumnResizer.ResizeColumns(list);
+                Assert.Equal(list.ClientSize.Width, Total(list));
+                Assert.Equal("Fixed;300", list.Columns[1].Tag);
+                Assert.True(list.Columns[1].Width > list.Columns[2].Width, "the other columns give way before the dragged one");
+
+                list.Width = 1600;
+                ListViewColumnResizer.ResizeColumns(list);
+                Assert.Equal(300, list.Columns[1].Width);
+            }
+        }
+
+        [Fact]
+        public void TheListScrollsSidewaysOnlyWhenEvenTheHeadingsDoNotFit()
+        {
+            using (Form form = new Form())
+            {
+                ListView list = BuildFillLastList(form, 120, "Sent (probably with somebody@example.com)");
+                Assert.True(Total(list) > list.ClientSize.Width);
+            }
+        }
+
+        [Fact]
         public void ADraggedColumnGoesBackToAutomaticWhenItsEdgeIsDoubleClicked()
         {
             using (Form form = new Form())

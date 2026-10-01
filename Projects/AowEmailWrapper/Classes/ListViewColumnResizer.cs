@@ -26,8 +26,8 @@ namespace AowEmailWrapper.Classes
     /// heading or the widest row, ColumnContent the widest row, and Fixed;0 is a hidden column.
     ///
     /// The list always spans its full width: the fill column gives or takes whatever room the others leave. When
-    /// the room runs out, the widest columns sized to their text are squeezed first, down to a width that still
-    /// reads; only then does the list scroll sideways.
+    /// the room runs out, columns give way until every one of them is on screen (see <see cref="GiveWay"/>); the
+    /// list only scrolls sideways when even their headings do not fit.
     /// </summary>
     public static class ListViewColumnResizer
     {
@@ -306,25 +306,31 @@ namespace AowEmailWrapper.Classes
                 }
             }
 
+            ListState state = _states.GetValue(theListView, list => new ListState());
             int over = widths.Values.Sum() + (fillColumn != null ? fillLeast : 0) - theListView.ClientSize.Width;
-            int squeezed = DpiHelper.Scale(SqueezedWidth);
-            if (over > 0 && squeezable.Sum(column => Math.Max(0, widths[column] - squeezed)) >= over)
+            if (over > 0)
             {
-                //Short of room: the widest columns sized to their text give way first, down to a width that still reads,
-                //with the whole text in the tooltip of the row. When even that would not make the columns fit, nothing
-                //is cut and the list scrolls sideways instead
-                foreach (ColumnHeader column in squeezable.OrderByDescending(column => widths[column]))
+                //The fill column gives way like the others, from the least it would otherwise be given
+                if (fillColumn != null)
                 {
-                    int give = Math.Min(over, widths[column] - squeezed);
-                    if (give > 0)
-                    {
-                        widths[column] -= give;
-                        over -= give;
-                    }
+                    widths[fillColumn] = fillLeast;
+                }
+                int squeezed = DpiHelper.Scale(SqueezedWidth);
+                Func<ColumnHeader, int> heading = column => Math.Max(DpiHelper.Scale(MinimumUserWidth), HeaderWidth(theListView, column));
+                List<ColumnHeader> automatic = widths.Keys.Where(column => !IsHidden(column) && !IsDraggedByPlayer(state, column)).ToList();
+                List<ColumnHeader> dragged = widths.Keys.Where(column => !IsHidden(column) && IsDraggedByPlayer(state, column)).ToList();
+
+                over = GiveWay(widths, squeezable, column => Math.Max(squeezed, heading(column)), over);
+                over = GiveWay(widths, automatic, heading, over);
+                GiveWay(widths, dragged, heading, over);
+
+                if (fillColumn != null)
+                {
+                    fillLeast = widths[fillColumn];
+                    widths.Remove(fillColumn);
                 }
             }
 
-            ListState state = _states.GetValue(theListView, list => new ListState());
             foreach (KeyValuePair<ColumnHeader, int> pair in widths)
             {
                 state.Applied[pair.Key] = pair.Value;
@@ -352,6 +358,38 @@ namespace AowEmailWrapper.Classes
             {
                 FitFillColumn(theListView, fill);
             }
+        }
+
+        /// <summary>
+        /// Short of room, narrows the columns given until they are <paramref name="over"/> pixels narrower or none can
+        /// give more, and returns what is still over. The widest give first, a pixel at a time, so they level out
+        /// rather than one being cut to its floor while the others keep their width; none goes below its floor.
+        /// Columns give way in turn: the columns sized to their text, down to a width that still reads; then every
+        /// automatic column, the fill column included, down to its heading; last the columns the player has dragged,
+        /// which keep their width as the player set it and get it back when the room returns. A shortened row keeps
+        /// its whole text in its tooltip.
+        /// </summary>
+        private static int GiveWay(Dictionary<ColumnHeader, int> widths, List<ColumnHeader> columns, Func<ColumnHeader, int> floor, int over)
+        {
+            Dictionary<ColumnHeader, int> floors = columns.ToDictionary(column => column, floor);
+            while (over > 0)
+            {
+                ColumnHeader widest = columns.Where(column => widths[column] > floors[column]).OrderByDescending(column => widths[column]).FirstOrDefault();
+                if (widest == null)
+                {
+                    break;
+                }
+                widths[widest]--;
+                over--;
+            }
+            return over;
+        }
+
+        /// <summary>True for a column the player has dragged to a width of their own, rather than one sized as designed.</summary>
+        private static bool IsDraggedByPlayer(ListState state, ColumnHeader column)
+        {
+            return state.Designed != null && column.Index >= 0 && column.Index < state.Designed.Length &&
+                !string.Equals(TagOf(column), state.Designed[column.Index], StringComparison.OrdinalIgnoreCase);
         }
 
         /// <summary>Lets the fill column take the room the other columns leave, as they stand now.</summary>
