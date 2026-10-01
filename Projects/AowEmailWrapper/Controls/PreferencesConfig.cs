@@ -16,6 +16,8 @@ namespace AowEmailWrapper.Controls
         private const string ThemeClassicKey = "themeClassic";
         private const string ThemeAgeOfWondersKey = "themeAgeOfWonders";
         private const string ThemeAgeOfWondersWhiteKey = "themeAgeOfWondersWhite";
+        /// <summary>The note on the name sent with turns, shared with the account wizard's.</summary>
+        private const string PlayerNameHintKey = "lblPlayerNameHint";
         private PreferencesConfigValues _config;
         private bool _populating;
 
@@ -53,6 +55,9 @@ namespace AowEmailWrapper.Controls
             fbTheme.InnerComboBox.SelectedIndexChanged += (sender, e) => { if (!_populating) ThemeChanged?.Invoke(this, e); };
             fbGameWrapperDataPort.InnerTextBox.TextChanged += raiseConfigChange;
             fbPlayerName.InnerTextBox.MaxLength = PlayerAlias.MaxNameLength;
+            string playerNameHint = Translator.Translate(PlayerNameHintKey);
+            fbPlayerName.InnerTextBox.PlaceholderText = playerNameHint;
+            new ToolTip().SetToolTip(fbPlayerName.InnerTextBox, playerNameHint);
             fbPlayerName.InnerTextBox.TextChanged += raiseConfigChange;
         }
 

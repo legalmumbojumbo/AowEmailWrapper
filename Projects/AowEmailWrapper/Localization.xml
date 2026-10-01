@@ -45,6 +45,7 @@
 		<lookup key="fbCopyToEmailOut" value="Copy to EmailOut after sending:"/>
 		<lookup key="fbGameWrapperDataPort" value="Game to Wrapper data port:"/>
 		<lookup key="fbPlayerName" value="Name sent with your turns:"/>
+		<lookup key="lblPlayerNameHint" value="Optional. The other players see this name instead of your email address."/>
 		<lookup key="tabActivity" value="Activity Log"/>
 		<lookup key="activityListViewlistView0" value="File Name"/>
 		<lookup key="activityListViewlistView1" value="Map"/>
@@ -335,6 +336,7 @@
 		<lookup key="fbCopyToEmailOut" value="Sauvegarder vers EmailOut après envoi:"/>
 		<lookup key="fbGameWrapperDataPort" value="Jeu de Wrapper port de données:"/>
 		<lookup key="fbPlayerName" value="Nom envoyé avec vos tours :"/>
+		<lookup key="lblPlayerNameHint" value="Facultatif. Les autres joueurs voient ce nom au lieu de votre adresse e-mail."/>
 		<lookup key="tabActivity" value="Historique"/>
 		<lookup key="activityListViewlistView0" value="Nom du fichier"/>
 		<lookup key="activityListViewlistView1" value="Carte"/>
@@ -627,6 +629,7 @@
 		<lookup key="fbCopyToEmailOut" value="Beim Senden auch zu EmailOut kopieren:"/>
 		<lookup key="fbGameWrapperDataPort" value="Spiel um Wrapper datenport:"/>
 		<lookup key="fbPlayerName" value="Name in Ihren Zügen:"/>
+		<lookup key="lblPlayerNameHint" value="Optional. Die anderen Spieler sehen diesen Namen statt Ihrer E-Mail-Adresse."/>
 		<lookup key="tabActivity" value="Aktivitätsreport"/>
 		<lookup key="activityListViewlistView0" value="Dateiname"/>
 		<lookup key="activityListViewlistView1" value="Karte"/>
@@ -919,6 +922,7 @@
 		<lookup key="fbCopyToEmailOut" value="Copiar a EmailOut luego de enviado:"/>
 		<lookup key="fbGameWrapperDataPort" value="Puerto de datos del Juego al Wrapper:"/>
 		<lookup key="fbPlayerName" value="Nombre enviado con sus turnos:"/>
+		<lookup key="lblPlayerNameHint" value="Opcional. Los demás jugadores ven este nombre en lugar de su dirección de correo."/>
 		<lookup key="tabActivity" value="Registro de Actividades"/>
 		<lookup key="activityListViewlistView0" value="Nombre de archivo"/>
 		<lookup key="activityListViewlistView1" value="Mapa"/>
@@ -1211,6 +1215,7 @@
 		<lookup key="fbCopyToEmailOut" value="Copieer naar Emailout folder na verzenden:"/>
 		<lookup key="fbGameWrapperDataPort" value="Spel om Wrapper data poort:"/>
 		<lookup key="fbPlayerName" value="Naam bij uw beurten:"/>
+		<lookup key="lblPlayerNameHint" value="Optioneel. De andere spelers zien deze naam in plaats van uw e-mailadres."/>
 		<lookup key="tabActivity" value="Activiteiten log"/>
 		<lookup key="activityListViewlistView0" value="File naam"/>
 		<lookup key="activityListViewlistView1" value="Kaart"/>
@@ -1497,6 +1502,7 @@
 		<lookup key="fbCopyToEmailOut" value="Kopier til EmailOut efter afsendelse:"/>
 		<lookup key="fbGameWrapperDataPort" value="Spil til Wrapper dataport:"/>
 		<lookup key="fbPlayerName" value="Navn sendt med dine ture:"/>
+		<lookup key="lblPlayerNameHint" value="Valgfrit. De andre spillere ser dette navn i stedet for din e-mailadresse."/>
 		<lookup key="tabActivity" value="Aktivitetsliste"/>
 		<lookup key="activityListViewlistView0" value="Filnavn"/>
 		<lookup key="activityListViewlistView1" value="Kort"/>
@@ -1795,6 +1801,7 @@
 		<lookup key="fbCopyToEmailOut" value="Kopia till EmailOut efter skickat:"/>
 		<lookup key="fbGameWrapperDataPort" value="Spel till Wrapperns data port:"/>
 		<lookup key="fbPlayerName" value="Namn som skickas med dina drag:"/>
+		<lookup key="lblPlayerNameHint" value="Valfritt. De andra spelarna ser det här namnet i stället för din e-postadress."/>
 		<lookup key="tabActivity" value="Aktivitetslogg"/>
 		<lookup key="activityListViewlistView0" value="Filnamn"/>
 		<lookup key="activityListViewlistView1" value="Karta"/>
@@ -2087,6 +2094,7 @@
 		<lookup key="fbCopyToEmailOut" value="Kopiuj do EmailOut po wysłaniu:"/>
 		<lookup key="fbGameWrapperDataPort" value="Port danych przesyłanych z gry do Wrappera:"/>
 		<lookup key="fbPlayerName" value="Nazwa wysyłana z twoimi turami:"/>
+		<lookup key="lblPlayerNameHint" value="Opcjonalnie. Pozostali gracze widzą tę nazwę zamiast twojego adresu e-mail."/>
 		<lookup key="tabActivity" value="Dziennik Aktywności"/>
 		<lookup key="activityListViewlistView0" value="Nazwa Pliku"/>
 		<lookup key="activityListViewlistView1" value="Mapa"/>
@@ -2379,6 +2387,7 @@
 		<lookup key="fbCopyToEmailOut" value="Kopioi Lähetetyt-kansioon viestin lähetyksen jälkeen:"/>
 		<lookup key="fbGameWrapperDataPort" value="Pelin Wrapper Data portti:"/>
 		<lookup key="fbPlayerName" value="Nimi vuorojesi mukana:"/>
+		<lookup key="lblPlayerNameHint" value="Valinnainen. Muut pelaajat näkevät tämän nimen sähköpostiosoitteesi sijaan."/>
 		<lookup key="tabActivity" value="Pelit käynnissä"/>
 		<lookup key="activityListViewlistView0" value="Tiedoston nimi"/>
 		<lookup key="activityListViewlistView1" value="Kartta"/>
@@ -2671,6 +2680,7 @@
 		<lookup key="fbCopyToEmailOut" value="Păstrează o copie în EmailOut după trimitere:"/>
 		<lookup key="fbGameWrapperDataPort" value="Port comunicare dintre joc şi Wrapper:"/>
 		<lookup key="fbPlayerName" value="Nume trimis cu turele dvs.:"/>
+		<lookup key="lblPlayerNameHint" value="Opțional. Ceilalți jucători văd acest nume în locul adresei dvs. de e-mail."/>
 		<lookup key="tabActivity" value="Log de Activitate"/>
 		<lookup key="activityListViewlistView0" value="Nume Fişier"/>
 		<lookup key="activityListViewlistView1" value="Hartă"/>
@@ -2963,6 +2973,7 @@
 		<lookup key="fbCopyToEmailOut" value="Копировать сейв в EmailOut после отправки:"/>
 		<lookup key="fbGameWrapperDataPort" value="Порт сообщения игры и Wrapper'а:"/>
 		<lookup key="fbPlayerName" value="Имя, отправляемое с ходами:"/>
+		<lookup key="lblPlayerNameHint" value="Необязательно. Другие игроки видят это имя вместо вашего адреса эл. почты."/>
 		<lookup key="tabActivity" value="Список событий"/>
 		<lookup key="activityListViewlistView0" value="Сейв"/>
 		<lookup key="activityListViewlistView1" value="Карта"/>
