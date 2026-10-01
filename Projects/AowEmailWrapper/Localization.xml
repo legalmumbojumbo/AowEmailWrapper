@@ -44,6 +44,7 @@
 		<lookup key="themeAgeOfWondersWhite" value="Age of Wonders (white text)"/>
 		<lookup key="fbCopyToEmailOut" value="Copy to EmailOut after sending:"/>
 		<lookup key="fbGameWrapperDataPort" value="Game to Wrapper data port:"/>
+		<lookup key="fbPlayerName" value="Name sent with your turns:"/>
 		<lookup key="tabActivity" value="Activity Log"/>
 		<lookup key="activityListViewlistView0" value="File Name"/>
 		<lookup key="activityListViewlistView1" value="Map"/>
@@ -208,10 +209,11 @@
 		<lookup key="tabAliases" value="Aliases"/>
 		<lookup key="panelAliaseslistViewAliases0" value="Name"/>
 		<lookup key="panelAliaseslistViewAliases1" value="Email address"/>
+		<lookup key="panelAliaseslistViewAliases2" value="Shared by"/>
 		<lookup key="buttonAddAlias" value="Add..."/>
 		<lookup key="buttonEditAlias" value="Edit..."/>
 		<lookup key="buttonRemoveAlias" value="Remove"/>
-		<lookup key="lblAliasesHelp" value="Give the players you play with the names you know them by. The Activity Log and the Wrapper&apos;s messages show the name instead of the email address, and a turn from an address on this list is not marked as coming from a new sender. The list stays on this PC."/>
+		<lookup key="lblAliasesHelp" value="Give the players you play with the names you know them by. The Activity Log and the Wrapper&apos;s messages show the name instead of the email address, and a turn from an address on this list is not marked as coming from a new sender. Your turns carry the names of that game&apos;s players, and names a player you know sends with a turn are added here, marked with who shared them; they never replace a name already on the list."/>
 		<lookup key="titleAddAlias" value="Add alias"/>
 		<lookup key="titleEditAlias" value="Edit alias"/>
 		<lookup key="lblAliasName" value="Name:"/>
@@ -332,6 +334,7 @@
 		<lookup key="themeAgeOfWondersWhite" value="Age of Wonders (texte blanc)"/>
 		<lookup key="fbCopyToEmailOut" value="Sauvegarder vers EmailOut après envoi:"/>
 		<lookup key="fbGameWrapperDataPort" value="Jeu de Wrapper port de données:"/>
+		<lookup key="fbPlayerName" value="Nom envoyé avec vos tours :"/>
 		<lookup key="tabActivity" value="Historique"/>
 		<lookup key="activityListViewlistView0" value="Nom du fichier"/>
 		<lookup key="activityListViewlistView1" value="Carte"/>
@@ -484,10 +487,11 @@
 		<lookup key="tabAliases" value="Alias"/>
 		<lookup key="panelAliaseslistViewAliases0" value="Nom"/>
 		<lookup key="panelAliaseslistViewAliases1" value="Adresse e-mail"/>
+		<lookup key="panelAliaseslistViewAliases2" value="Partagé par"/>
 		<lookup key="buttonAddAlias" value="Ajouter..."/>
 		<lookup key="buttonEditAlias" value="Modifier..."/>
 		<lookup key="buttonRemoveAlias" value="Retirer"/>
-		<lookup key="lblAliasesHelp" value="Donnez aux joueurs avec qui vous jouez les noms sous lesquels vous les connaissez. L&apos;Historique et les messages du Wrapper affichent le nom au lieu de l&apos;adresse e-mail, et un tour venant d&apos;une adresse de cette liste n&apos;est pas marqué comme venant d&apos;un nouvel expéditeur. La liste reste sur ce PC."/>
+		<lookup key="lblAliasesHelp" value="Donnez aux joueurs avec qui vous jouez les noms sous lesquels vous les connaissez. L&apos;Historique et les messages du Wrapper affichent le nom au lieu de l&apos;adresse e-mail, et un tour venant d&apos;une adresse de cette liste n&apos;est pas marqué comme venant d&apos;un nouvel expéditeur. Vos tours transmettent les noms des joueurs de la partie, et les noms qu&apos;un joueur que vous connaissez envoie avec un tour sont ajoutés ici, avec celui qui les a partagés ; ils ne remplacent jamais un nom déjà dans la liste."/>
 		<lookup key="titleAddAlias" value="Ajouter un alias"/>
 		<lookup key="titleEditAlias" value="Modifier l&apos;alias"/>
 		<lookup key="lblAliasName" value="Nom :"/>
@@ -622,6 +626,7 @@
 		<lookup key="themeAgeOfWondersWhite" value="Age of Wonders (weiße Schrift)"/>
 		<lookup key="fbCopyToEmailOut" value="Beim Senden auch zu EmailOut kopieren:"/>
 		<lookup key="fbGameWrapperDataPort" value="Spiel um Wrapper datenport:"/>
+		<lookup key="fbPlayerName" value="Name in Ihren Zügen:"/>
 		<lookup key="tabActivity" value="Aktivitätsreport"/>
 		<lookup key="activityListViewlistView0" value="Dateiname"/>
 		<lookup key="activityListViewlistView1" value="Karte"/>
@@ -774,10 +779,11 @@
 		<lookup key="tabAliases" value="Aliasnamen"/>
 		<lookup key="panelAliaseslistViewAliases0" value="Name"/>
 		<lookup key="panelAliaseslistViewAliases1" value="E-Mail-Adresse"/>
+		<lookup key="panelAliaseslistViewAliases2" value="Geteilt von"/>
 		<lookup key="buttonAddAlias" value="Hinzufügen..."/>
 		<lookup key="buttonEditAlias" value="Bearbeiten..."/>
 		<lookup key="buttonRemoveAlias" value="Entfernen"/>
-		<lookup key="lblAliasesHelp" value="Geben Sie den Spielern, mit denen Sie spielen, die Namen, unter denen Sie sie kennen. Der Aktivitätsreport und die Meldungen des Wrappers zeigen den Namen statt der E-Mail-Adresse, und ein Zug von einer Adresse auf dieser Liste wird nicht als von einem neuen Absender markiert. Die Liste bleibt auf diesem PC."/>
+		<lookup key="lblAliasesHelp" value="Geben Sie den Spielern, mit denen Sie spielen, die Namen, unter denen Sie sie kennen. Der Aktivitätsreport und die Meldungen des Wrappers zeigen den Namen statt der E-Mail-Adresse, und ein Zug von einer Adresse auf dieser Liste wird nicht als von einem neuen Absender markiert. Ihre Züge übermitteln die Namen der Spieler dieser Partie, und Namen, die ein Ihnen bekannter Spieler mit einem Zug schickt, kommen hierher, mit dem, der sie geteilt hat; sie ersetzen nie einen Namen, der schon auf der Liste steht."/>
 		<lookup key="titleAddAlias" value="Aliasnamen hinzufügen"/>
 		<lookup key="titleEditAlias" value="Aliasnamen bearbeiten"/>
 		<lookup key="lblAliasName" value="Name:"/>
@@ -912,6 +918,7 @@
 		<lookup key="themeAgeOfWondersWhite" value="Age of Wonders (texto blanco)"/>
 		<lookup key="fbCopyToEmailOut" value="Copiar a EmailOut luego de enviado:"/>
 		<lookup key="fbGameWrapperDataPort" value="Puerto de datos del Juego al Wrapper:"/>
+		<lookup key="fbPlayerName" value="Nombre enviado con sus turnos:"/>
 		<lookup key="tabActivity" value="Registro de Actividades"/>
 		<lookup key="activityListViewlistView0" value="Nombre de archivo"/>
 		<lookup key="activityListViewlistView1" value="Mapa"/>
@@ -1063,10 +1070,11 @@
 		<lookup key="tabAliases" value="Alias"/>
 		<lookup key="panelAliaseslistViewAliases0" value="Nombre"/>
 		<lookup key="panelAliaseslistViewAliases1" value="Dirección de correo"/>
+		<lookup key="panelAliaseslistViewAliases2" value="Compartido por"/>
 		<lookup key="buttonAddAlias" value="Añadir..."/>
 		<lookup key="buttonEditAlias" value="Editar..."/>
 		<lookup key="buttonRemoveAlias" value="Quitar"/>
-		<lookup key="lblAliasesHelp" value="Dé a los jugadores con los que juega los nombres por los que los conoce. El Registro de Actividades y los mensajes del Wrapper muestran el nombre en lugar de la dirección de correo, y un turno de una dirección de esta lista no se marca como de un remitente nuevo. La lista se queda en este PC."/>
+		<lookup key="lblAliasesHelp" value="Dé a los jugadores con los que juega los nombres por los que los conoce. El Registro de Actividades y los mensajes del Wrapper muestran el nombre en lugar de la dirección de correo, y un turno de una dirección de esta lista no se marca como de un remitente nuevo. Sus turnos llevan los nombres de los jugadores de esa partida, y los nombres que un jugador que usted conoce envía con un turno se añaden aquí, indicando quién los compartió; nunca sustituyen un nombre que ya está en la lista."/>
 		<lookup key="titleAddAlias" value="Añadir alias"/>
 		<lookup key="titleEditAlias" value="Editar alias"/>
 		<lookup key="lblAliasName" value="Nombre:"/>
@@ -1202,6 +1210,7 @@
 		<lookup key="themeAgeOfWondersWhite" value="Age of Wonders (witte tekst)"/>
 		<lookup key="fbCopyToEmailOut" value="Copieer naar Emailout folder na verzenden:"/>
 		<lookup key="fbGameWrapperDataPort" value="Spel om Wrapper data poort:"/>
+		<lookup key="fbPlayerName" value="Naam bij uw beurten:"/>
 		<lookup key="tabActivity" value="Activiteiten log"/>
 		<lookup key="activityListViewlistView0" value="File naam"/>
 		<lookup key="activityListViewlistView1" value="Kaart"/>
@@ -1353,10 +1362,11 @@
 		<lookup key="tabAliases" value="Aliassen"/>
 		<lookup key="panelAliaseslistViewAliases0" value="Naam"/>
 		<lookup key="panelAliaseslistViewAliases1" value="E-mailadres"/>
+		<lookup key="panelAliaseslistViewAliases2" value="Gedeeld door"/>
 		<lookup key="buttonAddAlias" value="Toevoegen..."/>
 		<lookup key="buttonEditAlias" value="Bewerken..."/>
 		<lookup key="buttonRemoveAlias" value="Verwijderen"/>
-		<lookup key="lblAliasesHelp" value="Geef de spelers met wie u speelt de namen waaronder u ze kent. Het Activiteiten log en de berichten van de Wrapper tonen de naam in plaats van het e-mailadres, en een beurt van een adres op deze lijst wordt niet gemarkeerd als afkomstig van een nieuwe afzender. De lijst blijft op deze pc."/>
+		<lookup key="lblAliasesHelp" value="Geef de spelers met wie u speelt de namen waaronder u ze kent. Het Activiteiten log en de berichten van de Wrapper tonen de naam in plaats van het e-mailadres, en een beurt van een adres op deze lijst wordt niet gemarkeerd als afkomstig van een nieuwe afzender. Uw beurten bevatten de namen van de spelers van dat spel, en namen die een speler die u kent met een beurt meestuurt, worden hier toegevoegd met wie ze deelde; ze vervangen nooit een naam die al op de lijst staat."/>
 		<lookup key="titleAddAlias" value="Alias toevoegen"/>
 		<lookup key="titleEditAlias" value="Alias bewerken"/>
 		<lookup key="lblAliasName" value="Naam:"/>
@@ -1486,6 +1496,7 @@
 		<lookup key="themeAgeOfWondersWhite" value="Age of Wonders (hvid tekst)"/>
 		<lookup key="fbCopyToEmailOut" value="Kopier til EmailOut efter afsendelse:"/>
 		<lookup key="fbGameWrapperDataPort" value="Spil til Wrapper dataport:"/>
+		<lookup key="fbPlayerName" value="Navn sendt med dine ture:"/>
 		<lookup key="tabActivity" value="Aktivitetsliste"/>
 		<lookup key="activityListViewlistView0" value="Filnavn"/>
 		<lookup key="activityListViewlistView1" value="Kort"/>
@@ -1638,10 +1649,11 @@
 		<lookup key="tabAliases" value="Aliasser"/>
 		<lookup key="panelAliaseslistViewAliases0" value="Navn"/>
 		<lookup key="panelAliaseslistViewAliases1" value="E-mailadresse"/>
+		<lookup key="panelAliaseslistViewAliases2" value="Delt af"/>
 		<lookup key="buttonAddAlias" value="Tilføj..."/>
 		<lookup key="buttonEditAlias" value="Rediger..."/>
 		<lookup key="buttonRemoveAlias" value="Fjern"/>
-		<lookup key="lblAliasesHelp" value="Giv de spillere, du spiller med, de navne, du kender dem under. Aktivitetslisten og Wrapperens beskeder viser navnet i stedet for e-mailadressen, og en tur fra en adresse på denne liste markeres ikke som fra en ny afsender. Listen bliver på denne pc."/>
+		<lookup key="lblAliasesHelp" value="Giv de spillere, du spiller med, de navne, du kender dem under. Aktivitetslisten og Wrapperens beskeder viser navnet i stedet for e-mailadressen, og en tur fra en adresse på denne liste markeres ikke som fra en ny afsender. Dine ture sender navnene på spillets spillere med, og navne, som en spiller du kender sender med en tur, tilføjes her med, hvem der delte dem; de erstatter aldrig et navn, der allerede står på listen."/>
 		<lookup key="titleAddAlias" value="Tilføj alias"/>
 		<lookup key="titleEditAlias" value="Rediger alias"/>
 		<lookup key="lblAliasName" value="Navn:"/>
@@ -1782,6 +1794,7 @@
 		<lookup key="themeAgeOfWondersWhite" value="Age of Wonders (vit text)"/>
 		<lookup key="fbCopyToEmailOut" value="Kopia till EmailOut efter skickat:"/>
 		<lookup key="fbGameWrapperDataPort" value="Spel till Wrapperns data port:"/>
+		<lookup key="fbPlayerName" value="Namn som skickas med dina drag:"/>
 		<lookup key="tabActivity" value="Aktivitetslogg"/>
 		<lookup key="activityListViewlistView0" value="Filnamn"/>
 		<lookup key="activityListViewlistView1" value="Karta"/>
@@ -1934,10 +1947,11 @@
 		<lookup key="tabAliases" value="Alias"/>
 		<lookup key="panelAliaseslistViewAliases0" value="Namn"/>
 		<lookup key="panelAliaseslistViewAliases1" value="E-postadress"/>
+		<lookup key="panelAliaseslistViewAliases2" value="Delat av"/>
 		<lookup key="buttonAddAlias" value="Lägg till..."/>
 		<lookup key="buttonEditAlias" value="Redigera..."/>
 		<lookup key="buttonRemoveAlias" value="Ta bort"/>
-		<lookup key="lblAliasesHelp" value="Ge spelarna du spelar med de namn du känner dem under. Aktivitetsloggen och Wrapperns meddelanden visar namnet i stället för e-postadressen, och ett drag från en adress på den här listan markeras inte som från en ny avsändare. Listan stannar på den här datorn."/>
+		<lookup key="lblAliasesHelp" value="Ge spelarna du spelar med de namn du känner dem under. Aktivitetsloggen och Wrapperns meddelanden visar namnet i stället för e-postadressen, och ett drag från en adress på den här listan markeras inte som från en ny avsändare. Dina drag skickar med namnen på spelets spelare, och namn som en spelare du känner skickar med ett drag läggs till här med vem som delade dem; de ersätter aldrig ett namn som redan finns på listan."/>
 		<lookup key="titleAddAlias" value="Lägg till alias"/>
 		<lookup key="titleEditAlias" value="Redigera alias"/>
 		<lookup key="lblAliasName" value="Namn:"/>
@@ -2072,6 +2086,7 @@
 		<lookup key="themeAgeOfWondersWhite" value="Age of Wonders (biały tekst)"/>
 		<lookup key="fbCopyToEmailOut" value="Kopiuj do EmailOut po wysłaniu:"/>
 		<lookup key="fbGameWrapperDataPort" value="Port danych przesyłanych z gry do Wrappera:"/>
+		<lookup key="fbPlayerName" value="Nazwa wysyłana z twoimi turami:"/>
 		<lookup key="tabActivity" value="Dziennik Aktywności"/>
 		<lookup key="activityListViewlistView0" value="Nazwa Pliku"/>
 		<lookup key="activityListViewlistView1" value="Mapa"/>
@@ -2224,10 +2239,11 @@
 		<lookup key="tabAliases" value="Aliasy"/>
 		<lookup key="panelAliaseslistViewAliases0" value="Nazwa"/>
 		<lookup key="panelAliaseslistViewAliases1" value="Adres e-mail"/>
+		<lookup key="panelAliaseslistViewAliases2" value="Udostępnił"/>
 		<lookup key="buttonAddAlias" value="Dodaj..."/>
 		<lookup key="buttonEditAlias" value="Edytuj..."/>
 		<lookup key="buttonRemoveAlias" value="Usuń"/>
-		<lookup key="lblAliasesHelp" value="Nadaj graczom, z którymi grasz, nazwy, pod którymi ich znasz. Dziennik Aktywności i komunikaty Wrappera pokazują nazwę zamiast adresu e-mail, a tura z adresu z tej listy nie jest oznaczana jako tura od nowego nadawcy. Lista zostaje na tym komputerze."/>
+		<lookup key="lblAliasesHelp" value="Nadaj graczom, z którymi grasz, nazwy, pod którymi ich znasz. Dziennik Aktywności i komunikaty Wrappera pokazują nazwę zamiast adresu e-mail, a tura z adresu z tej listy nie jest oznaczana jako tura od nowego nadawcy. Twoje tury przekazują nazwy graczy tej gry, a nazwy, które znany ci gracz wyśle z turą, są dodawane tutaj z informacją, kto je udostępnił; nigdy nie zastępują nazwy, która już jest na liście."/>
 		<lookup key="titleAddAlias" value="Dodaj alias"/>
 		<lookup key="titleEditAlias" value="Edytuj alias"/>
 		<lookup key="lblAliasName" value="Nazwa:"/>
@@ -2362,6 +2378,7 @@
 		<lookup key="themeAgeOfWondersWhite" value="Age of Wonders (valkoinen teksti)"/>
 		<lookup key="fbCopyToEmailOut" value="Kopioi Lähetetyt-kansioon viestin lähetyksen jälkeen:"/>
 		<lookup key="fbGameWrapperDataPort" value="Pelin Wrapper Data portti:"/>
+		<lookup key="fbPlayerName" value="Nimi vuorojesi mukana:"/>
 		<lookup key="tabActivity" value="Pelit käynnissä"/>
 		<lookup key="activityListViewlistView0" value="Tiedoston nimi"/>
 		<lookup key="activityListViewlistView1" value="Kartta"/>
@@ -2514,10 +2531,11 @@
 		<lookup key="tabAliases" value="Aliakset"/>
 		<lookup key="panelAliaseslistViewAliases0" value="Nimi"/>
 		<lookup key="panelAliaseslistViewAliases1" value="Sähköpostiosoite"/>
+		<lookup key="panelAliaseslistViewAliases2" value="Jakaja"/>
 		<lookup key="buttonAddAlias" value="Lisää..."/>
 		<lookup key="buttonEditAlias" value="Muokkaa..."/>
 		<lookup key="buttonRemoveAlias" value="Poista"/>
-		<lookup key="lblAliasesHelp" value="Anna pelaajille, joiden kanssa pelaat, nimet, joilla tunnet heidät. Pelit käynnissä -välilehti ja Wrapperin viestit näyttävät nimen sähköpostiosoitteen sijaan, eikä tämän listan osoitteesta tullutta vuoroa merkitä uuden lähettäjän vuoroksi. Lista pysyy tällä tietokoneella."/>
+		<lookup key="lblAliasesHelp" value="Anna pelaajille, joiden kanssa pelaat, nimet, joilla tunnet heidät. Pelit käynnissä -välilehti ja Wrapperin viestit näyttävät nimen sähköpostiosoitteen sijaan, eikä tämän listan osoitteesta tullutta vuoroa merkitä uuden lähettäjän vuoroksi. Vuorosi välittävät pelin pelaajien nimet, ja nimet, jotka tuntemasi pelaaja lähettää vuoron mukana, lisätään tähän jakajan kanssa; ne eivät koskaan korvaa listalla jo olevaa nimeä."/>
 		<lookup key="titleAddAlias" value="Lisää alias"/>
 		<lookup key="titleEditAlias" value="Muokkaa aliasta"/>
 		<lookup key="lblAliasName" value="Nimi:"/>
@@ -2652,6 +2670,7 @@
 		<lookup key="themeAgeOfWondersWhite" value="Age of Wonders (text alb)"/>
 		<lookup key="fbCopyToEmailOut" value="Păstrează o copie în EmailOut după trimitere:"/>
 		<lookup key="fbGameWrapperDataPort" value="Port comunicare dintre joc şi Wrapper:"/>
+		<lookup key="fbPlayerName" value="Nume trimis cu turele dvs.:"/>
 		<lookup key="tabActivity" value="Log de Activitate"/>
 		<lookup key="activityListViewlistView0" value="Nume Fişier"/>
 		<lookup key="activityListViewlistView1" value="Hartă"/>
@@ -2804,10 +2823,11 @@
 		<lookup key="tabAliases" value="Aliasuri"/>
 		<lookup key="panelAliaseslistViewAliases0" value="Nume"/>
 		<lookup key="panelAliaseslistViewAliases1" value="Adresă de e-mail"/>
+		<lookup key="panelAliaseslistViewAliases2" value="Partajat de"/>
 		<lookup key="buttonAddAlias" value="Adaugă..."/>
 		<lookup key="buttonEditAlias" value="Editează..."/>
 		<lookup key="buttonRemoveAlias" value="Elimină"/>
-		<lookup key="lblAliasesHelp" value="Dați jucătorilor cu care jucați numele sub care îi cunoașteți. Log de Activitate și mesajele Wrapper-ului arată numele în locul adresei de e-mail, iar o tură de la o adresă din această listă nu este marcată ca venind de la un expeditor nou. Lista rămâne pe acest PC."/>
+		<lookup key="lblAliasesHelp" value="Dați jucătorilor cu care jucați numele sub care îi cunoașteți. Log de Activitate și mesajele Wrapper-ului arată numele în locul adresei de e-mail, iar o tură de la o adresă din această listă nu este marcată ca venind de la un expeditor nou. Turele dumneavoastră transmit numele jucătorilor din acel joc, iar numele trimise cu o tură de un jucător pe care îl cunoașteți sunt adăugate aici, împreună cu cine le-a partajat; nu înlocuiesc niciodată un nume aflat deja pe listă."/>
 		<lookup key="titleAddAlias" value="Adaugă alias"/>
 		<lookup key="titleEditAlias" value="Editează alias"/>
 		<lookup key="lblAliasName" value="Nume:"/>
@@ -2942,6 +2962,7 @@
 		<lookup key="themeAgeOfWondersWhite" value="Age of Wonders (белый текст)"/>
 		<lookup key="fbCopyToEmailOut" value="Копировать сейв в EmailOut после отправки:"/>
 		<lookup key="fbGameWrapperDataPort" value="Порт сообщения игры и Wrapper'а:"/>
+		<lookup key="fbPlayerName" value="Имя, отправляемое с ходами:"/>
 		<lookup key="tabActivity" value="Список событий"/>
 		<lookup key="activityListViewlistView0" value="Сейв"/>
 		<lookup key="activityListViewlistView1" value="Карта"/>
@@ -3094,10 +3115,11 @@
 		<lookup key="tabAliases" value="Псевдонимы"/>
 		<lookup key="panelAliaseslistViewAliases0" value="Имя"/>
 		<lookup key="panelAliaseslistViewAliases1" value="Адрес эл. почты"/>
+		<lookup key="panelAliaseslistViewAliases2" value="Кто поделился"/>
 		<lookup key="buttonAddAlias" value="Добавить..."/>
 		<lookup key="buttonEditAlias" value="Изменить..."/>
 		<lookup key="buttonRemoveAlias" value="Удалить"/>
-		<lookup key="lblAliasesHelp" value="Дайте игрокам, с которыми вы играете, имена, под которыми вы их знаете. Список событий и сообщения Wrapper&apos;а показывают имя вместо адреса эл. почты, а ход с адреса из этого списка не помечается как ход от нового отправителя. Список хранится только на этом ПК."/>
+		<lookup key="lblAliasesHelp" value="Дайте игрокам, с которыми вы играете, имена, под которыми вы их знаете. Список событий и сообщения Wrapper&apos;а показывают имя вместо адреса эл. почты, а ход с адреса из этого списка не помечается как ход от нового отправителя. Ваши ходы передают имена игроков этой партии, а имена, которые знакомый вам игрок присылает с ходом, добавляются сюда с отметкой, кто ими поделился; они никогда не заменяют имя, которое уже есть в списке."/>
 		<lookup key="titleAddAlias" value="Добавить псевдоним"/>
 		<lookup key="titleEditAlias" value="Изменить псевдоним"/>
 		<lookup key="lblAliasName" value="Имя:"/>

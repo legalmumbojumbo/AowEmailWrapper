@@ -938,6 +938,7 @@ namespace AowEmailWrapper
 
             accountsConfig.Account_Activated += new AccountActivatedEventHandler(Account_Activated);
             accountsConfig.Config_Changed += new EventHandler(Rebuild_Account_Menu);
+            accountsConfig.PlayerName_Chosen += (sender, name) => preferencesConfig.OfferPlayerName(name);
 
             activityListView.OnDoubleClick += new ActivityListViewEventHandler(ActivityListViewDoubleClicked);
             activityListView.OnListChanged += new EventHandler(ActivityLogChanged);
@@ -2186,6 +2187,7 @@ namespace AowEmailWrapper
                 if (theEmail != null)
                 {
                     TagOutgoingInstall(theEmail);
+                    TagSharedNames(theEmail);
 
                     SmtpSender sender = RouteOutgoing(theEmail);
                     if (sender == null)
@@ -2481,6 +2483,7 @@ namespace AowEmailWrapper
 
             //Decided before the previous turn of this game is dropped, since that may be the record of this sender
             bool knownSender = IsKnownSender(e.Sender);
+            LearnSharedNames(e, knownSender);
 
             Activity lastActivity = _activityLog.GetLastActivityByFileName(e.FileName);
 
@@ -2503,7 +2506,8 @@ namespace AowEmailWrapper
 
         /// <summary>
         /// A sender is known when a turn has come from or gone to that address before, when the player
-        /// has named it on the Aliases tab, or when it is one of the player's own accounts.
+        /// has named it on the Aliases tab (a name learned from another player's turn does not count), or when it
+        /// is one of the player's own accounts.
         /// </summary>
         private bool IsKnownSender(string sender)
         {
@@ -2512,7 +2516,7 @@ namespace AowEmailWrapper
                 return false;
             }
 
-            if (AliasHelper.Current.Find(sender) != null)
+            if (AliasHelper.Current.FindOwn(sender) != null)
             {
                 return true;
             }
@@ -2718,6 +2722,79 @@ namespace AowEmailWrapper
             catch (Exception ex)
             {
                 Trace.TraceWarning("Could not work out which copy of the game sent the turn: {0}", ex);
+            }
+        }
+
+        /// <summary>
+        /// Puts on an outgoing turn the player's own name and the names this PC has for the game's other players
+        /// (those the save lists and the turn goes to), so the players it reaches can show them by name too.
+        /// </summary>
+        private void TagSharedNames(MimeMessage theEmail)
+        {
+            try
+            {
+                MimePart theAttachment = MailHelper.GetFirstAttachment(theEmail);
+                if (theAttachment == null)
+                {
+                    return;
+                }
+
+                List<string> players = theEmail.To.Mailboxes.Concat(theEmail.Cc.Mailboxes).Select(mailbox => mailbox.Address).ToList();
+                using (ASGFileInfo theASG = new ASGFileInfo(theAttachment))
+                {
+                    if (theASG.PlayerEmails != null)
+                    {
+                        players.AddRange(theASG.PlayerEmails);
+                    }
+                }
+
+                MailboxAddress from = theEmail.From.Mailboxes.FirstOrDefault();
+                string playerName = _wrapperConfig != null && _wrapperConfig.PreferencesConfig != null ? _wrapperConfig.PreferencesConfig.PlayerName : null;
+                List<PlayerAlias> names = AliasHelper.NamesToShare(AliasHelper.Current, playerName, from != null ? from.Address : null, players);
+                MailHelper.SetSharedNames(theEmail, names);
+                if (names.Count > 0)
+                {
+                    Trace.TraceInformation("Turn {0} names {1} player(s)", theAttachment.FileName, names.Count);
+                }
+            }
+            catch (Exception ex)
+            {
+                Trace.TraceWarning("Could not put the players' names on the turn: {0}", ex.Message);
+            }
+        }
+
+        /// <summary>
+        /// Takes the names a received turn carried for the game's players into the Aliases tab, when the sender is
+        /// someone the player already knows. A name already there is never replaced.
+        /// </summary>
+        private void LearnSharedNames(AowGameSavedEventArgs e, bool knownSender)
+        {
+            if (e.SharedNames == null || e.SharedNames.Count == 0)
+            {
+                return;
+            }
+            if (!knownSender)
+            {
+                Trace.TraceWarning("Names on turn {0} ignored: {1} has not sent or received a turn before", e.FileName, e.Sender);
+                return;
+            }
+
+            try
+            {
+                AliasList aliases = AliasHelper.Current.Clone();
+                IEnumerable<string> players = (e.Players ?? string.Empty).Split(ActivityList.AddressSeparator);
+                int learned = AliasHelper.LearnFromTurn(aliases, e.SharedNames, e.Sender, knownSender, players, OwnAddresses());
+                if (learned > 0)
+                {
+                    AliasHelper.Current = aliases;
+                    aliasesConfig.Aliases = aliases;
+                    DataManagerHelper.SaveAliases(aliases);
+                    Trace.TraceInformation("Learned {0} player name(s) from {1}'s turn {2}", learned, e.Sender, e.FileName);
+                }
+            }
+            catch (Exception ex)
+            {
+                Trace.TraceWarning("Could not take the players' names from turn {0}: {1}", e.FileName, ex.Message);
             }
         }
 

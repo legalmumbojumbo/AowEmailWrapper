@@ -8,6 +8,11 @@ release; CI publishes it when a `v<version>` tag is pushed (see "Releasing a ver
 - New *Aliases* tab: your own list of the people you play with, each email address with the name you know
   them by. The Activity Log and the Wrapper's messages show the name instead of the address. A turn from an
   address on the list is not marked as coming from a new sender.
+- Names travel with turns, so only one player in a game has to fill in the Aliases tab. Set your own under
+  *Name sent with your turns* on the Settings tab (setting up an account asks for it too). Your turns carry it
+  and the names your list has for that game's other players; names on a turn from a player you know are added
+  to your list, marked with who shared them. A stranger's turn adds nothing, a name you already have is never
+  replaced, and a shared name does not count as having met that address.
 - The main window can be resized and maximised, opens half as wide again as before, and remembers its
   size. The settings forms keep to their usual width; the lists take the whole window.
 - AoWx copies and their turns show AoWx's own grey dragon on the tray menu and in the Activity Log, as

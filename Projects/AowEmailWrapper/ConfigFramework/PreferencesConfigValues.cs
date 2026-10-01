@@ -92,6 +92,10 @@ namespace AowEmailWrapper.ConfigFramework
             set { _theme = string.IsNullOrEmpty(value) ? Helpers.Theme.DefaultName : value; }
         }
 
+        /// <summary>The name the player goes by, sent with their turns so the other players see it instead of the address.</summary>
+        [XmlAttribute("playerName")]
+        public string PlayerName { get; set; }
+
         /// <summary>Activity log column widths the player has dragged, as ListViewColumnResizer.SavedWidths gives them.</summary>
         [XmlAttribute("activityColumns")]
         public string ActivityColumnWidths { get; set; }

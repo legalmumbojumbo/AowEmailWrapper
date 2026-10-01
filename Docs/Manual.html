@@ -124,7 +124,7 @@
 <p><strong>Save Settings</strong> at the bottom of the window lights up when something has changed. Saving restarts the mailbox checking with the new settings.</p>
 
 <h2 id="wizard">Adding an account</h2>
-<p>Click <strong>Add New</strong> on the Accounts tab. The wizard needs your address and a password, then finds the server settings by itself.</p>
+<p>Click <strong>Add New</strong> on the Accounts tab. The wizard needs your address and a password, then finds the server settings by itself. It also asks, if you like, for the <a href="#aliases">name sent with your turns</a>; that goes to the Settings tab unless you have set one there already.</p>
 <figure>
   <img src="images/wizard-page1-gmail.png" alt="Wizard page 1 with a Gmail address">
   <figcaption>Page 1. For Gmail, Yahoo, AOL and Microsoft addresses a note under the boxes explains what to enter.</figcaption>
@@ -179,13 +179,21 @@
 </ul>
 
 <h2 id="aliases">Aliases tab</h2>
-<p>Your own list of the people you play with: each email address with the name you know its owner by, such as their name on Discord or the forums. Wherever the Wrapper would show one of these addresses, it shows the name instead: in the Status column of the <a href="#activity">Activity Log</a>, in the tooltip of a line (as <em>Bob (bob@example.com)</em>), and in its messages, such as the one saying a turn was sent. The list is kept in the Wrapper's settings folder on this PC and is never sent to anyone.</p>
+<p>Your own list of the people you play with: each email address with the name you know its owner by, such as their name on Discord or the forums. Wherever the Wrapper would show one of these addresses, it shows the name instead: in the Status column of the <a href="#activity">Activity Log</a>, in the tooltip of a line (as <em>Bob (bob@example.com)</em>), and in its messages, such as the one saying a turn was sent. The list is kept in the Wrapper's settings folder on this PC.</p>
 <ul>
   <li><strong>Add...</strong> asks for a name and one email address. While you type the address, the ones turns have come from or gone to are offered. Someone who plays from two addresses gets two lines with the same name.</li>
   <li><strong>Edit...</strong>, or a double-click, changes the selected line's name or address.</li>
   <li><strong>Remove</strong>, or the Delete key, removes the selected lines.</li>
 </ul>
 <p>An address can be on the list only once. Changes take effect, and are saved, at once; <em>Save Settings</em> is not needed. A turn from an address on the list is never marked as coming from a <em>new sender</em>, since you have said who it is.</p>
+<h3>Names shared with turns</h3>
+<p>Only one player in a game needs to fill in the list. Every turn you send carries, in a hidden header, the name you set under <em>Name sent with your turns</em> on the <a href="#preferences">Settings tab</a> and the names your list has for the other players of that game (those the save lists and the turn goes to), so the players it reaches see them too. A name on a turn from a player you already know is added to your list, with that player in the <em>Shared by</em> column, and from there it travels on with your turns. The rules keep this safe:</p>
+<ul>
+  <li>Names are only taken from a sender who has sent or received a turn before. A stranger's turn adds nothing.</li>
+  <li>Only the players of that game can be named, and never your own addresses. A turn names nobody outside its game, and those players' addresses are in the save already.</li>
+  <li>A name already on your list is never replaced. To change a shared name, edit it; it then becomes your own.</li>
+  <li>A shared name only changes how the address is shown. Unlike a name you add yourself, it does not stop a turn from that address being marked as coming from a <em>new sender</em>.</li>
+</ul>
 
 <h2 id="games">Games tab</h2>
 <p>Every copy of Age of Wonders, Age of Wonders II, Shadow Magic and MP Evolution the Wrapper could find is listed here, with the folder it lives in and how it was found: the games' own registry entries, Steam (every library, including copies placed beside or inside the Steam copy), GOG, <em>Apps and Features</em>, or a scan of your fixed drives a few folders deep, which follows anything named like the game much deeper. The full drive scan runs in the background the first time the Wrapper starts and whenever you click <em>Rescan</em>; it can take a minute on large drives, and the list fills in when it is done. A normal start only re-checks the copies it already knows. Every change on this tab takes effect at once and is kept; <em>Save Settings</em> is not needed for it.</p>
@@ -209,7 +217,8 @@
 <table>
   <tr><th>Setting</th><th>Meaning</th></tr>
   <tr><td>Language</td><td>The Wrapper's interface language. Takes effect after saving and restarting.</td></tr>
-  <tr><td>Theme</td><td><em>Classic Windows</em> (the default) is the plain system look; <em>Age of Wonders</em> dresses the window in parchment and leather. The change shows at once; save to keep it.</td></tr>
+  <tr><td>Theme</td><td><em>Classic Windows</em> (the default) is the plain system look; <em>Age of Wonders</em> dresses the window in parchment and leather, with gold text on the leather, and <em>Age of Wonders (white text)</em> is the same with white text. The change shows at once; save to keep it.</td></tr>
+  <tr><td>Name sent with your turns</td><td>The name the other players know you by. Your turns carry it, so their Wrappers can show it instead of your address (see <a href="#aliases">Names shared with turns</a>). Leave it empty to send none. Setting up an account offers it too.</td></tr>
   <tr><td>Email Downloaded sound, Email Sent sound</td><td>Play a sound when a turn arrives or has been sent.</td></tr>
   <tr><td>Autostart with Windows</td><td>Start the Wrapper when you sign in to Windows. Recommended if you play regularly, otherwise turns only arrive while it runs.</td></tr>
   <tr><td>Install updates automatically</td><td>On (the default): a newer build found at start-up is installed right away and the Wrapper comes back by itself. Off: you are told once, with a balloon, and can install it whenever you like from <em>Check for updates</em> under <em>Support</em> on this tab.</td></tr>

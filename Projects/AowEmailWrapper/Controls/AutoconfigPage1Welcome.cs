@@ -74,6 +74,12 @@ namespace AowEmailWrapper.Controls
             }
         }
 
+        /// <summary>The name the player goes by, optional; it goes to Settings for their turns to carry.</summary>
+        public string PlayerName
+        {
+            get { return string.IsNullOrWhiteSpace(fbPlayerName.TextValue) ? null : fbPlayerName.TextValue.Trim(); }
+        }
+
         public string EmailAddress
         {
             get { return fbEmailAddress.TextValue; }

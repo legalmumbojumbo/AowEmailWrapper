@@ -90,6 +90,48 @@ namespace AowEmailWrapper.Helpers
             }
         }
 
+        /// <summary>Header that carries the names the sender knows the game's players by, as an address list.</summary>
+        public const string NamesHeaderName = "X-AowEmailWrapper-Names";
+
+        /// <summary>Puts the names on the turn, or takes the header off when there are none.</summary>
+        public static void SetSharedNames(MimeMessage message, IEnumerable<PlayerAlias> names)
+        {
+            if (message == null)
+            {
+                return;
+            }
+            message.Headers.RemoveAll(NamesHeaderName);
+            List<MailboxAddress> mailboxes = (names ?? Enumerable.Empty<PlayerAlias>())
+                .Where(alias => alias != null && !string.IsNullOrWhiteSpace(alias.Name) && !string.IsNullOrWhiteSpace(alias.Address))
+                .Select(alias => new MailboxAddress(alias.Name.Trim(), alias.Address.Trim()))
+                .ToList();
+            if (mailboxes.Count > 0)
+            {
+                //Written as an address list, so names with commas, quotes or letters outside ASCII come through whole
+                message.Headers.Add(NamesHeaderName, new InternetAddressList(mailboxes).ToString());
+            }
+        }
+
+        /// <summary>The names a turn carries; empty when it carries none or the header cannot be read.</summary>
+        public static List<PlayerAlias> GetSharedNames(MimeMessage message)
+        {
+            List<PlayerAlias> names = new List<PlayerAlias>();
+            string value = message != null ? message.Headers[NamesHeaderName] : null;
+            InternetAddressList list;
+            if (string.IsNullOrWhiteSpace(value) || !InternetAddressList.TryParse(value, out list))
+            {
+                return names;
+            }
+            foreach (MailboxAddress mailbox in list.Mailboxes)
+            {
+                if (!string.IsNullOrWhiteSpace(mailbox.Name) && !string.IsNullOrWhiteSpace(mailbox.Address))
+                {
+                    names.Add(new PlayerAlias(mailbox.Name.Trim(), mailbox.Address.Trim()));
+                }
+            }
+            return names;
+        }
+
         public static MimePart GetFirstAttachment(MimeMessage message)
         {
             return GetAttachments(message).FirstOrDefault();

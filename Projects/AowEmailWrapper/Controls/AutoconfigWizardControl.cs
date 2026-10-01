@@ -70,6 +70,12 @@ namespace AowEmailWrapper.Controls
             get { return _chosenTemplate; }
         }
 
+        /// <summary>The name the player gave on the first page, or null.</summary>
+        public string PlayerName
+        {
+            get { return contentPage1.PlayerName; }
+        }
+
         public void Reset()
         {
             _stage = 0;
