@@ -15,17 +15,19 @@ release; CI publishes it when a `v<version>` tag is pushed (see "Releasing a ver
 
 ### Fixed
 
-- Dragging column edges in the lists behaves. Widening a column no longer makes the list scroll sideways and
-  narrowing one no longer leaves a gap: the last column gives and takes the room as you drag. Dragging the
-  File Name column no longer stops it filling the list, and a width dragged on it is no longer lost at the
-  next start. A long Status no longer squeezes File Name down to a sliver
-  or pushes the last columns off the side: at any window size every column stays on screen, with long text
-  shortened and shown whole in the row's tooltip. Double-click a column's edge to
-  hand it back to automatic sizing.
+- Dragging column edges in the lists behaves. Widening a column no longer leaves the list scrolled sideways
+  and narrowing one no longer leaves a gap: when you let go, the last column gives or takes the room. Dragging
+  the File Name column no longer stops it filling the list, and a width dragged on it is no longer lost at the
+  next start. A long Status no longer squeezes File Name down to a sliver or pushes the last columns off the
+  side: at any window size every column stays on screen, with long text shortened and shown whole in the
+  row's tooltip. Double-click a column's edge to hand it back to automatic sizing.
 - In the Age of Wonders look, column headings are no longer cut short ("T…" for Turn): the columns were sized
   for the list's own font, not the wider serif the headings are drawn in.
 - The tray menu shows an envelope next to a game again when a turn for it has arrived. Since version 2.0
   the envelope was drawn just past the menu's right edge, out of sight.
+- The first turn sent in a new game shows its copy at once (Ziggurat's purple dragon and its label, for
+  instance). Before, the Activity Log showed it as the plain game until the list was next redrawn, though
+  the turn had gone out from, and was recorded under, the right copy.
 
 ## 2.1.2
 
