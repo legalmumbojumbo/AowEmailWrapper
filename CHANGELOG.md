@@ -3,7 +3,10 @@
 Each versioned release is described here. The section for a version is also the text of its GitHub
 release; CI publishes it when a `v<version>` tag is pushed (see "Releasing a version" in the README).
 
-## Unreleased
+## 2.1.3
+
+Most of this release came from BING-XI: the Aliases tab, the resizable window and column fitting, the white-text
+look, the tray menu envelope and the first-turn fix. Thank you.
 
 - New *Aliases* tab: your own list of the people you play with, each email address with the name you know
   them by. The Activity Log and the Wrapper's messages show the name instead of the address. A turn from an
@@ -37,6 +40,9 @@ release; CI publishes it when a `v<version>` tag is pushed (see "Releasing a ver
 - The first turn sent in a new game shows its copy at once (Ziggurat's purple dragon and its label, for
   instance). Before, the Activity Log showed it as the plain game until the list was next redrawn, though
   the turn had gone out from, and was recorded under, the right copy.
+
+Run `AowEmailWrapper-2.1.3-setup.exe` on Windows 10 or later, or let an installed Wrapper fetch it through
+*Check for updates* on the Settings tab. Accounts and settings carry over.
 
 ## 2.1.2
 
