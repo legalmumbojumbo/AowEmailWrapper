@@ -43,6 +43,45 @@ namespace AowEmailWrapper.Tests
             Assert.Equal(Theme.ClassicName, new PreferencesConfigValues().Theme);
         }
 
+        [Theory]
+        [InlineData("AgeOfWonders", "AgeOfWonders")]
+        [InlineData("ageofwonderswhite", "AgeOfWondersWhite")]
+        [InlineData("Classic", "Classic")]
+        [InlineData("", "Classic")]
+        [InlineData(null, "Classic")]
+        [InlineData("Neon", "Classic")]
+        public void BothAgeOfWondersLooksAreAgeOfWondersAndAnythingElseIsTheDefault(string configured, string normalized)
+        {
+            Assert.Equal(normalized, Theme.Normalize(configured));
+            Assert.Equal(normalized != Theme.ClassicName, Theme.IsAgeOfWonders(configured));
+        }
+
+        [Fact]
+        public void TheWhiteTextLookOnlyChangesTheTextOnLeather()
+        {
+            using (Form form = BuildForm(out Button button, out TextBox text, out _, out _, out _))
+            {
+                Theme.Select(Theme.AgeOfWondersName, form);
+                Assert.Equal(Theme.GoldLight, button.ForeColor);
+                Assert.Equal(Theme.GoldDark, Theme.TextOnLeatherDisabled);
+                Assert.Equal(Theme.AgeOfWondersName, Theme.CurrentName);
+
+                //Switched from one Age of Wonders look to the other without going back to Classic
+                Theme.Select(Theme.AgeOfWondersWhiteName, form);
+                Assert.True(Theme.Enabled);
+                Assert.Equal(Color.White, button.ForeColor);
+                Assert.NotEqual(Theme.GoldDark, Theme.TextOnLeatherDisabled);
+                Assert.Equal(Theme.Leather, button.BackColor);
+                Assert.Equal(Theme.Ink, text.ForeColor);
+                Assert.Equal(Theme.AgeOfWondersWhiteName, Theme.CurrentName);
+
+                Theme.Select(Theme.AgeOfWondersName, form);
+                Assert.Equal(Theme.GoldLight, button.ForeColor);
+                Theme.Select(Theme.ClassicName, form);
+                Assert.Equal(Theme.ClassicName, Theme.CurrentName);
+            }
+        }
+
         [Fact]
         public void TexturesAreEmbeddedTiles()
         {
@@ -63,7 +102,7 @@ namespace AowEmailWrapper.Tests
                 Assert.True(Theme.Enabled);
                 Assert.True(tabs.Themed);
                 Assert.Equal(FlatStyle.Flat, button.FlatStyle);
-                Assert.Equal(Theme.GoldLight, button.ForeColor);
+                Assert.Equal(Theme.TextOnLeather, button.ForeColor);
                 Assert.Equal(Theme.Leather, button.BackColor);
                 Assert.Equal(Theme.Ink, text.ForeColor);
                 Assert.Equal("Palatino Linotype", label.Font.Name);
@@ -128,7 +167,7 @@ namespace AowEmailWrapper.Tests
 
                 Theme.Select(Theme.AgeOfWondersName, form);
                 Theme.Select(Theme.AgeOfWondersName, form);
-                Assert.Equal(Theme.GoldLight, button.ForeColor);
+                Assert.Equal(Theme.TextOnLeather, button.ForeColor);
                 Assert.Equal(Color.Transparent, label.BackColor);
                 Theme.Select(Theme.ClassicName, form);
             }

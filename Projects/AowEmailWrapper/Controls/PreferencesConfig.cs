@@ -15,6 +15,7 @@ namespace AowEmailWrapper.Controls
         private const string SaveSelectedMessageKey = "msgSaveSelected";
         private const string ThemeClassicKey = "themeClassic";
         private const string ThemeAgeOfWondersKey = "themeAgeOfWonders";
+        private const string ThemeAgeOfWondersWhiteKey = "themeAgeOfWondersWhite";
         private PreferencesConfigValues _config;
         private bool _populating;
 
@@ -35,6 +36,7 @@ namespace AowEmailWrapper.Controls
 
             fbTheme.AddItem(Theme.ClassicName, Translator.Translate(ThemeClassicKey));
             fbTheme.AddItem(Theme.AgeOfWondersName, Translator.Translate(ThemeAgeOfWondersKey));
+            fbTheme.AddItem(Theme.AgeOfWondersWhiteName, Translator.Translate(ThemeAgeOfWondersWhiteKey));
             fbTheme.SelectedValue = Theme.DefaultName;
 
             fbSaveFolder.SelectedIndex = 0;
@@ -108,7 +110,7 @@ namespace AowEmailWrapper.Controls
                 fbSaveFolder.SelectedValue = _config.SaveFolder.ToString();
                 fbCopyToEmailOut.Checked = _config.CopyToEmailOut;
                 fbLocalization.SelectedValue = _config.LanguageCode;
-                fbTheme.SelectedValue = Theme.IsAgeOfWonders(_config.Theme) ? Theme.AgeOfWondersName : Theme.ClassicName;
+                fbTheme.SelectedValue = Theme.Normalize(_config.Theme);
                 fbGameWrapperDataPort.TextValue = _config.GameWrapperDataPort.ToString();
                 UpdateSaveFolderTip();
             }

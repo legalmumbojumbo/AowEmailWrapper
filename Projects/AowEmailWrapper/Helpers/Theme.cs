@@ -20,6 +20,8 @@ namespace AowEmailWrapper.Helpers
     {
         public const string ClassicName = "Classic";
         public const string AgeOfWondersName = "AgeOfWonders";
+        /// <summary>The Age of Wonders look with white text on leather instead of gold, for players who find it crisper.</summary>
+        public const string AgeOfWondersWhiteName = "AgeOfWondersWhite";
         public const string DefaultName = ClassicName;
 
         public static readonly Color Leather = Color.FromArgb(54, 33, 20);
@@ -34,6 +36,17 @@ namespace AowEmailWrapper.Helpers
         public static readonly Color GoldLight = Color.FromArgb(236, 206, 128);
         public static readonly Color GoldDark = Color.FromArgb(150, 116, 46);
         public static readonly Color Crimson = Color.FromArgb(128, 34, 26);
+        /// <summary>Text on leather: gold, or white in the white-text variant, which reads more crisply on the dark brown.</summary>
+        public static Color TextOnLeather
+        {
+            get { return _whiteText ? Color.White : GoldLight; }
+        }
+
+        /// <summary>Text of a disabled button or menu item on leather: plainly dimmer than the enabled text, still legible.</summary>
+        public static Color TextOnLeatherDisabled
+        {
+            get { return _whiteText ? Color.FromArgb(150, 138, 124) : GoldDark; }
+        }
 
         private const string HeadingFontFamily = "Palatino Linotype";
         private const int DwmUseImmersiveDarkMode = 20;
@@ -45,6 +58,7 @@ namespace AowEmailWrapper.Helpers
         private const uint SwpNoSize = 0x0001, SwpNoMove = 0x0002, SwpNoZOrder = 0x0004, SwpNoActivate = 0x0010, SwpFrameChanged = 0x0020;
 
         private static bool _enabled = string.Equals(DefaultName, AgeOfWondersName, StringComparison.Ordinal);
+        private static bool _whiteText;
         private static Image _parchment;
         private static Image _leather;
         private static Font _bodyFont;
@@ -72,20 +86,37 @@ namespace AowEmailWrapper.Helpers
 
         public static string CurrentName
         {
-            get { return _enabled ? AgeOfWondersName : ClassicName; }
+            get { return _enabled ? (_whiteText ? AgeOfWondersWhiteName : AgeOfWondersName) : ClassicName; }
         }
 
+        /// <summary>True for either variant of the Age of Wonders look.</summary>
         public static bool IsAgeOfWonders(string themeName)
         {
             return string.IsNullOrEmpty(themeName)
-                ? string.Equals(DefaultName, AgeOfWondersName, StringComparison.Ordinal)
-                : string.Equals(themeName, AgeOfWondersName, StringComparison.OrdinalIgnoreCase);
+                ? IsAgeOfWonders(DefaultName)
+                : string.Equals(themeName, AgeOfWondersName, StringComparison.OrdinalIgnoreCase) ||
+                  string.Equals(themeName, AgeOfWondersWhiteName, StringComparison.OrdinalIgnoreCase);
+        }
+
+        /// <summary>The configured name as one of the three looks, the default for anything else.</summary>
+        public static string Normalize(string themeName)
+        {
+            if (string.Equals(themeName, AgeOfWondersWhiteName, StringComparison.OrdinalIgnoreCase))
+            {
+                return AgeOfWondersWhiteName;
+            }
+            if (string.Equals(themeName, AgeOfWondersName, StringComparison.OrdinalIgnoreCase))
+            {
+                return AgeOfWondersName;
+            }
+            return string.Equals(themeName, ClassicName, StringComparison.OrdinalIgnoreCase) ? ClassicName : DefaultName;
         }
 
         /// <summary>Selects the look by its configured name and restyles the forms given.</summary>
         public static void Select(string themeName, params Form[] forms)
         {
             _enabled = IsAgeOfWonders(themeName);
+            _whiteText = _enabled && Normalize(themeName) == AgeOfWondersWhiteName;
             ToolStripManager.Renderer = _enabled ? new AowToolStripRenderer() : null;
             foreach (Form form in forms)
             {
@@ -278,7 +309,7 @@ namespace AowEmailWrapper.Helpers
             {
                 bool isBanner = original.BackColor == SystemColors.Highlight;
                 label.BackColor = isBanner ? Leather : Color.Transparent;
-                label.ForeColor = isBanner ? GoldLight : (original.ForeColor == SystemColors.GrayText ? InkFaded : Ink);
+                label.ForeColor = isBanner ? TextOnLeather : (original.ForeColor == SystemColors.GrayText ? InkFaded : Ink);
                 if (!label.AutoSize && label.Dock == DockStyle.Top && label.Text.Length > 60 && label.Width > 0)
                 {
                     // Paragraph labels were sized for the system font; give them the height the serif needs.
@@ -378,7 +409,7 @@ namespace AowEmailWrapper.Helpers
             button.FlatStyle = FlatStyle.Flat;
             button.UseVisualStyleBackColor = false;
             button.BackColor = Leather;
-            button.ForeColor = GoldLight;
+            button.ForeColor = TextOnLeather;
             button.FlatAppearance.BorderColor = Gold;
             button.FlatAppearance.BorderSize = 1;
             button.FlatAppearance.MouseOverBackColor = LeatherLight;
@@ -456,7 +487,7 @@ namespace AowEmailWrapper.Helpers
                 {
                     // Windows 11 lets the caption take the leather colour; Windows 10 has no such attributes.
                     int caption = dark ? ToColorRef(Leather) : unchecked((int)0xFFFFFFFF);
-                    int text = dark ? ToColorRef(GoldLight) : unchecked((int)0xFFFFFFFF);
+                    int text = dark ? ToColorRef(TextOnLeather) : unchecked((int)0xFFFFFFFF);
                     DwmSetWindowAttribute(handle, DwmCaptionColor, ref caption, sizeof(int));
                     DwmSetWindowAttribute(handle, DwmTextColor, ref text, sizeof(int));
                 }
@@ -647,7 +678,7 @@ namespace AowEmailWrapper.Helpers
                     ControlPaint.DrawImageDisabled(e.Graphics, _button.Image,
                         bounds.X + (bounds.Width - _button.Image.Width) / 2, bounds.Y + (bounds.Height - _button.Image.Height) / 2, LeatherDark);
                 }
-                TextRenderer.DrawText(e.Graphics, _button.Text, _button.Font, bounds, GoldDark,
+                TextRenderer.DrawText(e.Graphics, _button.Text, _button.Font, bounds, TextOnLeatherDisabled,
                     TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter | TextFormatFlags.WordBreak | TextFormatFlags.NoPrefix);
             }
         }
@@ -770,7 +801,7 @@ namespace AowEmailWrapper.Helpers
                 TextFormatFlags flags = TextFormatFlags.VerticalCenter | TextFormatFlags.EndEllipsis | TextFormatFlags.NoPrefix;
                 if (e.Header.TextAlign == HorizontalAlignment.Right) flags |= TextFormatFlags.Right;
                 else if (e.Header.TextAlign == HorizontalAlignment.Center) flags |= TextFormatFlags.HorizontalCenter;
-                TextRenderer.DrawText(e.Graphics, e.Header.Text, HeadingFont, textBounds, GoldLight, flags);
+                TextRenderer.DrawText(e.Graphics, e.Header.Text, HeadingFont, textBounds, TextOnLeather, flags);
             }
 
             private static void DrawDefault(object sender, DrawListViewItemEventArgs e)
@@ -848,8 +879,18 @@ namespace AowEmailWrapper.Helpers
 
             protected override void OnRenderItemText(ToolStripItemTextRenderEventArgs e)
             {
-                e.TextColor = e.Item.Enabled ? (e.Item.Selected ? Ink : GoldLight) : GoldDark;
+                e.TextColor = e.Item.Enabled ? (e.Item.Selected ? Ink : TextOnLeather) : TextOnLeatherDisabled;
                 base.OnRenderItemText(e);
+            }
+
+            /// <summary>The arrow to a submenu in the colour of the text beside it; the default black hardly shows on leather.</summary>
+            protected override void OnRenderArrow(ToolStripArrowRenderEventArgs e)
+            {
+                if (e.Item != null)
+                {
+                    e.ArrowColor = e.Item.Enabled ? (e.Item.Selected ? Ink : TextOnLeather) : TextOnLeatherDisabled;
+                }
+                base.OnRenderArrow(e);
             }
 
             protected override void OnRenderToolStripBackground(ToolStripRenderEventArgs e)
