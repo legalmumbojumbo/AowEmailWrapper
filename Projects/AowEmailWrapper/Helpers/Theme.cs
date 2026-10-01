@@ -20,6 +20,8 @@ namespace AowEmailWrapper.Helpers
     {
         public const string ClassicName = "Classic";
         public const string AgeOfWondersName = "AgeOfWonders";
+        /// <summary>The Age of Wonders look with white text on leather instead of gold, for players who find it crisper.</summary>
+        public const string AgeOfWondersWhiteName = "AgeOfWondersWhite";
         public const string DefaultName = ClassicName;
 
         public static readonly Color Leather = Color.FromArgb(54, 33, 20);
@@ -34,10 +36,17 @@ namespace AowEmailWrapper.Helpers
         public static readonly Color GoldLight = Color.FromArgb(236, 206, 128);
         public static readonly Color GoldDark = Color.FromArgb(150, 116, 46);
         public static readonly Color Crimson = Color.FromArgb(128, 34, 26);
-        /// <summary>Text on leather: white reads more crisply on the dark brown than gold does.</summary>
-        public static readonly Color TextOnLeather = Color.White;
-        /// <summary>Text of a disabled button or menu item on leather: plainly dimmer than white, still legible.</summary>
-        public static readonly Color TextOnLeatherDisabled = Color.FromArgb(150, 138, 124);
+        /// <summary>Text on leather: gold, or white in the white-text variant, which reads more crisply on the dark brown.</summary>
+        public static Color TextOnLeather
+        {
+            get { return _whiteText ? Color.White : GoldLight; }
+        }
+
+        /// <summary>Text of a disabled button or menu item on leather: plainly dimmer than the enabled text, still legible.</summary>
+        public static Color TextOnLeatherDisabled
+        {
+            get { return _whiteText ? Color.FromArgb(150, 138, 124) : GoldDark; }
+        }
 
         private const string HeadingFontFamily = "Palatino Linotype";
         private const int DwmUseImmersiveDarkMode = 20;
@@ -49,6 +58,7 @@ namespace AowEmailWrapper.Helpers
         private const uint SwpNoSize = 0x0001, SwpNoMove = 0x0002, SwpNoZOrder = 0x0004, SwpNoActivate = 0x0010, SwpFrameChanged = 0x0020;
 
         private static bool _enabled = string.Equals(DefaultName, AgeOfWondersName, StringComparison.Ordinal);
+        private static bool _whiteText;
         private static Image _parchment;
         private static Image _leather;
         private static Font _bodyFont;
@@ -76,20 +86,37 @@ namespace AowEmailWrapper.Helpers
 
         public static string CurrentName
         {
-            get { return _enabled ? AgeOfWondersName : ClassicName; }
+            get { return _enabled ? (_whiteText ? AgeOfWondersWhiteName : AgeOfWondersName) : ClassicName; }
         }
 
+        /// <summary>True for either variant of the Age of Wonders look.</summary>
         public static bool IsAgeOfWonders(string themeName)
         {
             return string.IsNullOrEmpty(themeName)
-                ? string.Equals(DefaultName, AgeOfWondersName, StringComparison.Ordinal)
-                : string.Equals(themeName, AgeOfWondersName, StringComparison.OrdinalIgnoreCase);
+                ? IsAgeOfWonders(DefaultName)
+                : string.Equals(themeName, AgeOfWondersName, StringComparison.OrdinalIgnoreCase) ||
+                  string.Equals(themeName, AgeOfWondersWhiteName, StringComparison.OrdinalIgnoreCase);
+        }
+
+        /// <summary>The configured name as one of the three looks, the default for anything else.</summary>
+        public static string Normalize(string themeName)
+        {
+            if (string.Equals(themeName, AgeOfWondersWhiteName, StringComparison.OrdinalIgnoreCase))
+            {
+                return AgeOfWondersWhiteName;
+            }
+            if (string.Equals(themeName, AgeOfWondersName, StringComparison.OrdinalIgnoreCase))
+            {
+                return AgeOfWondersName;
+            }
+            return string.Equals(themeName, ClassicName, StringComparison.OrdinalIgnoreCase) ? ClassicName : DefaultName;
         }
 
         /// <summary>Selects the look by its configured name and restyles the forms given.</summary>
         public static void Select(string themeName, params Form[] forms)
         {
             _enabled = IsAgeOfWonders(themeName);
+            _whiteText = _enabled && Normalize(themeName) == AgeOfWondersWhiteName;
             ToolStripManager.Renderer = _enabled ? new AowToolStripRenderer() : null;
             foreach (Form form in forms)
             {

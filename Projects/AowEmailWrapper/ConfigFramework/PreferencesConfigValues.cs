@@ -84,7 +84,7 @@ namespace AowEmailWrapper.ConfigFramework
 
         private string _theme = Helpers.Theme.DefaultName;
 
-        /// <summary>Name of the look: Theme.ClassicName or Theme.AgeOfWondersName.</summary>
+        /// <summary>Name of the look: Theme.ClassicName, Theme.AgeOfWondersName or Theme.AgeOfWondersWhiteName.</summary>
         [XmlAttribute("theme")]
         public string Theme
         {
