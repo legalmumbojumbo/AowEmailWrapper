@@ -25,7 +25,6 @@ namespace AowEmailWrapper.Controls
         private const string OtherKey = "radioOtherLabel";
         private const string OkKey = "buttonOK";
         private const string CancelKey = "buttonCancel";
-        private const string HeldByKey = "msgLabelHeldBy";
         private const string MoveHintKey = "msgLabelMoveHint";
         private const string MoveHintFallback = "Choosing a label another copy uses moves it to this copy.";
         private const int Pad = 16;
@@ -47,12 +46,12 @@ namespace AowEmailWrapper.Controls
 
         /// <summary>
         /// Returns the chosen label (empty for none), or null when cancelled. Labels already used by
-        /// another copy of the same game (taken: label to that copy's folder) are neither offered
+        /// another copy of the same game are offered like any other: several copies may share one
         /// nor accepted, so every label points at exactly one copy.
         /// </summary>
-        public static string Show(IWin32Window owner, AowGame game, IDictionary<string, string> taken)
+        public static string Show(IWin32Window owner, AowGame game)
         {
-            using (LabelDialog dialog = new LabelDialog(game.DisplayName, game.Label, BuildOptions(game, taken)))
+            using (LabelDialog dialog = new LabelDialog(game.DisplayName, game.Label, BuildOptions(game)))
             {
                 dialog.ShowDialog(owner);
                 return dialog._result;
@@ -61,12 +60,10 @@ namespace AowEmailWrapper.Controls
 
         /// <summary>
         /// The choices to offer, text to label: what the folder's contents call for first, then the
-        /// presets and the current label. A label another copy holds is still offered, marked with
-        /// that copy's folder, and choosing it moves the label to this copy.
+        /// presets and the current label.
         /// </summary>
-        public static List<KeyValuePair<string, string>> BuildOptions(AowGame game, IDictionary<string, string> taken)
+        public static List<KeyValuePair<string, string>> BuildOptions(AowGame game)
         {
-            taken = taken ?? new Dictionary<string, string>();
             List<string> labels = new List<string>();
             string[] presets;
             if (Presets.TryGetValue(game.GameType, out presets))
@@ -83,25 +80,9 @@ namespace AowEmailWrapper.Controls
             List<KeyValuePair<string, string>> options = new List<KeyValuePair<string, string>>();
             foreach (string label in labels.GroupBy(AowGame.NormalizeLabel).Select(group => group.First()))
             {
-                string holder = taken.Where(pair => AowGame.SameLabel(pair.Key, label)).Select(pair => pair.Value).FirstOrDefault();
-                string text = holder == null ? label : string.Format("{0} ({1})", label, HeldBy(FolderName(holder)));
-                options.Add(new KeyValuePair<string, string>(text, label));
+                options.Add(new KeyValuePair<string, string>(label, label));
             }
             return options;
-        }
-
-        /// <summary>"now on Age of Wonders zig", with an English fallback when no language table is loaded.</summary>
-        private static string HeldBy(string folderName)
-        {
-            string text = Translator.Translate(HeldByKey, folderName);
-            return string.IsNullOrEmpty(text) ? string.Format("used by {0}", folderName) : text;
-        }
-
-        private static string FolderName(string folder)
-        {
-            string trimmed = (folder ?? string.Empty).TrimEnd('\\', '/');
-            int cut = trimmed.LastIndexOfAny(new[] { '\\', '/' });
-            return cut >= 0 ? trimmed.Substring(cut + 1) : trimmed;
         }
 
         private LabelDialog(string title, string current, List<KeyValuePair<string, string>> options)

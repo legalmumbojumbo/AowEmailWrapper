@@ -61,7 +61,7 @@ namespace AowEmailWrapper.Controls
             lblGamesHelp.Dock = DockStyle.Bottom;
             lblGamesHelp.Height = 78;
             lblGamesHelp.Padding = new Padding(0, 8, 0, 0);
-            lblGamesHelp.Text = "Give each copy of a game a short label such as Vanilla, AoWx or Ziggurat. The label travels with the turns you send, so everyone in a game must use the same label. The default copy receives turns that carry no label.";
+            lblGamesHelp.Text = "Each copy of a game carries a label such as Vanilla, AoWx or Ziggurat, filled in from what the folder holds. The label travels with the turns you send, so everyone in a game must use the same label. A turn goes to the copy its game was last played in; a new game goes to the default copy of its label, else to the default copy of the game.";
 
             panelGames = new Panel();
             panelGames.Name = "panelGames";
@@ -79,7 +79,7 @@ namespace AowEmailWrapper.Controls
             listViewGames.HeaderStyle = ColumnHeaderStyle.Nonclickable;
             listViewGames.Columns.Add(new ColumnHeader { Text = "Game", Tag = "ContentHeaderMax" });
             listViewGames.Columns.Add(new ColumnHeader { Text = "Mod", Tag = "ContentHeaderMax" });
-            listViewGames.Columns.Add(new ColumnHeader { Text = "Default", Tag = "HeaderSize" });
+            listViewGames.Columns.Add(new ColumnHeader { Text = "Default", Tag = "ContentHeaderMax" });
             //The folder is last and fills the rest of the list, but never less than its longest path, so the list
             //scrolls sideways rather than cutting paths short
             listViewGames.Columns.Add(new ColumnHeader { Text = "Folder", Tag = "Fill" });
@@ -171,6 +171,16 @@ namespace AowEmailWrapper.Controls
             return button;
         }
 
+        /// <summary>
+        /// The mark for the copy a mod's turns go to, when other copies carry the same label and this is not
+        /// already the game's default: the label in brackets, such as "(Ziggurat)". Null otherwise.
+        /// </summary>
+        private string ModDefaultMarkFor(AowGame game)
+        {
+            bool shared = _games.Any(other => other != game && other.GameType == game.GameType && other.IsInstalled && AowGame.SameLabel(other.Label, game.Label));
+            return shared && AowGameManager.IsDefaultForItsLabel(_games, game) ? string.Format("{0} {1}", DefaultMark, game.Label) : null;
+        }
+
         private static AowGame Clone(AowGame game)
         {
             AowGame copy = new AowGame(game.GameType, game.Folder, game.Source);
@@ -208,13 +218,9 @@ namespace AowEmailWrapper.Controls
             {
                 ListViewItem item = new ListViewItem(AowGame.DisplayNameFor(game.GameType));
                 item.UseItemStyleForSubItems = false;
-                ListViewItem.ListViewSubItem label = item.SubItems.Add(game.DisplayLabel);
-                if (string.IsNullOrEmpty(game.Label))
-                {
-                    //Not a label yet: another copy already has this one, so turns cannot be routed by it
-                    label.ForeColor = SystemColors.GrayText;
-                }
-                item.SubItems.Add(game.IsDefault ? DefaultMark : string.Empty);
+                item.SubItems.Add(game.DisplayLabel);
+                //The game's default copy, or the copy a mod's turns go to when several carry its label
+                item.SubItems.Add(game.IsDefault ? DefaultMark : (ModDefaultMarkFor(game) ?? string.Empty));
                 item.SubItems.Add(game.Folder);
                 item.ToolTipText = ToolTipFor(game);
                 item.Tag = game;
@@ -282,34 +288,14 @@ namespace AowEmailWrapper.Controls
                 return;
             }
 
-            Dictionary<string, string> taken = new Dictionary<string, string>();
-            foreach (AowGame other in _games.Where(other => other.GameType == game.GameType && other.Id != game.Id && !string.IsNullOrEmpty(other.Label)))
-            {
-                taken[other.Label] = other.Folder;
-            }
-            string label = LabelDialog.Show(this, game, taken);
+            string label = LabelDialog.Show(this, game);
             if (label != null)
             {
-                MoveLabel(_games, game, label);
+                //An empty choice means "what the folder holds": a copy always carries a label
+                game.Label = string.IsNullOrWhiteSpace(label) ? game.SuggestedLabel : label;
                 Populate();
                 RaiseChanged();
             }
-        }
-
-        /// <summary>
-        /// Gives the copy the label, taking it off any other copy of the same game that held it, so a
-        /// label still points at exactly one copy. The copy that lost it shows what its folder holds.
-        /// </summary>
-        public static void MoveLabel(IEnumerable<AowGame> games, AowGame target, string label)
-        {
-            if (!string.IsNullOrEmpty(label))
-            {
-                foreach (AowGame other in games.Where(other => other != target && other.GameType == target.GameType && AowGame.SameLabel(other.Label, label)))
-                {
-                    other.Label = string.Empty;
-                }
-            }
-            target.Label = label ?? string.Empty;
         }
 
         /// <summary>Ctrl+A highlights every copy and Delete removes the highlighted ones, as in Explorer.</summary>

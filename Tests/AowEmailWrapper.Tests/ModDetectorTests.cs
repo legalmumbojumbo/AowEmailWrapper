@@ -187,7 +187,7 @@ namespace AowEmailWrapper.Tests
         }
 
         [Fact]
-        public void Every_unlabelled_copy_is_labelled_by_its_contents_once_per_label()
+        public void Every_unlabelled_copy_is_labelled_by_its_contents_and_copies_may_share_a_label()
         {
             string first = GameFolder("label1", resStrVersion: "Version: Ziggurat %s");
             string second = GameFolder("label2", resStrVersion: "Version: Ziggurat %s");
@@ -211,10 +211,10 @@ namespace AowEmailWrapper.Tests
             Assert.Equal("Vanilla 1.36", installs.Single(game => game.IsFolder(stock)).Label);
             Assert.Equal("Evolved", installs.Single(game => game.IsFolder(evolved)).Label);
 
-            //The second Ziggurat copy cannot share the label, but still shows what it is
+            //The second Ziggurat copy carries the label too; which of them Ziggurat turns go to is the default's call
             AowGame duplicate = installs.Single(game => game.IsFolder(second));
-            Assert.Equal(string.Empty, duplicate.Label);
-            Assert.Equal("Ziggurat", duplicate.DisplayLabel);
+            Assert.Equal("Ziggurat", duplicate.Label);
+            Assert.Same(installs.Single(game => game.IsFolder(first)), manager.DefaultFor(AowGameType.Aow1, "Ziggurat"));
         }
 
         [Fact]

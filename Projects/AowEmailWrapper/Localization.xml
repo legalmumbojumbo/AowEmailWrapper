@@ -194,7 +194,6 @@
 		<lookup key="panelGameslistViewGames3" value="Folder"/>
 		<lookup key="buttonAddFolder" value="Add folder..."/>
 		<lookup key="buttonOpenFolder" value="Open folder"/>
-		<lookup key="msgLabelHeldBy" value="used by {0}"/>
 		<lookup key="msgLabelMoveHint" value="Choosing a label another copy uses moves it to this copy."/>
 		<lookup key="buttonSetLabel" value="Set label..."/>
 		<lookup key="buttonSetDefaultInstall" value="Set as default"/>
@@ -206,7 +205,7 @@
 		<lookup key="msgLocalPortInUse" value="The Wrapper could not open port {0}, which the games send their turns to: another program, or another copy of the Wrapper, is using it. No turn can be sent until it is free. Choose another port under &quot;Game to Wrapper data port&quot; on the Settings tab and save."/>
 		<lookup key="buttonRescan" value="Rescan"/>
 		<lookup key="buttonRescanning" value="Scanning..."/>
-		<lookup key="lblGamesHelp" value="Give each copy of a game a short label such as Vanilla, AoWx or Ziggurat. The label travels with the turns you send, so everyone in a game must use the same label. The default copy receives turns that carry no label."/>
+		<lookup key="lblGamesHelp" value="Each copy of a game carries a label such as Vanilla, AoWx or Ziggurat, filled in from what the folder holds. The label travels with the turns you send, so everyone in a game must use the same label. A turn goes to the copy its game was last played in; a new game goes to the default copy of its label, else to the default copy of the game."/>
 		<lookup key="tabAliases" value="Aliases"/>
 		<lookup key="panelAliaseslistViewAliases0" value="Name"/>
 		<lookup key="panelAliaseslistViewAliases1" value="Email address"/>
@@ -473,7 +472,6 @@
 		<lookup key="panelGameslistViewGames3" value="Dossier"/>
 		<lookup key="buttonAddFolder" value="Ajouter un dossier..."/>
 		<lookup key="buttonOpenFolder" value="Open folder"/>
-		<lookup key="msgLabelHeldBy" value="used by {0}"/>
 		<lookup key="msgLabelMoveHint" value="Choosing a label another copy uses moves it to this copy."/>
 		<lookup key="buttonSetLabel" value="Définir l'étiquette..."/>
 		<lookup key="buttonSetDefaultInstall" value="Définir par défaut"/>
@@ -485,7 +483,7 @@
 		<lookup key="msgLocalPortInUse" value="Le Wrapper n&apos;a pas pu ouvrir le port {0}, par lequel les jeux lui envoient leurs tours : un autre programme, ou un autre Wrapper, l&apos;utilise. Aucun tour ne peut être envoyé tant qu&apos;il n&apos;est pas libre. Choisissez un autre port dans « Jeu de Wrapper port de données » de l&apos;onglet Paramètres, puis enregistrez."/>
 		<lookup key="buttonRescan" value="Rechercher à nouveau"/>
 		<lookup key="buttonRescanning" value="Recherche..."/>
-		<lookup key="lblGamesHelp" value="Donnez à chaque copie d'un jeu une courte étiquette, par exemple Vanilla, AoWx ou Ziggurat. L'étiquette accompagne les tours que vous envoyez : tous les joueurs d'une partie doivent utiliser la même. La copie par défaut reçoit les tours sans étiquette."/>
+		<lookup key="lblGamesHelp" value="Chaque copie d&apos;un jeu porte une étiquette, par exemple Vanilla, AoWx ou Ziggurat, déduite du contenu du dossier. L&apos;étiquette accompagne les tours que vous envoyez : tous les joueurs d&apos;une partie doivent utiliser la même. Un tour va dans la copie où sa partie a été jouée en dernier ; une nouvelle partie va dans la copie par défaut de son étiquette, sinon dans la copie par défaut du jeu."/>
 		<lookup key="tabAliases" value="Alias"/>
 		<lookup key="panelAliaseslistViewAliases0" value="Nom"/>
 		<lookup key="panelAliaseslistViewAliases1" value="Adresse e-mail"/>
@@ -766,7 +764,6 @@
 		<lookup key="panelGameslistViewGames3" value="Ordner"/>
 		<lookup key="buttonAddFolder" value="Ordner hinzufügen..."/>
 		<lookup key="buttonOpenFolder" value="Open folder"/>
-		<lookup key="msgLabelHeldBy" value="used by {0}"/>
 		<lookup key="msgLabelMoveHint" value="Choosing a label another copy uses moves it to this copy."/>
 		<lookup key="buttonSetLabel" value="Bezeichnung festlegen..."/>
 		<lookup key="buttonSetDefaultInstall" value="Als Standard festlegen"/>
@@ -778,7 +775,7 @@
 		<lookup key="msgLocalPortInUse" value="Der Wrapper konnte Port {0} nicht öffnen, über den die Spiele ihm ihre Züge übergeben: ein anderes Programm oder ein anderer Wrapper benutzt ihn. Solange er belegt ist, kann kein Zug gesendet werden. Wählen Sie unter „Spiel um Wrapper datenport“ auf der Registerkarte Einstellungen einen anderen Port und speichern Sie."/>
 		<lookup key="buttonRescan" value="Erneut suchen"/>
 		<lookup key="buttonRescanning" value="Suche läuft..."/>
-		<lookup key="lblGamesHelp" value="Geben Sie jeder Kopie eines Spiels eine kurze Bezeichnung wie Vanilla, AoWx oder Ziggurat. Die Bezeichnung reist mit den gesendeten Zügen mit, daher müssen alle Spieler einer Partie dieselbe verwenden. Die Standardkopie erhält Züge ohne Bezeichnung."/>
+		<lookup key="lblGamesHelp" value="Jede Kopie eines Spiels trägt eine Bezeichnung wie Vanilla, AoWx oder Ziggurat, abgeleitet vom Inhalt des Ordners. Die Bezeichnung reist mit den gesendeten Zügen mit, daher müssen alle Spieler einer Partie dieselbe verwenden. Ein Zug geht in die Kopie, in der seine Partie zuletzt gespielt wurde; eine neue Partie geht in die Standardkopie ihrer Bezeichnung, sonst in die Standardkopie des Spiels."/>
 		<lookup key="tabAliases" value="Aliasnamen"/>
 		<lookup key="panelAliaseslistViewAliases0" value="Name"/>
 		<lookup key="panelAliaseslistViewAliases1" value="E-Mail-Adresse"/>
@@ -1058,7 +1055,6 @@
 		<lookup key="panelGameslistViewGames3" value="Carpeta"/>
 		<lookup key="buttonAddFolder" value="Añadir carpeta..."/>
 		<lookup key="buttonOpenFolder" value="Open folder"/>
-		<lookup key="msgLabelHeldBy" value="used by {0}"/>
 		<lookup key="msgLabelMoveHint" value="Choosing a label another copy uses moves it to this copy."/>
 		<lookup key="buttonSetLabel" value="Definir etiqueta..."/>
 		<lookup key="buttonSetDefaultInstall" value="Establecer como predeterminada"/>
@@ -1070,7 +1066,7 @@
 		<lookup key="msgLocalPortInUse" value="El Wrapper no pudo abrir el puerto {0}, por el que los juegos le entregan sus turnos: otro programa, u otro Wrapper, lo está usando. No se puede enviar ningún turno hasta que quede libre. Elige otro puerto en «Puerto de datos del Juego al Wrapper» de la pestaña Configuración y guarda."/>
 		<lookup key="buttonRescan" value="Volver a buscar"/>
 		<lookup key="buttonRescanning" value="Buscando..."/>
-		<lookup key="lblGamesHelp" value="Dé a cada copia de un juego una etiqueta corta, como Vanilla, AoWx o Ziggurat. La etiqueta viaja con los turnos que envía, así que todos los jugadores de una partida deben usar la misma. La copia predeterminada recibe los turnos sin etiqueta."/>
+		<lookup key="lblGamesHelp" value="Cada copia de un juego lleva una etiqueta, como Vanilla, AoWx o Ziggurat, deducida del contenido de la carpeta. La etiqueta viaja con los turnos que envía, así que todos los jugadores de una partida deben usar la misma. Un turno va a la copia donde se jugó su partida por última vez; una partida nueva va a la copia predeterminada de su etiqueta, o si no a la copia predeterminada del juego."/>
 		<lookup key="tabAliases" value="Alias"/>
 		<lookup key="panelAliaseslistViewAliases0" value="Nombre"/>
 		<lookup key="panelAliaseslistViewAliases1" value="Dirección de correo"/>
@@ -1351,7 +1347,6 @@
 		<lookup key="panelGameslistViewGames3" value="Map"/>
 		<lookup key="buttonAddFolder" value="Map toevoegen..."/>
 		<lookup key="buttonOpenFolder" value="Open folder"/>
-		<lookup key="msgLabelHeldBy" value="used by {0}"/>
 		<lookup key="msgLabelMoveHint" value="Choosing a label another copy uses moves it to this copy."/>
 		<lookup key="buttonSetLabel" value="Label instellen..."/>
 		<lookup key="buttonSetDefaultInstall" value="Als standaard instellen"/>
@@ -1363,7 +1358,7 @@
 		<lookup key="msgLocalPortInUse" value="De Wrapper kon poort {0} niet openen, waarlangs de spellen hun beurten doorgeven: een ander programma, of een andere Wrapper, gebruikt hem. Zolang hij bezet is, kan geen beurt worden verstuurd. Kies een andere poort bij &quot;Spel om Wrapper data poort&quot; op het tabblad Instellingen en sla op."/>
 		<lookup key="buttonRescan" value="Opnieuw zoeken"/>
 		<lookup key="buttonRescanning" value="Bezig met zoeken..."/>
-		<lookup key="lblGamesHelp" value="Geef elke kopie van een spel een kort label, zoals Vanilla, AoWx of Ziggurat. Het label reist mee met de beurten die u verstuurt, dus iedereen in een partij moet hetzelfde label gebruiken. De standaardkopie ontvangt beurten zonder label."/>
+		<lookup key="lblGamesHelp" value="Elke kopie van een spel draagt een label, zoals Vanilla, AoWx of Ziggurat, afgeleid van de inhoud van de map. Het label reist mee met de beurten die u verstuurt, dus iedereen in een partij moet hetzelfde label gebruiken. Een beurt gaat naar de kopie waarin de partij het laatst is gespeeld; een nieuwe partij gaat naar de standaardkopie van haar label, anders naar de standaardkopie van het spel."/>
 		<lookup key="tabAliases" value="Aliassen"/>
 		<lookup key="panelAliaseslistViewAliases0" value="Naam"/>
 		<lookup key="panelAliaseslistViewAliases1" value="E-mailadres"/>
@@ -1639,7 +1634,6 @@
 		<lookup key="panelGameslistViewGames3" value="Mappe"/>
 		<lookup key="buttonAddFolder" value="Tilføj mappe..."/>
 		<lookup key="buttonOpenFolder" value="Open folder"/>
-		<lookup key="msgLabelHeldBy" value="used by {0}"/>
 		<lookup key="msgLabelMoveHint" value="Choosing a label another copy uses moves it to this copy."/>
 		<lookup key="buttonSetLabel" value="Angiv mærkat..."/>
 		<lookup key="buttonSetDefaultInstall" value="Sæt som standard"/>
@@ -1651,7 +1645,7 @@
 		<lookup key="msgLocalPortInUse" value="Wrapperen kunne ikke åbne port {0}, som spillene sender deres ture til: et andet program, eller en anden Wrapper, bruger den. Ingen tur kan sendes, før den er ledig. Vælg en anden port under &quot;Spil til Wrapper dataport&quot; på fanen Indstillinger, og gem."/>
 		<lookup key="buttonRescan" value="Søg igen"/>
 		<lookup key="buttonRescanning" value="Søger..."/>
-		<lookup key="lblGamesHelp" value="Giv hver kopi af et spil en kort mærkat som Vanilla, AoWx eller Ziggurat. Mærkaten følger med de ture du sender, så alle i et spil skal bruge den samme. Standardkopien modtager ture uden mærkat."/>
+		<lookup key="lblGamesHelp" value="Hver kopi af et spil bærer en mærkat som Vanilla, AoWx eller Ziggurat, udfyldt ud fra mappens indhold. Mærkaten følger med de ture du sender, så alle i et spil skal bruge den samme. En tur går til den kopi, spillet sidst blev spillet i; et nyt spil går til standardkopien for sin mærkat, ellers til spillets standardkopi."/>
 		<lookup key="tabAliases" value="Aliasser"/>
 		<lookup key="panelAliaseslistViewAliases0" value="Navn"/>
 		<lookup key="panelAliaseslistViewAliases1" value="E-mailadresse"/>
@@ -1938,7 +1932,6 @@
 		<lookup key="panelGameslistViewGames3" value="Mapp"/>
 		<lookup key="buttonAddFolder" value="Lägg till mapp..."/>
 		<lookup key="buttonOpenFolder" value="Open folder"/>
-		<lookup key="msgLabelHeldBy" value="used by {0}"/>
 		<lookup key="msgLabelMoveHint" value="Choosing a label another copy uses moves it to this copy."/>
 		<lookup key="buttonSetLabel" value="Ange etikett..."/>
 		<lookup key="buttonSetDefaultInstall" value="Ange som standard"/>
@@ -1950,7 +1943,7 @@
 		<lookup key="msgLocalPortInUse" value="Wrappern kunde inte öppna port {0}, som spelen skickar sina drag till: ett annat program, eller en annan Wrapper, använder den. Inget drag kan skickas förrän den är ledig. Välj en annan port under &quot;Spel till Wrapperns data port&quot; på fliken Inställningar och spara."/>
 		<lookup key="buttonRescan" value="Sök igen"/>
 		<lookup key="buttonRescanning" value="Söker..."/>
-		<lookup key="lblGamesHelp" value="Ge varje kopia av ett spel en kort etikett, till exempel Vanilla, AoWx eller Ziggurat. Etiketten följer med de drag du skickar, så alla i ett parti måste använda samma etikett. Standardkopian tar emot drag utan etikett."/>
+		<lookup key="lblGamesHelp" value="Varje kopia av ett spel bär en etikett, till exempel Vanilla, AoWx eller Ziggurat, ifylld utifrån mappens innehåll. Etiketten följer med de drag du skickar, så alla i ett parti måste använda samma etikett. Ett drag går till den kopia där partiet senast spelades; ett nytt parti går till standardkopian för sin etikett, annars till spelets standardkopia."/>
 		<lookup key="tabAliases" value="Alias"/>
 		<lookup key="panelAliaseslistViewAliases0" value="Namn"/>
 		<lookup key="panelAliaseslistViewAliases1" value="E-postadress"/>
@@ -2231,7 +2224,6 @@
 		<lookup key="panelGameslistViewGames3" value="Folder"/>
 		<lookup key="buttonAddFolder" value="Dodaj folder..."/>
 		<lookup key="buttonOpenFolder" value="Open folder"/>
-		<lookup key="msgLabelHeldBy" value="used by {0}"/>
 		<lookup key="msgLabelMoveHint" value="Choosing a label another copy uses moves it to this copy."/>
 		<lookup key="buttonSetLabel" value="Ustaw etykietę..."/>
 		<lookup key="buttonSetDefaultInstall" value="Ustaw jako domyślną"/>
@@ -2243,7 +2235,7 @@
 		<lookup key="msgLocalPortInUse" value="Wrapper nie mógł otworzyć portu {0}, przez który gry przekazują mu tury: używa go inny program albo inny Wrapper. Dopóki port jest zajęty, żadna tura nie zostanie wysłana. Wybierz inny port w polu „Port danych przesyłanych z gry do Wrappera” na karcie Ustawienia i zapisz."/>
 		<lookup key="buttonRescan" value="Szukaj ponownie"/>
 		<lookup key="buttonRescanning" value="Szukanie..."/>
-		<lookup key="lblGamesHelp" value="Nadaj każdej kopii gry krótką etykietę, np. Vanilla, AoWx lub Ziggurat. Etykieta podróżuje z wysyłanymi turami, więc wszyscy gracze w rozgrywce muszą używać tej samej. Kopia domyślna odbiera tury bez etykiety."/>
+		<lookup key="lblGamesHelp" value="Każda kopia gry nosi etykietę, np. Vanilla, AoWx lub Ziggurat, ustaloną na podstawie zawartości folderu. Etykieta podróżuje z wysyłanymi turami, więc wszyscy gracze w rozgrywce muszą używać tej samej. Tura trafia do kopii, w której rozgrywka była ostatnio grana; nowa rozgrywka trafia do domyślnej kopii swojej etykiety, a w przeciwnym razie do domyślnej kopii gry."/>
 		<lookup key="tabAliases" value="Aliasy"/>
 		<lookup key="panelAliaseslistViewAliases0" value="Nazwa"/>
 		<lookup key="panelAliaseslistViewAliases1" value="Adres e-mail"/>
@@ -2524,7 +2516,6 @@
 		<lookup key="panelGameslistViewGames3" value="Kansio"/>
 		<lookup key="buttonAddFolder" value="Lisää kansio..."/>
 		<lookup key="buttonOpenFolder" value="Open folder"/>
-		<lookup key="msgLabelHeldBy" value="used by {0}"/>
 		<lookup key="msgLabelMoveHint" value="Choosing a label another copy uses moves it to this copy."/>
 		<lookup key="buttonSetLabel" value="Aseta tunniste..."/>
 		<lookup key="buttonSetDefaultInstall" value="Aseta oletukseksi"/>
@@ -2536,7 +2527,7 @@
 		<lookup key="msgLocalPortInUse" value="Wrapper ei voinut avata porttia {0}, jonka kautta pelit antavat sille vuoronsa: toinen ohjelma tai toinen Wrapper käyttää sitä. Vuoroja ei voi lähettää, ennen kuin portti vapautuu. Valitse toinen portti kohdassa &quot;Pelin Wrapper Data portti&quot; Asetukset-välilehdellä ja tallenna."/>
 		<lookup key="buttonRescan" value="Etsi uudelleen"/>
 		<lookup key="buttonRescanning" value="Etsitään..."/>
-		<lookup key="lblGamesHelp" value="Anna jokaiselle pelin kopiolle lyhyt tunniste, kuten Vanilla, AoWx tai Ziggurat. Tunniste kulkee lähettämiesi vuorojen mukana, joten kaikkien saman pelin pelaajien on käytettävä samaa tunnistetta. Oletuskopio vastaanottaa tunnisteettomat vuorot."/>
+		<lookup key="lblGamesHelp" value="Jokaisella pelin kopiolla on tunniste, kuten Vanilla, AoWx tai Ziggurat, joka päätellään kansion sisällöstä. Tunniste kulkee lähettämiesi vuorojen mukana, joten kaikkien saman pelin pelaajien on käytettävä samaa tunnistetta. Vuoro menee kopioon, jossa peliä viimeksi pelattiin; uusi peli menee tunnisteensa oletuskopioon, muuten pelin oletuskopioon."/>
 		<lookup key="tabAliases" value="Aliakset"/>
 		<lookup key="panelAliaseslistViewAliases0" value="Nimi"/>
 		<lookup key="panelAliaseslistViewAliases1" value="Sähköpostiosoite"/>
@@ -2817,7 +2808,6 @@
 		<lookup key="panelGameslistViewGames3" value="Dosar"/>
 		<lookup key="buttonAddFolder" value="Adaugă dosar..."/>
 		<lookup key="buttonOpenFolder" value="Open folder"/>
-		<lookup key="msgLabelHeldBy" value="used by {0}"/>
 		<lookup key="msgLabelMoveHint" value="Choosing a label another copy uses moves it to this copy."/>
 		<lookup key="buttonSetLabel" value="Setează eticheta..."/>
 		<lookup key="buttonSetDefaultInstall" value="Setează ca implicit"/>
@@ -2829,7 +2819,7 @@
 		<lookup key="msgLocalPortInUse" value="Wrapper-ul nu a putut deschide portul {0}, prin care jocurile îi predau turele: îl folosește alt program sau alt Wrapper. Nicio tură nu poate fi trimisă până nu se eliberează. Alegeți alt port la „Port comunicare dintre joc şi Wrapper” în fila Setări și salvați."/>
 		<lookup key="buttonRescan" value="Caută din nou"/>
 		<lookup key="buttonRescanning" value="Se caută..."/>
-		<lookup key="lblGamesHelp" value="Dați fiecărei copii a unui joc o etichetă scurtă, de exemplu Vanilla, AoWx sau Ziggurat. Eticheta călătorește cu turele trimise, așa că toți jucătorii dintr-o partidă trebuie să folosească aceeași etichetă. Copia implicită primește turele fără etichetă."/>
+		<lookup key="lblGamesHelp" value="Fiecare copie a unui joc poartă o etichetă, de exemplu Vanilla, AoWx sau Ziggurat, dedusă din conținutul folderului. Eticheta călătorește cu turele trimise, așa că toți jucătorii dintr-o partidă trebuie să folosească aceeași etichetă. O tură merge în copia în care partida a fost jucată ultima dată; o partidă nouă merge în copia implicită a etichetei sale, altfel în copia implicită a jocului."/>
 		<lookup key="tabAliases" value="Aliasuri"/>
 		<lookup key="panelAliaseslistViewAliases0" value="Nume"/>
 		<lookup key="panelAliaseslistViewAliases1" value="Adresă de e-mail"/>
@@ -3110,7 +3100,6 @@
 		<lookup key="panelGameslistViewGames3" value="Папка"/>
 		<lookup key="buttonAddFolder" value="Добавить папку..."/>
 		<lookup key="buttonOpenFolder" value="Открыть папку"/>
-		<lookup key="msgLabelHeldBy" value="используется {0}"/>
 		<lookup key="msgLabelMoveHint" value="Если выбрать метку, которую использует другая копия, она перейдёт к этой копии."/>
 		<lookup key="buttonSetLabel" value="Задать метку..."/>
 		<lookup key="buttonSetDefaultInstall" value="Сделать основной"/>
@@ -3122,7 +3111,7 @@
 		<lookup key="msgLocalPortInUse" value="Wrapper не смог открыть порт {0}, через который игры передают ему ходы: его занимает другая программа или другой Wrapper. Пока порт занят, ходы не отправляются. Выберите другой порт в поле «Порт сообщения игры и Wrapper&apos;а» на вкладке «Настройки» и сохраните."/>
 		<lookup key="buttonRescan" value="Искать снова"/>
 		<lookup key="buttonRescanning" value="Поиск..."/>
-		<lookup key="lblGamesHelp" value="Дайте каждой копии игры короткую метку, например Vanilla, AoWx или Ziggurat. Метка передаётся вместе с отправляемыми ходами, поэтому все участники партии должны использовать одну и ту же метку. Копия по умолчанию получает ходы без метки."/>
+		<lookup key="lblGamesHelp" value="Каждая копия игры несёт метку, например Vanilla, AoWx или Ziggurat, определённую по содержимому папки. Метка передаётся вместе с отправляемыми ходами, поэтому все участники партии должны использовать одну и ту же метку. Ход попадает в ту копию, где партия игралась в последний раз; новая партия попадает в копию по умолчанию для своей метки, иначе в копию игры по умолчанию."/>
 		<lookup key="tabAliases" value="Псевдонимы"/>
 		<lookup key="panelAliaseslistViewAliases0" value="Имя"/>
 		<lookup key="panelAliaseslistViewAliases1" value="Адрес эл. почты"/>
