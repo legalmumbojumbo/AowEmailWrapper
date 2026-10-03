@@ -524,7 +524,7 @@ namespace AowEmailWrapper.Controls
                 }
 
                 AowGame target = game;
-                ToolStripMenuItem item = new ToolStripMenuItem(game.DisplayName);
+                ToolStripMenuItem item = new ToolStripMenuItem(AowGameManager.MenuName(GameManager.Games, game));
                 item.ToolTipText = game.Folder;
                 item.Click += (sender, e) =>
                 {

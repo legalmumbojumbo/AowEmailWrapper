@@ -148,6 +148,34 @@ namespace AowEmailWrapper.Tests
         }
 
         [Fact]
+        public void The_menu_lists_the_copy_a_label_goes_to_first_and_under_the_plain_name()
+        {
+            //As on the PC that showed the problem: an older in-place Ziggurat copy whose folder sorts before the
+            //real install, plus an Evolved copy; the real install is the game's default
+            string older = Path.Combine(_root, "Age of Wonders zig");
+            Directory.CreateDirectory(Path.Combine(older, "Dict"));
+            File.WriteAllText(Path.Combine(older, AowGame.Aow1ExeName), "Copyright (C) 1999,2000 Triumph Studios");
+            File.WriteAllText(Path.Combine(older, "Dict", "ResStr.txt"), "[US] = [Version: Ziggurat %s]");
+            string host = HostFolder(false);
+            File.WriteAllText(Path.Combine(host, "Dict", "ResStr.txt"), "[US] = [Version: Evolved %s]");
+            string real = ZigguratFolder(host);
+
+            GamesConfigValues config = new GamesConfigValues();
+            config.Installs.Add(new GameInstallConfigValues { GameType = AowGameType.Aow1, Folder = real, IsDefault = true, Source = InstallSource.Registry });
+            AowGameManager manager = new AowGameManager(_root, new[]
+            {
+                new AowGame(AowGameType.Aow1, older, InstallSource.Steam),
+                new AowGame(AowGameType.Aow1, host, InstallSource.Registry),
+                new AowGame(AowGameType.Aow1, real, InstallSource.Registry),
+            }, config);
+
+            List<AowGame> inOrder = AowGameManager.InMenuOrder(manager.Games);
+            Assert.Equal(new[] { real, host, older }, inOrder.Select(game => game.Folder.TrimEnd(Path.DirectorySeparatorChar)));
+            Assert.Equal(new[] { "Age of Wonders (Ziggurat)", "Age of Wonders (Evolved)", "Age of Wonders (Ziggurat, Age of Wonders zig)" },
+                inOrder.Select(game => AowGameManager.MenuName(manager.Games, game)));
+        }
+
+        [Fact]
         public void An_older_Ziggurat_copy_found_first_does_not_take_the_turns_from_the_real_install()
         {
             //As on a PC where Ziggurat was once installed in place (AoW.exe with Ziggurat tables) and later with

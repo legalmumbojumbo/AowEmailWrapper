@@ -3141,11 +3141,11 @@ namespace AowEmailWrapper
             _menuAccounts = new ToolStripMenuItem();            
             Image emailImage = imageListIcons.Images[IconState.EmailWaiting.ToString()];
 
-            foreach (AowGame game in _gameManager.Games)
+            foreach (AowGame game in AowGameManager.InMenuOrder(_gameManager.Games))
             {
                 if (game.IsInstalled)
                 {
-                    IconMenuItem menuItem = new IconMenuItem(game.DisplayName, imageListIcons.Images[game.ImageKey], emailImage);
+                    IconMenuItem menuItem = new IconMenuItem(AowGameManager.MenuName(_gameManager.Games, game), imageListIcons.Images[game.ImageKey], emailImage);
                     
                     menuItem.Name = game.Id;
                     menuItem.Tag = GameMenuTagPrefix + game.Id;
