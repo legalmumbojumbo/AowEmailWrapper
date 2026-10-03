@@ -185,23 +185,17 @@ namespace AowEmailWrapper.Games
                 }
             }
 
-            //A copy without a label gets the one its contents call for (the mod found in it, or the stock game),
-            //unless another copy of that game already carries it: a label routes turns to exactly one copy.
-            //A copy started through the mod's own executable is the mod's home and takes its label first: the
-            //game folder Ziggurat was installed into may carry Ziggurat text tables, but it is the vanilla game.
-            foreach (AowGame game in games.Where(game => game.IsInstalled && string.IsNullOrEmpty(game.Label))
-                                          .OrderBy(game => game.RunsModExecutable ? 0 : 1).ToList())
+            //Every copy without a label gets the one its contents call for: the mod found in it, or the stock
+            //game. Several copies may carry the same label; which of them a mod's turns go to is decided by
+            //DefaultFor, not by who got the label first
+            foreach (AowGame game in games.Where(game => game.IsInstalled && string.IsNullOrEmpty(game.Label)))
             {
-                string label = game.SuggestedLabel;
-                if (!games.Any(other => other != game && other.GameType == game.GameType && AowGame.SameLabel(other.Label, label)))
-                {
-                    game.Label = label;
-                    Trace.TraceInformation("Copy {0} labelled '{1}' ({2})", game.Folder, label,
-                        game.DetectedMods.Count > 0 ? string.Join("; ", game.DetectedMods.Select(mod => mod.Evidence)) : "nothing found in it");
-                }
+                game.Label = game.SuggestedLabel;
+                Trace.TraceInformation("Copy {0} labelled '{1}' ({2})", game.Folder, game.Label,
+                    game.DetectedMods.Count > 0 ? string.Join("; ", game.DetectedMods.Select(mod => mod.Evidence)) : "nothing found in it");
             }
 
-            //Exactly one default per game type, preferring the copy from the most trustworthy source
+            //Exactly one default per game type (see below for how it is picked when the player has not)
             foreach (AowGameType type in AowGame.AllTypes)
             {
                 List<AowGame> installed = games.Where(game => game.GameType == type && game.IsInstalled).ToList();
@@ -212,7 +206,9 @@ namespace AowEmailWrapper.Games
                 }
                 if (current == null)
                 {
-                    current = installed.OrderBy(game => game.Source).FirstOrDefault();
+                    //Nobody chosen: a copy started through a mod's own executable is a real install of that mod,
+                    //over an older copy that only carries its text tables; then the most trustworthy source
+                    current = installed.OrderBy(game => game.RunsModExecutable ? 0 : 1).ThenBy(game => game.Source).FirstOrDefault();
                 }
                 if (current != null)
                 {
@@ -246,6 +242,38 @@ namespace AowEmailWrapper.Games
             return GetInstalls(theGameType).FirstOrDefault();
         }
 
+        /// <summary>
+        /// The copy a mod's turns go to when nothing else decides: among the copies carrying the label, the
+        /// game's default copy if it is one of them, else the one started through the mod's own executable
+        /// (the real Ziggurat install over an older copy that only carries its text tables), else the copy from
+        /// the most trustworthy source. Null when no copy carries the label.
+        /// </summary>
+        public AowGame DefaultFor(AowGameType theGameType, string label)
+        {
+            return DefaultFor(GetInstalls(theGameType), theGameType, label);
+        }
+
+        /// <summary>The rule of <see cref="DefaultFor(AowGameType, string)"/> over any list of copies.</summary>
+        public static AowGame DefaultFor(IEnumerable<AowGame> games, AowGameType theGameType, string label)
+        {
+            if (string.IsNullOrEmpty(label))
+            {
+                return null;
+            }
+            return games
+                .Where(game => game.GameType == theGameType && game.IsInstalled && AowGame.SameLabel(game.Label, label))
+                .OrderBy(game => game.IsDefault ? 0 : 1)
+                .ThenBy(game => game.RunsModExecutable ? 0 : 1)
+                .ThenBy(game => game.Source)
+                .FirstOrDefault();
+        }
+
+        /// <summary>True when the copy is the one its mod's turns go to (see <see cref="DefaultFor(AowGameType, string)"/>).</summary>
+        public static bool IsDefaultForItsLabel(IEnumerable<AowGame> games, AowGame game)
+        {
+            return game != null && DefaultFor(games, game.GameType, game.Label) == game;
+        }
+
         public AowGame GetGameById(string id)
         {
             return _games.FirstOrDefault(game => game.Id == id);
@@ -256,9 +284,10 @@ namespace AowEmailWrapper.Games
             return string.IsNullOrEmpty(folder) ? null : GetInstalls(theGameType).FirstOrDefault(game => game.IsFolder(folder));
         }
 
+        /// <summary>The copy a label's turns go to; see <see cref="DefaultFor"/>.</summary>
         public AowGame GetGameByLabel(AowGameType theGameType, string label)
         {
-            return string.IsNullOrEmpty(label) ? null : GetInstalls(theGameType).FirstOrDefault(game => AowGame.SameLabel(game.Label, label));
+            return DefaultFor(theGameType, label);
         }
 
         /// <summary>The copy an activity log entry points at, falling back to the default copy.</summary>
@@ -283,9 +312,10 @@ namespace AowEmailWrapper.Games
         #region Routing
 
         /// <summary>
-        /// Where an incoming turn goes: the copy whose label the email names, else the copy the
-        /// game was last seen in, else the only copy that already holds a turn of that game, else
-        /// the default copy. Null when the game is not installed at all.
+        /// Where an incoming turn goes: the copy the game was last seen in (a game stays where the player
+        /// has been playing it, whatever label a turn carries), else the only copy that already holds a turn
+        /// of that game, else the default copy of the mod the email names, else the game's default copy.
+        /// Null when the game is not installed at all.
         /// </summary>
         public AowGame ResolveIncoming(AowGameType theGameType, string modLabel, string fileName)
         {
@@ -299,13 +329,7 @@ namespace AowEmailWrapper.Games
                 return installs[0];
             }
 
-            AowGame byLabel = GetGameByLabel(theGameType, modLabel);
-            if (byLabel != null)
-            {
-                return byLabel;
-            }
-
-            return ResolveKnown(theGameType, fileName, installs) ?? installs[0];
+            return ResolveKnown(theGameType, fileName, installs) ?? DefaultFor(theGameType, modLabel) ?? installs[0];
         }
 
         /// <summary>

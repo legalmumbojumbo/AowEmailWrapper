@@ -28,16 +28,11 @@ namespace AowEmailWrapper.Tests
         }
 
         [Fact]
-        public void Every_mod_label_is_offered_and_a_held_one_is_marked()
+        public void Every_mod_label_is_offered_as_itself()
         {
             AowGame game = Game("copy");
-            Dictionary<string, string> taken = new Dictionary<string, string>
-            {
-                { "Ziggurat", @"E:\Games\Age of Wonders zig" },
-                { "AoWx", @"E:\Age of Wonders X" },
-            };
 
-            List<KeyValuePair<string, string>> options = LabelDialog.BuildOptions(game, taken);
+            List<KeyValuePair<string, string>> options = LabelDialog.BuildOptions(game);
             List<string> labels = options.Select(option => option.Value).ToList();
 
             Assert.Equal("Vanilla 1.36", labels[0]);
@@ -46,10 +41,8 @@ namespace AowEmailWrapper.Tests
             Assert.Contains("Evolved", labels);
             Assert.Contains("Dark Lord", labels);
             Assert.Equal(labels.Count, labels.Distinct(StringComparer.OrdinalIgnoreCase).Count());
-
-            KeyValuePair<string, string> ziggurat = options.Single(option => option.Value == "Ziggurat");
-            Assert.Contains("Age of Wonders zig", ziggurat.Key);
-            Assert.Equal("Evolved", options.Single(option => option.Value == "Evolved").Key);
+            //Several copies may share a label, so none is marked as held by another copy
+            Assert.All(options, option => Assert.Equal(option.Value, option.Key));
         }
 
         [Fact]
@@ -58,36 +51,42 @@ namespace AowEmailWrapper.Tests
             AowGame game = Game("named");
             game.Label = "Zig Test";
 
-            List<string> labels = LabelDialog.BuildOptions(game, null).Select(option => option.Value).ToList();
+            List<string> labels = LabelDialog.BuildOptions(game).Select(option => option.Value).ToList();
 
             Assert.Contains("Zig Test", labels);
         }
 
         [Fact]
-        public void Choosing_a_held_label_moves_it_off_the_other_copy()
+        public void Among_copies_sharing_a_label_the_games_default_then_the_mods_own_executable_decides()
         {
-            AowGame first = Game("first");
-            AowGame second = Game("second");
-            AowGame otherGame = new AowGame(AowGameType.AowSm, Path.Combine(_root, "sm"), InstallSource.Folder);
-            first.Label = "Ziggurat";
-            otherGame.Label = "Ziggurat";
-            List<AowGame> games = new List<AowGame> { first, second, otherGame };
+            AowGame old = Game("old");
+            AowGame real = Game("real", AowGame.Aow1ZExeName);
+            AowGame third = Game("third");
+            foreach (AowGame game in new[] { old, real, third })
+            {
+                game.Label = "Ziggurat";
+            }
+            List<AowGame> games = new List<AowGame> { old, real, third };
 
-            GamesConfig.MoveLabel(games, second, "Ziggurat");
+            //Nobody is the game's default: the copy started through AoWz.exe is the mod's home
+            Assert.Same(real, AowGameManager.DefaultFor(games, AowGameType.Aow1, "ziggurat"));
+            Assert.True(AowGameManager.IsDefaultForItsLabel(games, real));
+            Assert.False(AowGameManager.IsDefaultForItsLabel(games, old));
 
-            Assert.Equal("Ziggurat", second.Label);
-            Assert.Equal(string.Empty, first.Label);
-            Assert.Equal("Ziggurat", otherGame.Label); //a different game: labels are per game
+            //The game's default copy, when it carries the label, is the mod's default too
+            old.IsDefault = true;
+            Assert.Same(old, AowGameManager.DefaultFor(games, AowGameType.Aow1, "Ziggurat"));
 
-            GamesConfig.MoveLabel(games, second, string.Empty);
-            Assert.Equal(string.Empty, second.Label);
+            //A label no copy carries has no default; a copy of another game does not count
+            Assert.Null(AowGameManager.DefaultFor(games, AowGameType.Aow1, "AoWx"));
+            Assert.Null(AowGameManager.DefaultFor(games, AowGameType.AowSm, "Ziggurat"));
         }
 
-        private AowGame Game(string name)
+        private AowGame Game(string name, string exeName = AowGame.Aow1ExeName)
         {
             string folder = Path.Combine(_root, name);
             Directory.CreateDirectory(folder);
-            File.WriteAllBytes(Path.Combine(folder, AowGame.Aow1ExeName), new byte[] { 1 });
+            File.WriteAllBytes(Path.Combine(folder, exeName), new byte[] { 1 });
             return new AowGame(AowGameType.Aow1, folder, InstallSource.Folder);
         }
     }

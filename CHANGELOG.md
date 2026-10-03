@@ -3,6 +3,17 @@
 Each versioned release is described here. The section for a version is also the text of its GitHub
 release; CI publishes it when a `v<version>` tag is pushed (see "Releasing a version" in the README).
 
+## Unreleased
+
+- Every copy of a game now carries a label, filled in from what its folder holds, and several copies may share
+  one. Where a turn goes no longer depends on which copy was found first: a game stays in the copy it was last
+  played in, whatever label the turn carries; a new game goes to the default copy of its label, which is the
+  game's default copy when it carries the label, else the copy started through the mod's own executable
+  (Ziggurat's `AoWz.exe` over an older copy that only has its text tables); and only then to the game's default.
+  The Games tab marks that copy in the *Default* column. Before, an older Ziggurat copy found before the
+  real install took its label and every Ziggurat turn with it, while the real copy showed a greyed-out label
+  that routed nothing.
+
 ## 2.1.3
 
 Most of this release came from BING-XI: the Aliases tab, the resizable window and column fitting, the white-text

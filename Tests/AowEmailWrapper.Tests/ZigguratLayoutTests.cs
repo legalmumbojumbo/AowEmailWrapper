@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using AowEmailWrapper.ConfigFramework;
 using AowEmailWrapper.Games;
 using Xunit;
 
@@ -124,9 +125,10 @@ namespace AowEmailWrapper.Tests
         }
 
         [Fact]
-        public void A_host_carrying_Ziggurat_tables_does_not_take_the_label_from_the_mods_own_copy()
+        public void Ziggurat_turns_go_to_the_mods_own_copy_not_a_host_that_only_carries_its_tables()
         {
-            //The mod author's game folder has Ziggurat's text tables in it; the built subfolder is still the Ziggurat entry
+            //The mod author's game folder has Ziggurat's text tables in it, so it is labelled Ziggurat too; the
+            //built subfolder, started through AoWz.exe, is still where Ziggurat turns go
             string host = HostFolder(true);
             string zig = ZigguratFolder(host);
 
@@ -140,14 +142,53 @@ namespace AowEmailWrapper.Tests
             AowGame mod = installs.Single(game => game.IsFolder(zig));
             AowGame vanilla = installs.Single(game => game.IsFolder(host));
             Assert.Equal(ModDetector.Ziggurat, mod.Label);
-            Assert.NotEqual(ModDetector.Ziggurat, vanilla.Label);
+            Assert.Equal(ModDetector.Ziggurat, vanilla.Label);
+            Assert.Same(mod, manager.DefaultFor(AowGameType.Aow1, ModDetector.Ziggurat));
+            Assert.Same(mod, manager.ResolveIncoming(AowGameType.Aow1, "Ziggurat", "new game.asg"));
         }
 
         [Fact]
-        public void The_Ziggurat_copy_and_its_turns_show_the_purple_dragon_and_the_host_does_not()
+        public void An_older_Ziggurat_copy_found_first_does_not_take_the_turns_from_the_real_install()
         {
-            //The host carries Ziggurat's tables, so detection alone would call it Ziggurat too
-            string host = HostFolder(true);
+            //As on a PC where Ziggurat was once installed in place (AoW.exe with Ziggurat tables) and later with
+            //the installer (its own AoWz.exe). The older copy is scanned first and the real one is the default
+            string older = Path.Combine(_root, "Age of Wonders zig");
+            Directory.CreateDirectory(Path.Combine(older, "Dict"));
+            File.WriteAllText(Path.Combine(older, AowGame.Aow1ExeName), "Copyright (C) 1999,2000 Triumph Studios");
+            File.WriteAllText(Path.Combine(older, "Dict", "ResStr.txt"), "[US] = [Version: Ziggurat %s]");
+            string real = ZigguratFolder(HostFolder(false));
+
+            GamesConfigValues config = new GamesConfigValues();
+            config.Installs.Add(new GameInstallConfigValues { GameType = AowGameType.Aow1, Folder = real, IsDefault = true, Source = InstallSource.Registry });
+            AowGameManager manager = new AowGameManager(_root, new[]
+            {
+                new AowGame(AowGameType.Aow1, older, InstallSource.Steam),
+                new AowGame(AowGameType.Aow1, real, InstallSource.Registry),
+            }, config);
+
+            List<AowGame> installs = manager.GetInstalls(AowGameType.Aow1);
+            AowGame realCopy = installs.Single(game => game.IsFolder(real));
+            AowGame olderCopy = installs.Single(game => game.IsFolder(older));
+            Assert.Equal("Ziggurat", olderCopy.Label);
+            Assert.Equal("Ziggurat", realCopy.Label);
+            Assert.True(realCopy.IsDefault);
+            Assert.Same(realCopy, manager.ResolveIncoming(AowGameType.Aow1, "Ziggurat", "Heulax 26.asg"));
+
+            //Even without the default, the copy with the mod's own executable wins over the older one
+            config.Installs[0].IsDefault = false;
+            manager = new AowGameManager(_root, new[]
+            {
+                new AowGame(AowGameType.Aow1, older, InstallSource.Registry),
+                new AowGame(AowGameType.Aow1, real, InstallSource.Steam),
+            }, config);
+            Assert.Same(manager.GetInstalls(AowGameType.Aow1).Single(game => game.IsFolder(real)), manager.ResolveIncoming(AowGameType.Aow1, "Ziggurat", "Heulax 26.asg"));
+        }
+
+        [Fact]
+        public void A_Ziggurat_copy_and_its_turns_show_the_purple_dragon_and_a_vanilla_host_does_not()
+        {
+            //A plain game folder beside the mod's own subfolder
+            string host = HostFolder(false);
             string zig = ZigguratFolder(host);
 
             AowGameManager manager = new AowGameManager(_root, new[]
