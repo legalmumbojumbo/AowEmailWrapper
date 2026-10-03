@@ -3,6 +3,19 @@
 Each versioned release is described here. The section for a version is also the text of its GitHub
 release; CI publishes it when a `v<version>` tag is pushed (see "Releasing a version" in the README).
 
+## 2.1.5
+
+### Fixed
+
+- The tray menu lists the copy a label's turns go to first and under the plain name, so one click on *Age of
+  Wonders (Ziggurat)* starts the copy that counts. Another copy with the same label is named by its folder as
+  well, as *Age of Wonders (Ziggurat, Age of Wonders zig)*. In 2.1.4 the copies were listed by folder, so an
+  older Ziggurat copy could come first under the same name as the real one. The *Move to* menu on the Activity
+  Log names copies the same way.
+
+Run `AowEmailWrapper-2.1.5-setup.exe` on Windows 10 or later, or let an installed Wrapper fetch it through
+*Check for updates* on the Settings tab. Accounts and settings carry over.
+
 ## 2.1.4
 
 - Every copy of a game now carries a label, filled in from what its folder holds, and several copies may share

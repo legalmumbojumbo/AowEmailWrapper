@@ -221,6 +221,11 @@ namespace AowEmailWrapper.Tests
             config.PreferencesConfig.Theme = Theme.ClassicName;
             config.PreferencesConfig.AutoInstallUpdates = false;
             config.GamesConfig = new GamesConfigValues();
+            //Every copy of every game on this PC stays out of the test: their folder names would read as English
+            foreach (AowGame found in GameDetector.Detect(null, false))
+            {
+                config.GamesConfig.Ignore(found);
+            }
             config.GamesConfig.Installs.Add(new GameInstallConfigValues(new AowGame(AowGameType.Aow1, gameFolder, InstallSource.Manual)) { Label = "Vanilla", IsDefault = true });
             DataManagerHelper.SaveConfig(config);
             DataManagerHelper.LanguagesOverride = WithPseudoLanguage();

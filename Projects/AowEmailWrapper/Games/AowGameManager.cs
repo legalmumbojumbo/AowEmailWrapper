@@ -274,6 +274,39 @@ namespace AowEmailWrapper.Games
             return game != null && DefaultFor(games, game.GameType, game.Label) == game;
         }
 
+        /// <summary>
+        /// The installed copies in the order a menu lists them: by game, the game's default first, then the
+        /// copies that are the default for their label, then the rest by folder. So the first entry under a
+        /// name is always the copy that name's turns go to.
+        /// </summary>
+        public static List<AowGame> InMenuOrder(IEnumerable<AowGame> games)
+        {
+            List<AowGame> installed = games.Where(game => game.IsInstalled).ToList();
+            return installed
+                .OrderBy(game => game.GameType)
+                .ThenBy(game => game.IsDefault ? 0 : 1)
+                .ThenBy(game => IsDefaultForItsLabel(installed, game) ? 0 : 1)
+                .ThenBy(game => game.Folder, StringComparer.OrdinalIgnoreCase)
+                .ToList();
+        }
+
+        /// <summary>
+        /// The copy's name on a menu: its display name, with the folder's name added when another copy of the
+        /// game shares its label and this is not the one that label's turns go to, as "Age of Wonders (Ziggurat,
+        /// Age of Wonders zig)". So one entry per label reads plainly, and it is the one that counts.
+        /// </summary>
+        public static string MenuName(IEnumerable<AowGame> games, AowGame game)
+        {
+            List<AowGame> all = games as List<AowGame> ?? games.ToList();
+            bool shared = all.Any(other => other != game && other.GameType == game.GameType && other.IsInstalled && AowGame.SameLabel(other.Label, game.Label));
+            if (!shared || IsDefaultForItsLabel(all, game))
+            {
+                return game.DisplayName;
+            }
+            string folder = game.Folder.TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+            return string.Format("{0} ({1}, {2})", AowGame.DisplayNameFor(game.GameType), game.Label, Path.GetFileName(folder));
+        }
+
         public AowGame GetGameById(string id)
         {
             return _games.FirstOrDefault(game => game.Id == id);
