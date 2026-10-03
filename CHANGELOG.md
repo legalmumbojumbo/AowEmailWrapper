@@ -3,7 +3,7 @@
 Each versioned release is described here. The section for a version is also the text of its GitHub
 release; CI publishes it when a `v<version>` tag is pushed (see "Releasing a version" in the README).
 
-## Unreleased
+## 2.1.4
 
 - Every copy of a game now carries a label, filled in from what its folder holds, and several copies may share
   one. Where a turn goes no longer depends on which copy was found first: a game stays in the copy it was last
@@ -13,6 +13,9 @@ release; CI publishes it when a `v<version>` tag is pushed (see "Releasing a ver
   The Games tab marks that copy in the *Default* column. Before, an older Ziggurat copy found before the
   real install took its label and every Ziggurat turn with it, while the real copy showed a greyed-out label
   that routed nothing.
+
+Run `AowEmailWrapper-2.1.4-setup.exe` on Windows 10 or later, or let an installed Wrapper fetch it through
+*Check for updates* on the Settings tab. Accounts and settings carry over.
 
 ## 2.1.3
 
