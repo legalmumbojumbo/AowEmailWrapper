@@ -204,8 +204,8 @@
 		<lookup key="msgWrapperUnsavedChanges" value="Some changes on the Accounts or Settings tab have not been saved. Save them before the Wrapper closes?"/>
 		<lookup key="msgLocalPortInUse" value="The Wrapper could not open port {0}, which the games send their turns to: another program, or another copy of the Wrapper, is using it. No turn can be sent until it is free. Choose another port under &quot;Game to Wrapper data port&quot; on the Settings tab and save."/>
 		<lookup key="buttonRescan" value="Rescan"/>
+		<lookup key="lblGamesHelp" value="A turn goes to the copy its game was last played in. A new game goes to the copy the Default column marks for its label."/>
 		<lookup key="buttonRescanning" value="Scanning..."/>
-		<lookup key="lblGamesHelp" value="Each copy of a game carries a label such as Vanilla, AoWx or Ziggurat, filled in from what the folder holds. The label travels with the turns you send, so everyone in a game must use the same label. A turn goes to the copy its game was last played in; a new game goes to the default copy of its label, else to the default copy of the game."/>
 		<lookup key="tabAliases" value="Aliases"/>
 		<lookup key="panelAliaseslistViewAliases0" value="Name"/>
 		<lookup key="panelAliaseslistViewAliases1" value="Email address"/>
@@ -213,7 +213,6 @@
 		<lookup key="buttonAddAlias" value="Add..."/>
 		<lookup key="buttonEditAlias" value="Edit..."/>
 		<lookup key="buttonRemoveAlias" value="Remove"/>
-		<lookup key="lblAliasesHelp" value="Give the players you play with the names you know them by. The Activity Log and the Wrapper&apos;s messages show the name instead of the email address, and a turn from an address on this list is not marked as coming from a new sender. Your turns carry the names of that game&apos;s players, and names a player you know sends with a turn are added here, marked with who shared them; they never replace a name already on the list."/>
 		<lookup key="titleAddAlias" value="Add alias"/>
 		<lookup key="titleEditAlias" value="Edit alias"/>
 		<lookup key="lblAliasName" value="Name:"/>
@@ -482,8 +481,8 @@
 		<lookup key="msgWrapperUnsavedChanges" value="Certaines modifications des onglets Comptes ou Paramètres n&apos;ont pas été enregistrées. Les enregistrer avant la fermeture du Wrapper ?"/>
 		<lookup key="msgLocalPortInUse" value="Le Wrapper n&apos;a pas pu ouvrir le port {0}, par lequel les jeux lui envoient leurs tours : un autre programme, ou un autre Wrapper, l&apos;utilise. Aucun tour ne peut être envoyé tant qu&apos;il n&apos;est pas libre. Choisissez un autre port dans « Jeu de Wrapper port de données » de l&apos;onglet Paramètres, puis enregistrez."/>
 		<lookup key="buttonRescan" value="Rechercher à nouveau"/>
+		<lookup key="lblGamesHelp" value="Un tour va dans la copie où sa partie a été jouée en dernier. Une nouvelle partie va dans la copie que la colonne Par défaut indique pour son étiquette."/>
 		<lookup key="buttonRescanning" value="Recherche..."/>
-		<lookup key="lblGamesHelp" value="Chaque copie d&apos;un jeu porte une étiquette, par exemple Vanilla, AoWx ou Ziggurat, déduite du contenu du dossier. L&apos;étiquette accompagne les tours que vous envoyez : tous les joueurs d&apos;une partie doivent utiliser la même. Un tour va dans la copie où sa partie a été jouée en dernier ; une nouvelle partie va dans la copie par défaut de son étiquette, sinon dans la copie par défaut du jeu."/>
 		<lookup key="tabAliases" value="Alias"/>
 		<lookup key="panelAliaseslistViewAliases0" value="Nom"/>
 		<lookup key="panelAliaseslistViewAliases1" value="Adresse e-mail"/>
@@ -491,7 +490,6 @@
 		<lookup key="buttonAddAlias" value="Ajouter..."/>
 		<lookup key="buttonEditAlias" value="Modifier..."/>
 		<lookup key="buttonRemoveAlias" value="Retirer"/>
-		<lookup key="lblAliasesHelp" value="Donnez aux joueurs avec qui vous jouez les noms sous lesquels vous les connaissez. L&apos;Historique et les messages du Wrapper affichent le nom au lieu de l&apos;adresse e-mail, et un tour venant d&apos;une adresse de cette liste n&apos;est pas marqué comme venant d&apos;un nouvel expéditeur. Vos tours transmettent les noms des joueurs de la partie, et les noms qu&apos;un joueur que vous connaissez envoie avec un tour sont ajoutés ici, avec celui qui les a partagés ; ils ne remplacent jamais un nom déjà dans la liste."/>
 		<lookup key="titleAddAlias" value="Ajouter un alias"/>
 		<lookup key="titleEditAlias" value="Modifier l&apos;alias"/>
 		<lookup key="lblAliasName" value="Nom :"/>
@@ -774,8 +772,8 @@
 		<lookup key="msgWrapperUnsavedChanges" value="Einige Änderungen auf den Registerkarten Konten oder Einstellungen wurden nicht gespeichert. Vor dem Schließen des Wrappers speichern?"/>
 		<lookup key="msgLocalPortInUse" value="Der Wrapper konnte Port {0} nicht öffnen, über den die Spiele ihm ihre Züge übergeben: ein anderes Programm oder ein anderer Wrapper benutzt ihn. Solange er belegt ist, kann kein Zug gesendet werden. Wählen Sie unter „Spiel um Wrapper datenport“ auf der Registerkarte Einstellungen einen anderen Port und speichern Sie."/>
 		<lookup key="buttonRescan" value="Erneut suchen"/>
+		<lookup key="lblGamesHelp" value="Ein Zug geht in die Kopie, in der seine Partie zuletzt gespielt wurde. Eine neue Partie geht in die Kopie, die die Spalte Standard für ihre Bezeichnung angibt."/>
 		<lookup key="buttonRescanning" value="Suche läuft..."/>
-		<lookup key="lblGamesHelp" value="Jede Kopie eines Spiels trägt eine Bezeichnung wie Vanilla, AoWx oder Ziggurat, abgeleitet vom Inhalt des Ordners. Die Bezeichnung reist mit den gesendeten Zügen mit, daher müssen alle Spieler einer Partie dieselbe verwenden. Ein Zug geht in die Kopie, in der seine Partie zuletzt gespielt wurde; eine neue Partie geht in die Standardkopie ihrer Bezeichnung, sonst in die Standardkopie des Spiels."/>
 		<lookup key="tabAliases" value="Aliasnamen"/>
 		<lookup key="panelAliaseslistViewAliases0" value="Name"/>
 		<lookup key="panelAliaseslistViewAliases1" value="E-Mail-Adresse"/>
@@ -783,7 +781,6 @@
 		<lookup key="buttonAddAlias" value="Hinzufügen..."/>
 		<lookup key="buttonEditAlias" value="Bearbeiten..."/>
 		<lookup key="buttonRemoveAlias" value="Entfernen"/>
-		<lookup key="lblAliasesHelp" value="Geben Sie den Spielern, mit denen Sie spielen, die Namen, unter denen Sie sie kennen. Der Aktivitätsreport und die Meldungen des Wrappers zeigen den Namen statt der E-Mail-Adresse, und ein Zug von einer Adresse auf dieser Liste wird nicht als von einem neuen Absender markiert. Ihre Züge übermitteln die Namen der Spieler dieser Partie, und Namen, die ein Ihnen bekannter Spieler mit einem Zug schickt, kommen hierher, mit dem, der sie geteilt hat; sie ersetzen nie einen Namen, der schon auf der Liste steht."/>
 		<lookup key="titleAddAlias" value="Aliasnamen hinzufügen"/>
 		<lookup key="titleEditAlias" value="Aliasnamen bearbeiten"/>
 		<lookup key="lblAliasName" value="Name:"/>
@@ -1065,8 +1062,8 @@
 		<lookup key="msgWrapperUnsavedChanges" value="Algunos cambios en las pestañas Cuentas o Configuración no se han guardado. ¿Guardarlos antes de cerrar el Wrapper?"/>
 		<lookup key="msgLocalPortInUse" value="El Wrapper no pudo abrir el puerto {0}, por el que los juegos le entregan sus turnos: otro programa, u otro Wrapper, lo está usando. No se puede enviar ningún turno hasta que quede libre. Elige otro puerto en «Puerto de datos del Juego al Wrapper» de la pestaña Configuración y guarda."/>
 		<lookup key="buttonRescan" value="Volver a buscar"/>
+		<lookup key="lblGamesHelp" value="Un turno va a la copia donde se jugó su partida por última vez. Una partida nueva va a la copia que la columna Predeterminada indica para su etiqueta."/>
 		<lookup key="buttonRescanning" value="Buscando..."/>
-		<lookup key="lblGamesHelp" value="Cada copia de un juego lleva una etiqueta, como Vanilla, AoWx o Ziggurat, deducida del contenido de la carpeta. La etiqueta viaja con los turnos que envía, así que todos los jugadores de una partida deben usar la misma. Un turno va a la copia donde se jugó su partida por última vez; una partida nueva va a la copia predeterminada de su etiqueta, o si no a la copia predeterminada del juego."/>
 		<lookup key="tabAliases" value="Alias"/>
 		<lookup key="panelAliaseslistViewAliases0" value="Nombre"/>
 		<lookup key="panelAliaseslistViewAliases1" value="Dirección de correo"/>
@@ -1074,7 +1071,6 @@
 		<lookup key="buttonAddAlias" value="Añadir..."/>
 		<lookup key="buttonEditAlias" value="Editar..."/>
 		<lookup key="buttonRemoveAlias" value="Quitar"/>
-		<lookup key="lblAliasesHelp" value="Dé a los jugadores con los que juega los nombres por los que los conoce. El Registro de Actividades y los mensajes del Wrapper muestran el nombre en lugar de la dirección de correo, y un turno de una dirección de esta lista no se marca como de un remitente nuevo. Sus turnos llevan los nombres de los jugadores de esa partida, y los nombres que un jugador que usted conoce envía con un turno se añaden aquí, indicando quién los compartió; nunca sustituyen un nombre que ya está en la lista."/>
 		<lookup key="titleAddAlias" value="Añadir alias"/>
 		<lookup key="titleEditAlias" value="Editar alias"/>
 		<lookup key="lblAliasName" value="Nombre:"/>
@@ -1357,8 +1353,8 @@
 		<lookup key="msgWrapperUnsavedChanges" value="Sommige wijzigingen op de tabbladen Accounts of Instellingen zijn niet opgeslagen. Opslaan voordat de Wrapper sluit?"/>
 		<lookup key="msgLocalPortInUse" value="De Wrapper kon poort {0} niet openen, waarlangs de spellen hun beurten doorgeven: een ander programma, of een andere Wrapper, gebruikt hem. Zolang hij bezet is, kan geen beurt worden verstuurd. Kies een andere poort bij &quot;Spel om Wrapper data poort&quot; op het tabblad Instellingen en sla op."/>
 		<lookup key="buttonRescan" value="Opnieuw zoeken"/>
+		<lookup key="lblGamesHelp" value="Een beurt gaat naar de kopie waarin de partij het laatst is gespeeld. Een nieuwe partij gaat naar de kopie die de kolom Standaard voor haar label aangeeft."/>
 		<lookup key="buttonRescanning" value="Bezig met zoeken..."/>
-		<lookup key="lblGamesHelp" value="Elke kopie van een spel draagt een label, zoals Vanilla, AoWx of Ziggurat, afgeleid van de inhoud van de map. Het label reist mee met de beurten die u verstuurt, dus iedereen in een partij moet hetzelfde label gebruiken. Een beurt gaat naar de kopie waarin de partij het laatst is gespeeld; een nieuwe partij gaat naar de standaardkopie van haar label, anders naar de standaardkopie van het spel."/>
 		<lookup key="tabAliases" value="Aliassen"/>
 		<lookup key="panelAliaseslistViewAliases0" value="Naam"/>
 		<lookup key="panelAliaseslistViewAliases1" value="E-mailadres"/>
@@ -1366,7 +1362,6 @@
 		<lookup key="buttonAddAlias" value="Toevoegen..."/>
 		<lookup key="buttonEditAlias" value="Bewerken..."/>
 		<lookup key="buttonRemoveAlias" value="Verwijderen"/>
-		<lookup key="lblAliasesHelp" value="Geef de spelers met wie u speelt de namen waaronder u ze kent. Het Activiteiten log en de berichten van de Wrapper tonen de naam in plaats van het e-mailadres, en een beurt van een adres op deze lijst wordt niet gemarkeerd als afkomstig van een nieuwe afzender. Uw beurten bevatten de namen van de spelers van dat spel, en namen die een speler die u kent met een beurt meestuurt, worden hier toegevoegd met wie ze deelde; ze vervangen nooit een naam die al op de lijst staat."/>
 		<lookup key="titleAddAlias" value="Alias toevoegen"/>
 		<lookup key="titleEditAlias" value="Alias bewerken"/>
 		<lookup key="lblAliasName" value="Naam:"/>
@@ -1644,8 +1639,8 @@
 		<lookup key="msgWrapperUnsavedChanges" value="Nogle ændringer på fanerne Konti eller Indstillinger er ikke gemt. Gem dem, før Wrapperen lukker?"/>
 		<lookup key="msgLocalPortInUse" value="Wrapperen kunne ikke åbne port {0}, som spillene sender deres ture til: et andet program, eller en anden Wrapper, bruger den. Ingen tur kan sendes, før den er ledig. Vælg en anden port under &quot;Spil til Wrapper dataport&quot; på fanen Indstillinger, og gem."/>
 		<lookup key="buttonRescan" value="Søg igen"/>
+		<lookup key="lblGamesHelp" value="En tur går til den kopi, spillet sidst blev spillet i. Et nyt spil går til den kopi, kolonnen Standard angiver for dets mærkat."/>
 		<lookup key="buttonRescanning" value="Søger..."/>
-		<lookup key="lblGamesHelp" value="Hver kopi af et spil bærer en mærkat som Vanilla, AoWx eller Ziggurat, udfyldt ud fra mappens indhold. Mærkaten følger med de ture du sender, så alle i et spil skal bruge den samme. En tur går til den kopi, spillet sidst blev spillet i; et nyt spil går til standardkopien for sin mærkat, ellers til spillets standardkopi."/>
 		<lookup key="tabAliases" value="Aliasser"/>
 		<lookup key="panelAliaseslistViewAliases0" value="Navn"/>
 		<lookup key="panelAliaseslistViewAliases1" value="E-mailadresse"/>
@@ -1653,7 +1648,6 @@
 		<lookup key="buttonAddAlias" value="Tilføj..."/>
 		<lookup key="buttonEditAlias" value="Rediger..."/>
 		<lookup key="buttonRemoveAlias" value="Fjern"/>
-		<lookup key="lblAliasesHelp" value="Giv de spillere, du spiller med, de navne, du kender dem under. Aktivitetslisten og Wrapperens beskeder viser navnet i stedet for e-mailadressen, og en tur fra en adresse på denne liste markeres ikke som fra en ny afsender. Dine ture sender navnene på spillets spillere med, og navne, som en spiller du kender sender med en tur, tilføjes her med, hvem der delte dem; de erstatter aldrig et navn, der allerede står på listen."/>
 		<lookup key="titleAddAlias" value="Tilføj alias"/>
 		<lookup key="titleEditAlias" value="Rediger alias"/>
 		<lookup key="lblAliasName" value="Navn:"/>
@@ -1942,8 +1936,8 @@
 		<lookup key="msgWrapperUnsavedChanges" value="Vissa ändringar på flikarna Konton eller Inställningar har inte sparats. Spara dem innan Wrappern stängs?"/>
 		<lookup key="msgLocalPortInUse" value="Wrappern kunde inte öppna port {0}, som spelen skickar sina drag till: ett annat program, eller en annan Wrapper, använder den. Inget drag kan skickas förrän den är ledig. Välj en annan port under &quot;Spel till Wrapperns data port&quot; på fliken Inställningar och spara."/>
 		<lookup key="buttonRescan" value="Sök igen"/>
+		<lookup key="lblGamesHelp" value="Ett drag går till den kopia där partiet senast spelades. Ett nytt parti går till den kopia som kolumnen Standard anger för dess etikett."/>
 		<lookup key="buttonRescanning" value="Söker..."/>
-		<lookup key="lblGamesHelp" value="Varje kopia av ett spel bär en etikett, till exempel Vanilla, AoWx eller Ziggurat, ifylld utifrån mappens innehåll. Etiketten följer med de drag du skickar, så alla i ett parti måste använda samma etikett. Ett drag går till den kopia där partiet senast spelades; ett nytt parti går till standardkopian för sin etikett, annars till spelets standardkopia."/>
 		<lookup key="tabAliases" value="Alias"/>
 		<lookup key="panelAliaseslistViewAliases0" value="Namn"/>
 		<lookup key="panelAliaseslistViewAliases1" value="E-postadress"/>
@@ -1951,7 +1945,6 @@
 		<lookup key="buttonAddAlias" value="Lägg till..."/>
 		<lookup key="buttonEditAlias" value="Redigera..."/>
 		<lookup key="buttonRemoveAlias" value="Ta bort"/>
-		<lookup key="lblAliasesHelp" value="Ge spelarna du spelar med de namn du känner dem under. Aktivitetsloggen och Wrapperns meddelanden visar namnet i stället för e-postadressen, och ett drag från en adress på den här listan markeras inte som från en ny avsändare. Dina drag skickar med namnen på spelets spelare, och namn som en spelare du känner skickar med ett drag läggs till här med vem som delade dem; de ersätter aldrig ett namn som redan finns på listan."/>
 		<lookup key="titleAddAlias" value="Lägg till alias"/>
 		<lookup key="titleEditAlias" value="Redigera alias"/>
 		<lookup key="lblAliasName" value="Namn:"/>
@@ -2234,8 +2227,8 @@
 		<lookup key="msgWrapperUnsavedChanges" value="Niektóre zmiany na kartach Konta lub Ustawienia nie zostały zapisane. Zapisać je przed zamknięciem Wrappera?"/>
 		<lookup key="msgLocalPortInUse" value="Wrapper nie mógł otworzyć portu {0}, przez który gry przekazują mu tury: używa go inny program albo inny Wrapper. Dopóki port jest zajęty, żadna tura nie zostanie wysłana. Wybierz inny port w polu „Port danych przesyłanych z gry do Wrappera” na karcie Ustawienia i zapisz."/>
 		<lookup key="buttonRescan" value="Szukaj ponownie"/>
+		<lookup key="lblGamesHelp" value="Tura trafia do kopii, w której rozgrywka była ostatnio grana. Nowa rozgrywka trafia do kopii wskazanej dla jej etykiety w kolumnie Domyślna."/>
 		<lookup key="buttonRescanning" value="Szukanie..."/>
-		<lookup key="lblGamesHelp" value="Każda kopia gry nosi etykietę, np. Vanilla, AoWx lub Ziggurat, ustaloną na podstawie zawartości folderu. Etykieta podróżuje z wysyłanymi turami, więc wszyscy gracze w rozgrywce muszą używać tej samej. Tura trafia do kopii, w której rozgrywka była ostatnio grana; nowa rozgrywka trafia do domyślnej kopii swojej etykiety, a w przeciwnym razie do domyślnej kopii gry."/>
 		<lookup key="tabAliases" value="Aliasy"/>
 		<lookup key="panelAliaseslistViewAliases0" value="Nazwa"/>
 		<lookup key="panelAliaseslistViewAliases1" value="Adres e-mail"/>
@@ -2243,7 +2236,6 @@
 		<lookup key="buttonAddAlias" value="Dodaj..."/>
 		<lookup key="buttonEditAlias" value="Edytuj..."/>
 		<lookup key="buttonRemoveAlias" value="Usuń"/>
-		<lookup key="lblAliasesHelp" value="Nadaj graczom, z którymi grasz, nazwy, pod którymi ich znasz. Dziennik Aktywności i komunikaty Wrappera pokazują nazwę zamiast adresu e-mail, a tura z adresu z tej listy nie jest oznaczana jako tura od nowego nadawcy. Twoje tury przekazują nazwy graczy tej gry, a nazwy, które znany ci gracz wyśle z turą, są dodawane tutaj z informacją, kto je udostępnił; nigdy nie zastępują nazwy, która już jest na liście."/>
 		<lookup key="titleAddAlias" value="Dodaj alias"/>
 		<lookup key="titleEditAlias" value="Edytuj alias"/>
 		<lookup key="lblAliasName" value="Nazwa:"/>
@@ -2526,8 +2518,8 @@
 		<lookup key="msgWrapperUnsavedChanges" value="Joitakin Tilit- tai Asetukset-välilehden muutoksia ei ole tallennettu. Tallennetaanko ne ennen Wrapperin sulkemista?"/>
 		<lookup key="msgLocalPortInUse" value="Wrapper ei voinut avata porttia {0}, jonka kautta pelit antavat sille vuoronsa: toinen ohjelma tai toinen Wrapper käyttää sitä. Vuoroja ei voi lähettää, ennen kuin portti vapautuu. Valitse toinen portti kohdassa &quot;Pelin Wrapper Data portti&quot; Asetukset-välilehdellä ja tallenna."/>
 		<lookup key="buttonRescan" value="Etsi uudelleen"/>
+		<lookup key="lblGamesHelp" value="Vuoro menee kopioon, jossa peliä viimeksi pelattiin. Uusi peli menee kopioon, jonka Oletus-sarake osoittaa sen tunnisteelle."/>
 		<lookup key="buttonRescanning" value="Etsitään..."/>
-		<lookup key="lblGamesHelp" value="Jokaisella pelin kopiolla on tunniste, kuten Vanilla, AoWx tai Ziggurat, joka päätellään kansion sisällöstä. Tunniste kulkee lähettämiesi vuorojen mukana, joten kaikkien saman pelin pelaajien on käytettävä samaa tunnistetta. Vuoro menee kopioon, jossa peliä viimeksi pelattiin; uusi peli menee tunnisteensa oletuskopioon, muuten pelin oletuskopioon."/>
 		<lookup key="tabAliases" value="Aliakset"/>
 		<lookup key="panelAliaseslistViewAliases0" value="Nimi"/>
 		<lookup key="panelAliaseslistViewAliases1" value="Sähköpostiosoite"/>
@@ -2535,7 +2527,6 @@
 		<lookup key="buttonAddAlias" value="Lisää..."/>
 		<lookup key="buttonEditAlias" value="Muokkaa..."/>
 		<lookup key="buttonRemoveAlias" value="Poista"/>
-		<lookup key="lblAliasesHelp" value="Anna pelaajille, joiden kanssa pelaat, nimet, joilla tunnet heidät. Pelit käynnissä -välilehti ja Wrapperin viestit näyttävät nimen sähköpostiosoitteen sijaan, eikä tämän listan osoitteesta tullutta vuoroa merkitä uuden lähettäjän vuoroksi. Vuorosi välittävät pelin pelaajien nimet, ja nimet, jotka tuntemasi pelaaja lähettää vuoron mukana, lisätään tähän jakajan kanssa; ne eivät koskaan korvaa listalla jo olevaa nimeä."/>
 		<lookup key="titleAddAlias" value="Lisää alias"/>
 		<lookup key="titleEditAlias" value="Muokkaa aliasta"/>
 		<lookup key="lblAliasName" value="Nimi:"/>
@@ -2818,8 +2809,8 @@
 		<lookup key="msgWrapperUnsavedChanges" value="Unele modificări din filele Conturi sau Setări nu au fost salvate. Le salvați înainte de închiderea Wrapperului?"/>
 		<lookup key="msgLocalPortInUse" value="Wrapper-ul nu a putut deschide portul {0}, prin care jocurile îi predau turele: îl folosește alt program sau alt Wrapper. Nicio tură nu poate fi trimisă până nu se eliberează. Alegeți alt port la „Port comunicare dintre joc şi Wrapper” în fila Setări și salvați."/>
 		<lookup key="buttonRescan" value="Caută din nou"/>
+		<lookup key="lblGamesHelp" value="O tură merge în copia în care partida a fost jucată ultima dată. O partidă nouă merge în copia indicată de coloana Implicit pentru eticheta sa."/>
 		<lookup key="buttonRescanning" value="Se caută..."/>
-		<lookup key="lblGamesHelp" value="Fiecare copie a unui joc poartă o etichetă, de exemplu Vanilla, AoWx sau Ziggurat, dedusă din conținutul folderului. Eticheta călătorește cu turele trimise, așa că toți jucătorii dintr-o partidă trebuie să folosească aceeași etichetă. O tură merge în copia în care partida a fost jucată ultima dată; o partidă nouă merge în copia implicită a etichetei sale, altfel în copia implicită a jocului."/>
 		<lookup key="tabAliases" value="Aliasuri"/>
 		<lookup key="panelAliaseslistViewAliases0" value="Nume"/>
 		<lookup key="panelAliaseslistViewAliases1" value="Adresă de e-mail"/>
@@ -2827,7 +2818,6 @@
 		<lookup key="buttonAddAlias" value="Adaugă..."/>
 		<lookup key="buttonEditAlias" value="Editează..."/>
 		<lookup key="buttonRemoveAlias" value="Elimină"/>
-		<lookup key="lblAliasesHelp" value="Dați jucătorilor cu care jucați numele sub care îi cunoașteți. Log de Activitate și mesajele Wrapper-ului arată numele în locul adresei de e-mail, iar o tură de la o adresă din această listă nu este marcată ca venind de la un expeditor nou. Turele dumneavoastră transmit numele jucătorilor din acel joc, iar numele trimise cu o tură de un jucător pe care îl cunoașteți sunt adăugate aici, împreună cu cine le-a partajat; nu înlocuiesc niciodată un nume aflat deja pe listă."/>
 		<lookup key="titleAddAlias" value="Adaugă alias"/>
 		<lookup key="titleEditAlias" value="Editează alias"/>
 		<lookup key="lblAliasName" value="Nume:"/>
@@ -3110,8 +3100,8 @@
 		<lookup key="msgWrapperUnsavedChanges" value="Некоторые изменения на вкладках «Учётные записи» или «Настройки» не сохранены. Сохранить их перед закрытием Wrapper?"/>
 		<lookup key="msgLocalPortInUse" value="Wrapper не смог открыть порт {0}, через который игры передают ему ходы: его занимает другая программа или другой Wrapper. Пока порт занят, ходы не отправляются. Выберите другой порт в поле «Порт сообщения игры и Wrapper&apos;а» на вкладке «Настройки» и сохраните."/>
 		<lookup key="buttonRescan" value="Искать снова"/>
+		<lookup key="lblGamesHelp" value="Ход попадает в ту копию, где партия игралась в последний раз. Новая партия попадает в копию, указанную в столбце «По умолчанию» для её метки."/>
 		<lookup key="buttonRescanning" value="Поиск..."/>
-		<lookup key="lblGamesHelp" value="Каждая копия игры несёт метку, например Vanilla, AoWx или Ziggurat, определённую по содержимому папки. Метка передаётся вместе с отправляемыми ходами, поэтому все участники партии должны использовать одну и ту же метку. Ход попадает в ту копию, где партия игралась в последний раз; новая партия попадает в копию по умолчанию для своей метки, иначе в копию игры по умолчанию."/>
 		<lookup key="tabAliases" value="Псевдонимы"/>
 		<lookup key="panelAliaseslistViewAliases0" value="Имя"/>
 		<lookup key="panelAliaseslistViewAliases1" value="Адрес эл. почты"/>
@@ -3119,7 +3109,6 @@
 		<lookup key="buttonAddAlias" value="Добавить..."/>
 		<lookup key="buttonEditAlias" value="Изменить..."/>
 		<lookup key="buttonRemoveAlias" value="Удалить"/>
-		<lookup key="lblAliasesHelp" value="Дайте игрокам, с которыми вы играете, имена, под которыми вы их знаете. Список событий и сообщения Wrapper&apos;а показывают имя вместо адреса эл. почты, а ход с адреса из этого списка не помечается как ход от нового отправителя. Ваши ходы передают имена игроков этой партии, а имена, которые знакомый вам игрок присылает с ходом, добавляются сюда с отметкой, кто ими поделился; они никогда не заменяют имя, которое уже есть в списке."/>
 		<lookup key="titleAddAlias" value="Добавить псевдоним"/>
 		<lookup key="titleEditAlias" value="Изменить псевдоним"/>
 		<lookup key="lblAliasName" value="Имя:"/>

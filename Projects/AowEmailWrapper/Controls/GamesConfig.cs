@@ -56,12 +56,13 @@ namespace AowEmailWrapper.Controls
             Name = "GamesConfig";
             Padding = new Padding(5);
 
+            //One line, since where a turn goes is not plain from the list itself; the Manual has the rest
             lblGamesHelp = new Label();
             lblGamesHelp.Name = "lblGamesHelp";
             lblGamesHelp.Dock = DockStyle.Bottom;
-            lblGamesHelp.Height = 78;
+            lblGamesHelp.Height = 40;
             lblGamesHelp.Padding = new Padding(0, 8, 0, 0);
-            lblGamesHelp.Text = "Each copy of a game carries a label such as Vanilla, AoWx or Ziggurat, filled in from what the folder holds. The label travels with the turns you send, so everyone in a game must use the same label. A turn goes to the copy its game was last played in; a new game goes to the default copy of its label, else to the default copy of the game.";
+            lblGamesHelp.Text = "A turn goes to the copy its game was last played in. A new game goes to the copy the Default column marks for its label.";
 
             panelGames = new Panel();
             panelGames.Name = "panelGames";
