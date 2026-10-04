@@ -11,6 +11,7 @@ namespace AowEmailWrapper.Classes
         private Process _process;
         private StartedTaskCompleteEventHandler _callBack;
         private AowGame _theGame;
+        private string _saveToLoad;
         private bool _stop = false;
 
         public Process Process
@@ -25,8 +26,14 @@ namespace AowEmailWrapper.Classes
         }
 
         public StartedTaskWatcher(AowGame theGame, StartedTaskCompleteEventHandler callBack)
+            : this(theGame, null, callBack)
+        { }
+
+        /// <param name="saveToLoad">A save for the game to load, as AowGame.StartArgumentFor gives it; null to start at the main menu.</param>
+        public StartedTaskWatcher(AowGame theGame, string saveToLoad, StartedTaskCompleteEventHandler callBack)
         {
             _theGame = theGame;
+            _saveToLoad = saveToLoad;
             _callBack = callBack;
         }
 
@@ -55,11 +62,24 @@ namespace AowEmailWrapper.Classes
         private Process StartProcess(bool useShellExecute)
         {
             Process process = new Process();
-            process.StartInfo.FileName = _theGame.ExePath;
-            process.StartInfo.WorkingDirectory = _theGame.Root.FullName;
-            process.StartInfo.UseShellExecute = useShellExecute;
+            process.StartInfo = StartInfoFor(_theGame, _saveToLoad, useShellExecute);
             process.Start();
             return process;
+        }
+
+        internal static ProcessStartInfo StartInfoFor(AowGame theGame, string saveToLoad, bool useShellExecute)
+        {
+            ProcessStartInfo start = new ProcessStartInfo(theGame.ExePath)
+            {
+                WorkingDirectory = theGame.Root.FullName,
+                UseShellExecute = useShellExecute
+            };
+            if (!string.IsNullOrEmpty(saveToLoad))
+            {
+                //In double quotes, as the game splits its command line at spaces outside them
+                start.Arguments = string.Concat("\"", saveToLoad, "\"");
+            }
+            return start;
         }
 
         private void Watch()
