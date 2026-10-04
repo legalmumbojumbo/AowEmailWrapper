@@ -3,13 +3,21 @@
 Each versioned release is described here. The section for a version is also the text of its GitHub
 release; CI publishes it when a `v<version>` tag is pushed (see "Releasing a version" in the README).
 
-## Unreleased
+## 2.1.6
+
+Thanks to BING-XI for both changes in this release.
 
 - Age of Wonders 1 started from the Wrapper opens with the waiting turn loaded instead of at the main menu:
   from its entry on the tray menu, from the notification, or with a double-click on a received turn in the
   Activity Log. When several turns wait in one copy, the tray menu loads the one that has waited longest. A
   turn you have sent is not loaded again. Shadow Magic and MP Evolution read nothing from the command line, so
   they still open at their main menu.
+- The Aliases and Games tabs no longer carry a paragraph of explanation under the list, so each list runs to
+  the bottom of its tab. The Games tab keeps one line saying where a turn goes, and the Manual still covers
+  both tabs in full.
+
+Run `AowEmailWrapper-2.1.6-setup.exe` on Windows 10 or later, or let an installed Wrapper fetch it through
+*Check for updates* on the Settings tab. Accounts and settings carry over.
 
 ## 2.1.5
 
