@@ -498,6 +498,52 @@ namespace AowEmailWrapper.Games
             return false;
         }
 
+        /// <summary>
+        /// True when the game loads a save named as its first argument. Age of Wonders 1 does: AoW.exe and AoWz.exe
+        /// load it in place of the main menu when it names an existing .asg or .acg file. Shadow Magic and MP
+        /// Evolution read no arguments; Age of Wonders II has not been checked.
+        /// </summary>
+        public bool LoadsSaveGivenAtStart
+        {
+            get { return _gameType == AowGameType.Aow1; }
+        }
+
+        /// <summary>
+        /// What to start the game with so that it loads a turn received into this copy, or null when it cannot: the
+        /// newest copy of the file in the folders incoming turns are stored in, relative to the game folder the game
+        /// is started in. Not the full path: Age of Wonders 1 reads its arguments as ANSI text into a 256-byte buffer
+        /// without checking their length, so a long path crashes it and a character outside the code page leaves it
+        /// a file it cannot find, where "EmailIn\turn.asg" is short and its name is one the game itself wrote.
+        /// </summary>
+        public string StartArgumentFor(string fileName)
+        {
+            if (!_isInstalled || !LoadsSaveGivenAtStart || string.IsNullOrEmpty(fileName))
+            {
+                return null;
+            }
+
+            FileInfo newest = new[] { _emailIn, Save }
+                .Select(folder => ASGFileInfo.GetPathInside(folder.FullName, fileName))
+                .Where(path => path != null && File.Exists(path))
+                .Select(path => new FileInfo(path))
+                .OrderByDescending(file => file.LastWriteTimeUtc)
+                .FirstOrDefault();
+            if (newest == null)
+            {
+                return null;
+            }
+
+            string relative = Path.GetRelativePath(_root.FullName, newest.FullName);
+            //At most two bytes a character in any ANSI code page, so this fits the buffer with room to spare
+            if (Path.IsPathRooted(relative) || relative.StartsWith("..", StringComparison.Ordinal) || relative.Length > MaxStartArgumentLength)
+            {
+                return null;
+            }
+            return relative;
+        }
+
+        private const int MaxStartArgumentLength = 120;
+
         public override string ToString()
         {
             return string.Format("{0} [{1}] {2}", DisplayName, _source, _root.FullName);

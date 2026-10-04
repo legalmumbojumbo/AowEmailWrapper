@@ -3,6 +3,14 @@
 Each versioned release is described here. The section for a version is also the text of its GitHub
 release; CI publishes it when a `v<version>` tag is pushed (see "Releasing a version" in the README).
 
+## Unreleased
+
+- Age of Wonders 1 started from the Wrapper opens with the waiting turn loaded instead of at the main menu:
+  from its entry on the tray menu, from the notification, or with a double-click on a received turn in the
+  Activity Log. When several turns wait in one copy, the tray menu loads the one that has waited longest. A
+  turn you have sent is not loaded again. Shadow Magic and MP Evolution read nothing from the command line, so
+  they still open at their main menu.
+
 ## 2.1.5
 
 ### Fixed

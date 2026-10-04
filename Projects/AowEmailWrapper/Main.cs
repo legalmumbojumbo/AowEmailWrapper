@@ -548,7 +548,7 @@ namespace AowEmailWrapper
                 AowGame waiting = SingleGameWaiting();
                 if (waiting != null)
                 {
-                    StartGame(waiting);
+                    StartGame(waiting, LongestWaiting(WaitingTurnsFor(waiting)));
                 }
                 else
                 {
@@ -1524,21 +1524,56 @@ namespace AowEmailWrapper
             }
         }
 
-        private void StartGame(AowGame theGame)
+        /// <summary>Starts a copy of a game, loading the turn when it waits for the player and the game can be told to.</summary>
+        private void StartGame(AowGame theGame, Activity turn)
         {
+            string save = SaveToLoad(theGame, turn);
             switch (theGame.GameType)
             {
                 case AowGameType.Aow1:
-                    StartGame(theGame, ref _aow1GameWatcher);
+                    StartGame(theGame, save, ref _aow1GameWatcher);
                     break;
                 case AowGameType.Aow2:
-                    StartGame(theGame, ref _aow2GameWatcher);
+                    StartGame(theGame, save, ref _aow2GameWatcher);
                     break;
                 case AowGameType.AowSm:
                 case AowGameType.AowMpe:
-                    StartGame(theGame, ref _aowSmGameWatcher);
+                    StartGame(theGame, save, ref _aowSmGameWatcher);
                     break;
             }
+        }
+
+        /// <summary>
+        /// The save the game is to load for a turn, or null to start it at the main menu. Only a turn that waits for
+        /// the player: the file a sent turn left behind is the one already played, and loading it would let the
+        /// player play that turn a second time.
+        /// </summary>
+        internal static string SaveToLoad(AowGame theGame, Activity turn)
+        {
+            if (turn == null || turn.Status != ActivityState.Received)
+            {
+                return null;
+            }
+            try
+            {
+                return theGame.StartArgumentFor(turn.FileName);
+            }
+            catch (Exception ex)
+            {
+                //The game still starts, at its main menu
+                Trace.TraceWarning("Could not find {0} to load: {1}", turn.FileName, ex.Message);
+                return null;
+            }
+        }
+
+        /// <summary>The turn a click on a copy of a game loads when several wait there: the one that has waited longest.</summary>
+        internal static Activity LongestWaiting(IEnumerable<Activity> waiting)
+        {
+            return waiting.OrderBy(activity =>
+            {
+                long ticks;
+                return long.TryParse(activity.DateTicks, out ticks) ? ticks : long.MaxValue;
+            }).FirstOrDefault();
         }
 
         /// <summary>
@@ -1546,7 +1581,7 @@ namespace AowEmailWrapper
         /// that fails is reported and leaves the slot free: before, the failed watcher stayed in it and
         /// every later click was ignored without a word.
         /// </summary>
-        private void StartGame(AowGame theGame, ref StartedTaskWatcher watcher)
+        private void StartGame(AowGame theGame, string save, ref StartedTaskWatcher watcher)
         {
             if (watcher != null)
             {
@@ -1570,10 +1605,17 @@ namespace AowEmailWrapper
 
             try
             {
-                StartedTaskWatcher started = new StartedTaskWatcher(theGame, new StartedTaskCompleteEventHandler(StartedGameWatchCompleted));
+                StartedTaskWatcher started = new StartedTaskWatcher(theGame, save, new StartedTaskCompleteEventHandler(StartedGameWatchCompleted));
                 started.Start();
                 watcher = started;
-                Trace.TraceInformation("Started {0}", theGame.ExePath);
+                if (save != null)
+                {
+                    Trace.TraceInformation("Started {0} loading {1}", theGame.ExePath, save);
+                }
+                else
+                {
+                    Trace.TraceInformation("Started {0}", theGame.ExePath);
+                }
             }
             catch (Exception ex)
             {
@@ -2831,7 +2873,13 @@ namespace AowEmailWrapper
         /// <summary>Turns waiting in one copy of a game; turns with no recorded copy count for the default copy.</summary>
         private int UnsentActivitiesFor(AowGame game)
         {
-            return _activityLog.Activities.Count(activity =>
+            return WaitingTurnsFor(game).Count();
+        }
+
+        /// <summary>The turns received into this copy of a game that wait for the player.</summary>
+        private IEnumerable<Activity> WaitingTurnsFor(AowGame game)
+        {
+            return _activityLog.Activities.Where(activity =>
                 activity.Status.Equals(ActivityState.Received) &&
                 activity.GameType.Equals(game.GameType) &&
                 (game.IsFolder(activity.InstallFolder) || (string.IsNullOrEmpty(activity.InstallFolder) && game.IsDefault)));
@@ -2930,7 +2978,7 @@ namespace AowEmailWrapper
                 AowGame theGame = _gameManager.GetGameForActivity(list[0]);
                 if (theGame != null)
                 {
-                    StartGame(theGame);
+                    StartGame(theGame, list[0]);
                 }
             }
         }
@@ -3191,7 +3239,7 @@ namespace AowEmailWrapper
                     AowGame theGame = _gameManager.GetGameById(tag.Substring(GameMenuTagPrefix.Length));
                     if (theGame != null)
                     {
-                        StartGame(theGame);
+                        StartGame(theGame, LongestWaiting(WaitingTurnsFor(theGame)));
                     }
                     return;
                 }
