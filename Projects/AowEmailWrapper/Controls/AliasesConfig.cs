@@ -21,7 +21,6 @@ namespace AowEmailWrapper.Controls
         private readonly Panel panelButtons;
         private readonly Button buttonEditAlias;
         private readonly Button buttonRemoveAlias;
-        private readonly Label lblAliasesHelp;
 
         private AliasList _aliases = new AliasList();
         private bool _resizing;
@@ -36,13 +35,6 @@ namespace AowEmailWrapper.Controls
         {
             Name = "AliasesConfig";
             Padding = new Padding(5);
-
-            lblAliasesHelp = new Label();
-            lblAliasesHelp.Name = "lblAliasesHelp";
-            lblAliasesHelp.Dock = DockStyle.Bottom;
-            lblAliasesHelp.Height = 116;
-            lblAliasesHelp.Padding = new Padding(0, 8, 0, 0);
-            lblAliasesHelp.Text = "Give the players you play with the names you know them by. The Activity Log and the Wrapper's messages show the name instead of the email address, and a turn from an address on this list is not marked as coming from a new sender. Your turns carry the names of that game's players, and names a player you know sends with a turn are added here, marked with who shared them; they never replace a name already on the list.";
 
             panelAliases = new Panel();
             panelAliases.Name = "panelAliases";
@@ -80,7 +72,6 @@ namespace AowEmailWrapper.Controls
             panelAliases.Controls.Add(panelButtons);
 
             Controls.Add(panelAliases);
-            Controls.Add(lblAliasesHelp);
 
             UpdateButtons();
         }
