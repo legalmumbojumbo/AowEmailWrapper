@@ -37,7 +37,6 @@ namespace AowEmailWrapper.Controls
         private const string IgnoreInstallKey = "msgIgnoreInstall";
         private const string IgnoreInstallsKey = "msgIgnoreInstalls";
         private readonly Button buttonRescan;
-        private readonly Label lblGamesHelp;
 
         private List<AowGame> _games = new List<AowGame>();
         private bool _resizing;
@@ -55,13 +54,6 @@ namespace AowEmailWrapper.Controls
         {
             Name = "GamesConfig";
             Padding = new Padding(5);
-
-            lblGamesHelp = new Label();
-            lblGamesHelp.Name = "lblGamesHelp";
-            lblGamesHelp.Dock = DockStyle.Bottom;
-            lblGamesHelp.Height = 78;
-            lblGamesHelp.Padding = new Padding(0, 8, 0, 0);
-            lblGamesHelp.Text = "Each copy of a game carries a label such as Vanilla, AoWx or Ziggurat, filled in from what the folder holds. The label travels with the turns you send, so everyone in a game must use the same label. A turn goes to the copy its game was last played in; a new game goes to the default copy of its label, else to the default copy of the game.";
 
             panelGames = new Panel();
             panelGames.Name = "panelGames";
@@ -108,7 +100,6 @@ namespace AowEmailWrapper.Controls
             panelGames.Controls.Add(panelButtons);
 
             Controls.Add(panelGames);
-            Controls.Add(lblGamesHelp);
 
             UpdateButtons();
         }
