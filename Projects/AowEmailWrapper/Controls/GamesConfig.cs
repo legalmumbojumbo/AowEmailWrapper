@@ -37,6 +37,7 @@ namespace AowEmailWrapper.Controls
         private const string IgnoreInstallKey = "msgIgnoreInstall";
         private const string IgnoreInstallsKey = "msgIgnoreInstalls";
         private readonly Button buttonRescan;
+        private readonly Label lblGamesHelp;
 
         private List<AowGame> _games = new List<AowGame>();
         private bool _resizing;
@@ -54,6 +55,14 @@ namespace AowEmailWrapper.Controls
         {
             Name = "GamesConfig";
             Padding = new Padding(5);
+
+            //One line, since where a turn goes is not plain from the list itself; the Manual has the rest
+            lblGamesHelp = new Label();
+            lblGamesHelp.Name = "lblGamesHelp";
+            lblGamesHelp.Dock = DockStyle.Bottom;
+            lblGamesHelp.Height = 40;
+            lblGamesHelp.Padding = new Padding(0, 8, 0, 0);
+            lblGamesHelp.Text = "A turn goes to the copy its game was last played in. A new game goes to the copy the Default column marks for its label.";
 
             panelGames = new Panel();
             panelGames.Name = "panelGames";
@@ -100,6 +109,7 @@ namespace AowEmailWrapper.Controls
             panelGames.Controls.Add(panelButtons);
 
             Controls.Add(panelGames);
+            Controls.Add(lblGamesHelp);
 
             UpdateButtons();
         }
