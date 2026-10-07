@@ -77,6 +77,9 @@ namespace AowEmailWrapper
         private const string WrapperProbablyWithKey = "msgWrapperProbablyWith";
         private const string WrapperProbablyWithYouSentKey = "msgWrapperProbablyWithYouSent";
         private const string WrapperProbablyWithFallback = "{0} probably has '{1}': {2} sent it to them on {3}, and they have not answered.";
+        private const string WrapperProbablyWithNotArrivedKey = "msgWrapperProbablyWithNotArrived";
+        private const string WrapperProbablyWithYouSentNotArrivedKey = "msgWrapperProbablyWithYouSentNotArrived";
+        private const string WrapperProbablyWithNotArrivedFallback = "{0} probably has '{1}': {2} sent it to them on {3}, and their Wrapper has not received it yet.";
         private const string WrapperWhereIsTitleFallback = "Who has the turn?";
         private const string WrapperNewSenderFallback = "'{0}' came from {1}, who has not sent you a turn before. Only open turns from people you are playing with.";
         private const string WrapperResendToKey = "msgWrapperResendTo";
@@ -1970,8 +1973,9 @@ namespace AowEmailWrapper
             }
 
             TurnQuery.RecordWhereabouts(activity, state);
+            Trace.TraceInformation("Answer: {0}", TurnQuery.Describe(state, activity.FileName));
 
-            //Nobody claims it: the newest send whose recipient has not answered says who most probably has it
+            //Nobody claims it: the newest send whose recipient has not had it reach their Wrapper says who most probably has it
             string previousGuess = activity.LikelyHolder;
             TurnSend likely = TurnQuery.LikelyHolder(activity, OwnAddresses());
             activity.LikelyHolder = likely != null ? likely.To : null;
@@ -1980,19 +1984,62 @@ namespace AowEmailWrapper
             activityListView.Refresh();
 
             string text = TurnQuery.Describe(state, activity.FileName);
-            if (likely != null && !TurnQuery.SameAddress(previousGuess, likely.To))
+            //Also when the guess stands but this answer came from that player: their own line names an earlier
+            //send, so without this one the notification would point away from them
+            if (likely != null && (!TurnQuery.SameAddress(previousGuess, likely.To) || TurnQuery.SameAddress(state.Responder, likely.To)))
             {
-                string when = likely.Date.LocalDateTime.ToString("d MMM yyyy HH:mm", System.Globalization.CultureInfo.CurrentCulture);
-                string guess = string.IsNullOrEmpty(likely.From)
-                    ? Translator.Translate(WrapperProbablyWithYouSentKey, likely.To, activity.FileName, when)
-                    : Translator.Translate(WrapperProbablyWithKey, likely.To, activity.FileName, likely.From, when);
-                if (string.IsNullOrEmpty(guess))
-                {
-                    guess = string.Format(WrapperProbablyWithFallback, likely.To, activity.FileName, likely.From ?? "you", when);
-                }
-                text = string.Concat(text, Environment.NewLine, guess);
+                text = string.Concat(text, Environment.NewLine, GuessText(likely, activity.FileName));
             }
             ShowBalloon(15000, WhereIsTitle(), text, state.Holds ? ToolTipIcon.Warning : ToolTipIcon.Info);
+        }
+
+        /// <summary>"Dave probably has 'x.asg': Carol sent it to them on ..." and why: no answer, or their Wrapper has not received it.</summary>
+        private static string GuessText(TurnSend likely, string game)
+        {
+            string when = likely.Date.LocalDateTime.ToString("d MMM yyyy HH:mm", System.Globalization.CultureInfo.CurrentCulture);
+            string guess;
+            if (likely.RecipientAnswered)
+            {
+                guess = string.IsNullOrEmpty(likely.From)
+                    ? Translator.Translate(WrapperProbablyWithYouSentNotArrivedKey, likely.To, game, when)
+                    : Translator.Translate(WrapperProbablyWithNotArrivedKey, likely.To, game, likely.From, when);
+            }
+            else
+            {
+                guess = string.IsNullOrEmpty(likely.From)
+                    ? Translator.Translate(WrapperProbablyWithYouSentKey, likely.To, game, when)
+                    : Translator.Translate(WrapperProbablyWithKey, likely.To, game, likely.From, when);
+            }
+            if (string.IsNullOrEmpty(guess))
+            {
+                guess = string.Format(likely.RecipientAnswered ? WrapperProbablyWithNotArrivedFallback : WrapperProbablyWithFallback, likely.To, game, likely.From ?? "you", when);
+            }
+            return guess;
+        }
+
+        /// <summary>
+        /// Works out again who probably has each turn asked about, from the answers already stored, so a change
+        /// in how the guess is made shows on those games without asking every player again.
+        /// </summary>
+        private void RefreshLikelyHolders()
+        {
+            List<string> own = OwnAddresses();
+            bool changed = false;
+            foreach (Activity activity in _activityLog.Activities.Where(activity => activity.Answers.Count > 0))
+            {
+                TurnSend likely = TurnQuery.LikelyHolder(activity, own);
+                string guess = likely != null ? likely.To : null;
+                if (!string.Equals(guess, activity.LikelyHolder, StringComparison.OrdinalIgnoreCase))
+                {
+                    Trace.TraceInformation("'{0}' is now probably with {1}, was {2}", activity.FileName, guess ?? "nobody known", activity.LikelyHolder ?? "nobody known");
+                    activity.LikelyHolder = guess;
+                    changed = true;
+                }
+            }
+            if (changed)
+            {
+                DataManagerHelper.SaveActivityLog(_activityLog);
+            }
         }
 
         /// <summary>"Who has the turn?" on the activity list: every other player of the game is asked by email.</summary>
@@ -2925,6 +2972,7 @@ namespace AowEmailWrapper
                         Trace.TraceInformation("Past opponents from the resend folder: {0} addresses", added);
                     }
                 }
+                RefreshLikelyHolders();
                 activityListView.ActivityLog = _activityLog;
             }
             catch (Exception ex)

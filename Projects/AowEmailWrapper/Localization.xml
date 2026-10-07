@@ -130,6 +130,8 @@
 		<lookup key="activityProbablyWith" value="probably with {0}"/>
 		<lookup key="msgWrapperProbablyWith" value="{0} probably has &apos;{1}&apos;: {2} sent it to them on {3}, and they have not answered."/>
 		<lookup key="msgWrapperProbablyWithYouSent" value="{0} probably has &apos;{1}&apos;: you sent it to them on {2}, and they have not answered."/>
+		<lookup key="msgWrapperProbablyWithNotArrived" value="{0} probably has &apos;{1}&apos;: {2} sent it to them on {3}, and their Wrapper has not received it yet."/>
+		<lookup key="msgWrapperProbablyWithYouSentNotArrived" value="{0} probably has &apos;{1}&apos;: you sent it to them on {2}, and their Wrapper has not received it yet."/>
 		<lookup key="msgInputEmailSettingsManual" value="You will enter the settings manually."/>
 		<lookup key="msgWrapperResendTo" value="Resend To:"/>
 		<lookup key="msgAutoconfigPage2Success" value="Found your mail settings. Click Next."/>
@@ -567,6 +569,8 @@
 		<lookup key="activityProbablyWith" value="probablement chez {0}"/>
 		<lookup key="msgWrapperProbablyWith" value="{0} a probablement &apos;{1}&apos; : {2} le lui a envoyé le {3}, et il n&apos;a pas répondu."/>
 		<lookup key="msgWrapperProbablyWithYouSent" value="{0} a probablement &apos;{1}&apos; : vous le lui avez envoyé le {2}, et il n&apos;a pas répondu."/>
+		<lookup key="msgWrapperProbablyWithNotArrived" value="{0} a probablement &apos;{1}&apos; : {2} le lui a envoyé le {3}, et son Wrapper ne l&apos;a pas encore reçu."/>
+		<lookup key="msgWrapperProbablyWithYouSentNotArrived" value="{0} a probablement &apos;{1}&apos; : vous le lui avez envoyé le {2}, et son Wrapper ne l&apos;a pas encore reçu."/>
 		<lookup key="msgAutoconfigUnencryptedOnly" value="Des paramètres ont été trouvés pour cette adresse, mais ils enverraient votre mot de passe sans chiffrement ; le Wrapper ne les utilisera donc pas. Veuillez saisir les paramètres du serveur manuellement."/>
 		<lookup key="enumIMAP" value="IMAP"/>
 		<lookup key="enumPOP3" value="POP3"/>
@@ -859,6 +863,8 @@
 		<lookup key="activityProbablyWith" value="vermutlich bei {0}"/>
 		<lookup key="msgWrapperProbablyWith" value="{0} hat &apos;{1}&apos; vermutlich: {2} hat es am {3} an ihn geschickt, und er hat nicht geantwortet."/>
 		<lookup key="msgWrapperProbablyWithYouSent" value="{0} hat &apos;{1}&apos; vermutlich: Sie haben es am {2} an ihn geschickt, und er hat nicht geantwortet."/>
+		<lookup key="msgWrapperProbablyWithNotArrived" value="{0} hat &apos;{1}&apos; vermutlich: {2} hat es am {3} an ihn geschickt, und sein Wrapper hat es noch nicht erhalten."/>
+		<lookup key="msgWrapperProbablyWithYouSentNotArrived" value="{0} hat &apos;{1}&apos; vermutlich: Sie haben es am {2} an ihn geschickt, und sein Wrapper hat es noch nicht erhalten."/>
 		<lookup key="msgAutoconfigUnencryptedOnly" value="Für diese Adresse wurden Einstellungen gefunden, aber sie würden Ihr Passwort unverschlüsselt senden, daher verwendet der Wrapper sie nicht. Bitte geben Sie die Servereinstellungen manuell ein."/>
 		<lookup key="enumIMAP" value="IMAP"/>
 		<lookup key="enumPOP3" value="POP3"/>
@@ -1150,6 +1156,8 @@
 		<lookup key="activityProbablyWith" value="probablemente lo tiene {0}"/>
 		<lookup key="msgWrapperProbablyWith" value="Probablemente {0} tiene &apos;{1}&apos;: {2} se lo envió el {3} y no ha respondido."/>
 		<lookup key="msgWrapperProbablyWithYouSent" value="Probablemente {0} tiene &apos;{1}&apos;: se lo enviaste el {2} y no ha respondido."/>
+		<lookup key="msgWrapperProbablyWithNotArrived" value="Probablemente {0} tiene &apos;{1}&apos;: {2} se lo envió el {3} y su Wrapper aún no lo ha recibido."/>
+		<lookup key="msgWrapperProbablyWithYouSentNotArrived" value="Probablemente {0} tiene &apos;{1}&apos;: se lo enviaste el {2} y su Wrapper aún no lo ha recibido."/>
 		<lookup key="msgAutoconfigUnencryptedOnly" value="Se encontró una configuración para esta dirección, pero enviaría su contraseña sin cifrar, así que el Wrapper no la usará. Introduzca la configuración del servidor manualmente."/>
 		<lookup key="enumIMAP" value="IMAP"/>
 		<lookup key="enumPOP3" value="POP3"/>
@@ -1445,6 +1453,8 @@
 		<lookup key="activityProbablyWith" value="waarschijnlijk bij {0}"/>
 		<lookup key="msgWrapperProbablyWith" value="{0} heeft &apos;{1}&apos; waarschijnlijk: {2} stuurde het op {3} en er is geen antwoord gekomen."/>
 		<lookup key="msgWrapperProbablyWithYouSent" value="{0} heeft &apos;{1}&apos; waarschijnlijk: u stuurde het op {2} en er is geen antwoord gekomen."/>
+		<lookup key="msgWrapperProbablyWithNotArrived" value="{0} heeft &apos;{1}&apos; waarschijnlijk: {2} stuurde het op {3} en de Wrapper van die speler heeft het nog niet ontvangen."/>
+		<lookup key="msgWrapperProbablyWithYouSentNotArrived" value="{0} heeft &apos;{1}&apos; waarschijnlijk: u stuurde het op {2} en de Wrapper van die speler heeft het nog niet ontvangen."/>
 		<lookup key="msgAutoconfigUnencryptedOnly" value="Er zijn instellingen voor dit adres gevonden, maar die zouden uw wachtwoord onversleuteld versturen, dus de Wrapper gebruikt ze niet. Voer de serverinstellingen handmatig in."/>
 		<lookup key="enumEmailIn" value="EmailIn"/>
 		<lookup key="enumSave" value="Save"/>
@@ -1730,6 +1740,8 @@
 		<lookup key="activityProbablyWith" value="sandsynligvis hos {0}"/>
 		<lookup key="msgWrapperProbablyWith" value="{0} har sandsynligvis &apos;{1}&apos;: {2} sendte den til dem den {3}, og de har ikke svaret."/>
 		<lookup key="msgWrapperProbablyWithYouSent" value="{0} har sandsynligvis &apos;{1}&apos;: du sendte den til dem den {2}, og de har ikke svaret."/>
+		<lookup key="msgWrapperProbablyWithNotArrived" value="{0} har sandsynligvis &apos;{1}&apos;: {2} sendte den til dem den {3}, og deres Wrapper har ikke modtaget den endnu."/>
+		<lookup key="msgWrapperProbablyWithYouSentNotArrived" value="{0} har sandsynligvis &apos;{1}&apos;: du sendte den til dem den {2}, og deres Wrapper har ikke modtaget den endnu."/>
 		<lookup key="msgAutoconfigUnencryptedOnly" value="Der blev fundet indstillinger for denne adresse, men de ville sende din adgangskode ukrypteret, så Wrapperen bruger dem ikke. Indtast serverindstillingerne manuelt."/>
 		<lookup key="menuItemExit" value="&amp;Afslut"/>
 		<lookup key="enumIMAP" value="IMAP"/>
@@ -2029,6 +2041,8 @@
 		<lookup key="activityProbablyWith" value="troligen hos {0}"/>
 		<lookup key="msgWrapperProbablyWith" value="{0} har troligen &apos;{1}&apos;: {2} skickade det till dem den {3}, och de har inte svarat."/>
 		<lookup key="msgWrapperProbablyWithYouSent" value="{0} har troligen &apos;{1}&apos;: du skickade det till dem den {2}, och de har inte svarat."/>
+		<lookup key="msgWrapperProbablyWithNotArrived" value="{0} har troligen &apos;{1}&apos;: {2} skickade det till dem den {3}, och deras Wrapper har inte tagit emot det än."/>
+		<lookup key="msgWrapperProbablyWithYouSentNotArrived" value="{0} har troligen &apos;{1}&apos;: du skickade det till dem den {2}, och deras Wrapper har inte tagit emot det än."/>
 		<lookup key="msgAutoconfigUnencryptedOnly" value="Inställningar hittades för den här adressen, men de skulle skicka ditt lösenord okrypterat, så Wrappern använder dem inte. Ange serverinställningarna manuellt."/>
 		<lookup key="buttonDetailsShow" value="Detaljer &gt;&gt;"/>
 		<lookup key="buttonDetailsHide" value="&lt;&lt; Detaljer"/>
@@ -2314,6 +2328,8 @@
 		<lookup key="activityProbablyWith" value="prawdopodobnie u {0}"/>
 		<lookup key="msgWrapperProbablyWith" value="{0} prawdopodobnie ma &apos;{1}&apos;: {2} wysłał mu je {3} i nie odpowiedział."/>
 		<lookup key="msgWrapperProbablyWithYouSent" value="{0} prawdopodobnie ma &apos;{1}&apos;: wysłałeś mu je {2} i nie odpowiedział."/>
+		<lookup key="msgWrapperProbablyWithNotArrived" value="{0} prawdopodobnie ma &apos;{1}&apos;: {2} wysłał mu je {3}, a jego Wrapper jeszcze go nie otrzymał."/>
+		<lookup key="msgWrapperProbablyWithYouSentNotArrived" value="{0} prawdopodobnie ma &apos;{1}&apos;: wysłałeś mu je {2}, a jego Wrapper jeszcze go nie otrzymał."/>
 		<lookup key="msgAutoconfigUnencryptedOnly" value="Znaleziono ustawienia dla tego adresu, ale wysyłałyby hasło bez szyfrowania, więc Wrapper ich nie użyje. Wprowadź ustawienia serwera ręcznie."/>
 		<lookup key="enumIMAP" value="IMAP"/>
 		<lookup key="enumPOP3" value="POP3"/>
@@ -2607,6 +2623,8 @@
 		<lookup key="activityProbablyWith" value="luultavasti pelaajalla {0}"/>
 		<lookup key="msgWrapperProbablyWith" value="{0} luultavasti pitää vuoroa &apos;{1}&apos;: {2} lähetti sen hänelle {3}, eikä hän ole vastannut."/>
 		<lookup key="msgWrapperProbablyWithYouSent" value="{0} luultavasti pitää vuoroa &apos;{1}&apos;: lähetit sen hänelle {2}, eikä hän ole vastannut."/>
+		<lookup key="msgWrapperProbablyWithNotArrived" value="{0} luultavasti pitää vuoroa &apos;{1}&apos;: {2} lähetti sen hänelle {3}, mutta hänen Wrapperinsa ei ole vielä saanut sitä."/>
+		<lookup key="msgWrapperProbablyWithYouSentNotArrived" value="{0} luultavasti pitää vuoroa &apos;{1}&apos;: lähetit sen hänelle {2}, mutta hänen Wrapperinsa ei ole vielä saanut sitä."/>
 		<lookup key="msgAutoconfigUnencryptedOnly" value="Tälle osoitteelle löytyi asetukset, mutta ne lähettäisivät salasanasi salaamattomana, joten Wrapper ei käytä niitä. Syötä palvelimen asetukset käsin."/>
 		<lookup key="enumIMAP" value="IMAP"/>
 		<lookup key="enumPOP3" value="POP3"/>
@@ -2895,6 +2913,8 @@
 		<lookup key="activityProbablyWith" value="probabil la {0}"/>
 		<lookup key="msgWrapperProbablyWith" value="Probabil {0} are &apos;{1}&apos;: {2} i l-a trimis pe {3}, iar acesta nu a răspuns."/>
 		<lookup key="msgWrapperProbablyWithYouSent" value="Probabil {0} are &apos;{1}&apos;: i l-ați trimis pe {2}, iar acesta nu a răspuns."/>
+		<lookup key="msgWrapperProbablyWithNotArrived" value="Probabil {0} are &apos;{1}&apos;: {2} i l-a trimis pe {3}, iar Wrapperul său nu l-a primit încă."/>
+		<lookup key="msgWrapperProbablyWithYouSentNotArrived" value="Probabil {0} are &apos;{1}&apos;: i l-ați trimis pe {2}, iar Wrapperul său nu l-a primit încă."/>
 		<lookup key="msgAutoconfigUnencryptedOnly" value="Au fost găsite setări pentru această adresă, dar ar trimite parola necriptată, așa că Wrapperul nu le va folosi. Introduceți manual setările serverului."/>
 		<lookup key="enumIMAP" value="IMAP"/>
 		<lookup key="enumPOP3" value="POP3"/>
@@ -3187,6 +3207,8 @@
 		<lookup key="activityProbablyWith" value="вероятно, у {0}"/>
 		<lookup key="msgWrapperProbablyWith" value="Вероятно, &apos;{1}&apos; у {0}: {2} отправил ход {3}, а ответа нет."/>
 		<lookup key="msgWrapperProbablyWithYouSent" value="Вероятно, &apos;{1}&apos; у {0}: вы отправили ход {2}, а ответа нет."/>
+		<lookup key="msgWrapperProbablyWithNotArrived" value="Вероятно, &apos;{1}&apos; у {0}: {2} отправил ход {3}, но до его Wrapper ход ещё не дошёл."/>
+		<lookup key="msgWrapperProbablyWithYouSentNotArrived" value="Вероятно, &apos;{1}&apos; у {0}: вы отправили ход {2}, но до его Wrapper ход ещё не дошёл."/>
 		<lookup key="msgAutoconfigUnencryptedOnly" value="Для этого адреса найдены настройки, но с ними пароль передавался бы без шифрования, поэтому Wrapper их не использует. Введите настройки сервера вручную."/>
 		<lookup key="enumIMAP" value="IMAP"/>
 		<lookup key="enumPOP3" value="POP3"/>
