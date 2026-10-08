@@ -323,6 +323,44 @@ namespace AowEmailWrapper.Tests
 
         #endregion
 
+        #region What a sent turn records
+
+        [Fact]
+        public void A_sent_turn_is_dated_and_numbered_from_its_send_and_answered_so()
+        {
+            //Turn 2 arrived at 09:07 and went out at 10:43 as turn 3
+            Activity activity = new Activity(ActivityState.Received, AowGameType.Aow1, Game, "Highpass", "2");
+            activity.DateTicks = new DateTime(2026, 10, 4, 9, 7, 0).Ticks.ToString();
+            Answer(activity, Bob, ActivityState.Received, 1);
+            DateTime sent = new DateTime(2026, 10, 4, 10, 43, 7);
+
+            Main.RecordSent(activity, sent, 3);
+
+            Assert.Equal(ActivityState.Sent, activity.Status);
+            Assert.Equal(sent.Ticks.ToString(), activity.DateTicks);
+            Assert.Equal("3", activity.TurnNumber);
+            Assert.Empty(activity.Answers);
+            Assert.Null(activity.Holder);
+            Assert.Null(activity.Whereabouts);
+
+            //Another player's "Who has the turn?" is told when it left, not when it arrived
+            TurnState state = TurnQuery.StateOf(activity, Game, "abc123");
+            Assert.Equal(sent, state.Date.Value.LocalDateTime);
+        }
+
+        [Fact]
+        public void A_send_whose_save_could_not_be_read_keeps_the_turn_number()
+        {
+            Activity activity = new Activity(ActivityState.Received, AowGameType.Aow1, Game, "Highpass", "2");
+
+            Main.RecordSent(activity, DateTime.Now, 0);
+
+            Assert.Equal("2", activity.TurnNumber);
+            Assert.Equal(ActivityState.Sent, activity.Status);
+        }
+
+        #endregion
+
         #region Player addresses from the save
 
         [Fact]

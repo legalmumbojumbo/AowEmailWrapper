@@ -3083,11 +3083,11 @@ namespace AowEmailWrapper
 
             if (theActivity != null)
             {
-                theActivity.Status = ActivityState.Sent;
                 if (!string.IsNullOrEmpty(accountName))
                 {
                     theActivity.AccountName = accountName;
                 }
+                int turnNumber = 0;
                 using (ASGFileInfo theASG = new ASGFileInfo(theAttachment))
                 {
                     if (theActivity.GameType.Equals(AowGameType.Unknown))
@@ -3098,12 +3098,12 @@ namespace AowEmailWrapper
                     {
                         theActivity.Players = ASGFileInfo.JoinAddresses(theASG.PlayerEmails);
                     }
+                    if (theASG.IsValid)
+                    {
+                        turnNumber = theASG.TurnNumber;
+                    }
                 }
-                //The turn has moved on; what other wrappers said before no longer applies
-                theActivity.Whereabouts = null;
-                theActivity.Holder = null;
-                theActivity.LikelyHolder = null;
-                theActivity.Answers.Clear();
+                RecordSent(theActivity, DateTime.Now, turnNumber);
             }
             else
             {
@@ -3123,6 +3123,28 @@ namespace AowEmailWrapper
             }
 
             return theActivity;
+        }
+
+        /// <summary>
+        /// A game's line once its turn has gone out: dated and numbered from the send, so the Age column, the colours
+        /// for turns long away and the date other players' "Who has the turn?" are told all count from when the turn
+        /// left. The line used to keep the date and turn number of the turn's arrival, so a player who held a turn
+        /// for days showed the day it came in. A resend dates it again, as that is when the recipient can first have
+        /// it. The turn number stays when the save could not be read (0).
+        /// </summary>
+        internal static void RecordSent(Activity activity, DateTime sent, int turnNumber)
+        {
+            activity.Status = ActivityState.Sent;
+            activity.DateTicks = sent.Ticks.ToString();
+            if (turnNumber > 0)
+            {
+                activity.TurnNumber = turnNumber.ToString();
+            }
+            //The turn has moved on; what other wrappers said before no longer applies
+            activity.Whereabouts = null;
+            activity.Holder = null;
+            activity.LikelyHolder = null;
+            activity.Answers.Clear();
         }
 
         private void UpdateActivitySendError(MimePart theAttachment)
