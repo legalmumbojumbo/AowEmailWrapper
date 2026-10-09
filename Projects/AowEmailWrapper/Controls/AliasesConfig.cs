@@ -4,6 +4,7 @@ using System.Linq;
 using System.Windows.Forms;
 using AowEmailWrapper.Classes;
 using AowEmailWrapper.ConfigFramework;
+using AowEmailWrapper.Localization;
 
 namespace AowEmailWrapper.Controls
 {
@@ -57,6 +58,7 @@ namespace AowEmailWrapper.Controls
             Resize += (sender, e) => FitColumns();
             listViewAliases.MouseDoubleClick += (sender, e) => EditSelected();
             listViewAliases.KeyDown += ListViewAliases_KeyDown;
+            listViewAliases.ContextMenuStrip = BuildContextMenu();
 
             panelButtons = new Panel();
             panelButtons.Dock = DockStyle.Right;
@@ -219,9 +221,76 @@ namespace AowEmailWrapper.Controls
         }
 
         /// <summary>Ctrl+A highlights every alias, Delete removes the highlighted ones and Enter edits one, as in Explorer.</summary>
+        private ToolStripMenuItem _menuCopyAddress;
+        private ToolStripMenuItem _menuEdit;
+        private ToolStripMenuItem _menuRemove;
+
+        private ContextMenuStrip BuildContextMenu()
+        {
+            ContextMenuStrip menu = new ContextMenuStrip();
+            _menuCopyAddress = AddMenuItem(menu, CopyAddressKey, CopyAddressFallback, (sender, e) => CopySelectedAddresses());
+            _menuEdit = AddMenuItem(menu, "buttonEditAlias", "Edit...", (sender, e) => EditSelected());
+            _menuRemove = AddMenuItem(menu, "buttonRemoveAlias", "Remove", (sender, e) => RemoveSelected());
+            menu.Opening += (sender, e) =>
+            {
+                e.Cancel = listViewAliases.SelectedItems.Count == 0;
+                bool several = listViewAliases.SelectedItems.Count > 1;
+                string copy = Translator.Translate(several ? CopyAddressesKey : CopyAddressKey);
+                _menuCopyAddress.Text = string.IsNullOrEmpty(copy) ? (several ? CopyAddressesFallback : CopyAddressFallback) : copy;
+                _menuEdit.Enabled = buttonEditAlias.Enabled;
+                _menuRemove.Enabled = buttonRemoveAlias.Enabled;
+            };
+            return menu;
+        }
+
+        private const string CopyAddressKey = "menuItemCopyAddress";
+        private const string CopyAddressFallback = "&Copy email address";
+        private const string CopyAddressesKey = "menuItemCopyAddresses";
+        private const string CopyAddressesFallback = "&Copy email addresses";
+
+        private static ToolStripMenuItem AddMenuItem(ContextMenuStrip menu, string key, string fallback, EventHandler onClick)
+        {
+            string text = Translator.Translate(key);
+            ToolStripMenuItem item = new ToolStripMenuItem(string.IsNullOrEmpty(text) ? fallback : text);
+            item.Click += onClick;
+            menu.Items.Add(item);
+            return item;
+        }
+
+        /// <summary>The selected lines' addresses, one a line, in the order shown.</summary>
+        internal static string AddressesToCopy(IEnumerable<PlayerAlias> selected)
+        {
+            return string.Join(Environment.NewLine, selected
+                .Where(alias => alias != null && !string.IsNullOrWhiteSpace(alias.Address))
+                .Select(alias => alias.Address.Trim()));
+        }
+
+        private void CopySelectedAddresses()
+        {
+            string text = AddressesToCopy(listViewAliases.SelectedItems.Cast<ListViewItem>().Select(item => item.Tag as PlayerAlias));
+            if (text.Length == 0)
+            {
+                return;
+            }
+            try
+            {
+                Clipboard.SetText(text);
+            }
+            catch (System.Runtime.InteropServices.ExternalException ex)
+            {
+                //Another program has the clipboard open; nothing is lost, the player can copy again
+                System.Diagnostics.Trace.TraceWarning("Could not copy addresses to the clipboard: {0}", ex.Message);
+            }
+        }
+
         private void ListViewAliases_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.Control && e.KeyCode == Keys.A)
+            if (e.Control && (e.KeyCode == Keys.C || e.KeyCode == Keys.Insert))
+            {
+                CopySelectedAddresses();
+                e.Handled = true;
+            }
+            else if (e.Control && e.KeyCode == Keys.A)
             {
                 foreach (ListViewItem item in listViewAliases.Items)
                 {

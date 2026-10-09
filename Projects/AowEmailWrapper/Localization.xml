@@ -254,6 +254,8 @@
 		<lookup key="menuItemMarkEnded" value="Mark as &amp;Ended"/>
 		<lookup key="menuItemMarkSent" value="Mark as &amp;Sent"/>
 		<lookup key="menuItemResend" value="Resend"/>
+		<lookup key="menuItemCopyAddress" value="&amp;Copy email address"/>
+		<lookup key="menuItemCopyAddresses" value="&amp;Copy email addresses"/>
 		<!-- END: Context Menus -->
 		<!-- BEGIN: Enumerations -->
 		<lookup key="enumIMAP" value="IMAP"/>
@@ -531,6 +533,8 @@
 		<lookup key="menuItemMarkEnded" value="Marquer comme terminé"/>
 		<lookup key="menuItemMarkSent" value="Marquer comme envoyé"/>
 		<lookup key="menuItemResend" value="Renvoyer"/>
+		<lookup key="menuItemCopyAddress" value="&amp;Copier l&apos;adresse e-mail"/>
+		<lookup key="menuItemCopyAddresses" value="&amp;Copier les adresses e-mail"/>
 		<!-- END: Context Menus -->
 		<!-- BEGIN: Enumerations -->
 		<lookup key="enumNone" value="Aucun"/>
@@ -822,6 +826,8 @@
 		<lookup key="menuItemMarkEnded" value="Als beendet markieren"/>
 		<lookup key="menuItemMarkSent" value="Als gesendet markieren"/>
 		<lookup key="menuItemResend" value="Erneut senden"/>
+		<lookup key="menuItemCopyAddress" value="E-Mail-Adresse &amp;kopieren"/>
+		<lookup key="menuItemCopyAddresses" value="E-Mail-Adressen &amp;kopieren"/>
 		<!-- END: Context Menus -->
 		<!-- BEGIN: Enumerations -->
 		<lookup key="enumNone" value="Nichts"/>
@@ -1112,6 +1118,8 @@
 		<lookup key="menuItemMarkEnded" value="Marcar como terminado"/>
 		<lookup key="menuItemMarkSent" value="Marcar como enviado"/>
 		<lookup key="menuItemResend" value="Reenviar"/>
+		<lookup key="menuItemCopyAddress" value="&amp;Copiar dirección de correo"/>
+		<lookup key="menuItemCopyAddresses" value="&amp;Copiar direcciones de correo"/>
 		<!-- END: Context Menus -->
 		<!-- BEGIN: Enumerations -->
 		<lookup key="enumNone" value="Ninguno"/>
@@ -1403,6 +1411,8 @@
 		<lookup key="menuItemMarkEnded" value="Markeer als geeindigd"/>
 		<lookup key="menuItemMarkSent" value="Markeer als verzonden"/>
 		<lookup key="menuItemResend" value="Verzend opnieuw"/>
+		<lookup key="menuItemCopyAddress" value="E-mailadres &amp;kopiëren"/>
+		<lookup key="menuItemCopyAddresses" value="E-mailadressen &amp;kopiëren"/>
 		<!-- END: Context Menus -->
 		<!-- BEGIN: Enumerations -->
 		<lookup key="enumIMAP" value="IMAP"/>
@@ -1688,6 +1698,8 @@
 		<lookup key="menuItemMarkEnded" value="Marker som Afsluttet"/>
 		<lookup key="menuItemMarkSent" value="Marker som Sendt"/>
 		<lookup key="menuItemResend" value="Gensend"/>
+		<lookup key="menuItemCopyAddress" value="&amp;Kopiér e-mailadresse"/>
+		<lookup key="menuItemCopyAddresses" value="&amp;Kopiér e-mailadresser"/>
 		<!-- END: Context Menus -->
 		<!-- BEGIN: Enumerations -->
 		<lookup key="enumNone" value="Ingen"/>
@@ -1986,6 +1998,8 @@
 		<lookup key="menuItemMarkEnded" value="Markera som Avslutad"/>
 		<lookup key="menuItemMarkSent" value="Markera som Skickad"/>
 		<lookup key="menuItemResend" value="Skicka om"/>
+		<lookup key="menuItemCopyAddress" value="&amp;Kopiera e-postadress"/>
+		<lookup key="menuItemCopyAddresses" value="&amp;Kopiera e-postadresser"/>
 		<!-- END: Context Menus -->
 		<!-- BEGIN: Enumerations -->
 		<lookup key="enumIMAP" value="IMAP"/>
@@ -2277,6 +2291,8 @@
 		<lookup key="menuItemMarkEnded" value="Zaznacz jako Zakończony"/>
 		<lookup key="menuItemMarkSent" value="Zaznacz jako Wysłany"/>
 		<lookup key="menuItemResend" value="Wyślij ponownie"/>
+		<lookup key="menuItemCopyAddress" value="&amp;Kopiuj adres e-mail"/>
+		<lookup key="menuItemCopyAddresses" value="&amp;Kopiuj adresy e-mail"/>
 		<!-- END: Context Menus -->
 		<!-- BEGIN: Enumerations -->
 		<lookup key="enumNone" value="Brak"/>
@@ -2568,6 +2584,8 @@
 		<lookup key="menuItemMarkEnded" value="Merkitse lopetetuksi"/>
 		<lookup key="menuItemMarkSent" value="Merkitse lähetetyksi"/>
 		<lookup key="menuItemResend" value="Lähetä"/>
+		<lookup key="menuItemCopyAddress" value="&amp;Kopioi sähköpostiosoite"/>
+		<lookup key="menuItemCopyAddresses" value="&amp;Kopioi sähköpostiosoitteet"/>
 		<!-- END: Context Menus -->
 		<!-- BEGIN: Enumerations -->
 		<lookup key="enumNone" value="Ei mitään"/>
@@ -2859,6 +2877,8 @@
 		<lookup key="menuItemMarkEnded" value="Marchează ca Terminat"/>
 		<lookup key="menuItemMarkSent" value="Marchează ca Trimis"/>
 		<lookup key="menuItemResend" value="Retrimiteţi"/>
+		<lookup key="menuItemCopyAddress" value="&amp;Copiază adresa de e-mail"/>
+		<lookup key="menuItemCopyAddresses" value="&amp;Copiază adresele de e-mail"/>
 		<!-- END: Messages -->
 		<!-- BEGIN: Context Menus -->
 		<lookup key="enumSending" value="În curs de trimitere"/>
@@ -3150,6 +3170,8 @@
 		<lookup key="menuItemMarkEnded" value="Пометить как завершённый"/>
 		<lookup key="menuItemMarkSent" value="Пометить как отправленный"/>
 		<lookup key="menuItemResend" value="Отправить заново"/>
+		<lookup key="menuItemCopyAddress" value="&amp;Копировать адрес эл. почты"/>
+		<lookup key="menuItemCopyAddresses" value="&amp;Копировать адреса эл. почты"/>
 		<!-- END: Context Menus -->
 		<!-- BEGIN: Enumerations -->
 		<lookup key="enumNone" value="Без шифрования"/>

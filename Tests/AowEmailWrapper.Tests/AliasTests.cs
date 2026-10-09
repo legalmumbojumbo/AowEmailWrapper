@@ -245,5 +245,28 @@ namespace AowEmailWrapper.Tests
             MailHelper.SetSharedNames(message, new PlayerAlias[0]);
             Assert.Null(message.Headers[MailHelper.NamesHeaderName]);
         }
+
+        [Fact]
+        public void The_selected_addresses_copy_one_a_line()
+        {
+            PlayerAlias bob = new PlayerAlias("Bob", " " + Bob + " ");
+            PlayerAlias carol = new PlayerAlias("Carol", Carol);
+
+            Assert.Equal(Bob, AliasesConfig.AddressesToCopy(new[] { bob }));
+            Assert.Equal(Bob + Environment.NewLine + Carol, AliasesConfig.AddressesToCopy(new[] { bob, null, new PlayerAlias("Nobody", " "), carol }));
+            Assert.Equal(string.Empty, AliasesConfig.AddressesToCopy(new PlayerAlias[0]));
+        }
+
+        [Fact]
+        public void The_aliases_list_has_a_menu_to_copy_edit_and_remove()
+        {
+            using (AliasesConfig config = new AliasesConfig())
+            {
+                System.Windows.Forms.Control list = config.Controls.Find("listViewAliases", true).Single();
+
+                Assert.NotNull(list.ContextMenuStrip);
+                Assert.Equal(3, list.ContextMenuStrip.Items.Count);
+            }
+        }
 }
 }
