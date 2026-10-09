@@ -7,10 +7,17 @@ release; CI publishes it when a `v<version>` tag is pushed (see "Releasing a ver
 
 - *Who has the turn?* no longer drops its *probably with* guess when that player's Wrapper answers about an
   earlier turn. Such an answer only means the turn has not reached their Wrapper yet, so it is most probably
-  in their inbox: the Status column keeps naming them, and the notification says their Wrapper has not
+  in their inbox: the *Who has it* column keeps naming them, and the notification says their Wrapper has not
   received it. Before, with several games asked about, the guesses vanished one by one as those answers came
   in, leaving a name only on games whose holder's Wrapper had claimed the turn. Games asked about before show
   the guess again from the answers already stored, without asking anyone again.
+- The Activity Log has a *Who has it* column for what *Who has the turn?* found out, instead of a note in the
+  Status column, so games asked about together each keep their own answer in plain sight.
+- A sent turn's line is dated and numbered from when it went out, not from when it arrived. *Age*, the amber
+  and pink lines and the dates other players' *Who has the turn?* receive now count from the send, and the
+  *Turn* column shows the turn you sent.
+- The Aliases tab's list has a right-click menu: *Copy email address* copies the selected lines' addresses
+  (Ctrl+C does too), next to *Edit...* and *Remove*.
 
 ## 2.1.6
 
