@@ -33,6 +33,9 @@ namespace AowEmailWrapper.Classes
         public string From { get; set; }
         public string To { get; set; }
         public DateTimeOffset Date { get; set; }
+
+        /// <summary>True when the recipient's Wrapper has answered, with news of an earlier turn: the send has not reached it yet.</summary>
+        public bool RecipientAnswered { get; set; }
     }
 
     /// <summary>A wrapper asking who has a turn.</summary>
@@ -358,8 +361,11 @@ namespace AowEmailWrapper.Classes
         /// Who most probably has the turn when no wrapper says it does: the recipient of the newest send
         /// anyone knows about (the answers, and the player's own send), provided that recipient has not
         /// answered. A player without the Wrapper, or whose Wrapper is not running, never answers, so the
-        /// turn is usually with them. Null when a wrapper holds it, when nothing was sent, when the newest
-        /// send went to several people, or when its recipient answered without claiming it.
+        /// turn is usually with them. A recipient whose Wrapper answered with news of an earlier turn counts
+        /// as not having answered: the send to them has not reached their Wrapper yet, and the turn is most
+        /// probably in their inbox. Null when a wrapper holds it, when nothing was sent, when the newest send
+        /// went to several people, or when its recipient answered with later news, or not knowing the game,
+        /// or with the game ended.
         /// </summary>
         public static TurnSend LikelyHolder(Activity activity, IEnumerable<string> ownAddresses)
         {
@@ -399,13 +405,29 @@ namespace AowEmailWrapper.Classes
                 .Where(address => address.Contains("@") && !own.Any(mine => SameAddress(mine, address)) && !SameAddress(address, newest.From))
                 .Distinct(StringComparer.OrdinalIgnoreCase)
                 .ToList();
-            if (recipients.Count != 1 || activity.Answers.Any(answer => SameAddress(answer.Responder, recipients[0])))
+            if (recipients.Count != 1)
+            {
+                return null;
+            }
+
+            TurnAnswer recipientAnswer = activity.Answers.FirstOrDefault(answer => SameAddress(answer.Responder, recipients[0]));
+            if (recipientAnswer != null && !IsEarlierSend(recipientAnswer, newest.Date))
             {
                 return null;
             }
 
             newest.To = recipients[0];
+            newest.RecipientAnswered = recipientAnswer != null;
             return newest;
+        }
+
+        /// <summary>True when an answer reports a send of the game made before the given moment.</summary>
+        private static bool IsEarlierSend(TurnAnswer answer, DateTimeOffset moment)
+        {
+            DateTimeOffset when;
+            return (answer.Status == ActivityState.Sent || answer.Status == ActivityState.Pending) &&
+                DateTimeOffset.TryParse(answer.Date, CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind, out when) &&
+                when < moment;
         }
 
         #endregion

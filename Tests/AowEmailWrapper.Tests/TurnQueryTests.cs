@@ -266,6 +266,44 @@ namespace AowEmailWrapper.Tests
         }
 
         [Fact]
+        public void A_player_whose_wrapper_answers_about_an_earlier_turn_still_probably_has_it()
+        {
+            //Bob sent it to Carol on day 2; Carol's Wrapper last saw the game when she sent it to Dave the day before
+            //day 1, so the turn has not reached her Wrapper, and it is most probably in her inbox
+            Activity activity = SentToBob();
+            Answer(activity, Bob, ActivityState.Sent, 2, Carol);
+            Answer(activity, Carol, ActivityState.Sent, 0, Dave);
+
+            TurnSend likely = TurnQuery.LikelyHolder(activity, new[] { Me });
+
+            Assert.Equal(Carol, likely.To);
+            Assert.Equal(Bob, likely.From);
+            Assert.True(likely.RecipientAnswered);
+        }
+
+        [Fact]
+        public void A_guess_nobody_has_answered_against_says_so()
+        {
+            Activity activity = SentToBob();
+            Answer(activity, Bob, ActivityState.Sent, 2, Carol);
+
+            Assert.False(TurnQuery.LikelyHolder(activity, new[] { Me }).RecipientAnswered);
+        }
+
+        [Fact]
+        public void No_guess_when_the_suspected_player_has_later_news_or_has_ended_the_game()
+        {
+            //Carol sent it on after Bob's send, to someone her Wrapper does not name
+            Activity activity = SentToBob();
+            Answer(activity, Bob, ActivityState.Sent, 2, Carol);
+            Answer(activity, Carol, ActivityState.Sent, 3);
+            Assert.Null(TurnQuery.LikelyHolder(activity, new[] { Me }));
+
+            Answer(activity, Carol, ActivityState.Ended, 0);
+            Assert.Null(TurnQuery.LikelyHolder(activity, new[] { Me }));
+        }
+
+        [Fact]
         public void The_senders_own_copy_is_not_a_recipient_but_two_recipients_are_no_guess()
         {
             //Carol keeps a copy for herself: the turn still went to Dave alone

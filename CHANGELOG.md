@@ -3,6 +3,15 @@
 Each versioned release is described here. The section for a version is also the text of its GitHub
 release; CI publishes it when a `v<version>` tag is pushed (see "Releasing a version" in the README).
 
+## Unreleased
+
+- *Who has the turn?* no longer drops its *probably with* guess when that player's Wrapper answers about an
+  earlier turn. Such an answer only means the turn has not reached their Wrapper yet, so it is most probably
+  in their inbox: the Status column keeps naming them, and the notification says their Wrapper has not
+  received it. Before, with several games asked about, the guesses vanished one by one as those answers came
+  in, leaving a name only on games whose holder's Wrapper had claimed the turn. Games asked about before show
+  the guess again from the answers already stored, without asking anyone again.
+
 ## 2.1.6
 
 Thanks to BING-XI for both changes in this release.
