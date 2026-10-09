@@ -19,6 +19,9 @@ namespace AowEmailWrapper.Classes
         public DateTimeOffset? Date { get; set; }
         public string SentTo { get; set; }
 
+        /// <summary>True for a notice a Wrapper sends unasked when its player has sent the turn on.</summary>
+        public bool IsNotice { get; set; }
+
         /// <summary>True when the responder has the turn and has not sent it on.</summary>
         public bool Holds
         {
@@ -56,6 +59,9 @@ namespace AowEmailWrapper.Classes
         public const string StateHeader = "X-AowEmailWrapper-State";
         public const string StateDateHeader = "X-AowEmailWrapper-State-Date";
         public const string SentToHeader = "X-AowEmailWrapper-Sent-To";
+        /// <summary>Marks a reply nobody asked for: a Wrapper telling a game's other players it has sent the turn on.</summary>
+        public const string NoticeHeader = "X-AowEmailWrapper-Notice";
+        private const string NoticeSent = "sent";
 
         public const string KindQuery = "query";
         public const string KindReply = "reply";
@@ -84,6 +90,11 @@ namespace AowEmailWrapper.Classes
         public static bool IsReply(MimeMessage message)
         {
             return message != null && IsReplyKind(message.Headers[KindHeader]);
+        }
+
+        public static bool IsNotice(MimeMessage message)
+        {
+            return IsReply(message) && string.Equals(Clean(message.Headers[NoticeHeader]), NoticeSent, StringComparison.OrdinalIgnoreCase);
         }
 
         private static bool IsQueryKind(string kind)
@@ -157,6 +168,25 @@ namespace AowEmailWrapper.Classes
             return message;
         }
 
+        /// <summary>
+        /// Tells another player of the game that the player has sent the turn on, and to whom. To a Wrapper it is a
+        /// reply, so one from before notices removes it and records it as an answer like any other; a newer one
+        /// sees the notice header and records it without a notification.
+        /// </summary>
+        public static MimeMessage BuildNotice(string from, string to, string gameFileName, DateTimeOffset sent, string sentTo)
+        {
+            TurnState state = new TurnState { Game = gameFileName, Status = ActivityState.Sent, Date = sent, SentTo = sentTo };
+            MimeMessage message = BuildReply(new TurnQueryRequest { From = to, Game = gameFileName, QueryId = NewQueryId() }, from, state);
+            message.Headers.Add(NoticeHeader, NoticeSent);
+            message.Headers["Auto-Submitted"] = "auto-generated";
+            message.Body = new TextPart("plain")
+            {
+                Text = "Automatic notice from the Age of Wonders Email Wrapper." + Environment.NewLine + Environment.NewLine + Describe(state, gameFileName) +
+                    Environment.NewLine + Environment.NewLine + "If you run the Wrapper it records this and removes the message."
+            };
+            return message;
+        }
+
         #endregion
 
         #region Parsing
@@ -190,7 +220,8 @@ namespace AowEmailWrapper.Classes
                 Game = Clean(message.Headers[GameHeader]),
                 QueryId = Clean(message.Headers[IdHeader]),
                 Responder = Helpers.MailHelper.GetFromAddress(message),
-                SentTo = Clean(message.Headers[SentToHeader])
+                SentTo = Clean(message.Headers[SentToHeader]),
+                IsNotice = IsNotice(message)
             };
 
             ActivityState status;
@@ -250,6 +281,29 @@ namespace AowEmailWrapper.Classes
             }
 
             return Contains(activity.Players, address) || SameAddress(activity.Sender, address) || Contains(activity.Recipients, address);
+        }
+
+        /// <summary>
+        /// Whom a turn just sent is announced to: the game's other players known to run the Wrapper, not the
+        /// player's own addresses and not the turn's recipients, who get the turn itself. A player without the
+        /// Wrapper would get the notice as an ordinary email every turn, so only those a Wrapper message, or a turn
+        /// with the Wrapper's headers, has come from are told.
+        /// </summary>
+        public static List<string> PlayersToTell(Activity activity, IEnumerable<string> ownAddresses, Func<string, bool> runsWrapper)
+        {
+            if (activity == null || runsWrapper == null)
+            {
+                return new List<string>();
+            }
+
+            List<string> own = (ownAddresses ?? Enumerable.Empty<string>()).Where(a => !string.IsNullOrWhiteSpace(a)).ToList();
+            return Split(activity.Players)
+                .Where(player => player.Contains("@") &&
+                    !own.Any(mine => SameAddress(mine, player)) &&
+                    !Contains(activity.Recipients, player) &&
+                    runsWrapper(player))
+                .Distinct(StringComparer.OrdinalIgnoreCase)
+                .ToList();
         }
 
         /// <summary>The players of a game to ask, excluding the player's own addresses.</summary>
