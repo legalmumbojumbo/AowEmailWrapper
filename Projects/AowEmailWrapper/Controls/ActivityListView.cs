@@ -35,8 +35,6 @@ namespace AowEmailWrapper.Controls
         private const string NewSenderFallback = "new sender";
         private const string Menu_WhereIs_Tag = "menuItemWhereIs";
         private const string WhereIsFallback = "Who has the turn?";
-        private const string HeldByKey = "activityHeldBy";
-        private const string HeldByFallback = "held by {0}";
         private const string ProbablyWithKey = "activityProbablyWith";
         private const string ProbablyWithFallback = "probably with {0}";
         private ToolStripMenuItem _whereIsMenuItem;
@@ -69,6 +67,36 @@ namespace AowEmailWrapper.Controls
             }
         }
 
+        //The hidden column the list is sorted on, newest first
+        private const int TicksColumn = 7;
+        //Where the Who has it column went in; widths saved before it came are moved along
+        private const int HolderColumn = 5;
+
+        /// <summary>
+        /// Widths saved by a version without the Who has it column ("7|..."), with the columns from its place on
+        /// moved along one, so the widths the player dragged are not dropped as belonging to other columns.
+        /// </summary>
+        internal static string UpgradeSavedWidths(string saved)
+        {
+            const string Before = "7";
+            string[] parts = (saved ?? string.Empty).Split('|');
+            if (parts[0] != Before)
+            {
+                return saved;
+            }
+            parts[0] = (TicksColumn + 1).ToString(System.Globalization.CultureInfo.InvariantCulture);
+            for (int i = 1; i < parts.Length; i++)
+            {
+                int equals = parts[i].IndexOf('=');
+                int index;
+                if (equals > 0 && int.TryParse(parts[i].Substring(0, equals), System.Globalization.NumberStyles.None, System.Globalization.CultureInfo.InvariantCulture, out index) && index >= HolderColumn)
+                {
+                    parts[i] = (index + 1).ToString(System.Globalization.CultureInfo.InvariantCulture) + parts[i].Substring(equals);
+                }
+            }
+            return string.Join("|", parts);
+        }
+
         /// <summary>The column widths the player has dragged, kept in the preferences between runs.</summary>
         [Browsable(false)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
@@ -80,7 +108,7 @@ namespace AowEmailWrapper.Controls
             }
             set
             {
-                ListViewColumnResizer.RestoreWidths(listView, value);
+                ListViewColumnResizer.RestoreWidths(listView, UpgradeSavedWidths(value));
                 listView.BeginUpdate();
                 ListViewColumnResizer.ResizeColumns(listView);
                 listView.EndUpdate();
@@ -142,6 +170,7 @@ namespace AowEmailWrapper.Controls
                     item.SubItems.Add(new ListViewItem.ListViewSubItem(item, activity.TurnNumber));
                     item.SubItems.Add(new ListViewItem.ListViewSubItem(item, (age > 0) ? age.ToString() : string.Empty));
                     item.SubItems.Add(new ListViewItem.ListViewSubItem(item, StatusLabel(activity)));
+                    item.SubItems.Add(new ListViewItem.ListViewSubItem(item, HolderLabel(activity)));
                     item.SubItems.Add(new ListViewItem.ListViewSubItem(item, CopyLabel(activity)));
                     item.SubItems.Add(new ListViewItem.ListViewSubItem(item, activity.DateTicks));
 
@@ -178,7 +207,7 @@ namespace AowEmailWrapper.Controls
                     listView.Items.Add(item);
                 }
 
-                _lvwColumnSorter.SortColumn = 6;
+                _lvwColumnSorter.SortColumn = TicksColumn;
                 listView.Sort();
 
                 ListViewColumnResizer.ResizeColumns(listView);
@@ -191,10 +220,7 @@ namespace AowEmailWrapper.Controls
             listView.EndUpdate();
         }
 
-        /// <summary>
-        /// The status text, with a "new sender" tag on a received turn from an address not seen before,
-        /// or the player whose wrapper says it holds a sent turn.
-        /// </summary>
+        /// <summary>The status text, with a "new sender" tag on a received turn from an address not seen before.</summary>
         private static string StatusLabel(Activity activity)
         {
             string label = activity.Status.Equals(ActivityState.None) ? string.Empty : Translator.TranslateEnum(activity.Status);
@@ -203,19 +229,31 @@ namespace AowEmailWrapper.Controls
                 string tag = Translator.Translate(NewSenderKey);
                 label = string.Format("{0} ({1})", label, string.IsNullOrEmpty(tag) ? NewSenderFallback : tag);
             }
-            else if (activity.Status == ActivityState.Sent && !string.IsNullOrEmpty(activity.Holder))
+            return label;
+        }
+
+        /// <summary>
+        /// Who has a sent turn, as "Who has the turn?" last found out: the player whose Wrapper says it holds the
+        /// turn, or "probably with" the player the answers point at. Blank until anyone has been asked, and for a
+        /// turn that is not out with the others.
+        /// </summary>
+        internal static string HolderLabel(Activity activity)
+        {
+            if (activity.Status != ActivityState.Sent)
             {
-                string holder = AliasHelper.Display(activity.Holder);
-                string held = Translator.Translate(HeldByKey, holder);
-                label = string.Format("{0} ({1})", label, string.IsNullOrEmpty(held) ? string.Format(HeldByFallback, holder) : held);
+                return string.Empty;
             }
-            else if (activity.Status == ActivityState.Sent && !string.IsNullOrEmpty(activity.LikelyHolder))
+            if (!string.IsNullOrEmpty(activity.Holder))
+            {
+                return AliasHelper.Display(activity.Holder);
+            }
+            if (!string.IsNullOrEmpty(activity.LikelyHolder))
             {
                 string likely = AliasHelper.Display(activity.LikelyHolder);
                 string probably = Translator.Translate(ProbablyWithKey, likely);
-                label = string.Format("{0} ({1})", label, string.IsNullOrEmpty(probably) ? string.Format(ProbablyWithFallback, likely) : probably);
+                return string.IsNullOrEmpty(probably) ? string.Format(ProbablyWithFallback, likely) : probably;
             }
-            return label;
+            return string.Empty;
         }
 
         private static string ToolTipFor(Activity activity)
@@ -227,6 +265,11 @@ namespace AowEmailWrapper.Controls
                 tip.Append(Environment.NewLine).Append("Map: ").Append(activity.MapTitle);
             }
             tip.Append(Environment.NewLine).Append("Status: ").Append(StatusLabel(activity));
+            string holder = HolderLabel(activity);
+            if (holder.Length > 0)
+            {
+                tip.Append(Environment.NewLine).Append("Who has it: ").Append(holder);
+            }
             if (!string.IsNullOrEmpty(activity.Sender))
             {
                 tip.Append(Environment.NewLine).Append("From: ").Append(AliasHelper.DisplayListWithAddresses(activity.Sender));
