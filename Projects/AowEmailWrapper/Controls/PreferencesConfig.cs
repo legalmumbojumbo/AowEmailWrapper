@@ -50,6 +50,7 @@ namespace AowEmailWrapper.Controls
             fbSaveFolder.InnerComboBox.SelectedIndexChanged += raiseConfigChange;
             fbSaveFolder.InnerComboBox.SelectedIndexChanged += new EventHandler(SaveFolder_SelectedIndexChanged);
             fbCopyToEmailOut.InnerCheckBox.CheckedChanged += raiseConfigChange;
+            fbTellPlayers.InnerCheckBox.CheckedChanged += raiseConfigChange;
             fbLocalization.InnerComboBox.SelectedIndexChanged += raiseConfigChange;
             fbTheme.InnerComboBox.SelectedIndexChanged += raiseConfigChange;
             fbTheme.InnerComboBox.SelectedIndexChanged += (sender, e) => { if (!_populating) ThemeChanged?.Invoke(this, e); };
@@ -99,6 +100,7 @@ namespace AowEmailWrapper.Controls
             _config.AutoInstallUpdates = fbAutoInstallUpdates.Checked;
             _config.SaveFolder = ConfigHelper.ParseEnumString<EmailSaveFolder>(fbSaveFolder.SelectedValue);
             _config.CopyToEmailOut = fbCopyToEmailOut.Checked;
+            _config.TellPlayers = fbTellPlayers.Checked;
             _config.Theme = !string.IsNullOrEmpty(fbTheme.SelectedValue) ? fbTheme.SelectedValue : Theme.DefaultName;
             _config.LanguageCode = !string.IsNullOrEmpty(fbLocalization.SelectedValue) ? fbLocalization.SelectedValue : Translator.CurrentLanguageCode;
             _config.PlayerName = string.IsNullOrWhiteSpace(fbPlayerName.TextValue) ? null : fbPlayerName.TextValue.Trim();
@@ -126,6 +128,7 @@ namespace AowEmailWrapper.Controls
                 fbAutoInstallUpdates.Checked = _config.AutoInstallUpdates;
                 fbSaveFolder.SelectedValue = _config.SaveFolder.ToString();
                 fbCopyToEmailOut.Checked = _config.CopyToEmailOut;
+                fbTellPlayers.Checked = _config.TellPlayers;
                 fbLocalization.SelectedValue = _config.LanguageCode;
                 fbTheme.SelectedValue = Theme.Normalize(_config.Theme);
                 fbPlayerName.TextValue = _config.PlayerName ?? string.Empty;

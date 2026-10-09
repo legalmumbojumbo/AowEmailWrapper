@@ -24,6 +24,7 @@ namespace AowEmailWrapper.ConfigFramework
         private bool _copyToEmailOut = false;
         private int _gameWrapperDataPort = GameWrapperDataPortDefault;
         private bool _autoInstallUpdates = true;
+        private bool _tellPlayers = true;
 
         [XmlAttribute("playsoundonemail")]
         public bool PlaySoundOnEmail
@@ -58,6 +59,17 @@ namespace AowEmailWrapper.ConfigFramework
         {
             get { return _copyToEmailOut; }
             set { _copyToEmailOut = value; }
+        }
+
+        /// <summary>
+        /// Whether a turn sent also tells the game's other players' Wrappers whom it went to, so theirs always know
+        /// where the turn is. On unless switched off, also in settings saved before it existed.
+        /// </summary>
+        [XmlAttribute("tellPlayers")]
+        public bool TellPlayers
+        {
+            get { return _tellPlayers; }
+            set { _tellPlayers = value; }
         }
 
         [XmlAttribute("languageCode")]
@@ -124,6 +136,7 @@ namespace AowEmailWrapper.ConfigFramework
                 _languageCode = CultureInfo.CurrentCulture.TwoLetterISOLanguageName;
                 _gameWrapperDataPort = GameWrapperDataPortDefault;
                 _autoInstallUpdates = true;
+                _tellPlayers = true;
             }
         }
     }

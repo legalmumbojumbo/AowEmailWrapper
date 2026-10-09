@@ -399,6 +399,88 @@ namespace AowEmailWrapper.Tests
 
         #endregion
 
+        #region Telling the other players when a turn is sent
+
+        [Fact]
+        public void A_notice_reads_as_a_reply_to_any_wrapper_and_as_a_notice_to_a_new_one()
+        {
+            DateTimeOffset sent = Day1.AddDays(2);
+            MimeMessage notice = RoundTrip(TurnQuery.BuildNotice(Bob, Me, Game, sent, Carol));
+
+            //A Wrapper from before notices removes it and records it as an answer
+            Assert.True(TurnQuery.IsWrapperMessage(notice));
+            Assert.True(TurnQuery.IsReply(notice));
+            Assert.False(TurnQuery.IsQuery(notice));
+
+            TurnState state = TurnQuery.ParseReply(notice);
+            Assert.True(state.IsNotice);
+            Assert.Equal(Bob, state.Responder);
+            Assert.Equal(ActivityState.Sent, state.Status);
+            Assert.Equal(Carol, state.SentTo);
+            Assert.Equal(sent, state.Date);
+            Assert.Equal("auto-generated", notice.Headers["Auto-Submitted"]);
+
+            MimeMessage reply = RoundTrip(TurnQuery.BuildReply(new TurnQueryRequest { From = Me, Game = Game, QueryId = "abc123" }, Bob, new TurnState { Status = ActivityState.Received }));
+            Assert.False(TurnQuery.ParseReply(reply).IsNotice);
+        }
+
+        [Fact]
+        public void Notices_follow_the_turn_round_the_table_without_asking()
+        {
+            //Bob tells everyone he sent it to Carol; Carol's own notice then says she sent it to Dave
+            Activity activity = SentToBob();
+            TurnQuery.RecordWhereabouts(activity, TurnQuery.ParseReply(RoundTrip(TurnQuery.BuildNotice(Bob, Me, Game, Day1.AddDays(1), Carol))));
+            Assert.Equal(Carol, TurnQuery.LikelyHolder(activity, new[] { Me }).To);
+
+            TurnQuery.RecordWhereabouts(activity, TurnQuery.ParseReply(RoundTrip(TurnQuery.BuildNotice(Carol, Me, Game, Day1.AddDays(2), Dave))));
+            Assert.Equal(Dave, TurnQuery.LikelyHolder(activity, new[] { Me }).To);
+        }
+
+        [Fact]
+        public void Only_the_other_players_known_to_run_the_wrapper_are_told()
+        {
+            //Bob gets the turn itself, Dave has no Wrapper, and the player's own address is not told
+            Activity activity = SentToBob();
+            activity.Players = string.Join(";", Me, Bob, Carol, Dave);
+            ActivityList log = new ActivityList();
+            log.AddWrapperPlayer(Bob);
+            log.AddWrapperPlayer(" CAROL@example.org ");
+            log.AddWrapperPlayer(Me);
+
+            Assert.Equal(new[] { Carol }, TurnQuery.PlayersToTell(activity, new[] { Me }, log.IsWrapperPlayer));
+            Assert.Empty(TurnQuery.PlayersToTell(activity, new[] { Me }, address => false));
+        }
+
+        [Fact]
+        public void The_players_known_to_run_the_wrapper_are_kept_once_each_and_older_logs_still_load()
+        {
+            ActivityList log = new ActivityList();
+            Assert.True(log.AddWrapperPlayer(Carol));
+            Assert.False(log.AddWrapperPlayer(Carol.ToUpperInvariant()));
+            Assert.False(log.AddWrapperPlayer(" "));
+
+            System.Xml.Serialization.XmlSerializer serializer = new System.Xml.Serialization.XmlSerializer(typeof(ActivityList));
+            StringWriter writer = new StringWriter();
+            serializer.Serialize(writer, log);
+            ActivityList back = (ActivityList)serializer.Deserialize(new StringReader(writer.ToString()));
+            Assert.True(back.IsWrapperPlayer(Carol));
+            Assert.False(back.IsWrapperPlayer(Dave));
+
+            ActivityList old = (ActivityList)serializer.Deserialize(new StringReader("<activities history_imported=\"true\" />"));
+            Assert.Empty(old.WrapperPlayers);
+        }
+
+        [Fact]
+        public void Telling_the_players_is_on_also_in_settings_saved_before_it_existed()
+        {
+            System.Xml.Serialization.XmlSerializer serializer = new System.Xml.Serialization.XmlSerializer(typeof(PreferencesConfigValues));
+            Assert.True(((PreferencesConfigValues)serializer.Deserialize(new StringReader("<preferences_config playsoundonemail=\"true\" />"))).TellPlayers);
+            Assert.False(((PreferencesConfigValues)serializer.Deserialize(new StringReader("<preferences_config tellPlayers=\"false\" />"))).TellPlayers);
+            Assert.True(new PreferencesConfigValues(true).TellPlayers);
+        }
+
+        #endregion
+
         #region Player addresses from the save
 
         [Fact]

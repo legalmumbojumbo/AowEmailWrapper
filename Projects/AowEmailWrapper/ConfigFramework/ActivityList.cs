@@ -145,6 +145,43 @@ namespace AowEmailWrapper.ConfigFramework
             return added;
         }
 
+        private List<string> _wrapperPlayers = new List<string>();
+
+        /// <summary>
+        /// Addresses known to run the Wrapper: a Wrapper message came from them, or a turn carrying the Wrapper's
+        /// headers. Only these are told when the player sends a turn; anyone else would get the notice as an
+        /// ordinary email every turn.
+        /// </summary>
+        [XmlArray("wrapper_players")]
+        [XmlArrayItem("address")]
+        public List<string> WrapperPlayers
+        {
+            get { return _wrapperPlayers; }
+            set { _wrapperPlayers = value ?? new List<string>(); }
+        }
+
+        public bool ShouldSerializeWrapperPlayers()
+        {
+            return _wrapperPlayers.Count > 0;
+        }
+
+        /// <summary>Records that an address runs the Wrapper; false when it is blank or already known.</summary>
+        public bool AddWrapperPlayer(string address)
+        {
+            if (string.IsNullOrWhiteSpace(address) || IsWrapperPlayer(address))
+            {
+                return false;
+            }
+            _wrapperPlayers.Add(address.Trim());
+            return true;
+        }
+
+        public bool IsWrapperPlayer(string address)
+        {
+            return !string.IsNullOrWhiteSpace(address) &&
+                _wrapperPlayers.Any(known => string.Equals(known, address.Trim(), StringComparison.OrdinalIgnoreCase));
+        }
+
         private static bool ContainsAddress(string list, string wanted)
         {
             if (string.IsNullOrEmpty(list))

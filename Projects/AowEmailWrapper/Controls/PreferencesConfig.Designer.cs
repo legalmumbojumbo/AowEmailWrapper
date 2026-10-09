@@ -35,6 +35,7 @@
             this.fbSaveFolder = new AowEmailWrapper.Controls.FormBlockCombo();
             this.fbGameWrapperDataPort = new AowEmailWrapper.Controls.FormBlockText();
             this.fbCopyToEmailOut = new AowEmailWrapper.Controls.FormBlockCheckBox();
+            this.fbTellPlayers = new AowEmailWrapper.Controls.FormBlockCheckBox();
             this.fbAutostart = new AowEmailWrapper.Controls.FormBlockCheckBox();
             this.fbAutoInstallUpdates = new AowEmailWrapper.Controls.FormBlockCheckBox();
             this.fbSentSound = new AowEmailWrapper.Controls.FormBlockCheckBox();
@@ -51,6 +52,7 @@
             // 
             this.groupBoxPreferences.AutoSize = true;
             this.groupBoxPreferences.Controls.Add(this.fbGameWrapperDataPort);
+            this.groupBoxPreferences.Controls.Add(this.fbTellPlayers);
             this.groupBoxPreferences.Controls.Add(this.fbCopyToEmailOut);
             this.groupBoxPreferences.Controls.Add(this.fbAutoInstallUpdates);
             this.groupBoxPreferences.Controls.Add(this.fbAutostart);
@@ -142,6 +144,16 @@
             this.fbCopyToEmailOut.Name = "fbCopyToEmailOut";
             this.fbCopyToEmailOut.Size = new System.Drawing.Size(419, 24);
             this.fbCopyToEmailOut.TabIndex = 35;
+            //
+            // fbTellPlayers
+            //
+            this.fbTellPlayers.Checked = true;
+            this.fbTellPlayers.Dock = System.Windows.Forms.DockStyle.Top;
+            this.fbTellPlayers.LabelName = "Tell the other players' Wrappers on send:";
+            this.fbTellPlayers.MinimumSize = new System.Drawing.Size(0, 24);
+            this.fbTellPlayers.Name = "fbTellPlayers";
+            this.fbTellPlayers.Size = new System.Drawing.Size(419, 24);
+            this.fbTellPlayers.TabIndex = 38;
             //
             // fbAutoInstallUpdates
             //
@@ -259,6 +271,7 @@
         private FormBlockCheckBox fbSentSound;
         private FormBlockCheckBox fbEmailSound;
         private FormBlockCheckBox fbCopyToEmailOut;
+        private FormBlockCheckBox fbTellPlayers;
         private FormBlockText fbGameWrapperDataPort;
     }
 }
