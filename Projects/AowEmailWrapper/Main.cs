@@ -947,6 +947,7 @@ namespace AowEmailWrapper
             activityListView.OnListChanged += new EventHandler(ActivityLogChanged);
             activityListView.OnDeleteClick += new ActivityListViewEventHandler(ActivityListViewGamesDeleted);
             activityListView.OnMarkAsEnded += new ActivityListViewEventHandler(ActivityListViewGamesMarkedAsEnded);
+            activityListView.OnMarkAsPaused += new ActivityListViewEventHandler(ActivityListViewEndedGamesPaused);
             activityListView.OnResendClick += new ActivityListViewEventHandler(ActivityListViewResend);
             activityListView.OnMoveTo += new ActivityMoveEventHandler(ActivityListViewMoveTo);
             activityListView.OnWhereIs += new ActivityListViewEventHandler(ActivityListViewWhereIs);
@@ -1547,13 +1548,13 @@ namespace AowEmailWrapper
         }
 
         /// <summary>
-        /// The save the game is to load for a turn, or null to start it at the main menu. Only a turn that waits for
-        /// the player: the file a sent turn left behind is the one already played, and loading it would let the
-        /// player play that turn a second time.
+        /// The save the game is to load for a turn, or null to start it at the main menu. Only a turn the player
+        /// holds, waiting or paused: the file a sent turn left behind is the one already played, and loading it would
+        /// let the player play that turn a second time.
         /// </summary>
         internal static string SaveToLoad(AowGame theGame, Activity turn)
         {
-            if (turn == null || turn.Status != ActivityState.Received)
+            if (turn == null || (turn.Status != ActivityState.Received && turn.Status != ActivityState.Paused))
             {
                 return null;
             }
@@ -3124,6 +3125,21 @@ namespace AowEmailWrapper
                     Trace.Flush();
                     ShowException(ex);
                 }
+            }
+        }
+
+        /// <summary>A game marked as ended and now paused instead: its files come back out of the Ended folders, so it can be played on.</summary>
+        private void ActivityListViewEndedGamesPaused(object sender, List<Activity> list)
+        {
+            try
+            {
+                list.ForEach(paused => _gameManager.RestoreEndedGame(paused.GameType, paused.FileName, ConfigHelper.EndedFolder));
+            }
+            catch (Exception ex)
+            {
+                Trace.TraceError(ex.ToString());
+                Trace.Flush();
+                ShowException(ex);
             }
         }
 

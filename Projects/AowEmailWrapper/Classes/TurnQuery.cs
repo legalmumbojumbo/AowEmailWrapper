@@ -374,7 +374,8 @@ namespace AowEmailWrapper.Classes
                 return state;
             }
 
-            state.Status = activity.Status;
+            //A paused turn is still with this player; Wrappers that do not know the state would not understand it
+            state.Status = activity.Status == ActivityState.Paused ? ActivityState.Received : activity.Status;
             long ticks;
             if (long.TryParse(activity.DateTicks, out ticks))
             {

@@ -38,6 +38,11 @@ namespace AowEmailWrapper.Controls
         private const string ProbablyWithKey = "activityProbablyWith";
         private const string ProbablyWithFallback = "probably with {0}";
         private ToolStripMenuItem _whereIsMenuItem;
+        private const string Menu_MarkPaused_Tag = "menuItemMarkPaused";
+        private const string MarkPausedFallback = "Mark as &Paused";
+        private const string ResumeKey = "menuItemResume";
+        private const string ResumeFallback = "&Resume";
+        private ToolStripMenuItem _pauseMenuItem;
 
         #endregion
 
@@ -45,6 +50,8 @@ namespace AowEmailWrapper.Controls
 
         new public ActivityListViewEventHandler OnDoubleClick;
         public ActivityListViewEventHandler OnMarkAsEnded;
+        /// <summary>Games just paused that had been marked as ended, whose files may have been moved into the Ended folders.</summary>
+        public ActivityListViewEventHandler OnMarkAsPaused;
         public ActivityListViewEventHandler OnResendClick;
         public ActivityListViewEventHandler OnDeleteClick;
         public EventHandler OnListChanged;
@@ -401,6 +408,9 @@ namespace AowEmailWrapper.Controls
                 case ActivityState.Ended:
                     listItem.ForeColor = Color.Gray;
                     break;
+                case ActivityState.Paused:
+                    listItem.Font = new Font(listItem.Font ?? SystemFonts.DefaultFont, FontStyle.Italic);
+                    break;
             }
         }
 
@@ -439,12 +449,13 @@ namespace AowEmailWrapper.Controls
 
             ToolStripMenuItem remove = new ToolStripMenuItem();
             ToolStripMenuItem markEnded = new ToolStripMenuItem();
+            _pauseMenuItem = new ToolStripMenuItem();
             ToolStripMenuItem markSent = new ToolStripMenuItem();
             _resendMenuItem = new ToolStripMenuItem();
             _moveToMenuItem = new ToolStripMenuItem();
             _whereIsMenuItem = new ToolStripMenuItem();
 
-            _contextMenu.Items.AddRange(new ToolStripMenuItem[] { _resendMenuItem, _moveToMenuItem, _whereIsMenuItem, markEnded, markSent, remove });
+            _contextMenu.Items.AddRange(new ToolStripMenuItem[] { _resendMenuItem, _moveToMenuItem, _whereIsMenuItem, _pauseMenuItem, markEnded, markSent, remove });
 
             string whereIs = Translator.Translate(Menu_WhereIs_Tag);
             _whereIsMenuItem.Text = string.IsNullOrEmpty(whereIs) ? WhereIsFallback : whereIs;
@@ -459,6 +470,9 @@ namespace AowEmailWrapper.Controls
 
             _moveToMenuItem.Text = Translator.Translate(Menu_MoveTo_Tag);
             _moveToMenuItem.Tag = Menu_MoveTo_Tag;
+
+            _pauseMenuItem.Tag = Menu_MarkPaused_Tag;
+            _pauseMenuItem.Click += menuItemClickEvent;
 
             markEnded.Text = Translator.Translate(Menu_MarkEnded_Tag);
             markEnded.Tag = Menu_MarkEnded_Tag;
@@ -502,6 +516,22 @@ namespace AowEmailWrapper.Controls
                     case Menu_MarkSent_Tag:
                         MarkState(ActivityState.Sent, selected);
                         break;
+                    case Menu_MarkPaused_Tag:
+                        if (selected.All(activity => activity.Status == ActivityState.Paused))
+                        {
+                            //Taken up again: the turn waits for the player as it did
+                            MarkState(ActivityState.Received, selected);
+                        }
+                        else
+                        {
+                            List<Activity> wereEnded = selected.Where(activity => activity.Status == ActivityState.Ended).ToList();
+                            MarkState(ActivityState.Paused, selected);
+                            if (OnMarkAsPaused != null && wereEnded.Count > 0)
+                            {
+                                OnMarkAsPaused(this, wereEnded);
+                            }
+                        }
+                        break;
                     case Menu_Resend_Tag:
                         if (OnResendClick != null)
                         {
@@ -540,6 +570,13 @@ namespace AowEmailWrapper.Controls
 
             //Only a turn that has left this player can be somewhere else
             _whereIsMenuItem.Enabled = enabled && GetSelectedActivities().All(activity => activity.Status.Equals(ActivityState.Sent) && TurnQuery.PlayersToAsk(activity, null).Count > 0);
+
+            //Only a turn the player holds (or a game ended by mistake) can be put aside; paused ones can be resumed
+            List<Activity> chosen = GetSelectedActivities();
+            bool allPaused = chosen.Count > 0 && chosen.All(activity => activity.Status == ActivityState.Paused);
+            string pauseText = Translator.Translate(allPaused ? ResumeKey : Menu_MarkPaused_Tag);
+            _pauseMenuItem.Text = string.IsNullOrEmpty(pauseText) ? (allPaused ? ResumeFallback : MarkPausedFallback) : pauseText;
+            _pauseMenuItem.Enabled = enabled && (allPaused || chosen.All(activity => activity.Status == ActivityState.Received || activity.Status == ActivityState.Ended));
 
             PopulateMoveTo();
         }
