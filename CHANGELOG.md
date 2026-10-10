@@ -16,6 +16,15 @@ release; CI publishes it when a `v<version>` tag is pushed (see "Releasing a ver
 - A sent turn's line is dated and numbered from when it went out, not from when it arrived. *Age*, the amber
   and pink lines and the dates other players' *Who has the turn?* receive now count from the send, and the
   *Turn* column shows the turn you sent.
+- The *Who has it* column names the player you sent a turn to as soon as you send it, without asking anyone.
+  Before, it stayed empty until someone's Wrapper answered, so in a game where nobody else runs the Wrapper it
+  never said anything, though the Wrapper already knew where the turn had gone.
+- When you send a turn, the Wrapper tells the game's other players' Wrappers whom it went to, so every Activity
+  Log in the game follows the turn without anyone asking *Who has the turn?*. Nobody is told unless their own
+  Wrapper has asked to be, which it does quietly on every turn and message it sends while the setting is on, so
+  a player without the Wrapper, on an older version, or who has switched it off is never sent anything, and a
+  player who stops using the Wrapper stops being told within 90 days. *Share where turns go with other Wrappers* on the Settings
+  tab switches both halves off.
 - The Aliases tab's list has a right-click menu: *Copy email address* copies the selected lines' addresses
   (Ctrl+C does too), next to *Edit...* and *Remove*.
 

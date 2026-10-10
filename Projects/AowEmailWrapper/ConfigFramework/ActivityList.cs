@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Xml.Serialization;
 using AowEmailWrapper.ASG;
@@ -7,6 +8,27 @@ using AowEmailWrapper.Games;
 
 namespace AowEmailWrapper.ConfigFramework
 {
+    /// <summary>A player whose Wrapper has asked to be told where a turn went, and when it last asked.</summary>
+    public class WrapperPlayer
+    {
+        [XmlAttribute("address")]
+        public string Address { get; set; }
+
+        /// <summary>When that Wrapper last asked, round-trip format; blank for a list written before the dates.</summary>
+        [XmlAttribute("asked")]
+        public string Asked { get; set; }
+
+        [XmlIgnore]
+        public DateTimeOffset? AskedOn
+        {
+            get
+            {
+                DateTimeOffset when;
+                return DateTimeOffset.TryParse(Asked, CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind, out when) ? when : (DateTimeOffset?)null;
+            }
+        }
+    }
+
     [XmlRoot("activities")]
     public class ActivityList
     {
@@ -143,6 +165,84 @@ namespace AowEmailWrapper.ConfigFramework
                 }
             }
             return added;
+        }
+
+        private List<WrapperPlayer> _wrapperPlayers = new List<WrapperPlayer>();
+
+        /// <summary>
+        /// How long after a player's Wrapper last asked for notices they are still told. Their Wrapper says so on
+        /// every turn and Wrapper message it sends, so this only runs out when it stops saying it: the player has
+        /// switched the notices off, gone back to an older Wrapper, or stopped using one at all. Then the Wrapper
+        /// stops telling them rather than mailing them for ever, and the player falls back to asking.
+        /// </summary>
+        public const int WrapperPlayerDays = 90;
+
+        /// <summary>
+        /// The players whose Wrapper has asked to be told where a turn went, and when it last asked. Only these
+        /// are told: anyone else would get the notice as an ordinary email every turn.
+        /// </summary>
+        [XmlArray("wrapper_players")]
+        [XmlArrayItem("player")]
+        public List<WrapperPlayer> WrapperPlayers
+        {
+            get { return _wrapperPlayers; }
+            set { _wrapperPlayers = value ?? new List<WrapperPlayer>(); }
+        }
+
+        public bool ShouldSerializeWrapperPlayers()
+        {
+            return _wrapperPlayers.Count > 0;
+        }
+
+        /// <summary>
+        /// Records that an address's Wrapper asks to be told, now. False when nothing changed, so the caller only
+        /// saves the log when it must; the date is refreshed at most once a day.
+        /// </summary>
+        public bool AddWrapperPlayer(string address)
+        {
+            return AddWrapperPlayer(address, DateTimeOffset.Now);
+        }
+
+        public bool AddWrapperPlayer(string address, DateTimeOffset asked)
+        {
+            if (string.IsNullOrWhiteSpace(address))
+            {
+                return false;
+            }
+            WrapperPlayer known = Find(address);
+            if (known == null)
+            {
+                _wrapperPlayers.Add(new WrapperPlayer { Address = address.Trim(), Asked = asked.ToString("o", CultureInfo.InvariantCulture) });
+                return true;
+            }
+            if (known.AskedOn.HasValue && (asked - known.AskedOn.Value).TotalDays < 1)
+            {
+                return false;
+            }
+            known.Asked = asked.ToString("o", CultureInfo.InvariantCulture);
+            return true;
+        }
+
+        /// <summary>True while that address's Wrapper has asked to be told within the last <see cref="WrapperPlayerDays"/> days.</summary>
+        public bool IsWrapperPlayer(string address)
+        {
+            return IsWrapperPlayer(address, DateTimeOffset.Now);
+        }
+
+        public bool IsWrapperPlayer(string address, DateTimeOffset now)
+        {
+            WrapperPlayer known = Find(address);
+            return known != null && known.AskedOn.HasValue && (now - known.AskedOn.Value).TotalDays <= WrapperPlayerDays;
+        }
+
+        private WrapperPlayer Find(string address)
+        {
+            if (string.IsNullOrWhiteSpace(address))
+            {
+                return null;
+            }
+            string wanted = address.Trim();
+            return _wrapperPlayers.FirstOrDefault(player => player != null && string.Equals(player.Address, wanted, StringComparison.OrdinalIgnoreCase));
         }
 
         private static bool ContainsAddress(string list, string wanted)

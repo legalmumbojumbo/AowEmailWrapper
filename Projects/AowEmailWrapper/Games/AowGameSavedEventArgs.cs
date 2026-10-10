@@ -47,6 +47,9 @@
         /// <summary>Every player's address from the save, separated by ';'.</summary>
         public string Players { get; set; }
 
+        /// <summary>True when the turn said the sender's Wrapper wants to be told where turns go.</summary>
+        public bool WantsNotices { get; set; }
+
         /// <summary>The names the turn carried for the game's players, from the sender's Aliases tab and their own name.</summary>
         public System.Collections.Generic.IList<ConfigFramework.PlayerAlias> SharedNames { get; set; }
 

@@ -1915,9 +1915,14 @@ namespace AowEmailWrapper
 
             try
             {
+                bool wantsNotices = TurnQuery.WantsNotices(message);
                 TurnQueryRequest query = TurnQuery.ParseQuery(message);
                 if (query != null)
                 {
+                    if (wantsNotices && _activityLog.AddWrapperPlayer(query.From))
+                    {
+                        DataManagerHelper.SaveActivityLog(_activityLog);
+                    }
                     AnswerQuery(poller, query);
                     return;
                 }
@@ -1925,6 +1930,11 @@ namespace AowEmailWrapper
                 TurnState state = TurnQuery.ParseReply(message);
                 if (state != null)
                 {
+                    if (wantsNotices)
+                    {
+                        //Saved with the answer
+                        _activityLog.AddWrapperPlayer(state.Responder);
+                    }
                     RecordReply(state);
                 }
             }
@@ -1971,6 +1981,12 @@ namespace AowEmailWrapper
                 Trace.TraceInformation("Answer about '{0}' from {1} ignored: no such game here", state.Game, state.Responder);
                 return;
             }
+            //Nobody asked for a notice, so only one from a player of the game counts
+            if (state.IsNotice && !TurnQuery.IsPlayer(activity, state.Responder))
+            {
+                Trace.TraceInformation("Notice about '{0}' from {1} ignored: not a player of that game here", state.Game, state.Responder);
+                return;
+            }
 
             TurnQuery.RecordWhereabouts(activity, state);
             Trace.TraceInformation("Answer: {0}", TurnQuery.Describe(state, activity.FileName));
@@ -1984,6 +2000,12 @@ namespace AowEmailWrapper
             activityListView.Refresh();
 
             string text = TurnQuery.Describe(state, activity.FileName);
+            if (state.IsNotice)
+            {
+                //Sent with every turn: recorded on the line, not announced
+                Trace.TraceInformation("Notice: {0}", text);
+                return;
+            }
             //Also when the guess stands but this answer came from that player: their own line names an earlier
             //send, so without this one the notification would point away from them
             if (likely != null && (!TurnQuery.SameAddress(previousGuess, likely.To) || TurnQuery.SameAddress(state.Responder, likely.To)))
@@ -2042,6 +2064,33 @@ namespace AowEmailWrapper
             }
         }
 
+        /// <summary>
+        /// After a turn has gone out, tells the game's other players' Wrappers whom it went to, so theirs know where
+        /// the turn is without asking. Only players known to run the Wrapper are told, and not when switched off.
+        /// </summary>
+        private void TellPlayers(AccountConfigValues account, Activity activity)
+        {
+            PreferencesConfigValues preferences = _wrapperConfig.PreferencesConfig;
+            if (preferences == null || !preferences.TellPlayers || string.IsNullOrEmpty(activity.Recipients) || !WrapperMailer.CanSend(account))
+            {
+                return;
+            }
+
+            List<string> players = TurnQuery.PlayersToTell(activity, OwnAddresses(), _activityLog.IsWrapperPlayer);
+            if (players.Count == 0)
+            {
+                return;
+            }
+
+            string from = WrapperMailer.SenderAddress(account);
+            DateTimeOffset sent = DateTimeOffset.Now;
+            foreach (string player in players)
+            {
+                SendWrapperMessage(account, TurnQuery.BuildNotice(from, player, activity.FileName, sent, activity.Recipients));
+            }
+            Trace.TraceInformation("Told {0} player(s) that '{1}' went to {2}", players.Count, activity.FileName, activity.Recipients);
+        }
+
         /// <summary>"Who has the turn?" on the activity list: every other player of the game is asked by email.</summary>
         private void ActivityListViewWhereIs(object sender, List<Activity> activities)
         {
@@ -2081,7 +2130,20 @@ namespace AowEmailWrapper
             return string.IsNullOrEmpty(title) ? WrapperWhereIsTitleFallback : title;
         }
 
-        private static void SendWrapperMessage(AccountConfigValues account, MimeMessage message)
+        private void SendWrapperMessage(AccountConfigValues account, MimeMessage message)
+        {
+            //Every Wrapper message says whether this Wrapper wants to be told where turns go
+            TurnQuery.SetWantsNotices(message, WantsNotices);
+            SendWrapperMessage(account, message, true);
+        }
+
+        /// <summary>True while the player has the notices setting on: this Wrapper both tells and asks to be told.</summary>
+        private bool WantsNotices
+        {
+            get { return _wrapperConfig != null && _wrapperConfig.PreferencesConfig != null && _wrapperConfig.PreferencesConfig.TellPlayers; }
+        }
+
+        private static void SendWrapperMessage(AccountConfigValues account, MimeMessage message, bool prepared)
         {
             Task.Run(() =>
             {
@@ -2277,6 +2339,8 @@ namespace AowEmailWrapper
                 {
                     TagOutgoingInstall(theEmail);
                     TagSharedNames(theEmail);
+                    //A turn carries the request too, so a player who only ever sends turns is still asked
+                    TurnQuery.SetWantsNotices(theEmail, WantsNotices);
 
                     SmtpSender sender = RouteOutgoing(theEmail);
                     if (sender == null)
@@ -2358,6 +2422,11 @@ namespace AowEmailWrapper
                         //Whoever the player sends turns to is someone they are playing with
                         theActivity.Recipients = MailHelper.GetRecipientAddresses(theResponse.GameEmail);
                         _activityLog.AddContacts(new[] { theActivity.Recipients });
+                        //The player just sent it, so they already know where it is: the column says so at once,
+                        //without asking anyone. Answers and notices refine it when the turn moves on
+                        TurnSend own = TurnQuery.LikelyHolder(theActivity, OwnAddresses());
+                        theActivity.LikelyHolder = own != null ? own.To : null;
+                        TellPlayers(account, theActivity);
                     }
                     //Shown and saved once the send is fully recorded: the copy the turn came from and its label are
                     //only known now, and the first turn of a new game shown before that came up as the plain game
@@ -2586,6 +2655,11 @@ namespace AowEmailWrapper
             _activityLog.Activities.Add(newActivity);
             _activityLog.AddContact(e.Sender);
             _activityLog.AddContacts(new[] { newActivity.Players });
+            //Their Wrapper asked to be told where turns go; nothing is sent to anyone who has not asked
+            if (e.WantsNotices)
+            {
+                _activityLog.AddWrapperPlayer(e.Sender);
+            }
 
             if (newActivity.NewSender)
             {

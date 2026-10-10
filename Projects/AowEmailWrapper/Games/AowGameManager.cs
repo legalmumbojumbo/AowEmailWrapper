@@ -479,6 +479,11 @@ namespace AowEmailWrapper.Games
 
         public void StoreDownloadFile(ASGFileInfo theAsgFile, EmailSaveFolder saveFolder, string accountName, string modLabel, string sender, IList<PlayerAlias> sharedNames)
         {
+            StoreDownloadFile(theAsgFile, saveFolder, accountName, modLabel, sender, sharedNames, false);
+        }
+
+        public void StoreDownloadFile(ASGFileInfo theAsgFile, EmailSaveFolder saveFolder, string accountName, string modLabel, string sender, IList<PlayerAlias> sharedNames, bool wantsNotices)
+        {
             AowGame theGame = theAsgFile.IsValid ? ResolveIncoming(theAsgFile.GameType, modLabel, theAsgFile.FileNameTrue) : null;
 
             if (theGame != null)
@@ -495,13 +500,14 @@ namespace AowEmailWrapper.Games
                     ModLabel = modLabel,
                     Sender = sender,
                     Players = ASGFileInfo.JoinAddresses(theAsgFile.PlayerEmails),
-                    SharedNames = sharedNames
+                    SharedNames = sharedNames,
+                    WantsNotices = wantsNotices
                 });
             }
             else
             {
                 theAsgFile.SaveToFolder(_checkEmailFolder);
-                RaiseOnGameSaved(new AowGameSavedEventArgs(AowGameType.Unknown, theAsgFile.FileName) { AccountName = accountName, ModLabel = modLabel, Sender = sender, Players = ASGFileInfo.JoinAddresses(theAsgFile.PlayerEmails), SharedNames = sharedNames });
+                RaiseOnGameSaved(new AowGameSavedEventArgs(AowGameType.Unknown, theAsgFile.FileName) { AccountName = accountName, ModLabel = modLabel, Sender = sender, Players = ASGFileInfo.JoinAddresses(theAsgFile.PlayerEmails), SharedNames = sharedNames, WantsNotices = wantsNotices });
             }
         }
 
