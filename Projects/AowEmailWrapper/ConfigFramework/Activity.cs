@@ -18,7 +18,10 @@ namespace AowEmailWrapper.ConfigFramework
         [XmlEnum(Name = "Ended")]
         Ended,
         [XmlEnum(Name = "Pending")]
-        Pending
+        Pending,
+        /// <summary>A turn the player holds but has put aside: no envelope, still playable, its file stays in EmailIn.</summary>
+        [XmlEnum(Name = "Paused")]
+        Paused
     }
 
     [XmlRoot("activity")]

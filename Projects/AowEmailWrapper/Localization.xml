@@ -255,6 +255,8 @@
 		<lookup key="menuItemRemove" value="&amp;Delete"/>
 		<lookup key="menuItemAdd" value="Add &amp;New"/>
 		<lookup key="menuItemMarkEnded" value="Mark as &amp;Ended"/>
+		<lookup key="menuItemMarkPaused" value="Mark as &amp;Paused"/>
+		<lookup key="menuItemResume" value="&amp;Resume"/>
 		<lookup key="menuItemMarkSent" value="Mark as &amp;Sent"/>
 		<lookup key="menuItemResend" value="Resend"/>
 		<lookup key="menuItemCopyAddress" value="&amp;Copy email address"/>
@@ -276,6 +278,7 @@
 		<lookup key="enumSent" value="Sent"/>
 		<lookup key="enumPending" value="Outbox"/>
 		<lookup key="enumEnded" value="Ended"/>
+		<lookup key="enumPaused" value="Paused"/>
 		<lookup key="enumMinutes" value="minutes"/>
 		<!-- END: Enumerations -->
 		<!-- BEGIN: Misc -->
@@ -536,6 +539,8 @@
 		<lookup key="menuItemRemove" value="Supprimer"/>
 		<lookup key="menuItemAdd" value="Créer"/>
 		<lookup key="menuItemMarkEnded" value="Marquer comme terminé"/>
+		<lookup key="menuItemMarkPaused" value="Marquer comme en pause"/>
+		<lookup key="menuItemResume" value="Reprendre"/>
 		<lookup key="menuItemMarkSent" value="Marquer comme envoyé"/>
 		<lookup key="menuItemResend" value="Renvoyer"/>
 		<lookup key="menuItemCopyAddress" value="&amp;Copier l&apos;adresse e-mail"/>
@@ -551,6 +556,7 @@
 		<lookup key="enumSent" value="Envoyé"/>
 		<lookup key="enumPending" value="Boîte d'envoi"/>
 		<lookup key="enumEnded" value="Terminé"/>
+		<lookup key="enumPaused" value="En pause"/>
 		<lookup key="enumMinutes" value="minutes"/>
 		<!-- END: Enumerations -->
 		<!-- BEGIN: Misc -->
@@ -832,6 +838,8 @@
 		<lookup key="menuItemRemove" value="Entfernen"/>
 		<lookup key="menuItemAdd" value="Neu hinzufügen"/>
 		<lookup key="menuItemMarkEnded" value="Als beendet markieren"/>
+		<lookup key="menuItemMarkPaused" value="Als pausiert markieren"/>
+		<lookup key="menuItemResume" value="Fortsetzen"/>
 		<lookup key="menuItemMarkSent" value="Als gesendet markieren"/>
 		<lookup key="menuItemResend" value="Erneut senden"/>
 		<lookup key="menuItemCopyAddress" value="E-Mail-Adresse &amp;kopieren"/>
@@ -848,6 +856,7 @@
 		<lookup key="enumSent" value="Gesendet"/>
 		<lookup key="enumPending" value="Anstehend"/>
 		<lookup key="enumEnded" value="Beendet"/>
+		<lookup key="enumPaused" value="Pausiert"/>
 		<lookup key="enumMinutes" value="minuten"/>
 		<!-- END: Enumerations -->
 		<!-- BEGIN: Misc -->
@@ -1127,6 +1136,8 @@
 		<lookup key="menuItemRemove" value="Borrar"/>
 		<lookup key="menuItemAdd" value="Nueva cuenta"/>
 		<lookup key="menuItemMarkEnded" value="Marcar como terminado"/>
+		<lookup key="menuItemMarkPaused" value="Marcar como en pausa"/>
+		<lookup key="menuItemResume" value="Reanudar"/>
 		<lookup key="menuItemMarkSent" value="Marcar como enviado"/>
 		<lookup key="menuItemResend" value="Reenviar"/>
 		<lookup key="menuItemCopyAddress" value="&amp;Copiar dirección de correo"/>
@@ -1143,6 +1154,7 @@
 		<lookup key="enumSent" value="Enviado"/>
 		<lookup key="enumPending" value="Espera"/>
 		<lookup key="enumEnded" value="Terminado"/>
+		<lookup key="enumPaused" value="En pausa"/>
 		<lookup key="enumMinutes" value="minutos"/>
 		<!-- END: Enumerations -->
 		<!-- BEGIN: Misc -->
@@ -1423,6 +1435,8 @@
 		<lookup key="menuItemRemove" value="Verwijder"/>
 		<lookup key="menuItemAdd" value="Nieuw toevoegen"/>
 		<lookup key="menuItemMarkEnded" value="Markeer als geeindigd"/>
+		<lookup key="menuItemMarkPaused" value="Markeer als gepauzeerd"/>
+		<lookup key="menuItemResume" value="Hervatten"/>
 		<lookup key="menuItemMarkSent" value="Markeer als verzonden"/>
 		<lookup key="menuItemResend" value="Verzend opnieuw"/>
 		<lookup key="menuItemCopyAddress" value="E-mailadres &amp;kopiëren"/>
@@ -1442,6 +1456,7 @@
 		<lookup key="enumSent" value="Verzonden"/>
 		<lookup key="enumPending" value="Wachten"/>
 		<lookup key="enumEnded" value="Geeindigd"/>
+		<lookup key="enumPaused" value="Gepauzeerd"/>
 		<lookup key="enumMinutes" value="minuten"/>
 		<!-- END: Enumerations -->
 		<!-- BEGIN: Misc -->
@@ -1713,6 +1728,8 @@
 		<lookup key="menuItemRemove" value="Fjern"/>
 		<lookup key="menuItemAdd" value="Tilføj"/>
 		<lookup key="menuItemMarkEnded" value="Marker som Afsluttet"/>
+		<lookup key="menuItemMarkPaused" value="Marker som sat på pause"/>
+		<lookup key="menuItemResume" value="Genoptag"/>
 		<lookup key="menuItemMarkSent" value="Marker som Sendt"/>
 		<lookup key="menuItemResend" value="Gensend"/>
 		<lookup key="menuItemCopyAddress" value="&amp;Kopiér e-mailadresse"/>
@@ -1728,6 +1745,7 @@
 		<lookup key="enumSent" value="Sendt"/>
 		<lookup key="enumPending" value="Udbakke"/>
 		<lookup key="enumEnded" value="Afsluttet"/>
+		<lookup key="enumPaused" value="Sat på pause"/>
 		<lookup key="enumMinutes" value="minutter"/>
 		<!-- END: Enumerations -->
 		<!-- BEGIN: Misc -->
@@ -2016,6 +2034,8 @@
 		<lookup key="menuItemRemove" value="&amp;Ta bort"/>
 		<lookup key="menuItemAdd" value="Lägg till &amp;Nytt"/>
 		<lookup key="menuItemMarkEnded" value="Markera som Avslutad"/>
+		<lookup key="menuItemMarkPaused" value="Markera som pausad"/>
+		<lookup key="menuItemResume" value="Återuppta"/>
 		<lookup key="menuItemMarkSent" value="Markera som Skickad"/>
 		<lookup key="menuItemResend" value="Skicka om"/>
 		<lookup key="menuItemCopyAddress" value="&amp;Kopiera e-postadress"/>
@@ -2037,6 +2057,7 @@
 		<lookup key="enumSent" value="Skickat"/>
 		<lookup key="enumPending" value="Utkorgen"/>
 		<lookup key="enumEnded" value="Avslutat"/>
+		<lookup key="enumPaused" value="Pausad"/>
 		<lookup key="enumMinutes" value="minuter"/>
 		<!-- END: Enumerations -->
 		<!-- BEGIN: Misc -->
@@ -2312,6 +2333,8 @@
 		<lookup key="menuItemRemove" value="Usuń"/>
 		<lookup key="menuItemAdd" value="Dodaj Nowe"/>
 		<lookup key="menuItemMarkEnded" value="Zaznacz jako Zakończony"/>
+		<lookup key="menuItemMarkPaused" value="Zaznacz jako Wstrzymany"/>
+		<lookup key="menuItemResume" value="Wznów"/>
 		<lookup key="menuItemMarkSent" value="Zaznacz jako Wysłany"/>
 		<lookup key="menuItemResend" value="Wyślij ponownie"/>
 		<lookup key="menuItemCopyAddress" value="&amp;Kopiuj adres e-mail"/>
@@ -2327,6 +2350,7 @@
 		<lookup key="enumSent" value="Wysłany"/>
 		<lookup key="enumPending" value="Czeka"/>
 		<lookup key="enumEnded" value="Zakończony"/>
+		<lookup key="enumPaused" value="Wstrzymany"/>
 		<lookup key="enumMinutes" value="minut(y)"/>
 		<!-- END: Enumerations -->
 		<!-- BEGIN: Misc -->
@@ -2608,6 +2632,8 @@
 		<lookup key="menuItemRemove" value="&amp;Poistu"/>
 		<lookup key="menuItemAdd" value="&amp;Lisää Uusi"/>
 		<lookup key="menuItemMarkEnded" value="Merkitse lopetetuksi"/>
+		<lookup key="menuItemMarkPaused" value="Merkitse tauolle"/>
+		<lookup key="menuItemResume" value="Jatka"/>
 		<lookup key="menuItemMarkSent" value="Merkitse lähetetyksi"/>
 		<lookup key="menuItemResend" value="Lähetä"/>
 		<lookup key="menuItemCopyAddress" value="&amp;Kopioi sähköpostiosoite"/>
@@ -2625,6 +2651,7 @@
 		<lookup key="enumSent" value="Lähetetty"/>
 		<lookup key="enumPending" value="Lähtevät"/>
 		<lookup key="enumEnded" value="Lopetettu"/>
+		<lookup key="enumPaused" value="Tauolla"/>
 		<lookup key="enumMinutes" value="minuutti"/>
 		<!-- END: Enumerations -->
 		<!-- BEGIN: Misc -->
@@ -2904,6 +2931,8 @@
 		<lookup key="menuItemRemove" value="Ştergere"/>
 		<lookup key="menuItemAdd" value="Adăugare"/>
 		<lookup key="menuItemMarkEnded" value="Marchează ca Terminat"/>
+		<lookup key="menuItemMarkPaused" value="Marchează ca în pauză"/>
+		<lookup key="menuItemResume" value="Reia"/>
 		<lookup key="menuItemMarkSent" value="Marchează ca Trimis"/>
 		<lookup key="menuItemResend" value="Retrimiteţi"/>
 		<lookup key="menuItemCopyAddress" value="&amp;Copiază adresa de e-mail"/>
@@ -2918,6 +2947,7 @@
 		<lookup key="enumSent" value="Trimis"/>
 		<lookup key="enumPending" value="Aşteptare"/>
 		<lookup key="enumEnded" value="Terminat"/>
+		<lookup key="enumPaused" value="În pauză"/>
 		<lookup key="enumMinutes" value="minute"/>
 		<!-- END: Enumerations -->
 		<!-- BEGIN: Misc -->
@@ -3200,6 +3230,8 @@
 		<lookup key="menuItemRemove" value="Удалить"/>
 		<lookup key="menuItemAdd" value="Создать учётную запись"/>
 		<lookup key="menuItemMarkEnded" value="Пометить как завершённый"/>
+		<lookup key="menuItemMarkPaused" value="Пометить как приостановленную"/>
+		<lookup key="menuItemResume" value="Возобновить"/>
 		<lookup key="menuItemMarkSent" value="Пометить как отправленный"/>
 		<lookup key="menuItemResend" value="Отправить заново"/>
 		<lookup key="menuItemCopyAddress" value="&amp;Копировать адрес эл. почты"/>
@@ -3215,6 +3247,7 @@
 		<lookup key="enumSent" value="Получен"/>
 		<lookup key="enumPending" value="Отправка"/>
 		<lookup key="enumEnded" value="Игра завершена"/>
+		<lookup key="enumPaused" value="Приостановлена"/>
 		<lookup key="enumMinutes" value="мин"/>
 		<!-- END: Enumerations -->
 		<!-- BEGIN: Misc -->

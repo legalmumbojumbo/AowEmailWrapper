@@ -631,6 +631,33 @@ namespace AowEmailWrapper.Games
         }
 
         /// <summary>
+        /// Puts back the files ArchiveEndedGame moved into the Ended sub folders, for a game marked as ended by
+        /// mistake. A file already back in its folder is kept, and its archived copy left where it is.
+        /// </summary>
+        public void RestoreEndedGame(AowGameType theGameType, string fileName, string endedFolderName)
+        {
+            if (theGameType == AowGameType.Unknown || string.IsNullOrEmpty(fileName))
+            {
+                return;
+            }
+
+            foreach (AowGame theGame in GetInstalls(theGameType))
+            {
+                foreach (DirectoryInfo folder in theGame.TurnFolders)
+                {
+                    foreach (FileInfo file in GetAllGameFiles(fileName, new DirectoryInfo(Path.Combine(folder.FullName, endedFolderName))))
+                    {
+                        string destination = Path.Combine(folder.FullName, file.Name);
+                        if (!File.Exists(destination))
+                        {
+                            MoveFile(file, destination);
+                        }
+                    }
+                }
+            }
+        }
+
+        /// <summary>
         /// Moves a game's turn files from whichever copies hold them into the target copy, keeping
         /// EmailIn, EmailOut and Save apart. Used when a first turn landed in the wrong copy.
         /// </summary>

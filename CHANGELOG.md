@@ -3,6 +3,14 @@
 Each versioned release is described here. The section for a version is also the text of its GitHub
 release; CI publishes it when a `v<version>` tag is pushed (see "Releasing a version" in the README).
 
+## Unreleased
+
+- A game can be paused: *Mark as Paused* on the Activity Log puts aside a turn you hold, for instance while
+  another player replays theirs. A paused game shows no envelope on the tray, but its file stays in EmailIn
+  and a double-click still opens it; other players asking *Who has the turn?* are told you have it. *Resume*
+  makes it Received again, and a new turn of the game ends the pause. Pausing a game marked as ended by mistake
+  brings its files back out of the Ended folders.
+
 ## 2.1.7
 
 Thanks to BING-XI, who contributed everything in this release.
