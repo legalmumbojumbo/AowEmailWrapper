@@ -68,14 +68,31 @@ namespace AowEmailWrapper.Tests
         }
 
         [Fact]
-        public void A_paused_game_survives_the_activity_log()
+        public void A_paused_game_survives_the_activity_log_and_a_wrapper_from_before_pausing_still_reads_it()
         {
             XmlSerializer serializer = new XmlSerializer(typeof(Activity));
             StringWriter writer = new StringWriter();
             serializer.Serialize(writer, Turn(ActivityState.Paused));
+            string xml = writer.ToString();
 
-            Assert.Contains("status=\"Paused\"", writer.ToString());
-            Assert.Equal(ActivityState.Paused, ((Activity)serializer.Deserialize(new StringReader(writer.ToString()))).Status);
+            //A status an older Wrapper cannot parse would cost it the whole activity log, not just this game,
+            //and the next save would write the empty list over it. It reads a paused game as the received one
+            //it is, and the extra attribute is ignored
+            Assert.Contains("status=\"Received\"", xml);
+            Assert.Contains("paused=\"true\"", xml);
+            Assert.DoesNotContain("Paused\"", xml.Replace("paused=\"true\"", string.Empty));
+            Assert.Equal(ActivityState.Paused, ((Activity)serializer.Deserialize(new StringReader(xml))).Status);
+
+            //Whichever order the attributes come in
+            Activity other = (Activity)serializer.Deserialize(new StringReader(
+                "<activity paused=\"true\" status=\"Received\" game_type=\"Aow1\" file_name=\"a.asg\" />"));
+            Assert.Equal(ActivityState.Paused, other.Status);
+
+            //A game that is not paused says nothing about it
+            StringWriter plain = new StringWriter();
+            serializer.Serialize(plain, Turn(ActivityState.Received));
+            Assert.DoesNotContain("paused", plain.ToString());
+            Assert.Equal(ActivityState.Received, ((Activity)serializer.Deserialize(new StringReader(plain.ToString()))).Status);
         }
 
         [Fact]

@@ -19,7 +19,10 @@ namespace AowEmailWrapper.ConfigFramework
         Ended,
         [XmlEnum(Name = "Pending")]
         Pending,
-        /// <summary>A turn the player holds but has put aside: no envelope, still playable, its file stays in EmailIn.</summary>
+        /// <summary>
+        /// A turn the player holds but has put aside: no envelope, still playable, its file stays in EmailIn.
+        /// Never written to the activity log as a status of its own (see <see cref="Activity.StoredStatus"/>).
+        /// </summary>
         [XmlEnum(Name = "Paused")]
         Paused
     }
@@ -30,6 +33,7 @@ namespace AowEmailWrapper.ConfigFramework
         private AowGameType _type;
         private string _fileName;
         private ActivityState _status;
+        private bool _paused;
         private string _dateTicks;
         private string _mapTitle = string.Empty;
         private string _turnNo = string.Empty;
@@ -94,11 +98,43 @@ namespace AowEmailWrapper.ConfigFramework
             }
         }
 
-        [XmlAttribute("status")]
+        /// <summary>
+        /// The state of the game, Paused included. A paused game is a received one the player has put aside, so
+        /// that is how it goes into the activity log: the file keeps status="Received" with paused="true" beside
+        /// it. A Wrapper from before pausing cannot read a status it does not know and drops the whole log with
+        /// it, leaving the player with an empty Activity Log that the next save writes over; reading it as a
+        /// received game costs that player nothing but the envelope they paused away.
+        /// </summary>
+        [XmlIgnore]
         public ActivityState Status
+        {
+            get { return _paused ? ActivityState.Paused : _status; }
+            set
+            {
+                _paused = value == ActivityState.Paused;
+                _status = _paused ? ActivityState.Received : value;
+            }
+        }
+
+        /// <summary>The status as the activity log holds it; Received for a paused game.</summary>
+        [XmlAttribute("status")]
+        public ActivityState StoredStatus
         {
             get { return _status; }
             set { _status = value; }
+        }
+
+        /// <summary>Set beside a Received status for a game the player has put aside.</summary>
+        [XmlAttribute("paused")]
+        public bool Paused
+        {
+            get { return _paused; }
+            set { _paused = value; }
+        }
+
+        public bool ShouldSerializePaused()
+        {
+            return _paused;
         }
 
         /// <summary>The account this game arrived on (or was last sent from); replies go out the same way.</summary>
@@ -189,7 +225,8 @@ namespace AowEmailWrapper.ConfigFramework
 
         public Activity(ActivityState status, AowGameType type, string fileName, string mapTitle, string turnNo)
         {
-            _status = status;
+            //Through the property, so Paused is split into a received game that is paused
+            Status = status;
             _type = type;
             _fileName = fileName;
             _mapTitle = mapTitle;
