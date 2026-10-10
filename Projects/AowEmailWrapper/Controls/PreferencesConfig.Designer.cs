@@ -149,7 +149,7 @@
             //
             this.fbTellPlayers.Checked = true;
             this.fbTellPlayers.Dock = System.Windows.Forms.DockStyle.Top;
-            this.fbTellPlayers.LabelName = "Tell the other players' Wrappers on send:";
+            this.fbTellPlayers.LabelName = "Share where turns go with other Wrappers:";
             this.fbTellPlayers.MinimumSize = new System.Drawing.Size(0, 24);
             this.fbTellPlayers.Name = "fbTellPlayers";
             this.fbTellPlayers.Size = new System.Drawing.Size(419, 24);

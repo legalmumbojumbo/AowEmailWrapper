@@ -361,6 +361,47 @@ namespace AowEmailWrapper.SmokeTests
             }
         }
 
+
+        [Fact]
+        public void A_notice_goes_only_to_a_player_whose_wrapper_asked_for_one()
+        {
+            using (FakePop3Server mail = new FakePop3Server())
+            using (FakeSmtpServer outgoing = new FakeSmtpServer())
+            using (AppUnderTest app = new AppUnderTest())
+            {
+                app.AddPop3Account(mail.Port);
+                app.Config.AccountsList.Accounts[0].SmtpConfig.Port = outgoing.Port;
+
+                //Carol's Wrapper asked to be told; Dave's never has (no Wrapper, an older one, or the setting off)
+                ActivityList log = new ActivityList();
+                log.AddWrapperPlayer("carol@example.org");
+                string logFolder = Path.Combine(app.AppData, "AowEmailWrapper", "ActivityLog");
+                Directory.CreateDirectory(logFolder);
+                FileHelper.SaveXmlFile(Path.Combine(logFolder, "activity.xml"), log);
+                app.Start();
+
+                MimeMessage turn = TurnEmail("Notice test.asg", "player@example.com", "opponent@example.com");
+                using (SmtpClient game = new SmtpClient())
+                {
+                    game.Connect("127.0.0.1", app.Config.PreferencesConfig.GameWrapperDataPort, SecureSocketOptions.None);
+                    game.Send(turn);
+                    game.Disconnect(true);
+                }
+
+                AppUnderTest.Until(() => outgoing.Messages.Count > 0, TimeSpan.FromSeconds(30), () => "the turn was not sent on:" + Environment.NewLine + outgoing.Log + Environment.NewLine + app.ReadLog());
+                Thread.Sleep(3000);
+
+                List<MimeMessage> sent = outgoing.Messages;
+                MimeMessage theTurn = sent.First(m => MailHelper.GetAttachments(m).Any());
+                Assert.True(AowEmailWrapper.Classes.TurnQuery.WantsNotices(theTurn), "the turn asks the other Wrappers to tell this one");
+
+                List<string> noticedTo = sent.Where(AowEmailWrapper.Classes.TurnQuery.IsNotice)
+                    .Select(m => m.To.Mailboxes.First().Address).ToList();
+                //The save here lists no players, so nobody is told; the point is that Dave never is
+                Assert.DoesNotContain("dave@example.net", noticedTo);
+            }
+        }
+
         private static MimeMessage TurnEmail(string fileName, string from = "opponent@example.com", string to = "player@example.com")
         {
             MimeMessage message = new MimeMessage();

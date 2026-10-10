@@ -43,7 +43,7 @@
 		<lookup key="themeAgeOfWonders" value="Age of Wonders"/>
 		<lookup key="themeAgeOfWondersWhite" value="Age of Wonders (white text)"/>
 		<lookup key="fbCopyToEmailOut" value="Copy to EmailOut after sending:"/>
-		<lookup key="fbTellPlayers" value="Tell the other players&apos; Wrappers on send:"/>
+		<lookup key="fbTellPlayers" value="Share where turns go with other Wrappers:"/>
 		<lookup key="fbGameWrapperDataPort" value="Game to Wrapper data port:"/>
 		<lookup key="fbPlayerName" value="Name sent with your turns:"/>
 		<lookup key="lblPlayerNameHint" value="Optional. The other players see this name instead of your email address."/>
@@ -337,7 +337,7 @@
 		<lookup key="themeAgeOfWonders" value="Age of Wonders"/>
 		<lookup key="themeAgeOfWondersWhite" value="Age of Wonders (texte blanc)"/>
 		<lookup key="fbCopyToEmailOut" value="Sauvegarder vers EmailOut après envoi:"/>
-		<lookup key="fbTellPlayers" value="Prévenir les Wrappers des autres joueurs à l&apos;envoi:"/>
+		<lookup key="fbTellPlayers" value="Partager le parcours des tours avec les autres Wrappers :"/>
 		<lookup key="fbGameWrapperDataPort" value="Jeu de Wrapper port de données:"/>
 		<lookup key="fbPlayerName" value="Nom envoyé avec vos tours :"/>
 		<lookup key="lblPlayerNameHint" value="Facultatif. Les autres joueurs voient ce nom au lieu de votre adresse e-mail."/>
@@ -633,7 +633,7 @@
 		<lookup key="themeAgeOfWonders" value="Age of Wonders"/>
 		<lookup key="themeAgeOfWondersWhite" value="Age of Wonders (weiße Schrift)"/>
 		<lookup key="fbCopyToEmailOut" value="Beim Senden auch zu EmailOut kopieren:"/>
-		<lookup key="fbTellPlayers" value="Wrapper der Mitspieler beim Senden benachrichtigen:"/>
+		<lookup key="fbTellPlayers" value="Weg der Züge mit anderen Wrappern teilen:"/>
 		<lookup key="fbGameWrapperDataPort" value="Spiel um Wrapper datenport:"/>
 		<lookup key="fbPlayerName" value="Name in Ihren Zügen:"/>
 		<lookup key="lblPlayerNameHint" value="Optional. Die anderen Spieler sehen diesen Namen statt Ihrer E-Mail-Adresse."/>
@@ -929,7 +929,7 @@
 		<lookup key="themeAgeOfWonders" value="Age of Wonders"/>
 		<lookup key="themeAgeOfWondersWhite" value="Age of Wonders (texto blanco)"/>
 		<lookup key="fbCopyToEmailOut" value="Copiar a EmailOut luego de enviado:"/>
-		<lookup key="fbTellPlayers" value="Avisar a los Wrappers de los demás jugadores al enviar:"/>
+		<lookup key="fbTellPlayers" value="Compartir adónde van los turnos con otros Wrappers:"/>
 		<lookup key="fbGameWrapperDataPort" value="Puerto de datos del Juego al Wrapper:"/>
 		<lookup key="fbPlayerName" value="Nombre enviado con sus turnos:"/>
 		<lookup key="lblPlayerNameHint" value="Opcional. Los demás jugadores ven este nombre en lugar de su dirección de correo."/>
@@ -1225,7 +1225,7 @@
 		<lookup key="themeAgeOfWonders" value="Age of Wonders"/>
 		<lookup key="themeAgeOfWondersWhite" value="Age of Wonders (witte tekst)"/>
 		<lookup key="fbCopyToEmailOut" value="Copieer naar Emailout folder na verzenden:"/>
-		<lookup key="fbTellPlayers" value="Wrappers van de andere spelers inlichten bij verzenden:"/>
+		<lookup key="fbTellPlayers" value="Delen waar beurten heen gaan met andere Wrappers:"/>
 		<lookup key="fbGameWrapperDataPort" value="Spel om Wrapper data poort:"/>
 		<lookup key="fbPlayerName" value="Naam bij uw beurten:"/>
 		<lookup key="lblPlayerNameHint" value="Optioneel. De andere spelers zien deze naam in plaats van uw e-mailadres."/>
@@ -1515,7 +1515,7 @@
 		<lookup key="themeAgeOfWonders" value="Age of Wonders"/>
 		<lookup key="themeAgeOfWondersWhite" value="Age of Wonders (hvid tekst)"/>
 		<lookup key="fbCopyToEmailOut" value="Kopier til EmailOut efter afsendelse:"/>
-		<lookup key="fbTellPlayers" value="Giv de andre spilleres Wrappers besked ved afsendelse:"/>
+		<lookup key="fbTellPlayers" value="Del hvor turene går hen med andre Wrappers:"/>
 		<lookup key="fbGameWrapperDataPort" value="Spil til Wrapper dataport:"/>
 		<lookup key="fbPlayerName" value="Navn sendt med dine ture:"/>
 		<lookup key="lblPlayerNameHint" value="Valgfrit. De andre spillere ser dette navn i stedet for din e-mailadresse."/>
@@ -1817,7 +1817,7 @@
 		<lookup key="themeAgeOfWonders" value="Age of Wonders"/>
 		<lookup key="themeAgeOfWondersWhite" value="Age of Wonders (vit text)"/>
 		<lookup key="fbCopyToEmailOut" value="Kopia till EmailOut efter skickat:"/>
-		<lookup key="fbTellPlayers" value="Meddela de andra spelarnas Wrappers vid sändning:"/>
+		<lookup key="fbTellPlayers" value="Dela vart dragen går med andra Wrappers:"/>
 		<lookup key="fbGameWrapperDataPort" value="Spel till Wrapperns data port:"/>
 		<lookup key="fbPlayerName" value="Namn som skickas med dina drag:"/>
 		<lookup key="lblPlayerNameHint" value="Valfritt. De andra spelarna ser det här namnet i stället för din e-postadress."/>
@@ -2113,7 +2113,7 @@
 		<lookup key="themeAgeOfWonders" value="Age of Wonders"/>
 		<lookup key="themeAgeOfWondersWhite" value="Age of Wonders (biały tekst)"/>
 		<lookup key="fbCopyToEmailOut" value="Kopiuj do EmailOut po wysłaniu:"/>
-		<lookup key="fbTellPlayers" value="Powiadamiaj Wrappery innych graczy przy wysyłaniu:"/>
+		<lookup key="fbTellPlayers" value="Udostępniaj innym Wrapperom, dokąd trafiają tury:"/>
 		<lookup key="fbGameWrapperDataPort" value="Port danych przesyłanych z gry do Wrappera:"/>
 		<lookup key="fbPlayerName" value="Nazwa wysyłana z twoimi turami:"/>
 		<lookup key="lblPlayerNameHint" value="Opcjonalnie. Pozostali gracze widzą tę nazwę zamiast twojego adresu e-mail."/>
@@ -2409,7 +2409,7 @@
 		<lookup key="themeAgeOfWonders" value="Age of Wonders"/>
 		<lookup key="themeAgeOfWondersWhite" value="Age of Wonders (valkoinen teksti)"/>
 		<lookup key="fbCopyToEmailOut" value="Kopioi Lähetetyt-kansioon viestin lähetyksen jälkeen:"/>
-		<lookup key="fbTellPlayers" value="Ilmoita muiden pelaajien Wrappereille lähetettäessä:"/>
+		<lookup key="fbTellPlayers" value="Jaa vuorojen kulku muille Wrappereille:"/>
 		<lookup key="fbGameWrapperDataPort" value="Pelin Wrapper Data portti:"/>
 		<lookup key="fbPlayerName" value="Nimi vuorojesi mukana:"/>
 		<lookup key="lblPlayerNameHint" value="Valinnainen. Muut pelaajat näkevät tämän nimen sähköpostiosoitteesi sijaan."/>
@@ -2705,7 +2705,7 @@
 		<lookup key="themeAgeOfWonders" value="Age of Wonders"/>
 		<lookup key="themeAgeOfWondersWhite" value="Age of Wonders (text alb)"/>
 		<lookup key="fbCopyToEmailOut" value="Păstrează o copie în EmailOut după trimitere:"/>
-		<lookup key="fbTellPlayers" value="Anunță Wrapperele celorlalți jucători la trimitere:"/>
+		<lookup key="fbTellPlayers" value="Partajează unde ajung turele cu alte Wrappere:"/>
 		<lookup key="fbGameWrapperDataPort" value="Port comunicare dintre joc şi Wrapper:"/>
 		<lookup key="fbPlayerName" value="Nume trimis cu turele dvs.:"/>
 		<lookup key="lblPlayerNameHint" value="Opțional. Ceilalți jucători văd acest nume în locul adresei dvs. de e-mail."/>
@@ -3001,7 +3001,7 @@
 		<lookup key="themeAgeOfWonders" value="Age of Wonders"/>
 		<lookup key="themeAgeOfWondersWhite" value="Age of Wonders (белый текст)"/>
 		<lookup key="fbCopyToEmailOut" value="Копировать сейв в EmailOut после отправки:"/>
-		<lookup key="fbTellPlayers" value="Сообщать Wrapper других игроков при отправке:"/>
+		<lookup key="fbTellPlayers" value="Делиться маршрутом ходов с другими Wrapper:"/>
 		<lookup key="fbGameWrapperDataPort" value="Порт сообщения игры и Wrapper'а:"/>
 		<lookup key="fbPlayerName" value="Имя, отправляемое с ходами:"/>
 		<lookup key="lblPlayerNameHint" value="Необязательно. Другие игроки видят это имя вместо вашего адреса эл. почты."/>

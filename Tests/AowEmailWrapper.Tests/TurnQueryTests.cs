@@ -470,6 +470,58 @@ namespace AowEmailWrapper.Tests
             Assert.Empty(old.WrapperPlayers);
         }
 
+
+        [Fact]
+        public void Only_a_wrapper_that_asked_within_the_window_is_told()
+        {
+            ActivityList log = new ActivityList();
+            DateTimeOffset now = DateTimeOffset.Now;
+
+            //Asked long ago: their Wrapper has stopped saying so, so nothing more is sent to them
+            log.AddWrapperPlayer(Dave, now.AddDays(-(ActivityList.WrapperPlayerDays + 1)));
+            Assert.False(log.IsWrapperPlayer(Dave, now));
+
+            //Still asking
+            log.AddWrapperPlayer(Carol, now.AddDays(-1));
+            Assert.True(log.IsWrapperPlayer(Carol, now));
+
+            //Their next message brings the date forward again
+            Assert.True(log.AddWrapperPlayer(Dave, now));
+            Assert.True(log.IsWrapperPlayer(Dave, now));
+
+            //The same day twice over does not rewrite the log
+            Assert.False(log.AddWrapperPlayer(Dave, now.AddHours(1)));
+            Assert.False(log.IsWrapperPlayer("nobody@example.com", now));
+        }
+
+        [Fact]
+        public void A_wrapper_that_has_not_asked_is_never_told_and_the_request_travels_on_every_message()
+        {
+            //An old Wrapper, one with the setting off and a player with none all send nothing, so they never ask
+            MimeMessage plain = new MimeMessage();
+            Assert.False(TurnQuery.WantsNotices(plain));
+
+            MimeMessage asking = new MimeMessage();
+            TurnQuery.SetWantsNotices(asking, true);
+            Assert.True(TurnQuery.WantsNotices(asking));
+            Assert.Equal("yes", asking.Headers[TurnQuery.WantsNoticesHeader]);
+
+            //Switching the setting off takes the request off again, so the others stop telling this Wrapper
+            TurnQuery.SetWantsNotices(asking, false);
+            Assert.False(TurnQuery.WantsNotices(asking));
+            Assert.Null(asking.Headers[TurnQuery.WantsNoticesHeader]);
+
+            //A player who never asked is not told, however many turns they are in
+            Activity activity = new Activity(ActivityState.Sent, AowGameType.Aow1, Game, "Highpass", "3")
+            {
+                Recipients = Bob,
+                Players = string.Join(";", Me, Bob, Carol, Dave),
+            };
+            ActivityList log = new ActivityList();
+            log.AddWrapperPlayer(Carol);
+            Assert.Equal(new[] { Carol }, TurnQuery.PlayersToTell(activity, new[] { Me }, log.IsWrapperPlayer));
+        }
+
         [Fact]
         public void Telling_the_players_is_on_also_in_settings_saved_before_it_existed()
         {

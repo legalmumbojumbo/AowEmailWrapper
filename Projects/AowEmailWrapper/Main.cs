@@ -1915,10 +1915,11 @@ namespace AowEmailWrapper
 
             try
             {
+                bool wantsNotices = TurnQuery.WantsNotices(message);
                 TurnQueryRequest query = TurnQuery.ParseQuery(message);
                 if (query != null)
                 {
-                    if (_activityLog.AddWrapperPlayer(query.From))
+                    if (wantsNotices && _activityLog.AddWrapperPlayer(query.From))
                     {
                         DataManagerHelper.SaveActivityLog(_activityLog);
                     }
@@ -1929,8 +1930,11 @@ namespace AowEmailWrapper
                 TurnState state = TurnQuery.ParseReply(message);
                 if (state != null)
                 {
-                    //Saved with the answer
-                    _activityLog.AddWrapperPlayer(state.Responder);
+                    if (wantsNotices)
+                    {
+                        //Saved with the answer
+                        _activityLog.AddWrapperPlayer(state.Responder);
+                    }
                     RecordReply(state);
                 }
             }
@@ -2126,7 +2130,20 @@ namespace AowEmailWrapper
             return string.IsNullOrEmpty(title) ? WrapperWhereIsTitleFallback : title;
         }
 
-        private static void SendWrapperMessage(AccountConfigValues account, MimeMessage message)
+        private void SendWrapperMessage(AccountConfigValues account, MimeMessage message)
+        {
+            //Every Wrapper message says whether this Wrapper wants to be told where turns go
+            TurnQuery.SetWantsNotices(message, WantsNotices);
+            SendWrapperMessage(account, message, true);
+        }
+
+        /// <summary>True while the player has the notices setting on: this Wrapper both tells and asks to be told.</summary>
+        private bool WantsNotices
+        {
+            get { return _wrapperConfig != null && _wrapperConfig.PreferencesConfig != null && _wrapperConfig.PreferencesConfig.TellPlayers; }
+        }
+
+        private static void SendWrapperMessage(AccountConfigValues account, MimeMessage message, bool prepared)
         {
             Task.Run(() =>
             {
@@ -2322,6 +2339,8 @@ namespace AowEmailWrapper
                 {
                     TagOutgoingInstall(theEmail);
                     TagSharedNames(theEmail);
+                    //A turn carries the request too, so a player who only ever sends turns is still asked
+                    TurnQuery.SetWantsNotices(theEmail, WantsNotices);
 
                     SmtpSender sender = RouteOutgoing(theEmail);
                     if (sender == null)
@@ -2403,6 +2422,10 @@ namespace AowEmailWrapper
                         //Whoever the player sends turns to is someone they are playing with
                         theActivity.Recipients = MailHelper.GetRecipientAddresses(theResponse.GameEmail);
                         _activityLog.AddContacts(new[] { theActivity.Recipients });
+                        //The player just sent it, so they already know where it is: the column says so at once,
+                        //without asking anyone. Answers and notices refine it when the turn moves on
+                        TurnSend own = TurnQuery.LikelyHolder(theActivity, OwnAddresses());
+                        theActivity.LikelyHolder = own != null ? own.To : null;
                         TellPlayers(account, theActivity);
                     }
                     //Shown and saved once the send is fully recorded: the copy the turn came from and its label are
@@ -2632,8 +2655,8 @@ namespace AowEmailWrapper
             _activityLog.Activities.Add(newActivity);
             _activityLog.AddContact(e.Sender);
             _activityLog.AddContacts(new[] { newActivity.Players });
-            //Only the Wrapper puts its mod label or the players' names on a turn
-            if (!string.IsNullOrEmpty(e.ModLabel) || (e.SharedNames != null && e.SharedNames.Count > 0))
+            //Their Wrapper asked to be told where turns go; nothing is sent to anyone who has not asked
+            if (e.WantsNotices)
             {
                 _activityLog.AddWrapperPlayer(e.Sender);
             }

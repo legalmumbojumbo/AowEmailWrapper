@@ -62,6 +62,40 @@ namespace AowEmailWrapper.Classes
         public const string StateHeader = "X-AowEmailWrapper-State";
         public const string StateDateHeader = "X-AowEmailWrapper-State-Date";
         public const string SentToHeader = "X-AowEmailWrapper-Sent-To";
+        /// <summary>
+        /// A Wrapper asking the other players' Wrappers to tell it where a turn went. It goes on every turn and
+        /// Wrapper message the player sends while the setting is on, and only an address that has asked recently
+        /// is told: a player without the Wrapper, on a Wrapper from before notices, or with the setting off never
+        /// asks, so nothing is ever sent to them.
+        /// </summary>
+        public const string WantsNoticesHeader = "X-AowEmailWrapper-Notices";
+        private const string WantsNoticesYes = "yes";
+
+        /// <summary>Says on an outgoing message that this Wrapper wants to be told, or takes the request off it.</summary>
+        public static void SetWantsNotices(MimeMessage message, bool wants)
+        {
+            if (message == null)
+            {
+                return;
+            }
+            message.Headers.RemoveAll(WantsNoticesHeader);
+            if (wants)
+            {
+                message.Headers.Add(WantsNoticesHeader, WantsNoticesYes);
+            }
+        }
+
+        /// <summary>True when the message says its sender's Wrapper wants to be told where turns go.</summary>
+        public static bool WantsNotices(MimeMessage message)
+        {
+            return message != null && WantsNotices(message.Headers);
+        }
+
+        public static bool WantsNotices(HeaderList headers)
+        {
+            return headers != null && string.Equals(Clean(headers[WantsNoticesHeader]), WantsNoticesYes, StringComparison.OrdinalIgnoreCase);
+        }
+
         /// <summary>Marks a reply nobody asked for: a Wrapper telling a game's other players it has sent the turn on.</summary>
         public const string NoticeHeader = "X-AowEmailWrapper-Notice";
         private const string NoticeSent = "sent";
