@@ -3,7 +3,9 @@
 Each versioned release is described here. The section for a version is also the text of its GitHub
 release; CI publishes it when a `v<version>` tag is pushed (see "Releasing a version" in the README).
 
-## Unreleased
+## 2.1.8
+
+Thanks to BING-XI for this release.
 
 - A game can be paused: *Mark as Paused* on the Activity Log puts aside a turn you hold, for instance while
   another player replays theirs. A paused game shows no envelope on the tray, but its file stays in EmailIn
@@ -12,6 +14,9 @@ release; CI publishes it when a `v<version>` tag is pushed (see "Releasing a ver
   brings its files back out of the Ended folders. A paused game is kept in the activity log as the received
   game it is, with the pause beside it, so going back to an older Wrapper costs nothing more than the envelope
   coming back.
+
+Run `AowEmailWrapper-2.1.8-setup.exe` on Windows 10 or later, or let an installed Wrapper fetch it through
+*Check for updates* on the Settings tab. Accounts and settings carry over.
 
 ## 2.1.7
 
