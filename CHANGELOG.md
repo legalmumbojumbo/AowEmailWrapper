@@ -3,7 +3,9 @@
 Each versioned release is described here. The section for a version is also the text of its GitHub
 release; CI publishes it when a `v<version>` tag is pushed (see "Releasing a version" in the README).
 
-## Unreleased
+## 2.1.7
+
+Thanks to BING-XI, who contributed everything in this release.
 
 - *Who has the turn?* no longer drops its *probably with* guess when that player's Wrapper answers about an
   earlier turn. Such an answer only means the turn has not reached their Wrapper yet, so it is most probably
@@ -27,6 +29,9 @@ release; CI publishes it when a `v<version>` tag is pushed (see "Releasing a ver
   tab switches both halves off.
 - The Aliases tab's list has a right-click menu: *Copy email address* copies the selected lines' addresses
   (Ctrl+C does too), next to *Edit...* and *Remove*.
+
+Run `AowEmailWrapper-2.1.7-setup.exe` on Windows 10 or later, or let an installed Wrapper fetch it through
+*Check for updates* on the Settings tab. Accounts and settings carry over.
 
 ## 2.1.6
 
