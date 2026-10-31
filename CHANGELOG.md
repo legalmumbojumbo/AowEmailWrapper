@@ -3,7 +3,9 @@
 Each versioned release is described here. The section for a version is also the text of its GitHub
 release; CI publishes it when a `v<version>` tag is pushed (see "Releasing a version" in the README).
 
-## Unreleased
+## 2.1.13
+
+Thanks to BING-XI for this release.
 
 - More turns lost to an update that closed the Wrapper in the middle of a mail check are recovered. 2.1.12 filed
   such a turn only when its game still had the copy of your last turn kept for *Resend*, but up to 2.1.11 a turn
@@ -18,6 +20,9 @@ release; CI publishes it when a `v<version>` tag is pushed (see "Releasing a ver
 - Emails from the Wrapper no longer carry your computer's name. The Wrapper's own mail server put a *Received* line
   naming it on every turn, and each email's Message-ID was made on it. Message-IDs are now made on the domain of
   your email address.
+
+Run `AowEmailWrapper-2.1.13-setup.exe` on Windows 10 or later, or let an installed Wrapper fetch it through
+*Check for updates* on the Settings tab. Accounts and settings carry over.
 
 ## 2.1.12
 
