@@ -5,7 +5,6 @@ using System.Linq;
 using System.Text;
 using AowEmailWrapper.ConfigFramework;
 using MimeKit;
-using MimeKit.Utils;
 
 namespace AowEmailWrapper.Classes
 {
@@ -62,6 +61,8 @@ namespace AowEmailWrapper.Classes
         public const string StateHeader = "X-AowEmailWrapper-State";
         public const string StateDateHeader = "X-AowEmailWrapper-State-Date";
         public const string SentToHeader = "X-AowEmailWrapper-Sent-To";
+        /// <summary>On a Resend: when the turn was first sent, so a player who has answered it since is not handed it again.</summary>
+        public const string ResendOfHeader = "X-AowEmailWrapper-Resend-Of";
         /// <summary>
         /// A Wrapper asking the other players' Wrappers to tell it where a turn went. It goes on every turn and
         /// Wrapper message the player sends while the setting is on, and only an address that has asked recently
@@ -161,7 +162,7 @@ namespace AowEmailWrapper.Classes
             message.From.Add(new MailboxAddress(string.Empty, from));
             message.To.Add(new MailboxAddress(string.Empty, to));
             message.Subject = string.Format(QuerySubjectTemplate, gameFileName);
-            message.MessageId = MimeUtils.GenerateMessageId();
+            message.MessageId = Helpers.MailHelper.NewMessageId(from);
             message.Headers.Add(KindHeader, KindQuery);
             message.Headers.Add(GameHeader, gameFileName);
             message.Headers.Add(IdHeader, queryId);
@@ -185,7 +186,7 @@ namespace AowEmailWrapper.Classes
             message.From.Add(new MailboxAddress(string.Empty, from));
             message.To.Add(new MailboxAddress(string.Empty, query.From));
             message.Subject = string.Format(ReplySubjectTemplate, query.Game);
-            message.MessageId = MimeUtils.GenerateMessageId();
+            message.MessageId = Helpers.MailHelper.NewMessageId(from);
             message.Headers.Add(KindHeader, KindReply);
             message.Headers.Add(GameHeader, query.Game);
             message.Headers.Add(IdHeader, query.QueryId ?? string.Empty);

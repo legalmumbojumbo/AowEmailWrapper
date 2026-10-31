@@ -76,6 +76,36 @@ namespace AowEmailWrapper.Helpers
             return File.Exists(filePath);
         }
 
+        /// <summary>
+        /// Makes a kept copy a new email before it goes out again: a new Message-ID, and dated now. With the Message-ID
+        /// of the first send, a mailbox that already has that email, as Gmail's do, drops the second one as the same
+        /// message, so the turn never reached a player whose first copy had gone astray.
+        /// </summary>
+        public static void Renew(MimeMessage theEmail)
+        {
+            //When the turn first went, kept through any number of resends: a new email reaches a player who has already
+            //played the turn too, and their Wrapper must be able to tell it is not a new one
+            if (ResentOf(theEmail) == null)
+            {
+                theEmail.Headers.Add(Classes.TurnQuery.ResendOfHeader, theEmail.Date.ToString("o", System.Globalization.CultureInfo.InvariantCulture));
+            }
+            theEmail.MessageId = MailHelper.NewMessageId(MailHelper.GetFromAddress(theEmail));
+            theEmail.Date = DateTimeOffset.Now;
+        }
+
+        /// <summary>For a resent turn, when it was first sent; null for a turn sent once.</summary>
+        public static DateTimeOffset? ResentOf(MimeMessage theEmail)
+        {
+            string value = theEmail != null ? theEmail.Headers[Classes.TurnQuery.ResendOfHeader] : null;
+            DateTimeOffset first;
+            if (!string.IsNullOrWhiteSpace(value) &&
+                DateTimeOffset.TryParse(value.Trim(), System.Globalization.CultureInfo.InvariantCulture, System.Globalization.DateTimeStyles.None, out first))
+            {
+                return first;
+            }
+            return null;
+        }
+
         /// <summary>The copy kept of the game's last sent turn, written as it went out; null when there is none.</summary>
         public static FileInfo GetCopy(string asgFileName)
         {

@@ -189,16 +189,40 @@ namespace AowEmailWrapper.Tests
         }
 
         [Fact]
-        public void A_game_without_a_copy_of_its_last_send_is_left_alone()
+        public void Without_a_copy_of_its_last_send_a_turn_stored_days_after_it_is_filed()
         {
+            //Up to 2.1.11 the turn's arrival deleted the copy before the activity log was saved, so a turn stored while
+            //the Wrapper was still downloading an update lost the copy along with its line
             DateTime now = DateTime.Now;
             FakeInbox inbox = FakeInbox.Create();
-            inbox.Add(2, TurnEmail(Opponent, TheirTurn), seen: true, now.AddDays(-1));
+            inbox.Add(1, TurnEmail(Opponent, Answered), seen: true, now.AddDays(-4));
+            inbox.Add(2, TurnEmail(Opponent, TheirTurn), seen: true, now.AddDays(-1).AddHours(-1));
             Stored(TheirTurn, now.AddDays(-1));
-            SentGame game = new SentGame { FileName = Game, Sent = now.AddDays(-2), Players = new List<string> { Opponent } };
+            SentGame game = new SentGame { FileName = Game, Sent = now.AddDays(-3), Players = new List<string> { Opponent } };
+
+            List<AowGameSavedEventArgs> recorded = new List<AowGameSavedEventArgs>();
+            int filed = Poller(e => { e.Recorded = true; recorded.Add(e); }).RecoverStrandedTurns(inbox.Folder, new[] { game }, CancellationToken.None);
+
+            Assert.Equal(1, filed);
+            Assert.Equal(Opponent, Assert.Single(recorded).Sender);
+        }
+
+        [Fact]
+        public void Without_a_copy_of_its_last_send_a_change_of_time_zone_cannot_make_the_answered_turn_look_new()
+        {
+            //The player answered half an hour after the turn came, then the computer moved 25 hours east, nearly the 26
+            //that separate the two furthest time zones: with no copy, the line's time is all there is
+            DateTime now = DateTime.Now;
+            DateTime arrived = now.AddDays(-2);
+            DateTime answered = arrived.AddMinutes(30);
+            FakeInbox inbox = FakeInbox.Create();
+            inbox.Add(1, TurnEmail(Opponent, Answered), seen: true, arrived);
+            Stored(Answered, arrived);
+            SentGame game = new SentGame { FileName = Game, Sent = answered.AddHours(-25), Players = new List<string> { Opponent } };
 
             int offered = 0;
             Assert.Equal(0, Poller(e => offered++).RecoverStrandedTurns(inbox.Folder, new[] { game }, CancellationToken.None));
+            Assert.Equal(0, offered);
             Assert.Equal(0, inbox.Downloads);
         }
 
@@ -363,6 +387,102 @@ namespace AowEmailWrapper.Tests
             Assert.Equal(new[] { "OPPONENT@example.com", "third@example.com" }, games[1].Players.ToArray());
             Assert.Equal(new[] { Opponent }, games[2].Players.ToArray());
             Assert.Equal(now.AddHours(-30), games[2].Sent);
+        }
+
+        #endregion
+
+        #region A resend of a turn the player has answered
+
+        /// <summary>A turn resent by its sender: it says when it was first sent.</summary>
+        private static MimeMessage Resend(byte[] save, DateTimeOffset firstSent)
+        {
+            MimeMessage email = TurnEmail(Opponent, save);
+            email.Date = firstSent;
+            ResendHelper.Renew(email);
+            return email;
+        }
+
+        [Fact]
+        public void A_resend_of_a_turn_answered_since_is_not_stored()
+        {
+            //The player got the turn, played it and sent their own; the opponent then resent the old turn
+            Stored(Answered, DateTime.Now.AddHours(-3));
+            FakeInbox inbox = FakeInbox.Create();
+            inbox.Add(1, Resend(TheirTurn, DateTimeOffset.Now.AddDays(-1)), seen: false, DateTime.Now.AddHours(-1));
+
+            int offered = 0;
+            ImapPoller poller = Poller(e => { offered++; e.Recorded = true; });
+            string askedFor = null;
+            poller.IsAnsweredResend = (fileName, firstSent) => { askedFor = fileName; return true; };
+            poller.ScanMailbox(inbox.Folder);
+
+            Assert.Equal(Game, askedFor);
+            Assert.Equal(0, offered);
+            Assert.Equal(Answered, File.ReadAllBytes(Path.Combine(_holding, Game)));
+            //Dealt with: it is not fetched again at every check
+            Assert.True(inbox.IsSeen(1));
+        }
+
+        [Fact]
+        public void A_resend_of_a_turn_not_yet_answered_is_stored()
+        {
+            FakeInbox inbox = FakeInbox.Create();
+            inbox.Add(1, Resend(TheirTurn, DateTimeOffset.Now.AddDays(-1)), seen: false, DateTime.Now.AddHours(-1));
+
+            int offered = 0;
+            ImapPoller poller = Poller(e => { offered++; e.Recorded = true; });
+            poller.IsAnsweredResend = (fileName, firstSent) => false;
+            poller.ScanMailbox(inbox.Folder);
+
+            Assert.Equal(1, offered);
+            Assert.Equal(TheirTurn, File.ReadAllBytes(Path.Combine(_holding, Game)));
+        }
+
+        [Fact]
+        public void A_turn_sent_once_is_not_asked_about()
+        {
+            FakeInbox inbox = FakeInbox.Create();
+            inbox.Add(1, TurnEmail(Opponent, TheirTurn), seen: false, DateTime.Now.AddHours(-1));
+
+            bool asked = false;
+            ImapPoller poller = Poller(e => e.Recorded = true);
+            poller.IsAnsweredResend = (fileName, firstSent) => asked = true;
+            poller.ScanMailbox(inbox.Folder);
+
+            Assert.False(asked);
+        }
+
+        private static Activity Line(ActivityState state, DateTime when, string fileName = Game)
+        {
+            return new Activity(state, AowGameType.Aow1, fileName, "Map", "3") { DateTicks = when.Ticks.ToString() };
+        }
+
+        [Fact]
+        public void A_resend_counts_as_answered_only_when_the_player_sent_after_its_first_send()
+        {
+            DateTime now = DateTime.Now;
+            DateTimeOffset firstSent = new DateTimeOffset(now.AddDays(-2));
+
+            ActivityList answered = new ActivityList();
+            answered.Activities.Add(Line(ActivityState.Received, now.AddDays(-2)));
+            answered.Activities.Add(Line(ActivityState.Sent, now.AddDays(-1)));
+            Assert.True(Main.IsAnsweredResend(answered, Game, firstSent));
+
+            //Sent before the turn first came: the turn never reached this player
+            ActivityList earlier = new ActivityList();
+            earlier.Activities.Add(Line(ActivityState.Sent, now.AddDays(-3)));
+            Assert.False(Main.IsAnsweredResend(earlier, Game, firstSent));
+
+            //Waiting, not played: the resend is the same turn
+            ActivityList waiting = new ActivityList();
+            waiting.Activities.Add(Line(ActivityState.Received, now.AddDays(-1)));
+            Assert.False(Main.IsAnsweredResend(waiting, Game, firstSent));
+
+            //Another game, even one whose name contains this one's
+            ActivityList other = new ActivityList();
+            other.Activities.Add(Line(ActivityState.Sent, now.AddDays(-1), "Big Swolterwood 1v1.asg"));
+            Assert.False(Main.IsAnsweredResend(other, Game, firstSent));
+            Assert.False(Main.IsAnsweredResend(new ActivityList(), Game, firstSent));
         }
 
         #endregion
