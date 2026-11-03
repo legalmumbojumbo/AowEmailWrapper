@@ -26,6 +26,7 @@ namespace AowEmailWrapper.Tests
         private static readonly HashSet<string> NotTextKeys = new HashSet<string>
         {
             "BugReportHelper.EmailKey", "ConfigHelper.NotifySoundKey", "ConfigHelper.SentSoundKey",
+            "ConfigHelper.RestartSoundKey",
             "ConfigHelper.AutostartPauseSecondsKey", "ConfigHelper.EndedFolderKey", "MicrosoftOAuth.ClientIdKey",
             "MicrosoftOAuth.AuthorityKey", "BuildInfo.CommitDateMetadataKey", "UpdateHelper.RepositoryKey",
         };

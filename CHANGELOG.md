@@ -3,6 +3,11 @@
 Each versioned release is described here. The section for a version is also the text of its GitHub
 release; CI publishes it when a `v<version>` tag is pushed (see "Releasing a version" in the README).
 
+## Unreleased
+
+- *Restart turn* rings a bell of shame when it has put the turn back, if *Email Downloaded sound* is ticked on the
+  Settings tab.
+
 ## 2.1.14
 
 - *Restart turn* on the Activity Log's right-click menu puts a waiting turn back as it arrived, downloading it again

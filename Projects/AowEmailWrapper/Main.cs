@@ -2592,6 +2592,11 @@ namespace AowEmailWrapper
             switch (result)
             {
                 case ImapPoller.RestartResult.Restarted:
+                    //The turn comes back as it arrived, so it sounds when turns arriving do
+                    if (_wrapperConfig.PreferencesConfig != null && _wrapperConfig.PreferencesConfig.PlaySoundOnEmail)
+                    {
+                        PlaySound(ConfigHelper.RestartSound);
+                    }
                     ShowBalloon(10000, title, Translator.Translate(RestartTurnDoneKey, fileName), ToolTipIcon.Info);
                     break;
                 case ImapPoller.RestartResult.NotFound:
