@@ -5,8 +5,7 @@ release; CI publishes it when a `v<version>` tag is pushed (see "Releasing a ver
 
 ## Unreleased
 
-- *Restart turn* rings a bell of shame when it has put the turn back, if *Email Downloaded sound* is ticked on the
-  Settings tab.
+- *Restart turn* takes the occasion a little more seriously.
 
 ## 2.1.14
 
