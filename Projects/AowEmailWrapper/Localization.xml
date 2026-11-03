@@ -125,6 +125,13 @@
 		<lookup key="activityNewSender" value="new sender"/>
 		<lookup key="msgWrapperTurnsRecovered" value="Found {0} unplayed turn(s) in your mailbox and added them to the activity log."/>
 		<lookup key="menuItemWhereIs" value="Who has the turn?"/>
+		<lookup key="menuItemRestartTurn" value="Restart turn"/>
+		<lookup key="msgRestartTurnConfirm" value="Restart &apos;{0}&apos;? The turn is downloaded again from the email it came in, from {1}, and replaces the game&apos;s save. Everything you did in this turn is lost."/>
+		<lookup key="msgRestartTurnDone" value="&apos;{0}&apos; is back as it arrived."/>
+		<lookup key="msgRestartTurnNotFound" value="The email that brought &apos;{0}&apos; is not in your inbox any more, so the turn could not be restarted."/>
+		<lookup key="msgRestartTurnFailed" value="&apos;{0}&apos; could not be restarted: {1}"/>
+		<lookup key="msgRestartTurnImapOnly" value="Restart turn needs an IMAP account: with POP3 the Wrapper cannot look through your mailbox again."/>
+		<lookup key="msgRestartTurnGameRunning" value="Close {0} first: a running game would save over the restarted turn."/>
 		<lookup key="msgWrapperWhereIsTitle" value="Who has the turn?"/>
 		<lookup key="msgWrapperWhereIsAsked" value="Asked {0} player(s) who has &apos;{1}&apos;. Answers arrive with the next mail checks."/>
 		<lookup key="msgWrapperWhereIsNobody" value="No other players are known for '{0}'."/>
@@ -577,6 +584,13 @@
 		<lookup key="activityNewSender" value="nouvel expéditeur"/>
 		<lookup key="msgWrapperTurnsRecovered" value="{0} tour(s) non joué(s) trouvé(s) dans votre boîte aux lettres et ajouté(s) au journal d&apos;activité."/>
 		<lookup key="menuItemWhereIs" value="Qui a le tour ?"/>
+		<lookup key="menuItemRestartTurn" value="Recommencer le tour"/>
+		<lookup key="msgRestartTurnConfirm" value="Recommencer &apos;{0}&apos; ? Le tour est téléchargé à nouveau depuis l&apos;e-mail reçu de {1} et remplace la sauvegarde du jeu. Tout ce que vous avez fait pendant ce tour est perdu."/>
+		<lookup key="msgRestartTurnDone" value="&apos;{0}&apos; est revenu tel qu&apos;il est arrivé."/>
+		<lookup key="msgRestartTurnNotFound" value="L&apos;e-mail qui a apporté &apos;{0}&apos; n&apos;est plus dans votre boîte de réception ; le tour n&apos;a pas pu être recommencé."/>
+		<lookup key="msgRestartTurnFailed" value="&apos;{0}&apos; n&apos;a pas pu être recommencé : {1}"/>
+		<lookup key="msgRestartTurnImapOnly" value="Recommencer le tour nécessite un compte IMAP : avec POP3, le Wrapper ne peut pas parcourir à nouveau votre boîte aux lettres."/>
+		<lookup key="msgRestartTurnGameRunning" value="Fermez d&apos;abord {0} : un jeu en cours enregistrerait par-dessus le tour recommencé."/>
 		<lookup key="msgWrapperWhereIsTitle" value="Qui a le tour ?"/>
 		<lookup key="msgWrapperWhereIsAsked" value="{0} joueur(s) interrogé(s) pour savoir qui a &apos;{1}&apos;. Les réponses arrivent avec les prochaines vérifications du courrier."/>
 		<lookup key="msgWrapperWhereIsNobody" value="Aucun autre joueur n&apos;est connu pour &apos;{0}&apos;."/>
@@ -878,6 +892,13 @@
 		<lookup key="activityNewSender" value="neuer Absender"/>
 		<lookup key="msgWrapperTurnsRecovered" value="{0} ungespielte(r) Zug/Züge im Postfach gefunden und dem Aktivitätsprotokoll hinzugefügt."/>
 		<lookup key="menuItemWhereIs" value="Wer hat den Zug?"/>
+		<lookup key="menuItemRestartTurn" value="Zug neu beginnen"/>
+		<lookup key="msgRestartTurnConfirm" value="&apos;{0}&apos; neu beginnen? Der Zug wird erneut aus der E-Mail von {1} heruntergeladen und ersetzt den Spielstand. Alles, was Sie in diesem Zug getan haben, geht verloren."/>
+		<lookup key="msgRestartTurnDone" value="&apos;{0}&apos; ist wieder so, wie er ankam."/>
+		<lookup key="msgRestartTurnNotFound" value="Die E-Mail mit &apos;{0}&apos; ist nicht mehr in Ihrem Posteingang, daher konnte der Zug nicht neu begonnen werden."/>
+		<lookup key="msgRestartTurnFailed" value="&apos;{0}&apos; konnte nicht neu begonnen werden: {1}"/>
+		<lookup key="msgRestartTurnImapOnly" value="Zug neu beginnen benötigt ein IMAP-Konto: Mit POP3 kann der Wrapper Ihr Postfach nicht erneut durchsuchen."/>
+		<lookup key="msgRestartTurnGameRunning" value="Schließen Sie zuerst {0}: Ein laufendes Spiel würde den neu begonnenen Zug überschreiben."/>
 		<lookup key="msgWrapperWhereIsTitle" value="Wer hat den Zug?"/>
 		<lookup key="msgWrapperWhereIsAsked" value="{0} Spieler gefragt, wer &apos;{1}&apos; hat. Die Antworten kommen mit den nächsten E-Mail-Abfragen."/>
 		<lookup key="msgWrapperWhereIsNobody" value="Für &apos;{0}&apos; sind keine anderen Spieler bekannt."/>
@@ -1178,6 +1199,13 @@
 		<lookup key="activityNewSender" value="remitente nuevo"/>
 		<lookup key="msgWrapperTurnsRecovered" value="Se encontraron {0} turno(s) sin jugar en su buzón y se añadieron al registro de actividad."/>
 		<lookup key="menuItemWhereIs" value="¿Quién tiene el turno?"/>
+		<lookup key="menuItemRestartTurn" value="Reiniciar el turno"/>
+		<lookup key="msgRestartTurnConfirm" value="¿Reiniciar &apos;{0}&apos;? El turno se descarga de nuevo del correo en que llegó, de {1}, y sustituye la partida guardada. Se pierde todo lo que hizo en este turno."/>
+		<lookup key="msgRestartTurnDone" value="&apos;{0}&apos; vuelve a estar como llegó."/>
+		<lookup key="msgRestartTurnNotFound" value="El correo que trajo &apos;{0}&apos; ya no está en su bandeja de entrada, así que no se pudo reiniciar el turno."/>
+		<lookup key="msgRestartTurnFailed" value="No se pudo reiniciar &apos;{0}&apos;: {1}"/>
+		<lookup key="msgRestartTurnImapOnly" value="Reiniciar el turno necesita una cuenta IMAP: con POP3 el Wrapper no puede volver a buscar en su buzón."/>
+		<lookup key="msgRestartTurnGameRunning" value="Cierre primero {0}: un juego abierto guardaría encima del turno reiniciado."/>
 		<lookup key="msgWrapperWhereIsTitle" value="¿Quién tiene el turno?"/>
 		<lookup key="msgWrapperWhereIsAsked" value="Se preguntó a {0} jugador(es) quién tiene &apos;{1}&apos;. Las respuestas llegan con las próximas comprobaciones del correo."/>
 		<lookup key="msgWrapperWhereIsNobody" value="No se conocen otros jugadores de &apos;{0}&apos;."/>
@@ -1482,6 +1510,13 @@
 		<lookup key="activityNewSender" value="nieuwe afzender"/>
 		<lookup key="msgWrapperTurnsRecovered" value="{0} ongespeelde beurt(en) gevonden in uw postvak en toegevoegd aan het activiteitenlogboek."/>
 		<lookup key="menuItemWhereIs" value="Wie heeft de beurt?"/>
+		<lookup key="menuItemRestartTurn" value="Beurt opnieuw beginnen"/>
+		<lookup key="msgRestartTurnConfirm" value="&apos;{0}&apos; opnieuw beginnen? De beurt wordt opnieuw gedownload uit de e-mail van {1} en vervangt de opgeslagen game. Alles wat u in deze beurt hebt gedaan, gaat verloren."/>
+		<lookup key="msgRestartTurnDone" value="&apos;{0}&apos; is weer zoals hij binnenkwam."/>
+		<lookup key="msgRestartTurnNotFound" value="De e-mail met &apos;{0}&apos; staat niet meer in uw postvak IN, dus de beurt kon niet opnieuw beginnen."/>
+		<lookup key="msgRestartTurnFailed" value="&apos;{0}&apos; kon niet opnieuw beginnen: {1}"/>
+		<lookup key="msgRestartTurnImapOnly" value="Beurt opnieuw beginnen vereist een IMAP-account: met POP3 kan de Wrapper uw postvak niet opnieuw doorzoeken."/>
+		<lookup key="msgRestartTurnGameRunning" value="Sluit eerst {0}: een draaiend spel zou over de opnieuw begonnen beurt heen opslaan."/>
 		<lookup key="msgWrapperWhereIsTitle" value="Wie heeft de beurt?"/>
 		<lookup key="msgWrapperWhereIsAsked" value="{0} speler(s) gevraagd wie &apos;{1}&apos; heeft. De antwoorden komen met de volgende e-mailcontroles."/>
 		<lookup key="msgWrapperWhereIsNobody" value="Er zijn geen andere spelers bekend voor &apos;{0}&apos;."/>
@@ -1776,6 +1811,13 @@
 		<lookup key="activityNewSender" value="ny afsender"/>
 		<lookup key="msgWrapperTurnsRecovered" value="Fandt {0} uspillede ture i din postkasse og føjede dem til aktivitetsloggen."/>
 		<lookup key="menuItemWhereIs" value="Hvem har turen?"/>
+		<lookup key="menuItemRestartTurn" value="Start turen forfra"/>
+		<lookup key="msgRestartTurnConfirm" value="Start &apos;{0}&apos; forfra? Turen hentes igen fra e-mailen fra {1} og erstatter spillets gemte spil. Alt, hvad du har gjort i denne tur, går tabt."/>
+		<lookup key="msgRestartTurnDone" value="&apos;{0}&apos; er tilbage, som den kom."/>
+		<lookup key="msgRestartTurnNotFound" value="E-mailen med &apos;{0}&apos; er ikke længere i din indbakke, så turen kunne ikke startes forfra."/>
+		<lookup key="msgRestartTurnFailed" value="&apos;{0}&apos; kunne ikke startes forfra: {1}"/>
+		<lookup key="msgRestartTurnImapOnly" value="Start turen forfra kræver en IMAP-konto: med POP3 kan Wrapperen ikke søge i din postkasse igen."/>
+		<lookup key="msgRestartTurnGameRunning" value="Luk {0} først: et kørende spil ville gemme oven i den genstartede tur."/>
 		<lookup key="msgWrapperWhereIsTitle" value="Hvem har turen?"/>
 		<lookup key="msgWrapperWhereIsAsked" value="Spurgte {0} spiller(e), hvem der har &apos;{1}&apos;. Svarene kommer med de næste posttjek."/>
 		<lookup key="msgWrapperWhereIsNobody" value="Der kendes ingen andre spillere til &apos;{0}&apos;."/>
@@ -2084,6 +2126,13 @@
 		<lookup key="activityNewSender" value="ny avsändare"/>
 		<lookup key="msgWrapperTurnsRecovered" value="Hittade {0} ospelade drag i din brevlåda och lade till dem i aktivitetsloggen."/>
 		<lookup key="menuItemWhereIs" value="Vem har draget?"/>
+		<lookup key="menuItemRestartTurn" value="Börja om draget"/>
+		<lookup key="msgRestartTurnConfirm" value="Börja om &apos;{0}&apos;? Draget hämtas igen från e-postmeddelandet från {1} och ersätter spelets sparfil. Allt du har gjort i det här draget går förlorat."/>
+		<lookup key="msgRestartTurnDone" value="&apos;{0}&apos; är tillbaka som det kom."/>
+		<lookup key="msgRestartTurnNotFound" value="E-postmeddelandet med &apos;{0}&apos; finns inte längre i inkorgen, så draget kunde inte börjas om."/>
+		<lookup key="msgRestartTurnFailed" value="&apos;{0}&apos; kunde inte börjas om: {1}"/>
+		<lookup key="msgRestartTurnImapOnly" value="Börja om draget kräver ett IMAP-konto: med POP3 kan Wrappern inte söka igenom brevlådan igen."/>
+		<lookup key="msgRestartTurnGameRunning" value="Stäng {0} först: ett spel som körs skulle spara över det omstartade draget."/>
 		<lookup key="msgWrapperWhereIsTitle" value="Vem har draget?"/>
 		<lookup key="msgWrapperWhereIsAsked" value="Frågade {0} spelare vem som har &apos;{1}&apos;. Svaren kommer med nästa e-postkontroll."/>
 		<lookup key="msgWrapperWhereIsNobody" value="Inga andra spelare är kända för &apos;{0}&apos;."/>
@@ -2378,6 +2427,13 @@
 		<lookup key="activityNewSender" value="nowy nadawca"/>
 		<lookup key="msgWrapperTurnsRecovered" value="Znaleziono {0} nierozegranych tur w skrzynce i dodano je do dziennika aktywności."/>
 		<lookup key="menuItemWhereIs" value="Kto ma turę?"/>
+		<lookup key="menuItemRestartTurn" value="Zacznij turę od nowa"/>
+		<lookup key="msgRestartTurnConfirm" value="Zacząć &apos;{0}&apos; od nowa? Tura zostanie ponownie pobrana z e-maila od {1} i zastąpi zapis gry. Wszystko, co zrobiłeś w tej turze, przepadnie."/>
+		<lookup key="msgRestartTurnDone" value="&apos;{0}&apos; jest z powrotem taka, jak przyszła."/>
+		<lookup key="msgRestartTurnNotFound" value="E-maila z &apos;{0}&apos; nie ma już w skrzynce odbiorczej, więc nie można zacząć tury od nowa."/>
+		<lookup key="msgRestartTurnFailed" value="Nie można zacząć &apos;{0}&apos; od nowa: {1}"/>
+		<lookup key="msgRestartTurnImapOnly" value="Zaczęcie tury od nowa wymaga konta IMAP: przy POP3 Wrapper nie może ponownie przejrzeć skrzynki."/>
+		<lookup key="msgRestartTurnGameRunning" value="Najpierw zamknij {0}: uruchomiona gra zapisałaby się na rozpoczętej od nowa turze."/>
 		<lookup key="msgWrapperWhereIsTitle" value="Kto ma turę?"/>
 		<lookup key="msgWrapperWhereIsAsked" value="Zapytano {0} graczy, kto ma &apos;{1}&apos;. Odpowiedzi przyjdą przy kolejnych sprawdzeniach poczty."/>
 		<lookup key="msgWrapperWhereIsNobody" value="Nie są znani inni gracze dla &apos;{0}&apos;."/>
@@ -2680,6 +2736,13 @@
 		<lookup key="activityNewSender" value="uusi lähettäjä"/>
 		<lookup key="msgWrapperTurnsRecovered" value="Postilaatikosta löytyi {0} pelaamatonta vuoroa, ja ne lisättiin toimintalokiin."/>
 		<lookup key="menuItemWhereIs" value="Kenellä vuoro on?"/>
+		<lookup key="menuItemRestartTurn" value="Aloita vuoro alusta"/>
+		<lookup key="msgRestartTurnConfirm" value="Aloitetaanko &apos;{0}&apos; alusta? Vuoro ladataan uudelleen sähköpostista, jonka {1} lähetti, ja se korvaa pelin tallennuksen. Kaikki tässä vuorossa tekemäsi menetetään."/>
+		<lookup key="msgRestartTurnDone" value="&apos;{0}&apos; on taas sellainen kuin se saapui."/>
+		<lookup key="msgRestartTurnNotFound" value="Sähköposti, joka toi &apos;{0}&apos;, ei ole enää saapuneissa, joten vuoroa ei voitu aloittaa alusta."/>
+		<lookup key="msgRestartTurnFailed" value="&apos;{0}&apos; ei voitu aloittaa alusta: {1}"/>
+		<lookup key="msgRestartTurnImapOnly" value="Vuoron aloittaminen alusta vaatii IMAP-tilin: POP3:lla Wrapper ei voi käydä postilaatikkoa uudelleen läpi."/>
+		<lookup key="msgRestartTurnGameRunning" value="Sulje ensin {0}: käynnissä oleva peli tallentaisi alusta aloitetun vuoron päälle."/>
 		<lookup key="msgWrapperWhereIsTitle" value="Kenellä vuoro on?"/>
 		<lookup key="msgWrapperWhereIsAsked" value="Kysyttiin {0} pelaajalta, kenellä &apos;{1}&apos; on. Vastaukset saapuvat seuraavien postitarkistusten mukana."/>
 		<lookup key="msgWrapperWhereIsNobody" value="Pelille &apos;{0}&apos; ei tunneta muita pelaajia."/>
@@ -2977,6 +3040,13 @@
 		<lookup key="activityNewSender" value="expeditor nou"/>
 		<lookup key="msgWrapperTurnsRecovered" value="Am găsit {0} ture nejucate în căsuța poștală și le-am adăugat în jurnalul de activitate."/>
 		<lookup key="menuItemWhereIs" value="Cine are tura?"/>
+		<lookup key="menuItemRestartTurn" value="Reîncepe tura"/>
+		<lookup key="msgRestartTurnConfirm" value="Reîncepeți &apos;{0}&apos;? Tura este descărcată din nou din e-mailul primit de la {1} și înlocuiește salvarea jocului. Tot ce ați făcut în această tură se pierde."/>
+		<lookup key="msgRestartTurnDone" value="&apos;{0}&apos; este din nou cum a sosit."/>
+		<lookup key="msgRestartTurnNotFound" value="E-mailul care a adus &apos;{0}&apos; nu mai este în căsuța de intrare, așa că tura nu a putut fi reîncepută."/>
+		<lookup key="msgRestartTurnFailed" value="&apos;{0}&apos; nu a putut fi reînceput: {1}"/>
+		<lookup key="msgRestartTurnImapOnly" value="Reînceperea turei necesită un cont IMAP: cu POP3 Wrapperul nu poate căuta din nou în căsuța poștală."/>
+		<lookup key="msgRestartTurnGameRunning" value="Închideți mai întâi {0}: un joc pornit ar salva peste tura reîncepută."/>
 		<lookup key="msgWrapperWhereIsTitle" value="Cine are tura?"/>
 		<lookup key="msgWrapperWhereIsAsked" value="Am întrebat {0} jucător(i) cine are &apos;{1}&apos;. Răspunsurile sosesc la următoarele verificări ale poștei."/>
 		<lookup key="msgWrapperWhereIsNobody" value="Nu se cunosc alți jucători pentru &apos;{0}&apos;."/>
@@ -3278,6 +3348,13 @@
 		<lookup key="activityNewSender" value="новый отправитель"/>
 		<lookup key="msgWrapperTurnsRecovered" value="В почтовом ящике найдено несыгранных ходов: {0}. Они добавлены в журнал активности."/>
 		<lookup key="menuItemWhereIs" value="У кого ход?"/>
+		<lookup key="menuItemRestartTurn" value="Начать ход заново"/>
+		<lookup key="msgRestartTurnConfirm" value="Начать &apos;{0}&apos; заново? Ход будет снова загружен из письма от {1} и заменит сохранение игры. Всё, что вы сделали в этом ходу, будет потеряно."/>
+		<lookup key="msgRestartTurnDone" value="&apos;{0}&apos; снова такой, каким пришёл."/>
+		<lookup key="msgRestartTurnNotFound" value="Письма с &apos;{0}&apos; больше нет во входящих, поэтому ход не удалось начать заново."/>
+		<lookup key="msgRestartTurnFailed" value="Не удалось начать &apos;{0}&apos; заново: {1}"/>
+		<lookup key="msgRestartTurnImapOnly" value="Для повтора хода нужна учётная запись IMAP: с POP3 Wrapper не может снова просмотреть почтовый ящик."/>
+		<lookup key="msgRestartTurnGameRunning" value="Сначала закройте {0}: запущенная игра сохранится поверх начатого заново хода."/>
 		<lookup key="msgWrapperWhereIsTitle" value="У кого ход?"/>
 		<lookup key="msgWrapperWhereIsAsked" value="Спросили игроков ({0}), у кого &apos;{1}&apos;. Ответы придут при следующих проверках почты."/>
 		<lookup key="msgWrapperWhereIsNobody" value="Другие игроки для &apos;{0}&apos; неизвестны."/>

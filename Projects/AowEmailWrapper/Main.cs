@@ -76,6 +76,13 @@ namespace AowEmailWrapper
         private const string WrapperWhereIsNobodyKey = "msgWrapperWhereIsNobody";
         private const string WrapperWhereIsNobodyFallback = "No other players are known for '{0}'.";
         private const string WrapperWhereIsTitleKey = "msgWrapperWhereIsTitle";
+        private const string RestartTurnTitleKey = "menuItemRestartTurn";
+        private const string RestartTurnConfirmKey = "msgRestartTurnConfirm";
+        private const string RestartTurnDoneKey = "msgRestartTurnDone";
+        private const string RestartTurnNotFoundKey = "msgRestartTurnNotFound";
+        private const string RestartTurnFailedKey = "msgRestartTurnFailed";
+        private const string RestartTurnImapOnlyKey = "msgRestartTurnImapOnly";
+        private const string RestartTurnGameRunningKey = "msgRestartTurnGameRunning";
         private const string WrapperProbablyWithKey = "msgWrapperProbablyWith";
         private const string WrapperProbablyWithYouSentKey = "msgWrapperProbablyWithYouSent";
         private const string WrapperProbablyWithFallback = "{0} probably has '{1}': {2} sent it to them on {3}, and they have not answered.";
@@ -1114,6 +1121,7 @@ namespace AowEmailWrapper
             activityListView.OnResendClick += new ActivityListViewEventHandler(ActivityListViewResend);
             activityListView.OnMoveTo += new ActivityMoveEventHandler(ActivityListViewMoveTo);
             activityListView.OnWhereIs += new ActivityListViewEventHandler(ActivityListViewWhereIs);
+            activityListView.OnRestartTurn += new ActivityListViewEventHandler(ActivityListViewRestartTurn);
         }
 
         private void ShutDown(object sender, EventArgs e)
@@ -2526,6 +2534,99 @@ namespace AowEmailWrapper
                 string asked = Translator.Translate(WrapperWhereIsAskedKey, players.Count.ToString(), activity.FileName);
                 ShowBalloon(10000, WhereIsTitle(), string.IsNullOrEmpty(asked) ? string.Format(WrapperWhereIsAskedFallback, players.Count, activity.FileName) : asked, ToolTipIcon.Info);
             }
+        }
+
+        /// <summary>
+        /// Restart turn: the waiting turn is downloaded again from the email that brought it and put over the game's save,
+        /// so a turn begun wrongly can be played from its start. Asks first, as the moves made in it are lost.
+        /// </summary>
+        private void ActivityListViewRestartTurn(object sender, List<Activity> activities)
+        {
+            if (!ActivityListView.CanRestart(activities))
+            {
+                return;
+            }
+            Activity activity = activities[0];
+            string title = Translator.Translate(RestartTurnTitleKey).Replace("&", string.Empty);
+
+            ImapPoller poller = RestartPoller(activity);
+            if (poller == null)
+            {
+                MessageBox.Show(this, Translator.Translate(RestartTurnImapOnlyKey), title, MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
+            //A game with the turn open would save its own state over the restarted one
+            AowGame copy;
+            using (Process running = RunningCopy(activity.GameType, out copy))
+            {
+                if (running != null)
+                {
+                    MessageBox.Show(this, Translator.Translate(RestartTurnGameRunningKey, copy.DisplayName), title, MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
+                }
+            }
+
+            List<string> senders = RestartSenders(activity, OwnAddresses());
+            string from = senders.Count > 0 ? string.Join(", ", senders) : "?";
+            if (MessageBox.Show(this, Translator.Translate(RestartTurnConfirmKey, activity.FileName, from), title, MessageBoxButtons.YesNo, MessageBoxIcon.Warning) != DialogResult.Yes)
+            {
+                return;
+            }
+
+            string fileName = activity.FileName;
+            long ticks;
+            DateTime recorded = long.TryParse(activity.DateTicks, out ticks) && ticks > 0 ? new DateTime(ticks, DateTimeKind.Local) : DateTime.Now;
+            Task.Run(() =>
+            {
+                string error;
+                ImapPoller.RestartResult result = poller.RestartTurn(fileName, senders, recorded, out error);
+                PostToWindow(() => RestartTurnFinished(fileName, result, error, title));
+            });
+        }
+
+        private void RestartTurnFinished(string fileName, ImapPoller.RestartResult result, string error, string title)
+        {
+            RaiseEvent(_activityLogRefresh, this, EventArgs.Empty);
+            CheckNotifyIconState();
+            switch (result)
+            {
+                case ImapPoller.RestartResult.Restarted:
+                    ShowBalloon(10000, title, Translator.Translate(RestartTurnDoneKey, fileName), ToolTipIcon.Info);
+                    break;
+                case ImapPoller.RestartResult.NotFound:
+                    MessageBox.Show(this, Translator.Translate(RestartTurnNotFoundKey, fileName), title, MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    break;
+                default:
+                    MessageBox.Show(this, Translator.Translate(RestartTurnFailedKey, fileName, error ?? string.Empty), title, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    break;
+            }
+        }
+
+        /// <summary>The mail checker of the account the turn came in on, or else any IMAP one; null with POP3 only.</summary>
+        private ImapPoller RestartPoller(Activity activity)
+        {
+            BasePoller own;
+            if (!string.IsNullOrEmpty(activity.AccountName) && _pollers.TryGetValue(activity.AccountName, out own) && own is ImapPoller)
+            {
+                return (ImapPoller)own;
+            }
+            return _pollers.Values.OfType<ImapPoller>().FirstOrDefault();
+        }
+
+        /// <summary>Who sent the turn; when that was not recorded, the game's other players.</summary>
+        internal static List<string> RestartSenders(Activity activity, IEnumerable<string> ownAddresses)
+        {
+            HashSet<string> own = new HashSet<string>(ownAddresses ?? Enumerable.Empty<string>(), StringComparer.OrdinalIgnoreCase);
+            if (!string.IsNullOrWhiteSpace(activity.Sender) && !own.Contains(activity.Sender.Trim()))
+            {
+                return new List<string> { activity.Sender.Trim() };
+            }
+            return (activity.Players ?? string.Empty).Split(ActivityList.AddressSeparator)
+                .Select(address => address.Trim())
+                .Where(address => address.Length > 0 && !own.Contains(address))
+                .Distinct(StringComparer.OrdinalIgnoreCase)
+                .ToList();
         }
 
         private string WhereIsTitle()

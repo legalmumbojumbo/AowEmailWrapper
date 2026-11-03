@@ -486,5 +486,77 @@ namespace AowEmailWrapper.Tests
         }
 
         #endregion
+
+        #region Restart turn
+
+        [Fact]
+        public void Restart_turn_puts_back_the_turn_as_it_arrived_from_its_newest_email()
+        {
+            DateTime now = DateTime.Now;
+            //The player began the turn and the game saved over it
+            Stored(Answered, now.AddHours(-1));
+            FakeInbox inbox = FakeInbox.Create();
+            inbox.Add(1, TurnEmail(Opponent, new byte[] { 9, 9 }), seen: true, now.AddDays(-5));
+            inbox.Add(2, TurnEmail(Opponent, TheirTurn), seen: true, now.AddDays(-1));
+            inbox.Add(3, TurnEmail("stranger@example.com", new byte[] { 7, 7 }), seen: true, now.AddHours(-20));
+            inbox.Add(4, TurnEmail(Opponent, new byte[] { 8, 8 }, "Another game.asg"), seen: true, now.AddHours(-10));
+
+            List<AowGameSavedEventArgs> recorded = new List<AowGameSavedEventArgs>();
+            ImapPoller.RestartResult result = Poller(e => { e.Recorded = true; recorded.Add(e); })
+                .RestartTurn(inbox.Folder, Game, new[] { Opponent }, now, CancellationToken.None);
+
+            Assert.Equal(ImapPoller.RestartResult.Restarted, result);
+            Assert.Equal(TheirTurn, File.ReadAllBytes(Path.Combine(_holding, Game)));
+            Assert.Equal(Game, Assert.Single(recorded).FileName);
+            //Read-only: nothing flagged, nothing removed
+            Assert.Equal(new uint[] { 1, 2, 3, 4 }, inbox.Uids);
+            Assert.True(inbox.IsSeen(2));
+        }
+
+        [Fact]
+        public void Restart_turn_without_the_email_changes_nothing()
+        {
+            DateTime now = DateTime.Now;
+            Stored(Answered, now.AddHours(-1));
+            FakeInbox inbox = FakeInbox.Create();
+            inbox.Add(1, TurnEmail("stranger@example.com", TheirTurn), seen: true, now.AddDays(-1));
+            inbox.Add(2, TurnEmail(Opponent, TheirTurn, "Another game.asg"), seen: true, now.AddDays(-1));
+            //Older than the look-back
+            inbox.Add(3, TurnEmail(Opponent, TheirTurn), seen: true, now.AddDays(-(ImapPoller.RestartLookBackDays + 5)));
+
+            int offered = 0;
+            ImapPoller.RestartResult result = Poller(e => offered++).RestartTurn(inbox.Folder, Game, new[] { Opponent }, now, CancellationToken.None);
+
+            Assert.Equal(ImapPoller.RestartResult.NotFound, result);
+            Assert.Equal(0, offered);
+            Assert.Equal(Answered, File.ReadAllBytes(Path.Combine(_holding, Game)));
+        }
+
+        [Fact]
+        public void Restart_turn_is_offered_for_one_waiting_turn_only()
+        {
+            DateTime now = DateTime.Now;
+            Assert.True(Controls.ActivityListView.CanRestart(new List<Activity> { Line(ActivityState.Received, now) }));
+            Assert.False(Controls.ActivityListView.CanRestart(new List<Activity> { Line(ActivityState.Sent, now) }));
+            Assert.False(Controls.ActivityListView.CanRestart(new List<Activity> { Line(ActivityState.Paused, now) }));
+            Assert.False(Controls.ActivityListView.CanRestart(new List<Activity> { Line(ActivityState.Ended, now) }));
+            Assert.False(Controls.ActivityListView.CanRestart(new List<Activity> { Line(ActivityState.Received, now), Line(ActivityState.Received, now, "Another game.asg") }));
+            Assert.False(Controls.ActivityListView.CanRestart(new List<Activity>()));
+        }
+
+        [Fact]
+        public void Restart_turn_looks_for_the_sender_or_else_the_other_players()
+        {
+            Activity withSender = Line(ActivityState.Received, DateTime.Now);
+            withSender.Sender = Opponent;
+            withSender.Players = Opponent + ";third@example.com;" + Me;
+            Assert.Equal(new[] { Opponent }, Main.RestartSenders(withSender, new[] { Me }));
+
+            Activity unknownSender = Line(ActivityState.Received, DateTime.Now);
+            unknownSender.Players = Opponent + "; third@example.com ;" + Me;
+            Assert.Equal(new[] { Opponent, "third@example.com" }, Main.RestartSenders(unknownSender, new[] { Me }));
+        }
+
+        #endregion
     }
 }

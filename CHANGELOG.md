@@ -3,6 +3,13 @@
 Each versioned release is described here. The section for a version is also the text of its GitHub
 release; CI publishes it when a `v<version>` tag is pushed (see "Releasing a version" in the README).
 
+## Unreleased
+
+- *Restart turn* on the Activity Log's right-click menu puts a waiting turn back as it arrived, downloading it again
+  from its email, so you can play the turn again from the start. It takes the newest email in the Inbox from the
+  player who sent the turn whose save game has the turn's name, changes nothing in the mailbox, and is offered for one
+  Received line at a time, needs an IMAP account and waits until the game is closed.
+
 ## 2.1.13
 
 Thanks to BING-XI for this release.
