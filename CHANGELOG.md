@@ -3,6 +3,10 @@
 Each versioned release is described here. The section for a version is also the text of its GitHub
 release; CI publishes it when a `v<version>` tag is pushed (see "Releasing a version" in the README).
 
+## Unreleased
+
+- *Restart turn* takes the occasion a little more seriously.
+
 ## 2.1.14
 
 - *Restart turn* on the Activity Log's right-click menu puts a waiting turn back as it arrived, downloading it again

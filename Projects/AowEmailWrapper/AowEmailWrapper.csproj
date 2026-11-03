@@ -45,6 +45,7 @@
     <None Update="Localization.xml" CopyToOutputDirectory="PreserveNewest" />
     <None Update="notify.wav" CopyToOutputDirectory="PreserveNewest" />
     <None Update="sent.wav" CopyToOutputDirectory="PreserveNewest" />
+    <None Update="shame.wav" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 
   <!-- Stamp the executable with the git commit it was built from (InformationalVersion becomes "2.0.0+sha"

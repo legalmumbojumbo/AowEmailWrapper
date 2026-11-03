@@ -2592,6 +2592,8 @@ namespace AowEmailWrapper
             switch (result)
             {
                 case ImapPoller.RestartResult.Restarted:
+                    //Shame! Rung whatever the sound settings say
+                    PlaySound(ConfigHelper.RestartSound);
                     ShowBalloon(10000, title, Translator.Translate(RestartTurnDoneKey, fileName), ToolTipIcon.Info);
                     break;
                 case ImapPoller.RestartResult.NotFound:

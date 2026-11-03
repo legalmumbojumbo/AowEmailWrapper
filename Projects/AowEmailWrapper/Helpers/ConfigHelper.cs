@@ -7,6 +7,7 @@ namespace AowEmailWrapper.Helpers
     {
         private const string NotifySoundKey = "NotifySound";
         private const string SentSoundKey = "SentSound";
+        private const string RestartSoundKey = "RestartSound";
         private const string AutostartPauseSecondsKey = "AutostartPauseSeconds";
         private const string EndedFolderKey = "EndedFolder";
         private const string EndedFolderDefault = "Ended";
@@ -27,6 +28,12 @@ namespace AowEmailWrapper.Helpers
         public static string SentSound
         {
             get { return GetProperty<string>(SentSoundKey, null); }
+        }
+
+        /// <summary>Played when Restart turn on the Activity Log has put a turn back.</summary>
+        public static string RestartSound
+        {
+            get { return GetProperty<string>(RestartSoundKey, null); }
         }
 
         public static int AutostartPauseSeconds
