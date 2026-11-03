@@ -298,6 +298,17 @@ namespace AowEmailWrapper.Helpers
             return turns;
         }
 
+        /// <summary>
+        /// The save games in the messages a search finds (newest <see cref="MaxMessagesPerFolder"/> of them), from their
+        /// structures: nothing is downloaded.
+        /// </summary>
+        public static List<MailboxTurn> FindTurns(IMailFolder folder, SearchQuery query, CancellationToken token)
+        {
+            List<MailboxTurn> turns = new List<MailboxTurn>();
+            Collect(folder, folder.Search(query, token), false, new HashSet<string>(StringComparer.OrdinalIgnoreCase), turns, token);
+            return turns;
+        }
+
         /// <summary>The game a save file belongs to: the name up to the first dot, as the game itself truncates it.</summary>
         public static string GameKey(string fileName)
         {

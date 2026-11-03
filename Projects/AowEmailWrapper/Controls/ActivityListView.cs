@@ -38,6 +38,8 @@ namespace AowEmailWrapper.Controls
         private const string ProbablyWithKey = "activityProbablyWith";
         private const string ProbablyWithFallback = "probably with {0}";
         private ToolStripMenuItem _whereIsMenuItem;
+        private const string Menu_RestartTurn_Tag = "menuItemRestartTurn";
+        private ToolStripMenuItem _restartMenuItem;
         private const string Menu_MarkPaused_Tag = "menuItemMarkPaused";
         private const string MarkPausedFallback = "Mark as &Paused";
         private const string ResumeKey = "menuItemResume";
@@ -57,6 +59,8 @@ namespace AowEmailWrapper.Controls
         public EventHandler OnListChanged;
         public ActivityMoveEventHandler OnMoveTo;
         public ActivityListViewEventHandler OnWhereIs;
+        /// <summary>Restart turn: the waiting turn is to be downloaded again from the email it came in.</summary>
+        public ActivityListViewEventHandler OnRestartTurn;
 
         /// <summary>Used to name the copy a game lives in and to offer the other copies under Move to.</summary>
         public AowGameManager GameManager { get; set; }
@@ -454,8 +458,13 @@ namespace AowEmailWrapper.Controls
             _resendMenuItem = new ToolStripMenuItem();
             _moveToMenuItem = new ToolStripMenuItem();
             _whereIsMenuItem = new ToolStripMenuItem();
+            _restartMenuItem = new ToolStripMenuItem();
 
-            _contextMenu.Items.AddRange(new ToolStripMenuItem[] { _resendMenuItem, _moveToMenuItem, _whereIsMenuItem, _pauseMenuItem, markEnded, markSent, remove });
+            _contextMenu.Items.AddRange(new ToolStripMenuItem[] { _resendMenuItem, _moveToMenuItem, _whereIsMenuItem, _restartMenuItem, _pauseMenuItem, markEnded, markSent, remove });
+
+            _restartMenuItem.Text = Translator.Translate(Menu_RestartTurn_Tag);
+            _restartMenuItem.Tag = Menu_RestartTurn_Tag;
+            _restartMenuItem.Click += menuItemClickEvent;
 
             string whereIs = Translator.Translate(Menu_WhereIs_Tag);
             _whereIsMenuItem.Text = string.IsNullOrEmpty(whereIs) ? WhereIsFallback : whereIs;
@@ -544,8 +553,24 @@ namespace AowEmailWrapper.Controls
                             OnWhereIs(this, selected);
                         }
                         break;
+                    case Menu_RestartTurn_Tag:
+                        if (OnRestartTurn != null && CanRestart(selected))
+                        {
+                            OnRestartTurn(this, selected);
+                        }
+                        break;
                 }
             }
+        }
+
+        /// <summary>
+        /// Restart turn is for one game whose turn waits for the player. A turn already sent is not offered: playing it
+        /// again would send the next player a second, different turn.
+        /// </summary>
+        internal static bool CanRestart(IList<Activity> selected)
+        {
+            return selected != null && selected.Count == 1 && selected[0] != null &&
+                selected[0].Status == ActivityState.Received && !string.IsNullOrEmpty(selected[0].FileName);
         }
 
         private void ContextMenu_Popup(object sender, System.ComponentModel.CancelEventArgs e)
@@ -567,6 +592,8 @@ namespace AowEmailWrapper.Controls
             }
 
             _resendMenuItem.Enabled = resend;
+
+            _restartMenuItem.Enabled = CanRestart(GetSelectedActivities());
 
             //Only a turn that has left this player can be somewhere else
             _whereIsMenuItem.Enabled = enabled && GetSelectedActivities().All(activity => activity.Status.Equals(ActivityState.Sent) && TurnQuery.PlayersToAsk(activity, null).Count > 0);

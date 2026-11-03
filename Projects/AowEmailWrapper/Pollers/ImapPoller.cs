@@ -605,6 +605,107 @@ namespace AowEmailWrapper.Pollers
             return false;
         }
 
+        /// <summary>What <see cref="RestartTurn"/> came to.</summary>
+        public enum RestartResult
+        {
+            Restarted,
+            NotFound,
+            Failed
+        }
+
+        /// <summary>How far back before the turn was recorded its email is looked for.</summary>
+        internal const int RestartLookBackDays = 60;
+
+        /// <summary>
+        /// Restart turn on the Activity Log: downloads again the email that brought a waiting turn and files its save
+        /// over the game's copy, so the player can start the turn afresh. Runs on the caller's thread and counts as
+        /// checking the mailbox, so the Wrapper does not close in the middle.
+        /// </summary>
+        public RestartResult RestartTurn(string fileName, IEnumerable<string> senders, DateTime recorded, out string error)
+        {
+            error = null;
+            if (!TryBeginConnectionWork())
+            {
+                error = "The Wrapper is closing";
+                return RestartResult.Failed;
+            }
+            try
+            {
+                using (ImapClient imap = new ImapClient())
+                {
+                    imap.Timeout = NETWORK_TIMEOUT_MS;
+                    imap.Connect(_host, _port, MailHelper.ToSecureSocketOptions(_sslType));
+                    MailHelper.Authenticate(imap, _username, _password, OAuthProvider);
+
+                    IMailFolder inbox = imap.Inbox;
+                    //Nothing is flagged or removed: the email stays as it is
+                    inbox.Open(FolderAccess.ReadOnly);
+                    RestartResult result = RestartTurn(inbox, fileName, senders, recorded, CancellationToken.None);
+                    imap.Disconnect(true);
+                    return result;
+                }
+            }
+            catch (Exception ex)
+            {
+                Trace.TraceWarning("Could not restart {0}: {1}", fileName, ex);
+                error = ex.Message;
+                return RestartResult.Failed;
+            }
+            finally
+            {
+                EndConnectionWork(false);
+            }
+        }
+
+        internal RestartResult RestartTurn(IMailFolder inbox, string fileName, IEnumerable<string> senders, DateTime recorded, CancellationToken token)
+        {
+            MimeMessage email = FindTurnEmail(inbox, fileName, senders, recorded, token);
+            if (email == null)
+            {
+                Trace.TraceInformation("Restart {0}: no email in the inbox carries it", fileName);
+                return RestartResult.NotFound;
+            }
+
+            bool stored;
+            if (ProcessEmailAttachments(email, out stored) > 0 && stored)
+            {
+                Trace.TraceInformation("Restarted {0} from the email of {1:u} from {2}", fileName, email.Date, MailHelper.GetFromAddress(email));
+                return RestartResult.Restarted;
+            }
+            return RestartResult.Failed;
+        }
+
+        /// <summary>
+        /// The email that brought the turn: the newest one in the inbox, from one of <paramref name="senders"/> (anyone
+        /// when none are known), whose save game has the turn's file name. Read or not; only structures are fetched
+        /// until the one is chosen.
+        /// </summary>
+        internal static MimeMessage FindTurnEmail(IMailFolder inbox, string fileName, IEnumerable<string> senders, DateTime recorded, CancellationToken token)
+        {
+            string wanted = ASGFileInfo.SanitizeFileName(fileName ?? string.Empty);
+            if (string.IsNullOrEmpty(wanted))
+            {
+                return null;
+            }
+
+            List<string> from = (senders ?? Enumerable.Empty<string>()).Where(address => !string.IsNullOrWhiteSpace(address))
+                .Select(address => address.Trim()).Distinct(StringComparer.OrdinalIgnoreCase).ToList();
+            //By the server's calendar, so a day's margin; the email came before the turn was recorded
+            SearchQuery query = SearchQuery.DeliveredAfter(recorded.Date.AddDays(-RestartLookBackDays));
+            if (from.Count > 0)
+            {
+                query = query.And(from.Select(address => (SearchQuery)SearchQuery.FromContains(address)).Aggregate((left, right) => left.Or(right)));
+            }
+
+            MailboxTurn newest = ContactHistory.FindTurns(inbox, query, token)
+                .Where(turn => string.Equals(ASGFileInfo.SanitizeFileName(turn.FileName), wanted, StringComparison.OrdinalIgnoreCase))
+                .Where(turn => from.Count == 0 || from.Any(address => string.Equals(address, turn.From, StringComparison.OrdinalIgnoreCase)))
+                .OrderByDescending(turn => turn.Arrived ?? turn.Date)
+                .ThenByDescending(turn => turn.Uid)
+                .FirstOrDefault();
+            return newest == null ? null : inbox.GetMessage(new UniqueId(newest.Uid), token);
+        }
+
         internal bool ScanMailbox(IMailFolder inbox)
         {
             bool emailDownloaded = false;
