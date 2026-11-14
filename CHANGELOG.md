@@ -3,7 +3,7 @@
 Each versioned release is described here. The section for a version is also the text of its GitHub
 release; CI publishes it when a `v<version>` tag is pushed (see "Releasing a version" in the README).
 
-## Unreleased
+## 2.1.16
 
 - A copy of a game that can be reached by two paths is listed once on the Games tab. It was listed once per
   path, and *Move to* on the Activity Log, from the one entry to the other, deleted the game's turn files. A
@@ -12,6 +12,9 @@ release; CI publishes it when a `v<version>` tag is pushed (see "Releasing a ver
   file system.
 - The Wrapper runs on Linux under Wine, installed with the Windows setup into the Wine prefix the games run
   in; the README's *Linux* section has the commands.
+
+Run `AowEmailWrapper-2.1.16-setup.exe` on Windows 10 or later, or let an installed Wrapper fetch it through
+*Check for updates* on the Settings tab. Accounts and settings carry over.
 
 ## 2.1.15
 
